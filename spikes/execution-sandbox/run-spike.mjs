@@ -95,7 +95,7 @@ const noExternalRoute = (): boolean => {
     return lines.length <= 1;
   } catch { return false; }
 };
-const checks: Record<string, boolean> = {
+const checks = {
   NETWORK_BLOCKED: noExternalRoute(),
   METADATA_BLOCKED: noExternalRoute(),
   DOCKER_SOCKET_ABSENT: !fs.existsSync("/var/run/docker.sock"),
