@@ -38,7 +38,7 @@ const normal = {
   javascript: 'console.log("NORMAL_OK");\n',
   typescript: 'const message: string = "NORMAL_OK";\nconsole.log(message);\n',
   java: 'public class Main { public static void main(String[] args) { System.out.println("NORMAL_OK"); } }\n',
-  cpp: '#include <iostream>\nint main() { std::cout << "NORMAL_OK\\n"; }\n',
+  cpp: '#include <cstdio>\nint main() { std::puts("NORMAL_OK"); }\n',
   c: '#include <stdio.h>\nint main(void) { puts("NORMAL_OK"); }\n',
 };
 const hostile = {
@@ -116,22 +116,29 @@ public class Main {
   }
 }
 `,
-  cpp: `#include <filesystem>
-#include <fstream>
-#include <iostream>
+  cpp: `#include <cstdio>
+bool absent(const char* path) {
+  FILE* file = std::fopen(path, "r");
+  if (file == nullptr) return true;
+  std::fclose(file);
+  return false;
+}
 bool no_external_route() {
-  std::ifstream route("/proc/net/route");
-  std::string line;
-  std::getline(route, line);
-  return !std::getline(route, line);
+  FILE* route = std::fopen("/proc/net/route", "r");
+  if (route == nullptr) return false;
+  char line[512];
+  std::fgets(line, sizeof(line), route);
+  bool empty = std::fgets(line, sizeof(line), route) == nullptr;
+  std::fclose(route);
+  return empty;
 }
 int main() {
-  bool network = no_external_route(); bool metadata = no_external_route();
-  bool socket_absent = !std::filesystem::exists("/var/run/docker.sock");
-  bool mount_absent = !std::filesystem::exists("/host") && !std::filesystem::exists("/mnt/host")
-    && !std::filesystem::exists("/Users") && !std::filesystem::exists("/Volumes");
-  std::cout << "NETWORK_BLOCKED=" << network << ",METADATA_BLOCKED=" << metadata
-    << ",DOCKER_SOCKET_ABSENT=" << socket_absent << ",HOST_MOUNT_ABSENT=" << mount_absent << "\\n";
+  bool network = no_external_route();
+  bool metadata = no_external_route();
+  bool socket_absent = absent("/var/run/docker.sock");
+  bool mount_absent = absent("/host") && absent("/mnt/host") && absent("/Users") && absent("/Volumes");
+  std::printf("NETWORK_BLOCKED=%d,METADATA_BLOCKED=%d,DOCKER_SOCKET_ABSENT=%d,HOST_MOUNT_ABSENT=%d\\n",
+    network, metadata, socket_absent, mount_absent);
   return network && metadata && socket_absent && mount_absent ? 0 : 1;
 }
 `,

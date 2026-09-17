@@ -66,16 +66,19 @@ for (const language of manifest.languages) {
 function imageDigest(image) {
   const inspect = spawnSync(
     "docker",
-    ["image", "inspect", "--format", "{{json .RepoDigests}}", image],
+    ["image", "inspect", "--format", "{{json .RepoDigests}}|{{.Id}}", image],
     {
       encoding: "utf8",
     },
   );
   if (inspect.status !== 0) throw new Error(`Image ${image} is not built locally.`);
-  const digests = JSON.parse(inspect.stdout.trim());
-  if (!Array.isArray(digests) || digests.length === 0)
-    throw new Error(`Image ${image} has no immutable local digest.`);
-  return digests[0].split("@")[1];
+  const [repoDigestsJson, imageId] = inspect.stdout.trim().split("|");
+  const repoDigests = JSON.parse(repoDigestsJson ?? "null");
+  if (Array.isArray(repoDigests) && repoDigests.length > 0) {
+    return repoDigests[0].split("@")[1];
+  }
+  if (/^sha256:[0-9a-f]{64}$/.test(imageId ?? "")) return imageId;
+  throw new Error(`Image ${image} has no immutable local digest.`);
 }
 
 function sourceFile(language) {

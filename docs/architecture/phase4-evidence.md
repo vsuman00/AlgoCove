@@ -107,8 +107,8 @@ executed and the security decision is recorded.
   and C/C++
   `sha256:f8146f392efe2fb048115c7f98ca90843dfbe5294044b60650bd07c4fbefe421`.
   Added `.github/workflows/execution-release.yml` to build with SBOM/provenance,
-  scan the pushed digest with Trivy, keylessly sign it with Cosign via GitHub
-  OIDC, and
+  scan the pushed digest with Trivy (gating fixable critical/high findings),
+  keylessly sign it with Cosign via GitHub OIDC, and
   verify the certificate identity. The workflow is configured but has not yet
   been executed against GHCR, so signing is not claimed.
 

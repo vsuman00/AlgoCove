@@ -352,10 +352,14 @@ describe("PostgreSQL and pgvector lifecycle", () => {
         },
       }),
     );
-    // Capture the application clock after PostgreSQL has assigned the row's
-    // database-default available_at. This avoids rejecting a freshly inserted
-    // row when the database clock is a few milliseconds ahead of Node.js.
-    const relayNow = new Date().toISOString();
+    // Use the database clock after PostgreSQL has assigned the row's
+    // database-default available_at. The relay compares against a database
+    // timestamp, so using the same clock avoids a false negative when the
+    // application host is slightly behind PostgreSQL.
+    const clock = await runtimePool!.query<{ now: string }>(
+      "SELECT clock_timestamp()::text AS now",
+    );
+    const relayNow = clock.rows[0]!.now;
     const retryAt = new Date(Date.parse(relayNow) + 2_000).toISOString();
 
     const first = await relay.claimNext({

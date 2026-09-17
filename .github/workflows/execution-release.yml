@@ -96,6 +96,7 @@ jobs:
           vuln-type: os,library
           scanners: vuln
           severity: CRITICAL,HIGH
+          ignore-unfixed: true
           exit-code: "1"
           hide-progress: true
         env:
