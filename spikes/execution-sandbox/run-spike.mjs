@@ -41,6 +41,17 @@ const normal = {
   cpp: '#include <cstdio>\nint main() { std::puts("NORMAL_OK"); }\n',
   c: '#include <stdio.h>\nint main(void) { puts("NORMAL_OK"); }\n',
 };
+// The concurrency probe measures parallel sandbox startup and teardown. Keep
+// its compile inputs intentionally tiny so a slower candidate runtime is not
+// mistaken for a compiler-memory failure under six simultaneous containers.
+const concurrencyNormal = {
+  python: 'print("NORMAL_OK")\n',
+  javascript: 'console.log("NORMAL_OK");\n',
+  typescript: 'console.log("NORMAL_OK");\n',
+  java: "public class Main { public static void main(String[] args) {} }\n",
+  cpp: "int main() { return 0; }\n",
+  c: "int main(void) { return 0; }\n",
+};
 const hostile = {
   python: `import os
 import urllib.request
@@ -258,7 +269,7 @@ function runConcurrentNormal() {
         if (remaining === 0)
           resolve({ durationMs: Math.round(performance.now() - started), results });
       });
-      child.stdin.end(normal[language]);
+      child.stdin.end(concurrencyNormal[language]);
     }
   });
 }

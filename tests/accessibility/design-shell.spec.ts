@@ -30,8 +30,16 @@ test.describe("Learner Home shell", () => {
   }) => {
     await page.goto("/");
 
-    await expect(page.getByRole("button", { name: "Sign in", exact: true })).toBeVisible();
-    await expect(page.getByRole("button", { name: "Create account", exact: true })).toBeVisible();
+    const signInButton = page.getByRole("button", { name: "Sign in", exact: true });
+    const signInLink = page.getByRole("link", { name: "Sign in", exact: true });
+    const createAccountButton = page.getByRole("button", { name: "Create account", exact: true });
+    const createAccountLink = page.getByRole("link", { name: "Create account", exact: true });
+    await expect(signInButton.or(signInLink)).toBeVisible();
+    await expect(createAccountButton.or(createAccountLink)).toBeVisible();
+    if ((await signInLink.count()) > 0) {
+      await expect(signInLink).toHaveAttribute("href", "/sign-in");
+      await expect(createAccountLink).toHaveAttribute("href", "/sign-up");
+    }
     await expect(page.getByText("VS", { exact: true })).toHaveCount(0);
   });
 
