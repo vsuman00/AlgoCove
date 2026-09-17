@@ -51,3 +51,15 @@ export type {
   IdGenerator,
   RequestContext,
 } from "./request-context.ts";
+
+export {
+  authenticateSession,
+  createSessionActor,
+  revokeSession,
+} from "./authenticate.ts";
+
+export type {
+  SessionStore,
+  StoredSession,
+  TokenHasher,
+} from "./authenticate.ts";

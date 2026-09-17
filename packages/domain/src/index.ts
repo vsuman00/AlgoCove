@@ -72,3 +72,15 @@ export {
 } from "./roles.ts";
 
 export type { Role, RoleFailure } from "./roles.ts";
+
+export {
+  assertActiveSession,
+  revokeSession,
+  sessionStatus,
+} from "./identity.ts";
+
+export type {
+  SessionFailure,
+  SessionRecord,
+  SessionStatus,
+} from "./identity.ts";
