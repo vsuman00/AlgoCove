@@ -52,7 +52,7 @@ export class ConfigError extends Error {
   }
 }
 
-export type EnvironmentSource = Readonly<Record<string, string | undefined>>;
+export type EnvironmentSource = Readonly<Record<string, string | boolean | undefined>>;
 
 type ZodLikeError = {
   readonly issues: readonly { readonly path: readonly PropertyKey[]; readonly message: string }[];

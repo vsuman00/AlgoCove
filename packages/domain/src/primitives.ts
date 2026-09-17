@@ -149,7 +149,7 @@ export type InstantFailure = {
 };
 
 const ISO_INSTANT_PATTERN =
-  /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?(?:Z|[+-]\d{2}:\d{2})$/;
+  /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d{1,3}))?(Z|[+-]\d{2}:\d{2})$/;
 
 /** Maximum representable instant, so absurd inputs fail deterministically. */
 export const INSTANT_MAX_EPOCH_MS = 8_640_000_000_000_000;
@@ -177,14 +177,60 @@ export function parseInstant(candidate: unknown): Result<Instant, InstantFailure
     }
     return instantFromEpochMs(candidate.getTime());
   }
-  if (typeof candidate !== "string" || !ISO_INSTANT_PATTERN.test(candidate)) {
+  if (typeof candidate !== "string") {
     return err({
       code: "invalid_instant",
       message: "Instant must be an ISO-8601 timestamp with an explicit UTC offset.",
     });
   }
+  const match = ISO_INSTANT_PATTERN.exec(candidate);
+  if (match === null) {
+    return err({
+      code: "invalid_instant",
+      message: "Instant must be an ISO-8601 timestamp with an explicit UTC offset.",
+    });
+  }
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  const hour = Number(match[4]);
+  const minute = Number(match[5]);
+  const second = Number(match[6]);
+  const milliseconds = Number((match[7] ?? "").padEnd(3, "0") || "0");
+  const offset = match[8] ?? "";
+  const offsetHour = offset === "Z" ? 0 : Number(offset.slice(1, 3));
+  const offsetMinute = offset === "Z" ? 0 : Number(offset.slice(4, 6));
+  const leapYear = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+  const daysInMonth = [31, leapYear ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month - 1];
+  if (
+    year === 0 ||
+    month < 1 ||
+    month > 12 ||
+    day < 1 ||
+    day > (daysInMonth ?? 0) ||
+    hour > 23 ||
+    minute > 59 ||
+    second > 59 ||
+    offsetHour > 23 ||
+    offsetMinute > 59
+  ) {
+    return err({ code: "invalid_instant", message: "Instant is not a valid calendar time." });
+  }
   const epochMs = Date.parse(candidate);
   if (Number.isNaN(epochMs)) {
+    return err({ code: "invalid_instant", message: "Instant is not a valid calendar time." });
+  }
+  const offsetSign = offset === "Z" ? 1 : offset.startsWith("+") ? 1 : -1;
+  const localTime = new Date(epochMs + offsetSign * (offsetHour * 60 + offsetMinute) * 60_000);
+  if (
+    localTime.getUTCFullYear() !== year ||
+    localTime.getUTCMonth() + 1 !== month ||
+    localTime.getUTCDate() !== day ||
+    localTime.getUTCHours() !== hour ||
+    localTime.getUTCMinutes() !== minute ||
+    localTime.getUTCSeconds() !== second ||
+    localTime.getUTCMilliseconds() !== milliseconds
+  ) {
     return err({ code: "invalid_instant", message: "Instant is not a valid calendar time." });
   }
   return instantFromEpochMs(epochMs);

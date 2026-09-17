@@ -50,6 +50,7 @@ export default function HomePage(): ReactElement {
 
       <main
         id="main-content"
+        tabIndex={-1}
         className="mx-auto grid w-[calc(100%-48px)] max-w-[1180px] content-center gap-[clamp(48px,12vw,160px)] py-[clamp(48px,10vw,120px)] max-md:w-[calc(100%-32px)]"
       >
         <section className="max-w-[760px]" aria-labelledby="page-title">
@@ -105,7 +106,7 @@ export default function HomePage(): ReactElement {
                 key={principle}
               >
                 <span
-                  className="font-cove-mono text-cove-meta font-semibold text-cove-success"
+                  className="font-cove-mono text-cove-meta font-semibold text-cove-primary"
                   aria-hidden="true"
                 >
                   {String(index + 1).padStart(2, "0")}

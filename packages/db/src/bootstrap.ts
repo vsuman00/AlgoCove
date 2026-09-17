@@ -127,6 +127,12 @@ export async function bootstrapDatabase(options: BootstrapOptions): Promise<Boot
     }
 
     const extensionCreated = await ensureVectorExtension(pool);
+    // The migration role creates the owned platform schema after `SET ROLE` and
+    // later owns objects created by migrations. Grant database CREATE before the
+    // role switch because the role switch is what enforces this boundary.
+    await pool.query(
+      `GRANT CONNECT, CREATE ON DATABASE ${quoteIdentifier(databaseName)} TO ${migrationRole}`,
+    );
 
     // Schema-level objects are created under `SET ROLE` so the migration role owns
     // them; the operator connection never becomes the long-lived owner.

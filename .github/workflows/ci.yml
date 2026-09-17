@@ -40,8 +40,22 @@ jobs:
       - name: Run repository verification
         run: pnpm verify
 
+      - name: Start PostgreSQL and pgvector
+        run: docker compose up -d --wait db
+
+      - name: Run database integration tests
+        env:
+          DATABASE_TEST_OPERATOR_URL: postgres://postgres:postgres@127.0.0.1:54329/algocove
+        run: pnpm test:integration
+
       - name: Build production application
         run: pnpm build
+
+      - name: Install Chromium for accessibility tests
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Run browser accessibility tests
+        run: pnpm test:a11y
 
       - name: Audit dependencies
         run: pnpm security:audit

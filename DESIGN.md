@@ -1553,20 +1553,20 @@ The approved brand direction is fixed. The table distinguishes documentary decis
 | D-05 | Typography roles and scale | Critical | Proposed reproduction specification | Candidate font roles and sizes documented; actual appearance still requires specimen comparison |
 | D-06 | Production font delivery | Critical | Open | License/provenance recorded; self-hosted WOFF2 subsets; preload and fallback behavior verified; no layout-breaking font swap |
 | D-07 | Color primitives and semantic roles | Critical | Complete as specification | Home/Journey/workspace/current/external/error/review roles documented |
-| D-08 | Color and contrast validation | Critical | Open | Measured WCAG 2.2 AA matrix for all text, controls, focus rings, visualizer states, and disabled states; approved accessibility corrections remain visually faithful |
+| D-08 | Color and contrast validation | Critical | Phase 1 Home shell complete; full matrix open | Axe and browser checks cover the Home shell; full text, controls, focus rings, visualizer states, and disabled states remain future evidence |
 | D-09 | Canonical icon system | Critical | Proposed reproduction specification | Lucide selected as an implementation candidate; compare actual icon glyphs and weight with the references |
 | D-10 | Coastal illustration asset set | High | Open | Morning Cove and Deep Cove exported as optimized responsive assets and compared with their reference mockups |
 | D-11 | Desktop shell measurements | Critical | Approximate reference specification | Reference widths documented; rendered overlay comparison remains required |
 | D-12 | Responsive screen approval | Critical | Open | Approved 320px, 768px, and 1024px mockups for Home, Workspace, and Roadmap; overflow and pane-collapse decisions recorded |
 | D-13 | Core component state matrix | Critical | Complete as specification | Default, hover, focus, pressed, selected, disabled, loading, success, and error requirements documented |
-| D-14 | Design-token source | Critical | Open for implementation | One generated token source representing the primitives and aliases in this document; no raw scattered values |
+| D-14 | Design-token source | Critical | Implemented in Phase 1 foundation | `apps/web/src/styles/tokens.ts` generates `tokens.css`; Tailwind consumes semantic aliases through `@theme inline` |
 | D-15 | Visualization visual grammar | Critical | Complete as specification | Pair Sum treatment, pointer labels, prediction gate, target, result, timeline, text view, and reduced motion documented |
 | D-16 | Trace and visualization fixtures | Critical | Open | Deterministic array/two-pointer trace fixtures with matching visual snapshots and text transcripts |
 | D-17 | Code/pseudocode editor behavior | Critical | Complete as specification | Structured pseudocode, revision, language, diagnostic, run, and submit behaviors documented |
 | D-18 | Content terminology and state labels | High | Complete as specification | Learner-confirmed, internally observed, validated, locked, ready, review due, and infrastructure failure language fixed |
 | D-19 | Unmocked page validation | High | Open | Wireframes/mockups approved for onboarding, Learn Library, Practice Handoff, Journal, Progress, Settings, authentication, and privileged operations before those pages are built |
-| D-20 | Accessibility interaction prototypes | Critical | Open | Keyboard order, focus movement, screen-reader names, live updates, zoom/reflow, reduced motion, and text-equivalent visualizer manually reviewed |
-| D-21 | Design QA baseline | Critical | Open | Screenshot baselines for approved desktop and responsive states plus a page-by-page review checklist |
+| D-20 | Accessibility interaction prototypes | Critical | Phase 1 Home shell automated evidence; full review open | Playwright covers axe, keyboard skip navigation, 320px reflow, and reduced motion; future live-update and visualizer review remains open |
+| D-21 | Design QA baseline | Critical | Phase 1 checklist added; screenshot baseline open | [Phase 1 design-token and page-shell checklist](docs/architecture/design-token-checklist.md) records implementation and deferred evidence |
 
 ### 24.3 Prerequisite execution order
 

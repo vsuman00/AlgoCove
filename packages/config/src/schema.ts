@@ -30,7 +30,7 @@ const connectionStringSchema = z
 
 const booleanFromEnv = z
   .union([z.boolean(), z.string()])
-  .transform((value) => (typeof value === "boolean" ? value : value.toLowerCase()))
+  .transform((value) => (typeof value === "boolean" ? String(value) : value.toLowerCase()))
   .pipe(z.enum(["true", "false"]))
   .transform((value) => value === "true");
 

@@ -1,4 +1,9 @@
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import react from "@vitejs/plugin-react";
 import { defineConfig } from "vitest/config";
+
+const root = path.dirname(fileURLToPath(import.meta.url));
 
 /**
  * Workspace test configuration.
@@ -13,6 +18,15 @@ import { defineConfig } from "vitest/config";
  *   per test file, so it never runs implicitly with `pnpm test`.
  */
 export default defineConfig({
+  plugins: [react()],
+  resolve: {
+    alias: {
+      "@algocove/application": path.join(root, "packages/application/src/index.ts"),
+      "@algocove/config": path.join(root, "packages/config/src/index.ts"),
+      "@algocove/db": path.join(root, "packages/db/src/index.ts"),
+      "@algocove/domain": path.join(root, "packages/domain/src/index.ts"),
+    },
+  },
   test: {
     projects: [
       {

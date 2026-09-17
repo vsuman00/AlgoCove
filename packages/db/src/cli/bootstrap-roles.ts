@@ -23,7 +23,8 @@ function resolveCredentials(): {
   migrationRole: { name: string; password: string };
   runtimeRole: { name: string; password: string };
 } {
-  const operatorConnectionString = requireEnv("DATABASE_ADMIN_URL");
+  const operatorConnectionString =
+    process.env["DATABASE_OPERATOR_URL"] ?? requireEnv("DATABASE_ADMIN_URL");
   const production = isProduction();
 
   const migrationName = optionalEnv("ALGOCOVE_MIGRATION_ROLE", DEFAULT_MIGRATION_ROLE);

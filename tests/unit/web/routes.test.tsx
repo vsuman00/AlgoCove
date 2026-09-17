@@ -1,6 +1,9 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { GET as health } from "../../../apps/web/app/api/health/route";
 import { GET as readiness } from "../../../apps/web/app/api/readiness/route";
+import GlobalError from "../../../apps/web/app/error";
 
 afterEach(() => {
   vi.unstubAllEnvs();
@@ -52,5 +55,19 @@ describe("readiness route", () => {
       status: "not_ready",
       checks: { configuration: "ok", database: "unconfigured" },
     });
+  });
+});
+
+describe("error boundary", () => {
+  it("offers an accessible retry and home recovery path", async () => {
+    const user = userEvent.setup();
+    const reset = vi.fn();
+
+    render(<GlobalError reset={reset} />);
+
+    expect(screen.getByRole("heading", { name: "This page needs another try." })).toBeVisible();
+    await user.click(screen.getByRole("button", { name: "Try again" }));
+    expect(reset).toHaveBeenCalledOnce();
+    expect(screen.getByRole("link", { name: "Go home" })).toHaveAttribute("href", "/");
   });
 });

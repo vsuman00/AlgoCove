@@ -5,6 +5,13 @@
     "lib": ["ES2023", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "moduleResolution": "bundler",
+    "baseUrl": ".",
+    "paths": {
+      "@algocove/application": ["packages/application/src/index.ts"],
+      "@algocove/config": ["packages/config/src/index.ts"],
+      "@algocove/db": ["packages/db/src/index.ts"],
+      "@algocove/domain": ["packages/domain/src/index.ts"]
+    },
     "moduleDetection": "force",
     "resolveJsonModule": true,
     "allowImportingTsExtensions": true,
