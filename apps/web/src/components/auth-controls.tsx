@@ -19,7 +19,7 @@ export default function AuthControls(): ReactElement {
           </button>
         </SignInButton>
         <SignUpButton mode="redirect">
-          <button className={`${primaryControl} hidden sm:inline-flex`} type="button">
+          <button className={`${primaryControl} max-md:hidden`} type="button">
             Create account
           </button>
         </SignUpButton>

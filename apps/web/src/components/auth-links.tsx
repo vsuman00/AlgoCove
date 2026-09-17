@@ -12,7 +12,7 @@ export default function AuthLinks(): ReactElement {
       <a className={secondaryControl} href="/sign-in">
         Sign in
       </a>
-      <a className={`${primaryControl} hidden sm:inline-flex`} href="/sign-up">
+      <a className={`${primaryControl} max-md:hidden`} href="/sign-up">
         Create account
       </a>
     </div>
