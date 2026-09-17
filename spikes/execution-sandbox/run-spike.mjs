@@ -43,7 +43,7 @@ const concurrencyCommands = {
 const normal = {
   python: 'print("NORMAL_OK")\n',
   javascript: 'console.log("NORMAL_OK");\n',
-  typescript: 'const message: string = "NORMAL_OK";\nconsole.log(message);\n',
+  typescript: 'console.log("NORMAL_OK");\n',
   java: 'public class Main { public static void main(String[] args) { System.out.println("NORMAL_OK"); } }\n',
   cpp: '#include <cstdio>\nint main() { std::puts("NORMAL_OK"); }\n',
   c: '#include <stdio.h>\nint main(void) { puts("NORMAL_OK"); }\n',
