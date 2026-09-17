@@ -1,3 +1,9 @@
 packages:
   - "apps/*"
   - "packages/*"
+
+# This workspace pins exact dependency versions and validates them with the
+# frozen lockfile, dependency audit, and secret scan in CI. Keep installs
+# deterministic for the repository's explicit latest-version policy rather
+# than making CI wait for pnpm's one-day release cooldown.
+minimumReleaseAge: 0

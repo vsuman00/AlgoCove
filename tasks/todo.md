@@ -4,7 +4,7 @@
 **Detailed acceptance criteria:** [Implementation plan](plan.md)  
 **Ordering:** Follow phase/document order, not numeric sorting. Suffix tasks close review gaps; Task 51 is intentionally before live AI. Parent packages need bounded subcards before coding.  
 
-**Current evidence:** The published `main` commit passed a clean frozen-lockfile clone, `pnpm verify`, `pnpm test:all`, production build, dependency audit, 5 isolated PostgreSQL/pgvector integration tests, 4 browser accessibility tests, and local HTTP smoke checks. Phase 0 planning approvals remain unchanged; Phase 2 is not started.
+**Current evidence:** Phase 1 implementation passes the full local gate, including an exact pnpm 12 frozen-lockfile install, `pnpm verify`, `pnpm test:all`, production build, dependency audit, 5 isolated PostgreSQL/pgvector integration tests, 4 browser accessibility tests, and local HTTP smoke checks. The CI lockfile/pnpm policy correction is queued for the next published `main` run. Phase 0 planning approvals remain unchanged; Phase 2 is not started.
 
 ## Phase 0: Resolve gates and freeze the build contract
 
@@ -21,7 +21,7 @@
 
 ## Phase 1: Establish the repository foundation
 
-- [x] Task 5: Create root workspace and quality manifests — IMPLEMENTED; clean frozen-lockfile clone, quality scripts, CI, secret scan, and dependency audit pass.
+- [x] Task 5: Create root workspace and quality manifests — IMPLEMENTED; pnpm 12 lockfile metadata and explicit release-age policy now match CI, with clean frozen install, quality scripts, secret scan, and dependency audit passing.
 - [x] Task 6: Create the minimal web application shell — IMPLEMENTED; routes, error boundary, production build, HTTP smoke checks, keyboard recovery, and browser accessibility checks pass.
 - [x] Task 6a: Integrate approved design tokens and page-shell contracts — IMPLEMENTED for the Phase 1 shell; Tailwind token mapping, traceable Home/Workspace/Roadmap checklist, desktop/narrow shell review, and missing-asset tracking are complete. Full future screen fidelity remains phase-owned.
 - [x] Task 7: Create package boundaries and architecture tests — IMPLEMENTED; import-boundary fixtures, architecture tests, and typecheck pass.
