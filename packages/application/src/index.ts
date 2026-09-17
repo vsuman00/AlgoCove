@@ -85,3 +85,12 @@ export {
   resolvePublishedCurriculumVersion,
 } from "./curriculum-use-cases.ts";
 export type { CurriculumGraphRepository } from "./curriculum-use-cases.ts";
+
+export {
+  createProblemContentDraft,
+  publishProblemVersion,
+  retireProblemVersion,
+  reviewProblemContent,
+  validateProblemContent,
+} from "./content-use-cases.ts";
+export type { ContentRepository } from "./content-use-cases.ts";

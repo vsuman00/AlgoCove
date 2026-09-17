@@ -96,6 +96,7 @@ describe("PostgreSQL and pgvector lifecycle", () => {
       "0003_roles.sql",
       "0004_platform_primitives.sql",
       "0005_curriculum.sql",
+      "0006_content.sql",
     ]);
 
     runtimePool = testPool(profile(runtimeUrl, "algocove-integration-runtime"));
@@ -145,10 +146,11 @@ describe("PostgreSQL and pgvector lifecycle", () => {
         "0003_roles.sql",
         "0004_platform_primitives.sql",
         "0005_curriculum.sql",
+        "0006_content.sql",
       ],
       appliedCount: 0,
     });
-    expect(state).toHaveLength(5);
+    expect(state).toHaveLength(6);
     expect(state[0]).toMatchObject({ id: "0001", name: "0001_platform.sql" });
     expect(state[0]?.checksum).toMatch(/^sha256:[0-9a-f]{64}$/);
   });
@@ -158,7 +160,7 @@ describe("PostgreSQL and pgvector lifecycle", () => {
 
     expect(readiness.ok).toBe(true);
     if (readiness.ok) {
-      expect(readiness.appliedMigrations).toBe(5);
+      expect(readiness.appliedMigrations).toBe(6);
       expect(readiness.serverTime).toMatch(/Z$/);
     }
   });
@@ -381,5 +383,54 @@ describe("PostgreSQL and pgvector lifecycle", () => {
       [versionId],
     );
     expect(pinned.rows[0]).toEqual({ status: "published", edge_kind: "required" });
+  });
+
+  it("stores original problem metadata and blocks published payload mutation", async () => {
+    const author = "usr_aaaaaaaaaaaaaaaa";
+    await runtimePool!.query("INSERT INTO platform.learner (learner_id) VALUES ($1)", [author]);
+    await runtimePool!.query(
+      `INSERT INTO content.content_item (content_id, content_kind)
+       VALUES ('con_aaaaaaaaaaaaaaaa', 'problem')`,
+    );
+    await runtimePool!.query(
+      `INSERT INTO content.problem (problem_id, content_id)
+       VALUES ('pro_bbbbbbbbbbbbbbbb', 'con_aaaaaaaaaaaaaaaa')`,
+    );
+    await runtimePool!.query(
+      `INSERT INTO content.content_version
+        (content_version_id, content_id, title, checksum, provenance_kind,
+         rights_holder, license, source_url, author_id, status, payload_status, published_at)
+       VALUES ('cnt_cccccccccccccccc', 'con_aaaaaaaaaaaaaaaa', 'Original pair sum', $1,
+               'original', 'AlgoCove', 'algocove-original-v1', NULL, $2,
+               'draft', 'available', NULL)`,
+      [`sha256:${"a".repeat(64)}`, author],
+    );
+    await runtimePool!.query(
+      `INSERT INTO content.problem_version
+        (problem_version_id, problem_id, content_version_id, statement)
+       VALUES ('prb_dddddddddddddddd', 'pro_bbbbbbbbbbbbbbbb', 'cnt_cccccccccccccccc', $1)`,
+      ["An original problem statement."],
+    );
+    await runtimePool!.query(
+      `UPDATE content.content_version
+          SET status = 'published', published_at = now()
+        WHERE content_version_id = 'cnt_cccccccccccccccc'`,
+    );
+    await expect(
+      runtimePool!.query(
+        "UPDATE content.problem_version SET statement = 'tampered' WHERE content_version_id = 'cnt_cccccccccccccccc'",
+      ),
+    ).rejects.toMatchObject({ code: "55006" });
+    const metadata = await inspectionPool!.query<{ title: string; statement: string }>(
+      `SELECT version.title, problem.statement
+         FROM content.content_version AS version
+         JOIN content.problem_version AS problem
+           ON problem.content_version_id = version.content_version_id
+        WHERE version.content_version_id = 'cnt_cccccccccccccccc'`,
+    );
+    expect(metadata.rows[0]).toEqual({
+      title: "Original pair sum",
+      statement: "An original problem statement.",
+    });
   });
 });

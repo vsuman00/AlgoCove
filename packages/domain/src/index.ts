@@ -100,6 +100,35 @@ export {
   validateCurriculumGraph,
 } from "./curriculum.ts";
 
+export {
+  canUseForNewWork,
+  contentVersionChecksum,
+  createProblemDraft,
+  publishProblemContent,
+  recordContentReview,
+  recordContentValidation,
+  renderableContentPayload,
+  retireProblemContent,
+  validateContentProvenance,
+} from "./content.ts";
+
+export type {
+  ContentFailure,
+  ContentFailureCode,
+  ContentId,
+  ContentProvenance,
+  ContentReview,
+  ContentStatus,
+  ContentValidation,
+  ContentVersionId,
+  ProblemContentVersion,
+  ProblemId,
+  ProblemVersionId,
+  ReviewDecision,
+  ReviewKind,
+  RetirementReason,
+} from "./content.ts";
+
 export type {
   ConceptId,
   CurriculumConcept,

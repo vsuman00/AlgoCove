@@ -120,6 +120,8 @@ export type RequestContext = {
   /** Server-controlled request time. */
   readonly now: Instant;
   readonly requestId: OpaqueId<"request">;
+  /** Server-owned identifier source for new aggregate versions. */
+  readonly ids: IdGenerator;
   readonly traceId: string;
   /** Environment/service label used by logs and telemetry. */
   readonly serviceName: string;
@@ -144,6 +146,7 @@ export function createRequestContext(input: CreateRequestContextInput): RequestC
     actor: input.actor,
     now: input.clock.now(),
     requestId,
+    ids: input.ids,
     traceId,
     serviceName: input.serviceName,
   };
