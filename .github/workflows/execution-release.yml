@@ -88,14 +88,19 @@ jobs:
           sbom: true
 
       - name: Scan pushed image for critical and high vulnerabilities
-        uses: docker/scout-action@v1
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
-          command: cves
-          image: registry://${{ steps.image.outputs.name }}@${{ steps.build.outputs.digest }}
-          registry-user: ${{ github.actor }}
-          registry-password: ${{ secrets.GITHUB_TOKEN }}
-          only-severities: critical,high
-          exit-code: true
+          image-ref: ${{ steps.image.outputs.name }}@${{ steps.build.outputs.digest }}
+          scan-type: image
+          format: table
+          vuln-type: os,library
+          scanners: vuln
+          severity: CRITICAL,HIGH
+          exit-code: "1"
+          hide-progress: true
+        env:
+          TRIVY_USERNAME: ${{ github.actor }}
+          TRIVY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Sign image by immutable digest
         env:

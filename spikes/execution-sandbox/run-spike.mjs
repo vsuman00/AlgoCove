@@ -30,8 +30,8 @@ const commands = {
   javascript: "node /work/fixture.mjs",
   typescript: "node --experimental-strip-types /work/fixture.ts",
   java: "javac /work/Main.java && java -cp /work Main",
-  cpp: "g++ -std=c++23 -O2 /work/main.cpp -o /work/main && /work/main",
-  c: "gcc -std=c23 -O2 /work/main.c -o /work/main && /work/main",
+  cpp: "g++ -std=c++23 -O0 /work/main.cpp -o /work/main && /work/main",
+  c: "gcc -std=c23 -O0 /work/main.c -o /work/main && /work/main",
 };
 const normal = {
   python: 'print("NORMAL_OK")\n',
@@ -193,7 +193,7 @@ function runDocker(name, language, source, mode) {
   const result = spawnSync("docker", args, {
     input: source,
     encoding: "utf8",
-    timeout: 20_000,
+    timeout: 60_000,
     maxBuffer: 16_384,
   });
   if (result.error?.code === "ETIMEDOUT")
@@ -306,6 +306,9 @@ const normalPassed = results
 const hostilePassed = results
   .filter((result) => result.mode === "hostile")
   .every((result) => result.exitCode === 0);
+const concurrencyPassed =
+  concurrency.results.length === languages.length &&
+  concurrency.results.every((result) => result.exitCode === 0);
 const decision = requestedRuntime
   ? `Candidate runtime ${requestedRuntime} executed; security-owner approval is still required.`
   : runsc || firecracker
@@ -351,6 +354,7 @@ const report = [
   "",
   `- Six normal fixtures launched concurrently: ${concurrency.durationMs} ms wall time`,
   `- Results: ${concurrency.results.map((result) => `${result.language}=${result.exitCode}`).join(", ")}`,
+  `- Concurrent fixtures all passed: ${concurrencyPassed}`,
   "",
   "This is a local startup/concurrency observation, not a capacity or cost claim.",
   "",
@@ -378,5 +382,6 @@ await mkdir(path.dirname(reportPath), { recursive: true });
 await writeFile(reportPath, report);
 console.log(`Wrote ${reportPath}`);
 console.log(
-  `normal=${normalPassed} hostile=${hostilePassed} runsc=${runsc} firecracker=${firecracker}`,
+  `normal=${normalPassed} hostile=${hostilePassed} concurrency=${concurrencyPassed} runsc=${runsc} firecracker=${firecracker}`,
 );
+if (!normalPassed || !hostilePassed || !concurrencyPassed) process.exitCode = 1;

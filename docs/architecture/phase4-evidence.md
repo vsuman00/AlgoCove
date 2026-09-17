@@ -87,10 +87,13 @@ executed and the security decision is recorded.
   C and C++ keep separate command vectors and conformance targets.
 - Every profile records a pinned base digest, non-root UID `65532`, no network,
   no package installation, no learner flags, and bounded writable paths.
-- BuildKit SBOM and provenance attestations were generated for every local
-  image. `pnpm run images:test` passed all six normal and six failure smoke
-  fixtures with read-only roots, dropped capabilities, no-new-privileges,
-  resource limits, and executable-only native work volumes.
+- BuildKit SBOM and provenance attestations are enabled by default for local
+  image builds and are required in the GHCR release workflow. The
+  GitHub-hosted Docker exporter cannot load the resulting attestation manifest
+  list, so the execution-gates smoke job disables attestations only while
+  loading local images for tests. `pnpm run images:test` passed all six normal
+  and six failure smoke fixtures with read-only roots, dropped capabilities,
+  no-new-privileges, resource limits, and executable-only native work volumes.
 - Docker Scout reported zero critical/high findings for all four local image
   profiles. The C/C++ profile is pinned to GCC 15.3.0 on Debian Trixie,
   removes unused compiler-base tooling, and builds zlib 1.3.2 from a
@@ -104,7 +107,8 @@ executed and the security decision is recorded.
   and C/C++
   `sha256:f8146f392efe2fb048115c7f98ca90843dfbe5294044b60650bd07c4fbefe421`.
   Added `.github/workflows/execution-release.yml` to build with SBOM/provenance,
-  scan the pushed digest, keylessly sign it with Cosign via GitHub OIDC, and
+  scan the pushed digest with Trivy, keylessly sign it with Cosign via GitHub
+  OIDC, and
   verify the certificate identity. The workflow is configured but has not yet
   been executed against GHCR, so signing is not claimed.
 

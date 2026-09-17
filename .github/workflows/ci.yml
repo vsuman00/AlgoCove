@@ -64,6 +64,10 @@ jobs:
     name: Execution contract and sandbox gates
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    env:
+      # Docker's GitHub-hosted image exporter cannot load an attestation
+      # manifest list. The release workflow pushes the attested images.
+      ALGO_COVE_IMAGE_ATTESTATIONS: "false"
     steps:
       - name: Check out repository
         uses: actions/checkout@v5.1.0

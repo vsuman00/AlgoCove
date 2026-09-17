@@ -5,6 +5,7 @@ import { spawnSync } from "node:child_process";
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 const document = JSON.parse(await readFile(path.join(root, "profiles.json"), "utf8"));
+const attestationsEnabled = process.env.ALGO_COVE_IMAGE_ATTESTATIONS !== "false";
 
 for (const profile of document.profiles) {
   const result = spawnSync(
@@ -13,8 +14,9 @@ for (const profile of document.profiles) {
       "buildx",
       "build",
       "--load",
-      "--provenance=true",
-      "--sbom=true",
+      ...(attestationsEnabled
+        ? ["--provenance=true", "--sbom=true"]
+        : ["--provenance=false", "--sbom=false"]),
       `--label=org.opencontainers.image.version=${document.buildDate}`,
       `--label=org.opencontainers.image.revision=profiles-${document.schemaVersion}`,
       "--tag",

@@ -12,5 +12,6 @@ describe("sandbox-selection spike runtime contract", () => {
     expect(spike).toContain("--runtime=${requestedRuntime}");
     expect(spike).toContain("Requested Docker runtime");
     expect(spike).toContain("security-owner approval is still required");
+    expect(spike).toContain("if (!normalPassed || !hostilePassed || !concurrencyPassed)");
   });
 });

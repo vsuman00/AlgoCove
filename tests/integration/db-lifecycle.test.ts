@@ -339,9 +339,6 @@ describe("PostgreSQL and pgvector lifecycle", () => {
     const instant = parseInstant("2026-09-17T10:00:00.000Z");
     const eventId = formatId("event", "0000000000000003");
     if (!checksum.ok || !instant.ok || !eventId.ok) throw new Error("relay fixture is invalid");
-    const relayNow = new Date().toISOString();
-    const retryAt = new Date(Date.parse(relayNow) + 2_000).toISOString();
-
     await platform.enqueue(
       createOutboxEvent({
         eventId: eventId.value,
@@ -355,6 +352,11 @@ describe("PostgreSQL and pgvector lifecycle", () => {
         },
       }),
     );
+    // Capture the application clock after PostgreSQL has assigned the row's
+    // database-default available_at. This avoids rejecting a freshly inserted
+    // row when the database clock is a few milliseconds ahead of Node.js.
+    const relayNow = new Date().toISOString();
+    const retryAt = new Date(Date.parse(relayNow) + 2_000).toISOString();
 
     const first = await relay.claimNext({
       topic: "execution.run.requested",
