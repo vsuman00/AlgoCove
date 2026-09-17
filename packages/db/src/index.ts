@@ -64,3 +64,5 @@ export type {
   MigrationErrorKind,
   MigrationLogger,
 } from "./migrate.ts";
+
+export { PostgresIdentityRepository } from "./identity-repository.ts";
