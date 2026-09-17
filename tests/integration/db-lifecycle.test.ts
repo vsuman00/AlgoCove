@@ -248,8 +248,44 @@ describe("PostgreSQL and pgvector lifecycle", () => {
       [eventId.value, outboxEventId.value],
     );
     expect(counts.rows[0]).toEqual({ audit_count: "1", outbox_count: "1" });
+    const auditPayload = await inspectionPool!.query<{ payload: { code?: string; outcome?: string } }>(
+      "SELECT payload FROM platform.audit_event WHERE event_id = $1",
+      [eventId.value],
+    );
+    expect(auditPayload.rows[0]?.payload).toEqual({ code: "[redacted]", outcome: "accepted" });
     await expect(
       runtimePool!.query("UPDATE platform.audit_event SET action = 'tampered' WHERE event_id = $1", [eventId.value]),
     ).rejects.toMatchObject({ code: "55006" });
+  });
+
+  it("deduplicates concurrent claims and rolls back outbox work atomically", async () => {
+    const platform = new PostgresPlatformRepository(runtimePool!);
+    const checksum = parseContentChecksum(`sha256:${"d".repeat(64)}`);
+    const instant = parseInstant("2026-09-17T10:00:00.000Z");
+    const eventId = formatId("event", "0000000000000002");
+    if (!checksum.ok || !instant.ok || !eventId.ok) throw new Error("concurrency fixture is invalid");
+    const claim = { scope: "integration-concurrent", key: `effect-${runSuffix}`, requestHash: checksum.value };
+    const results = await Promise.all([platform.claim(claim), platform.claim(claim)]);
+    expect(results.map((result) => result.kind).sort()).toEqual(["claimed", "in_progress"]);
+    await platform.complete({ ...claim, response: { status: 204, body: { ok: true } } });
+
+    const rollbackEvent = createOutboxEvent({
+      eventId: eventId.value,
+      topic: "integration.rollback",
+      aggregateId: "aggregate-integration",
+      occurredAt: instant.value,
+      payload: { outcome: "should_rollback" },
+    });
+    await expect(
+      withTransaction(runtimePool!, async (transaction) => {
+        await new PostgresPlatformRepository(transaction).enqueue(rollbackEvent);
+        throw new Error("intentional outbox rollback");
+      }),
+    ).rejects.toThrow("intentional outbox rollback");
+    const rolledBack = await inspectionPool!.query<{ count: string }>(
+      "SELECT count(*)::text AS count FROM platform.outbox_event WHERE event_id = $1",
+      [eventId.value],
+    );
+    expect(rolledBack.rows[0]?.count).toBe("0");
   });
 });
