@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
 import type { ReactElement, ReactNode } from "react";
+import { isClerkConfigured } from "../src/auth/clerk-config";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -11,7 +12,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>): ReactElement {
   const publishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
   const content =
-    publishableKey === undefined ? (
+    !isClerkConfigured() || publishableKey === undefined ? (
       children
     ) : (
       <ClerkProvider publishableKey={publishableKey}>{children}</ClerkProvider>

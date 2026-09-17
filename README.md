@@ -12,6 +12,19 @@ pnpm dev
 
 The web shell runs at `http://localhost:3000`. Liveness is available at `/api/health`; readiness remains unavailable until the local database has been bootstrapped and migrated.
 
+### Clerk development setup
+
+AlgoCove uses the Next.js Clerk variable names. Add the development instance
+values to `.env` or `.env.local` before testing sign-in:
+
+```sh
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
+CLERK_SECRET_KEY=sk_test_...
+```
+
+Both values are required together. A Vite-style `VITE_CLERK_PUBLISHABLE_KEY`
+does not configure this Next.js app.
+
 ## Phase 1 database setup
 
 The database uses PostgreSQL 17 with the pinned pgvector image from `compose.yaml`. Bootstrap the operator-owned roles first, then run migrations as the migration role:

@@ -1,4 +1,7 @@
 import type { ReactElement } from "react";
+import { isClerkConfigured } from "../src/auth/clerk-config";
+import AuthControls from "../src/components/auth-controls";
+import AuthLinks from "../src/components/auth-links";
 
 const principles = [
   "Understand the idea before reaching for a solution.",
@@ -10,6 +13,7 @@ const focusRing =
   "focus-visible:outline-[var(--focus-ring)] focus-visible:outline-offset-[var(--focus-ring-offset)]";
 
 export default function HomePage(): ReactElement {
+  const accountControls = isClerkConfigured() ? <AuthControls /> : <AuthLinks />;
   return (
     <div className="grid min-h-svh grid-rows-[auto_1fr_auto] bg-cove-page" data-shell="quiet-home">
       <a
@@ -33,7 +37,7 @@ export default function HomePage(): ReactElement {
           <span>AlgoCove</span>
         </a>
         <nav
-          className="flex items-center gap-5 text-cove-body-sm text-cove-secondary"
+          className="flex items-center gap-3 text-cove-body-sm text-cove-secondary sm:gap-5"
           aria-label="Primary navigation"
         >
           <a
@@ -45,9 +49,13 @@ export default function HomePage(): ReactElement {
           <a className={`no-underline hover:text-cove-primary ${focusRing}`} href="/onboarding">
             Learner setup
           </a>
-          <a className={`no-underline hover:text-cove-primary ${focusRing}`} href="/api/health">
+          <a
+            className={`no-underline hover:text-cove-primary max-md:hidden ${focusRing}`}
+            href="/api/health"
+          >
             System status
           </a>
+          {accountControls}
         </nav>
       </header>
 

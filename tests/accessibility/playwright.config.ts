@@ -13,6 +13,13 @@ export default defineConfig({
   },
   webServer: {
     command: "pnpm --filter @algocove/web exec next start --hostname 127.0.0.1 --port 3100",
+    env: {
+      // Keep anonymous shell checks deterministic. Clerk's development browser
+      // handshake requires an interactive browser session and is verified
+      // separately against the enabled local server.
+      NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: "",
+      CLERK_SECRET_KEY: "",
+    },
     url: "http://127.0.0.1:3100/api/health",
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,

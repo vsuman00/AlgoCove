@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const authMock = vi.hoisted(() => vi.fn());
 vi.mock("../../../apps/web/src/auth/clerk-server", () => ({ auth: authMock }));
@@ -7,6 +7,12 @@ const { GET: session } = await import("../../../apps/web/app/api/auth/session/ro
 
 afterEach(() => {
   authMock.mockReset();
+  vi.unstubAllEnvs();
+});
+
+beforeEach(() => {
+  vi.stubEnv("NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY", "pk_test_fixture");
+  vi.stubEnv("CLERK_SECRET_KEY", "sk_test_fixture");
 });
 
 describe("Clerk session route", () => {
@@ -38,5 +44,15 @@ describe("Clerk session route", () => {
       authenticated: false,
       error: { code: "unauthenticated" },
     });
+  });
+
+  it("returns 401 without invoking Clerk when local keys are absent", async () => {
+    vi.stubEnv("NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY", "");
+    vi.stubEnv("CLERK_SECRET_KEY", "");
+
+    const response = await session();
+
+    expect(authMock).not.toHaveBeenCalled();
+    expect(response.status).toBe(401);
   });
 });

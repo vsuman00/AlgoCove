@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const authMock = vi.hoisted(() => vi.fn());
 vi.mock("../../../apps/web/src/auth/clerk-server", () => ({ auth: authMock }));
@@ -18,6 +18,12 @@ const profileInput = {
 
 afterEach(() => {
   authMock.mockReset();
+  vi.unstubAllEnvs();
+});
+
+beforeEach(() => {
+  vi.stubEnv("NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY", "pk_test_fixture");
+  vi.stubEnv("CLERK_SECRET_KEY", "sk_test_fixture");
 });
 
 describe("onboarding route", () => {
@@ -72,5 +78,15 @@ describe("onboarding route", () => {
     await expect(updatedResponse.json()).resolves.toMatchObject({
       profile: { goal: "Build durable DSA intuition", version: 2 },
     });
+  });
+
+  it("returns a clean unauthenticated response when local Clerk keys are absent", async () => {
+    vi.stubEnv("NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY", "");
+    vi.stubEnv("CLERK_SECRET_KEY", "");
+
+    const response = await onboardingGet(new Request("http://localhost/api/onboarding"));
+
+    expect(authMock).not.toHaveBeenCalled();
+    expect(response.status).toBe(401);
   });
 });

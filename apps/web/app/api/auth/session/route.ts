@@ -1,12 +1,15 @@
 import { NextResponse } from "next/server";
 import { getClerkIdentityAdapter } from "../../../../src/auth/clerk-adapter";
+import { isClerkConfigured } from "../../../../src/auth/clerk-config";
 import { auth } from "../../../../src/auth/clerk-server";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(): Promise<NextResponse> {
   try {
-    const clerkAuth = await auth();
+    const clerkAuth = isClerkConfigured()
+      ? await auth()
+      : { isAuthenticated: false, userId: null, sessionId: null };
     const actor = await getClerkIdentityAdapter().authenticate({
       isAuthenticated: clerkAuth.isAuthenticated,
       userId: clerkAuth.userId,
