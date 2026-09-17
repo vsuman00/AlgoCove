@@ -63,9 +63,7 @@ The three approved references are preserved as local design artifacts. These fil
 
 The incorrect triangular and double-wave logos visible in the second and third generated images are explicitly superseded by the first mockup's cove-and-angle-brackets mark. All screens use the first mockup's logo when implemented.
 
-Open the references: [Learner Home](/Users/vaibhavsuman/.gstack/projects/AlgoCove/designs/approved-dsa-20260917/learner-home.png), [Guided Problem Workspace](/Users/vaibhavsuman/.gstack/projects/AlgoCove/designs/approved-dsa-20260917/guided-problem-workspace.png), [DSA Roadmap](/Users/vaibhavsuman/.gstack/projects/AlgoCove/designs/approved-dsa-20260917/dsa-roadmap.png).
-
-These paths are local to this machine, not portable repository assets. Transfer this reference set with the document for another machine or collaborator, retaining the checksums. Approval covers the visual direction and first logo, not every illustrative date, arithmetic value, learning-state label, or generated sentence in the images. Product data and state consistency must come from the product contracts.
+The references are machine-local visual artifacts, not portable repository assets. Their absolute paths and checksums above are the transfer manifest for this machine. If another collaborator needs to inspect them, transfer the reference set separately and retain the checksums. Approval covers the visual direction and first logo, not every illustrative date, arithmetic value, learning-state label, or generated sentence in the images. Product data and state consistency must come from the product contracts.
 
 ---
 
