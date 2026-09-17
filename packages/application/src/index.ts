@@ -57,3 +57,21 @@ export { getLearnerProfile, saveLearnerProfile } from "./profile-use-cases.ts";
 export type { LearnerProfileRepository } from "./profile-use-cases.ts";
 
 export { requireContentSeparation, requireOwnerOrPermission, requirePermission } from "./authorize.ts";
+
+export { createAuditEvent } from "./audit.ts";
+export type { AuditEvent, AuditEventInput, AuditEventRepository } from "./audit.ts";
+
+export { createOutboxEvent } from "./outbox.ts";
+export type { OutboxEvent, OutboxEventInput, OutboxEventRepository } from "./outbox.ts";
+
+export { executeIdempotently } from "./idempotency.ts";
+export type {
+  IdempotencyClaimInput,
+  IdempotencyClaimResult,
+  IdempotencyRepository,
+  IdempotencyResponse,
+  IdempotentResult,
+} from "./idempotency.ts";
+
+export { redactPayload } from "./platform-safety.ts";
+export type { SafePayload } from "./platform-safety.ts";

@@ -66,3 +66,4 @@ export type {
 } from "./migrate.ts";
 
 export { PostgresIdentityRepository } from "./identity-repository.ts";
+export { PostgresPlatformRepository } from "./platform-repository.ts";

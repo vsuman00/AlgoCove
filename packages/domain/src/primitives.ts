@@ -69,6 +69,7 @@ export const ID_KINDS = {
   codeRun: "run",
   tutorTurn: "trn",
   request: "req",
+  event: "evt",
 } as const;
 
 export type IdKind = keyof typeof ID_KINDS;
