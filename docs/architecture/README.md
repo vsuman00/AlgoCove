@@ -3,7 +3,7 @@
 **Status:** Proposed  
 **Architecture gate:** `A0 — awaiting owner approval`  
 **Prepared:** 2026-09-17  
-**Scope:** Architecture plus a separately proposed implementation plan; no application implementation is authorized by these documents
+**Scope:** Architecture plus a separately proposed implementation plan; implementation evidence is tracked in the phase evidence records and task ledger
 
 ## 1. Architectural objective
 

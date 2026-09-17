@@ -1,10 +1,10 @@
 # AlgoCove implementation task ledger
 
-**Status:** Phase 2 technical implementation slices complete; the F2 transition checkpoint remains pending live Clerk verification and explicit human authorization for Phase 3.
+**Status:** Phase 3 technical implementation slices complete; the F2 live Clerk evidence and F3 transition authorization remain pending. Runnable content publication remains intentionally blocked until Task 23.
 **Detailed acceptance criteria:** [Implementation plan](plan.md)  
 **Ordering:** Follow phase/document order, not numeric sorting. Suffix tasks close review gaps; Task 51 is intentionally before live AI. Parent packages need bounded subcards before coding.  
 
-**Current evidence:** Phase 1 and the Phase 2 implementation slices pass the local gate: `pnpm verify`, `pnpm test:all`, production build, dependency audit, 8 isolated PostgreSQL/pgvector integration tests, 6 deterministic anonymous browser accessibility tests, Clerk adapter/route fixtures, profile ownership/version tests, authorization matrix tests, concurrent idempotency claims, audit redaction, and transactional outbox rollback. The Clerk CLI is authenticated, linked to the AlgoCove application, and has pulled development keys into the ignored `apps/web/.env.local`; enabled-key build and liveness smoke checks pass. Live Clerk login/logout/revocation and an authenticated browser journey still require a test account; those are not claimed here. Phase 0 planning approvals remain unchanged.
+**Current evidence:** Phase 1, Phase 2, and the Phase 3 implementation slices pass the local gate: `pnpm verify`, `pnpm test:all`, production build, dependency audit, 12 isolated PostgreSQL/pgvector integration tests, 8 deterministic anonymous browser accessibility tests, Clerk adapter/route fixtures, profile ownership/version tests, authorization matrix tests, curriculum cycle/version tests, content provenance/review/tombstone tests, six-language manifest tests, reviewed external-link/domain tests, collection deduplication, and the fixture-backed author/review/publish UI. The Clerk CLI is authenticated, linked to the AlgoCove application, and has pulled development keys into the ignored `apps/web/.env.local`; enabled-key build and liveness smoke checks pass. Live Clerk login/logout/revocation and an authenticated browser journey still require a test account; Task 23 execution conformance is not implemented, so runnable content publication remains blocked. Phase 0 planning approvals remain unchanged.
 
 ## Phase 0: Resolve gates and freeze the build contract
 
@@ -52,17 +52,17 @@
 
 ## Phase 3: Governed curriculum, problems, and external references
 
-- [ ] Task 14: Implement versioned concept and curriculum graph
-- [ ] Task 15: Implement immutable content/problem lifecycle and provenance
-- [ ] Task 16: Define six-language problem manifests and semantic fixtures
-- [ ] Task 17: Implement external references and collection deduplication
-- [ ] Task 18: Deliver content author/review/publish vertical slice
+- [x] Task 14: Implement versioned concept and curriculum graph — IMPLEMENTED; cycle-safe domain validation, required/recommended/related edges, immutable published PostgreSQL snapshots, and pinned-version resolution port pass unit and integration checks.
+- [x] Task 15: Implement immutable content/problem lifecycle and provenance — IMPLEMENTED; original/licensed provenance, checksums, separated reviews, validation blockers, immutable published/retired versions, rights tombstones, and safe historical projections pass lifecycle and database checks.
+- [x] Task 16: Define six-language problem manifests and semantic fixtures — IMPLEMENTED; exactly `python`, `javascript`, `typescript`, `java`, `cpp`, and `c` have distinct profiles/adapters, shared fixture IDs, limits contracts, and completeness validation.
+- [x] Task 17: Implement external references and collection deduplication — IMPLEMENTED; allowlisted provider-specific HTTPS metadata URLs, review status, outbound navigation boundaries, and cross-collection membership deduplication pass malicious-host and overlap fixtures.
+- [x] Task 18: Deliver content author/review/publish vertical slice — IMPLEMENTED as a fixture-backed admin preview; separate author/reviewer/publisher responsibilities, complete original candidate rights/reviews, six-language evidence, reviewed outbound metadata, and the Task 23 runnable-publication blocker are visible and accessible.
 
 ### Checkpoint F3: Governed content foundation
 
-- [ ] One original problem candidate has complete rights/reviews; runnable publication remains blocked until Task 23.
-- [ ] Six-language manifest completeness and external-link boundaries pass.
-- [ ] No third-party statement, solution, test, or credential is stored.
+- [x] One original problem candidate has complete rights/reviews; runnable publication remains blocked until Task 23.
+- [x] Six-language manifest completeness and external-link boundaries pass.
+- [x] No third-party statement, solution, test, or credential is stored.
 - [ ] Human owner authorizes Phase 4.
 
 ## Phase 4: Prove isolated six-language execution
