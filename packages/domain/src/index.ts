@@ -74,6 +74,16 @@ export {
 export type { Role, RoleFailure } from "./roles.ts";
 
 export {
+  hasPermission,
+  permissionsForRoles,
+  PERMISSIONS,
+  ROLE_PERMISSIONS,
+  validateContentSeparation,
+} from "./authorization.ts";
+
+export type { ContentAssignment, Permission, SeparationFailure } from "./authorization.ts";
+
+export {
   parseLearnerProfileInput,
   SUPPORTED_LEARNER_LANGUAGES,
 } from "./learner-profile.ts";
