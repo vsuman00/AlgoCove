@@ -20,7 +20,7 @@ This checklist makes the three approved screen references traceable without pret
 
 | Reference | Phase 1 shell contract | Component/token checklist | Status |
 | --- | --- | --- | --- |
-| Learner Home | Quiet Home shell, light surface, canonical mark treatment, calm next action, semantic text hierarchy | `bg-cove-page`, `bg-cove-surface`, `bg-cove-action-primary`, `font-cove-display`, `text-cove-*`, focus ring, skip link | Implemented and browser-tested |
+| Learner Home | Quiet Home shell, light surface, canonical mark treatment, calm next action, semantic text hierarchy | `bg-cove-page`, `bg-cove-surface`, `bg-cove-action-primary`, `font-cove-display`, `text-cove-*`, focus ring, skip link | Implemented, visually reviewed, and browser-tested |
 | Guided Problem Workspace | Focused shell boundary, deep-ocean treatment, step rail, panes, editor/visualizer surfaces | Deep shell surface aliases, workspace action aliases, code/editor tokens, keyboard pane contract | Token-ready; screen deferred to Phase 5 |
 | DSA Roadmap | Deep Journey shell, prerequisite path, current-plan state, capacity and provenance labels | Deep shell surface aliases, current-plan semantic aliases, status labels/icons, responsive ordered path | Token-ready; screen deferred to Phase 7 |
 
