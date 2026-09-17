@@ -16,6 +16,7 @@ const images = {
   cpp: "gcc:15-bookworm",
   c: "gcc:15-bookworm",
 };
+const probeImages = [...new Set(Object.values(images))];
 const languages = ["python", "javascript", "typescript", "java", "cpp", "c"];
 const filenames = {
   python: "fixture.py",
@@ -184,8 +185,8 @@ const limits = [
   "--cap-drop=ALL",
   "--security-opt=no-new-privileges:true",
   "--pids-limit=32",
-  "--memory=384m",
-  "--memory-swap=384m",
+  "--memory=512m",
+  "--memory-swap=512m",
   "--cpus=0.5",
   "--ulimit=nofile=64:64",
   "--ulimit=fsize=1048576:1048576",
@@ -279,6 +280,23 @@ function commandOutput(args) {
   return (result.stdout ?? result.stderr ?? "").trim();
 }
 
+function ensureProbeImages() {
+  for (const image of probeImages) {
+    const inspect = spawnSync("docker", ["image", "inspect", image], {
+      encoding: "utf8",
+      maxBuffer: 32_768,
+    });
+    if (inspect.status === 0) continue;
+    const pull = spawnSync("docker", ["pull", image], {
+      encoding: "utf8",
+      maxBuffer: 32_768,
+    });
+    if (pull.status !== 0) {
+      throw new Error(`Unable to pre-pull sandbox probe image ${image}.`);
+    }
+  }
+}
+
 const dockerVersion = commandOutput(["info", "--format", "{{.ServerVersion}}"]);
 const dockerRuntimesRaw = commandOutput(["info", "--format", "{{json .Runtimes}}"]);
 let dockerRuntimes = dockerRuntimesRaw;
@@ -294,6 +312,7 @@ if (requestedRuntime && !availableRuntimes.includes(requestedRuntime)) {
     `Requested Docker runtime ${requestedRuntime} is unavailable. Available runtimes: ${availableRuntimes.join(", ") || "unknown"}`,
   );
 }
+ensureProbeImages();
 const runsc = Boolean(
   spawnSync("sh", ["-c", "command -v runsc"], { encoding: "utf8" }).stdout?.trim(),
 );
