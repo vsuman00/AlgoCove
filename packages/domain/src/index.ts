@@ -120,6 +120,29 @@ export {
   validateProblemManifest,
 } from "./language-manifest.ts";
 
+export {
+  addCollectionMembership,
+  canNavigateToExternalReference,
+  createExternalReference,
+  deduplicateCollectionReferences,
+  EXTERNAL_LINK_STATUSES,
+  EXTERNAL_PROVIDERS,
+  PROVIDER_DOMAINS,
+  reviewExternalReference,
+  validateExternalUrl,
+} from "./external-practice.ts";
+
+export type {
+  CollectionId,
+  ExternalCollection,
+  ExternalFailure,
+  ExternalFailureCode,
+  ExternalLinkStatus,
+  ExternalProvider,
+  ExternalReference,
+  ExternalReferenceId,
+} from "./external-practice.ts";
+
 export type {
   LanguageProfile,
   ManifestFailure,

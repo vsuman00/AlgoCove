@@ -94,3 +94,9 @@ export {
   validateProblemContent,
 } from "./content-use-cases.ts";
 export type { ContentRepository } from "./content-use-cases.ts";
+
+export {
+  createReviewedExternalReference,
+  reviewExternalLink,
+} from "./external-reference-use-cases.ts";
+export type { ExternalReferenceRepository } from "./external-reference-use-cases.ts";

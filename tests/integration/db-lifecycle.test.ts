@@ -98,6 +98,7 @@ describe("PostgreSQL and pgvector lifecycle", () => {
       "0005_curriculum.sql",
       "0006_content.sql",
       "0007_language_manifests.sql",
+      "0008_external_references.sql",
     ]);
 
     runtimePool = testPool(profile(runtimeUrl, "algocove-integration-runtime"));
@@ -149,10 +150,11 @@ describe("PostgreSQL and pgvector lifecycle", () => {
         "0005_curriculum.sql",
         "0006_content.sql",
         "0007_language_manifests.sql",
+        "0008_external_references.sql",
       ],
       appliedCount: 0,
     });
-    expect(state).toHaveLength(7);
+    expect(state).toHaveLength(8);
     expect(state[0]).toMatchObject({ id: "0001", name: "0001_platform.sql" });
     expect(state[0]?.checksum).toMatch(/^sha256:[0-9a-f]{64}$/);
   });
@@ -162,7 +164,7 @@ describe("PostgreSQL and pgvector lifecycle", () => {
 
     expect(readiness.ok).toBe(true);
     if (readiness.ok) {
-      expect(readiness.appliedMigrations).toBe(7);
+      expect(readiness.appliedMigrations).toBe(8);
       expect(readiness.serverTime).toMatch(/Z$/);
     }
   });
@@ -467,5 +469,56 @@ describe("PostgreSQL and pgvector lifecycle", () => {
                  '{"runTimeoutMs":2000}', 'published')`,
       ),
     ).rejects.toMatchObject({ code: "55006" });
+  });
+
+  it("deduplicates reviewed external references across collections and rejects lookalike hosts", async () => {
+    const reviewer = "usr_aaaaaaaaaaaaaaaa";
+    await runtimePool!.query(
+      `INSERT INTO content.external_reference
+        (external_reference_id, provider, external_key, title, canonical_url,
+         attribution, url_status, reviewed_by, reviewed_at)
+       VALUES ('ref_aaaaaaaaaaaaaaaa', 'blind', 'two-sum', 'Two Sum',
+               'https://blind75.com/problems/two-sum', 'Blind 75',
+               'unreviewed', NULL, NULL)`,
+    );
+    await runtimePool!.query(
+      `UPDATE content.external_reference
+          SET url_status = 'reviewed', reviewed_by = $1, reviewed_at = now(), version = 2
+        WHERE external_reference_id = 'ref_aaaaaaaaaaaaaaaa'`,
+      [reviewer],
+    );
+    await runtimePool!.query(
+      `INSERT INTO content.external_collection (collection_id, slug, title)
+       VALUES ('col_bbbbbbbbbbbbbbbb', 'blind-75', 'Blind 75'),
+              ('col_cccccccccccccccc', 'interview-overlap', 'Interview overlap')`,
+    );
+    await runtimePool!.query(
+      `INSERT INTO content.external_collection_membership
+        (collection_id, external_reference_id, ordinal)
+       VALUES ('col_bbbbbbbbbbbbbbbb', 'ref_aaaaaaaaaaaaaaaa', 1),
+              ('col_cccccccccccccccc', 'ref_aaaaaaaaaaaaaaaa', 4)`,
+    );
+    await expect(
+      runtimePool!.query(
+        `INSERT INTO content.external_collection_membership
+          (collection_id, external_reference_id, ordinal)
+         VALUES ('col_bbbbbbbbbbbbbbbb', 'ref_aaaaaaaaaaaaaaaa', 2)`,
+      ),
+    ).rejects.toMatchObject({ code: "23505" });
+    await expect(
+      runtimePool!.query(
+        `INSERT INTO content.external_reference
+          (external_reference_id, provider, external_key, title, canonical_url,
+           attribution, url_status)
+         VALUES ('ref_dddddddddddddddd', 'blind', 'evil', 'Evil',
+                 'https://blind75.com.evil.test/problem', 'Unknown', 'unreviewed')`,
+      ),
+    ).rejects.toMatchObject({ code: "23514" });
+    const memberships = await inspectionPool!.query<{ count: string }>(
+      `SELECT count(*)::text AS count
+         FROM content.external_collection_membership
+        WHERE external_reference_id = 'ref_aaaaaaaaaaaaaaaa'`,
+    );
+    expect(memberships.rows[0]?.count).toBe("2");
   });
 });
