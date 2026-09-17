@@ -104,18 +104,22 @@ const checks: Record<string, boolean> = {
 console.log(Object.entries(checks).filter(([, passed]) => passed).map(([key]) => key).join(","));
 process.exit(Object.values(checks).every(Boolean) ? 0 : 1);
 `,
-  java: `import java.io.File;
-import java.net.InetSocketAddress;
-import java.net.Socket;
+  java: `import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.util.Map;
 public class Main {
-  static boolean blocked(String host) {
-    try (Socket socket = new Socket()) { socket.connect(new InetSocketAddress(host, 80), 500); return false; }
-    catch (Exception error) { return true; }
+  static boolean noExternalRoute() {
+    try (BufferedReader route = new BufferedReader(new FileReader("/proc/net/route"))) {
+      route.readLine();
+      return route.readLine() == null;
+    } catch (Exception error) {
+      return false;
+    }
   }
   public static void main(String[] args) {
-    boolean networkBlocked = blocked("1.1.1.1");
-    boolean metadataBlocked = blocked("169.254.169.254");
+    boolean networkBlocked = noExternalRoute();
+    boolean metadataBlocked = noExternalRoute();
     boolean dockerSocketAbsent = !new File("/var/run/docker.sock").exists();
     boolean hostMountAbsent = !new File("/host").exists() && !new File("/mnt/host").exists()
       && !new File("/Users").exists() && !new File("/Volumes").exists();
