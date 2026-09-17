@@ -3,7 +3,7 @@
 **Status:** Tasks 20, 21, 22, 23, and the bounded Task 24 fixture/control slice
 are complete with local and remote evidence. Task 19's candidate-runtime
 technical evidence is complete: GitHub CI run
-[`35260662910`](https://github.com/vsuman00/AlgoCove/actions/runs/35260662910)
+[`35262384122`](https://github.com/vsuman00/AlgoCove/actions/runs/35262384122)
 executed the six-language matrix under explicitly selected gVisor `runsc` and
 passed normal, hostile-boundary, and concurrent startup fixtures. The release
 workflow also passed remotely in run
@@ -30,7 +30,7 @@ candidate runtime; Docker `runc` is still rejected for hostile learner code.
   availability validation. The `stronger-sandbox` CI job installs gVisor,
   verifies Docker registration with `hello-world`, runs the same matrix with
   `runsc`, and uploads the report as an artifact. CI run
-  [`35260662910`](https://github.com/vsuman00/AlgoCove/actions/runs/35260662910)
+  [`35262384122`](https://github.com/vsuman00/AlgoCove/actions/runs/35262384122)
   passed all normal, hostile-boundary, and concurrent fixtures for Python,
   JavaScript, TypeScript, Java, C++, and C. The artifact records the enforced
   limits, pinned image provenance, and the explicit statement that approval is
