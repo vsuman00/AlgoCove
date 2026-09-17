@@ -304,6 +304,8 @@ importers:
 
   packages/domain: {}
 
+  packages/observability: {}
+
 packages:
 
   '@adobe/css-tools@4.5.0':
