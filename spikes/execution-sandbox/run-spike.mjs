@@ -35,8 +35,10 @@ const commands = {
   c: "gcc -std=c23 -O0 /work/main.c -o /work/main && /work/main",
 };
 const concurrencyCommands = {
-  ...commands,
-  typescript: "node /work/fixture.ts",
+  python: "python -c 'print(\"NORMAL_OK\")'",
+  javascript: "node -e 'console.log(\"NORMAL_OK\")'",
+  typescript: "node -e 'console.log(\"NORMAL_OK\")'",
+  java: "java -version >/dev/null 2>&1",
   cpp: "/usr/bin/true",
   c: "/usr/bin/true",
 };
@@ -47,17 +49,6 @@ const normal = {
   java: 'public class Main { public static void main(String[] args) { System.out.println("NORMAL_OK"); } }\n',
   cpp: '#include <cstdio>\nint main() { std::puts("NORMAL_OK"); }\n',
   c: '#include <stdio.h>\nint main(void) { puts("NORMAL_OK"); }\n',
-};
-// The concurrency probe measures parallel sandbox startup and teardown. Keep
-// compiler-image commands lightweight so a slower candidate runtime is not
-// mistaken for compiler-memory pressure under six simultaneous containers.
-const concurrencyNormal = {
-  python: 'print("NORMAL_OK")\n',
-  javascript: 'console.log("NORMAL_OK");\n',
-  typescript: 'console.log("NORMAL_OK");\n',
-  java: "public class Main { public static void main(String[] args) {} }\n",
-  cpp: "int main() { return 0; }\n",
-  c: "int main(void) { return 0; }\n",
 };
 const hostile = {
   python: `import os
@@ -199,8 +190,11 @@ const limits = [
   "--cap-drop=ALL",
   "--security-opt=no-new-privileges:true",
   "--pids-limit=32",
-  "--memory=768m",
-  "--memory-swap=768m",
+  // The candidate probe retains a bounded memory ceiling while leaving enough
+  // compiler headroom for native C++ linking under runsc. Production language
+  // profiles keep their own descriptor-bound memory limits.
+  "--memory=1024m",
+  "--memory-swap=1024m",
   "--cpus=0.5",
   "--ulimit=nofile=64:64",
   "--ulimit=fsize=1048576:1048576",
@@ -263,9 +257,7 @@ function runConcurrentNormal() {
           images[language],
           "sh",
           "-c",
-          ["cpp", "c"].includes(language)
-            ? concurrencyCommands[language]
-            : `cat > /work/${filenames[language]} && ${concurrencyCommands[language]}`,
+          concurrencyCommands[language],
         ],
         { stdio: ["pipe", "pipe", "pipe"] },
       );
@@ -286,7 +278,7 @@ function runConcurrentNormal() {
         if (remaining === 0)
           resolve({ durationMs: Math.round(performance.now() - started), results });
       });
-      child.stdin.end(["cpp", "c"].includes(language) ? undefined : concurrencyNormal[language]);
+      child.stdin.end();
     }
   });
 }
