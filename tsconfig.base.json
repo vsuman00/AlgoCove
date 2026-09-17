@@ -10,6 +10,7 @@
       "@algocove/application": ["packages/application/src/index.ts"],
       "@algocove/config": ["packages/config/src/index.ts"],
       "@algocove/db": ["packages/db/src/index.ts"],
+      "@algocove/observability": ["packages/observability/src/index.ts"],
       "@algocove/domain": ["packages/domain/src/index.ts"]
     },
     "moduleDetection": "force",

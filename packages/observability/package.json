@@ -1,0 +1,13 @@
+{
+  "name": "@algocove/observability",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Bounded, redaction-safe telemetry event contracts.",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  }
+}

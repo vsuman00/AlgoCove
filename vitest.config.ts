@@ -24,6 +24,7 @@ export default defineConfig({
       "@algocove/application": path.join(root, "packages/application/src/index.ts"),
       "@algocove/config": path.join(root, "packages/config/src/index.ts"),
       "@algocove/db": path.join(root, "packages/db/src/index.ts"),
+      "@algocove/observability": path.join(root, "packages/observability/src/index.ts"),
       "@algocove/domain": path.join(root, "packages/domain/src/index.ts"),
     },
   },
