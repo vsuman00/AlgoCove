@@ -49,6 +49,16 @@ function profile(
   };
 }
 
+function testPool(connection: DatabaseConnection): ReturnType<typeof createPool> {
+  const pool = createPool(connection);
+  // PostgreSQL may report 57P01 asynchronously when the isolated database is
+  // dropped during teardown. Query failures still reject at their call site;
+  // this handler only prevents an idle-client teardown event from becoming an
+  // unhandled Vitest error after all assertions have passed.
+  pool.on("error", () => undefined);
+  return pool;
+}
+
 const operatorUrl = connectionForDatabase(baseOperatorUrl, "postgres");
 const databaseUrl = connectionForDatabase(baseOperatorUrl, databaseName);
 const migrationUrl = `postgres://${migrationRole}:${encodeURIComponent(migrationPassword)}@${
@@ -64,7 +74,7 @@ let runtimePool: ReturnType<typeof createPool> | undefined;
 
 describe("PostgreSQL and pgvector lifecycle", () => {
   beforeAll(async () => {
-    operatorPool = createPool(profile(operatorUrl, "algocove-integration-operator", 1));
+    operatorPool = testPool(profile(operatorUrl, "algocove-integration-operator", 1));
     await operatorPool.query(`CREATE DATABASE "${databaseName}"`);
 
     await bootstrapDatabase({
@@ -73,7 +83,7 @@ describe("PostgreSQL and pgvector lifecycle", () => {
       runtimeRole: { name: runtimeRole, password: runtimePassword },
       logger: { info: () => undefined },
     });
-    inspectionPool = createPool(profile(databaseUrl, "algocove-integration-inspection"));
+    inspectionPool = testPool(profile(databaseUrl, "algocove-integration-inspection"));
 
     const migrationResult = await migrate({
       connectionString: migrationUrl,
@@ -87,7 +97,7 @@ describe("PostgreSQL and pgvector lifecycle", () => {
       "0004_platform_primitives.sql",
     ]);
 
-    runtimePool = createPool(profile(runtimeUrl, "algocove-integration-runtime"));
+    runtimePool = testPool(profile(runtimeUrl, "algocove-integration-runtime"));
   });
 
   afterAll(async () => {
