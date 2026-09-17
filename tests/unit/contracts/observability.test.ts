@@ -37,7 +37,7 @@ describe("observability contract", () => {
       category: TELEMETRY_CATEGORIES.security,
       event: "auth.rejected",
       // Runtime callers may still pass extra fields through an adapter cast.
-      ...( { source: canary, prompt: canary, token: canary } as unknown as Record<string, never>),
+      ...({ source: canary, prompt: canary, token: canary } as unknown as Record<string, never>),
     });
     expect(serialized).not.toContain(canary);
     expect(JSON.parse(serialized)).toEqual({
@@ -46,7 +46,9 @@ describe("observability contract", () => {
       category: "security",
       event: "auth.rejected",
     });
-    expect(redactTelemetryValue({ source: canary, outcome: "denied" })).toEqual({ outcome: "denied" });
+    expect(redactTelemetryValue({ source: canary, outcome: "denied" })).toEqual({
+      outcome: "denied",
+    });
   });
 
   it("bounds invalid telemetry values instead of leaking them", () => {

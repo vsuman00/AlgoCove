@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { createAuditEvent, createOutboxEvent, executeIdempotently, type IdempotencyRepository } from "@algocove/application";
+import {
+  createAuditEvent,
+  createOutboxEvent,
+  executeIdempotently,
+  type IdempotencyRepository,
+} from "@algocove/application";
 import { formatId, parseContentChecksum, parseInstant } from "@algocove/domain";
 
 const event = formatId("event", "0000000000000001");
@@ -7,10 +12,18 @@ const learner = formatId("learner", "0000000000000002");
 const instant = parseInstant("2026-09-17T10:00:00.000Z");
 const hash = parseContentChecksum(`sha256:${"a".repeat(64)}`);
 
-if (!event.ok || !learner.ok || !instant.ok || !hash.ok) throw new Error("platform fixtures are invalid");
+if (!event.ok || !learner.ok || !instant.ok || !hash.ok)
+  throw new Error("platform fixtures are invalid");
 
 function memoryIdempotency(): IdempotencyRepository {
-  const claims = new Map<string, { hash: string; state: "pending" | "completed" | "failed"; response?: { status: number; body: Record<string, unknown> } }>();
+  const claims = new Map<
+    string,
+    {
+      hash: string;
+      state: "pending" | "completed" | "failed";
+      response?: { status: number; body: Record<string, unknown> };
+    }
+  >();
   return {
     async claim(input) {
       const key = `${input.scope}:${input.key}`;
@@ -20,7 +33,8 @@ function memoryIdempotency(): IdempotencyRepository {
         return { kind: "claimed" };
       }
       if (existing.hash !== input.requestHash) return { kind: "conflict" };
-      if (existing.state === "completed" && existing.response !== undefined) return { kind: "replay", response: existing.response };
+      if (existing.state === "completed" && existing.response !== undefined)
+        return { kind: "replay", response: existing.response };
       if (existing.state === "pending") return { kind: "in_progress" };
       existing.state = "pending";
       return { kind: "claimed" };
@@ -93,7 +107,10 @@ describe("platform primitives", () => {
     const otherHash = parseContentChecksum(`sha256:${"b".repeat(64)}`);
     if (!otherHash.ok) throw new Error("hash fixture is invalid");
     await expect(
-      executeIdempotently(repository, { ...input, requestHash: otherHash.value }, async () => ({ status: 200, body: {} })),
+      executeIdempotently(repository, { ...input, requestHash: otherHash.value }, async () => ({
+        status: 200,
+        body: {},
+      })),
     ).rejects.toMatchObject({ code: "version_conflict" });
   });
 });

@@ -77,9 +77,14 @@ function parseText(
   return ok(normalized);
 }
 
-function parseAccessibility(candidate: unknown): Result<AccessibilitySettings, LearnerProfileFailure> {
+function parseAccessibility(
+  candidate: unknown,
+): Result<AccessibilitySettings, LearnerProfileFailure> {
   if (typeof candidate !== "object" || candidate === null || Array.isArray(candidate)) {
-    return err({ code: "invalid_accessibility", message: "Accessibility settings must be an object." });
+    return err({
+      code: "invalid_accessibility",
+      message: "Accessibility settings must be an object.",
+    });
   }
   const value = candidate as Record<string, unknown>;
   const keys = ["reducedMotion", "highContrast", "screenReader"] as const;
@@ -95,7 +100,9 @@ function parseAccessibility(candidate: unknown): Result<AccessibilitySettings, L
   });
 }
 
-function parseLanguages(candidate: unknown): Result<readonly LearnerLanguage[], LearnerProfileFailure> {
+function parseLanguages(
+  candidate: unknown,
+): Result<readonly LearnerLanguage[], LearnerProfileFailure> {
   if (!Array.isArray(candidate) || candidate.length === 0) {
     return err({ code: "invalid_language", message: "Choose at least one supported language." });
   }
@@ -112,7 +119,9 @@ function parseLanguages(candidate: unknown): Result<readonly LearnerLanguage[], 
   return ok(languages);
 }
 
-export function parseLearnerProfileInput(candidate: unknown): Result<LearnerProfileInput, LearnerProfileFailure> {
+export function parseLearnerProfileInput(
+  candidate: unknown,
+): Result<LearnerProfileInput, LearnerProfileFailure> {
   if (typeof candidate !== "object" || candidate === null || Array.isArray(candidate)) {
     return err({ code: "invalid_goal", message: "Learner profile must be an object." });
   }
@@ -125,7 +134,11 @@ export function parseLearnerProfileInput(candidate: unknown): Result<LearnerProf
   if (!timezone.ok) {
     return err({ code: "invalid_timezone", message: timezone.error.message });
   }
-  const capacity = boundedInt("dailyCapacityMinutes", { min: 15, max: 480 }, value.dailyCapacityMinutes as number);
+  const capacity = boundedInt(
+    "dailyCapacityMinutes",
+    { min: 15, max: 480 },
+    value.dailyCapacityMinutes as number,
+  );
   if (!capacity.ok) return err({ code: "invalid_capacity", message: capacity.error.message });
   const horizon = boundedInt("horizonDays", { min: 7, max: 365 }, value.horizonDays as number);
   if (!horizon.ok) return err({ code: "invalid_horizon", message: horizon.error.message });

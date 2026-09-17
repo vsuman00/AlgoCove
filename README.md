@@ -44,7 +44,8 @@ pnpm security:audit
 - `packages/application`: request context and stable application error contracts.
 - `packages/config`: fail-closed configuration parsing and secret redaction.
 - `packages/db`: explicit SQL, role bootstrap, migrations, transactions, and readiness probes.
+- `packages/observability`: allowlisted, bounded, privacy-safe telemetry contracts.
 - `docs/architecture`: architecture contracts and phase evidence.
 - `tasks`: implementation plan and task ledger.
 
-Phase 1 is the completed foundation target for this implementation pass. Phase 2 remains gated by the F1 checkpoint in `tasks/todo.md`.
+Phase 1 is complete. Phase 2 identity, onboarding, authorization, platform primitives, and telemetry contracts are implemented and locally validated. The F2 gate remains open only for live Clerk account verification and explicit human authorization before Phase 3.

@@ -56,7 +56,11 @@ export { getLearnerProfile, saveLearnerProfile } from "./profile-use-cases.ts";
 
 export type { LearnerProfileRepository } from "./profile-use-cases.ts";
 
-export { requireContentSeparation, requireOwnerOrPermission, requirePermission } from "./authorize.ts";
+export {
+  requireContentSeparation,
+  requireOwnerOrPermission,
+  requirePermission,
+} from "./authorize.ts";
 
 export { createAuditEvent } from "./audit.ts";
 export type { AuditEvent, AuditEventInput, AuditEventRepository } from "./audit.ts";

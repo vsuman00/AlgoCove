@@ -3,9 +3,8 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 const authMock = vi.hoisted(() => vi.fn());
 vi.mock("../../../apps/web/src/auth/clerk-server", () => ({ auth: authMock }));
 
-const { GET: onboardingGet, PUT: onboardingPut } = await import(
-  "../../../apps/web/app/api/onboarding/route"
-);
+const { GET: onboardingGet, PUT: onboardingPut } =
+  await import("../../../apps/web/app/api/onboarding/route");
 
 const profileInput = {
   goal: "Prepare for an algorithms interview",
@@ -55,7 +54,11 @@ describe("onboarding route", () => {
     const readResponse = await onboardingGet(new Request("http://localhost/api/onboarding"));
     expect(readResponse.status).toBe(200);
     await expect(readResponse.json()).resolves.toMatchObject({
-      profile: { goal: profileInput.goal, version: 1, preferredLanguages: profileInput.preferredLanguages },
+      profile: {
+        goal: profileInput.goal,
+        version: 1,
+        preferredLanguages: profileInput.preferredLanguages,
+      },
     });
 
     const updatedResponse = await onboardingPut(

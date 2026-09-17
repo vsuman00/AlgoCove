@@ -20,7 +20,9 @@ export type IdempotencyClaimResult =
 
 export type IdempotencyRepository = {
   claim(input: IdempotencyClaimInput): Promise<IdempotencyClaimResult>;
-  complete(input: IdempotencyClaimInput & { readonly response: IdempotencyResponse }): Promise<void>;
+  complete(
+    input: IdempotencyClaimInput & { readonly response: IdempotencyResponse },
+  ): Promise<void>;
   fail(input: IdempotencyClaimInput): Promise<void>;
 };
 

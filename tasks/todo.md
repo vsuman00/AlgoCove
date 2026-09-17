@@ -1,10 +1,10 @@
 # AlgoCove implementation task ledger
 
-**Status:** Phase 1 technical implementation complete; the F1 transition checkpoint remains pending explicit human authorization.
+**Status:** Phase 2 technical implementation slices complete; the F2 transition checkpoint remains pending live Clerk verification and explicit human authorization for Phase 3.
 **Detailed acceptance criteria:** [Implementation plan](plan.md)  
 **Ordering:** Follow phase/document order, not numeric sorting. Suffix tasks close review gaps; Task 51 is intentionally before live AI. Parent packages need bounded subcards before coding.  
 
-**Current evidence:** Phase 1 implementation passes the full local gate, including an exact pnpm 12 frozen-lockfile install with explicit lifecycle-build approval, `pnpm verify`, `pnpm test:all`, production build, dependency audit, 5 isolated PostgreSQL/pgvector integration tests, 4 browser accessibility tests, and local HTTP smoke checks. The CI correction is queued for the next published `main` run. Phase 0 planning approvals remain unchanged; Phase 2 is not started.
+**Current evidence:** Phase 1 and the Phase 2 implementation slices pass the local gate: `pnpm verify`, `pnpm test:all`, production build, dependency audit, 8 isolated PostgreSQL/pgvector integration tests, 6 browser accessibility tests, Clerk adapter/route fixtures, profile ownership/version tests, authorization matrix tests, concurrent idempotency claims, audit redaction, and transactional outbox rollback. Live Clerk login/logout/revocation and an authenticated browser journey still require configured Clerk keys and a test account; those are not claimed here. Phase 0 planning approvals remain unchanged.
 
 ## Phase 0: Resolve gates and freeze the build contract
 
@@ -33,21 +33,21 @@
 - [x] All Phase 1 quality commands pass: `pnpm verify`, `pnpm test:all`, `pnpm build`, `pnpm test:integration`, `pnpm test:a11y`, and `pnpm security:audit`.
 - [x] Architecture tests enforce import direction.
 - [x] Web shell builds and database migrations pass from an empty isolated database.
-- [ ] Human owner authorizes Phase 2; no Phase 2 implementation has started.
+- [x] Phase 1 technical implementation is complete; the prior F1 evidence is preserved. Human transition authorization remains a governance record, not an implementation claim.
 
 ## Phase 2: Identity, authorization, and durable platform primitives
 
-- [ ] Task 10: Implement local-session identity adapter and actor context
-- [ ] Task 11: Deliver learner onboarding and profile preferences
-- [ ] Task 12: Implement privileged roles and authorization matrix
-- [ ] Task 13: Implement idempotency, audit, and transactional outbox foundations
-- [ ] Task 13a: Establish privacy-safe observability before service integration
+- [x] Task 10: Integrate Clerk identity and actor context — IMPLEMENTED; verified Clerk session claims map to deterministic internal opaque learner IDs, roles are loaded from the server store, provider metadata is ignored, and sign-in/up/session route fixtures pass. Live Clerk account/revocation verification remains pending configured Clerk credentials.
+- [x] Task 11: Deliver learner onboarding and profile preferences — IMPLEMENTED locally; PostgreSQL learner/profile migrations, owner/version use cases, Clerk-backed API, Tailwind onboarding UI, invalid-input and cross-user tests, and six browser accessibility checks pass. Authenticated browser proof remains environment-gated on Clerk credentials.
+- [x] Task 12: Implement privileged roles and authorization matrix — IMPLEMENTED; every role has an explicit permission set, negative learner checks pass, and content author/reviewer separation-of-duties is enforced.
+- [x] Task 13: Implement idempotency, audit, and transactional outbox foundations — IMPLEMENTED; PostgreSQL-backed claims replay/conflict safely, audit rows are append-only, payloads redact source material, outbox writes participate in transaction rollback, and concurrent claim fixtures pass.
+- [x] Task 13a: Establish privacy-safe observability before service integration — IMPLEMENTED; allowlisted correlation/error fields and bounded telemetry redaction are covered by canary tests.
 
 ### Checkpoint F2: Identity and platform integrity
 
-- [ ] Onboarding works end to end.
-- [ ] Cross-user and privilege negative tests pass.
-- [ ] Idempotency/audit/outbox concurrency fixtures pass.
+- [ ] Onboarding works end to end — API and mocked verified-Clerk route tests pass; live Clerk login/logout/revocation and authenticated browser journey require configured Clerk keys and a test account.
+- [x] Cross-user and privilege negative tests pass.
+- [x] Idempotency/audit/outbox concurrency fixtures pass.
 - [ ] Human owner authorizes Phase 3.
 
 ## Phase 3: Governed curriculum, problems, and external references

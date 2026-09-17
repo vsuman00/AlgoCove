@@ -90,9 +90,9 @@ describe("learner profile contract", () => {
     expect(parseLearnerProfileInput({ ...baseInput, timezone: "Mars/Olympus" }).ok).toBe(false);
     expect(parseLearnerProfileInput({ ...baseInput, dailyCapacityMinutes: 5 }).ok).toBe(false);
     expect(parseLearnerProfileInput({ ...baseInput, preferredLanguages: ["ruby"] }).ok).toBe(false);
-    expect(parseLearnerProfileInput({ ...baseInput, accessibility: { reducedMotion: "yes" } }).ok).toBe(
-      false,
-    );
+    expect(
+      parseLearnerProfileInput({ ...baseInput, accessibility: { reducedMotion: "yes" } }).ok,
+    ).toBe(false);
   });
 
   it("allows the owner to create and update a profile with an audit version", async () => {

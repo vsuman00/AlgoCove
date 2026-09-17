@@ -12,7 +12,12 @@ import {
   type DatabaseConnection,
 } from "@algocove/db";
 import { createAuditEvent, createOutboxEvent } from "@algocove/application";
-import { formatId, parseContentChecksum, parseInstant, parseLearnerProfileInput } from "@algocove/domain";
+import {
+  formatId,
+  parseContentChecksum,
+  parseInstant,
+  parseLearnerProfileInput,
+} from "@algocove/domain";
 
 const baseOperatorUrl =
   process.env.DATABASE_TEST_OPERATOR_URL ??
@@ -202,11 +207,13 @@ describe("PostgreSQL and pgvector lifecycle", () => {
       profile: { ...created, goal: "Build durable DSA intuition", version: 2 },
     });
     expect(updated).toMatchObject({ version: 2, goal: "Build durable DSA intuition" });
-    await expect(identity.update({
-      learnerId,
-      expectedVersion: 1,
-      profile: { ...created, goal: "stale write", version: 2 },
-    })).resolves.toBeNull();
+    await expect(
+      identity.update({
+        learnerId,
+        expectedVersion: 1,
+        profile: { ...created, goal: "stale write", version: 2 },
+      }),
+    ).resolves.toBeNull();
   });
 
   it("replays idempotent effects and persists immutable audit plus outbox records", async () => {
@@ -217,29 +224,37 @@ describe("PostgreSQL and pgvector lifecycle", () => {
     const instant = parseInstant("2026-09-17T10:00:00.000Z");
     const eventId = formatId("event", "0000000000000000");
     const outboxEventId = formatId("event", "0000000000000001");
-    if (!checksum.ok || !instant.ok || !eventId.ok || !outboxEventId.ok) throw new Error("platform fixture is invalid");
+    if (!checksum.ok || !instant.ok || !eventId.ok || !outboxEventId.ok)
+      throw new Error("platform fixture is invalid");
 
     const claim = { scope: "integration", key: `effect-${runSuffix}`, requestHash: checksum.value };
     expect(await platform.claim(claim)).toEqual({ kind: "claimed" });
     await platform.complete({ ...claim, response: { status: 200, body: { ok: true } } });
-    expect(await platform.claim(claim)).toEqual({ kind: "replay", response: { status: 200, body: { ok: true } } });
+    expect(await platform.claim(claim)).toEqual({
+      kind: "replay",
+      response: { status: 200, body: { ok: true } },
+    });
 
-    await platform.append(createAuditEvent({
-      eventId: eventId.value,
-      actorId: learnerId,
-      action: "integration.checked",
-      resourceType: "learner",
-      resourceId: learnerId,
-      occurredAt: instant.value,
-      payload: { outcome: "accepted", code: "must not persist" },
-    }));
-    await platform.enqueue(createOutboxEvent({
-      eventId: outboxEventId.value,
-      topic: "integration.checked",
-      aggregateId: learnerId,
-      occurredAt: instant.value,
-      payload: { outcome: "accepted", prompt: "must not persist" },
-    }));
+    await platform.append(
+      createAuditEvent({
+        eventId: eventId.value,
+        actorId: learnerId,
+        action: "integration.checked",
+        resourceType: "learner",
+        resourceId: learnerId,
+        occurredAt: instant.value,
+        payload: { outcome: "accepted", code: "must not persist" },
+      }),
+    );
+    await platform.enqueue(
+      createOutboxEvent({
+        eventId: outboxEventId.value,
+        topic: "integration.checked",
+        aggregateId: learnerId,
+        occurredAt: instant.value,
+        payload: { outcome: "accepted", prompt: "must not persist" },
+      }),
+    );
 
     const counts = await inspectionPool!.query<{ audit_count: string; outbox_count: string }>(
       `SELECT
@@ -248,13 +263,15 @@ describe("PostgreSQL and pgvector lifecycle", () => {
       [eventId.value, outboxEventId.value],
     );
     expect(counts.rows[0]).toEqual({ audit_count: "1", outbox_count: "1" });
-    const auditPayload = await inspectionPool!.query<{ payload: { code?: string; outcome?: string } }>(
-      "SELECT payload FROM platform.audit_event WHERE event_id = $1",
-      [eventId.value],
-    );
+    const auditPayload = await inspectionPool!.query<{
+      payload: { code?: string; outcome?: string };
+    }>("SELECT payload FROM platform.audit_event WHERE event_id = $1", [eventId.value]);
     expect(auditPayload.rows[0]?.payload).toEqual({ code: "[redacted]", outcome: "accepted" });
     await expect(
-      runtimePool!.query("UPDATE platform.audit_event SET action = 'tampered' WHERE event_id = $1", [eventId.value]),
+      runtimePool!.query(
+        "UPDATE platform.audit_event SET action = 'tampered' WHERE event_id = $1",
+        [eventId.value],
+      ),
     ).rejects.toMatchObject({ code: "55006" });
   });
 
@@ -263,8 +280,13 @@ describe("PostgreSQL and pgvector lifecycle", () => {
     const checksum = parseContentChecksum(`sha256:${"d".repeat(64)}`);
     const instant = parseInstant("2026-09-17T10:00:00.000Z");
     const eventId = formatId("event", "0000000000000002");
-    if (!checksum.ok || !instant.ok || !eventId.ok) throw new Error("concurrency fixture is invalid");
-    const claim = { scope: "integration-concurrent", key: `effect-${runSuffix}`, requestHash: checksum.value };
+    if (!checksum.ok || !instant.ok || !eventId.ok)
+      throw new Error("concurrency fixture is invalid");
+    const claim = {
+      scope: "integration-concurrent",
+      key: `effect-${runSuffix}`,
+      requestHash: checksum.value,
+    };
     const results = await Promise.all([platform.claim(claim), platform.claim(claim)]);
     expect(results.map((result) => result.kind).sort()).toEqual(["claimed", "in_progress"]);
     await platform.complete({ ...claim, response: { status: 204, body: { ok: true } } });

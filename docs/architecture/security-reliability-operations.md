@@ -81,7 +81,7 @@ Threat modeling must be refreshed before the hosted pilot and whenever the sandb
 
 ## 4. Authentication and session architecture
 
-- Prefer standards-based OIDC or verified email/magic-link through a maintained identity provider.
+- The Phase 2 hosted identity boundary uses Clerk through the official Next.js integration. Clerk owns sign-in, sign-up, sign-out, session rotation, and revocation; AlgoCove owns the internal learner mapping and authorization records.
 - Link identities to an internal opaque user ID.
 - Use secure, HTTP-only, same-site cookies for browser sessions.
 - Rotate sessions after authentication and privilege changes.
@@ -89,8 +89,8 @@ Threat modeling must be refreshed before the hosted pilot and whenever the sandb
 - Support global session revocation and account suspension.
 - Do not store OAuth access tokens unless a product integration requires them; encrypt and scope any retained token.
 - MFA is required for privileged roles before production administration.
-
-Exact identity vendor and session library are deferred to a later source-verified decision.
+- The adapter ignores Clerk public/private metadata for AlgoCove roles. Active roles are read from the server-owned `platform.role_grant` table, and profile ownership is checked against the internal learner ID.
+- Live sign-in, sign-out, and revoked-session verification remains an F2 environment gate until Clerk keys and a test account are configured; local tests use verified-Clerk fixtures and never treat browser metadata as authorization.
 
 ## 5. Authorization model
 

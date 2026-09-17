@@ -10,7 +10,12 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>): ReactElement {
   const publishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
-  const content = publishableKey === undefined ? children : <ClerkProvider publishableKey={publishableKey}>{children}</ClerkProvider>;
+  const content =
+    publishableKey === undefined ? (
+      children
+    ) : (
+      <ClerkProvider publishableKey={publishableKey}>{children}</ClerkProvider>
+    );
   return (
     <html lang="en">
       <body>{content}</body>

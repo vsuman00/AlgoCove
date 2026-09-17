@@ -124,7 +124,10 @@ function collectEnvironmentIssues(raw: {
 
   if (raw.NODE_ENV === "production") {
     if (raw.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY === undefined) {
-      issues.push({ key: "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY", message: "is required in production" });
+      issues.push({
+        key: "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY",
+        message: "is required in production",
+      });
     }
     if (raw.CLERK_SECRET_KEY === undefined) {
       issues.push({ key: "CLERK_SECRET_KEY", message: "is required in production" });

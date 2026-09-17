@@ -1,9 +1,5 @@
 import { createHash } from "node:crypto";
-import {
-  createActor,
-  type Actor,
-  type LearnerProfileRepository,
-} from "@algocove/application";
+import { createActor, type Actor, type LearnerProfileRepository } from "@algocove/application";
 import { createPool, PostgresIdentityRepository } from "@algocove/db";
 import { formatId, ROLES, type LearnerId, type OpaqueId, type Role } from "@algocove/domain";
 import type { LearnerProfile } from "@algocove/domain";
@@ -28,7 +24,10 @@ export type ClerkIdentityAdapter = {
 
 const SUBJECT_PATTERN = /^[A-Za-z0-9_:-]{1,128}$/;
 
-function stableId(kind: "learner" | "session", value: string): OpaqueId<"learner"> | OpaqueId<"session"> {
+function stableId(
+  kind: "learner" | "session",
+  value: string,
+): OpaqueId<"learner"> | OpaqueId<"session"> {
   const entropy = createHash("sha256").update(value, "utf8").digest("hex").slice(0, 40);
   const parsed = formatId(kind, entropy);
   if (!parsed.ok) {
@@ -37,7 +36,9 @@ function stableId(kind: "learner" | "session", value: string): OpaqueId<"learner
   return parsed.value;
 }
 
-export function createClerkIdentityAdapter(input: { readonly store: ClerkIdentityStore }): ClerkIdentityAdapter {
+export function createClerkIdentityAdapter(input: {
+  readonly store: ClerkIdentityStore;
+}): ClerkIdentityAdapter {
   return {
     async authenticate(state) {
       if (
@@ -54,7 +55,10 @@ export function createClerkIdentityAdapter(input: { readonly store: ClerkIdentit
       if (roles.length === 0) {
         throw authenticationRequired("Authenticated account has no active AlgoCove role.");
       }
-      const sessionId = stableId("session", `clerk-session:${state.sessionId}`) as OpaqueId<"session">;
+      const sessionId = stableId(
+        "session",
+        `clerk-session:${state.sessionId}`,
+      ) as OpaqueId<"session">;
       return createActor({ userId: learnerId, sessionId, roles });
     },
   };
@@ -103,15 +107,25 @@ function createConfiguredStore(): ClerkIdentityStore {
   if (connectionString === undefined || connectionString.length === 0) {
     return createInMemoryClerkIdentityStore();
   }
-  if (!connectionString.startsWith("postgres://") && !connectionString.startsWith("postgresql://")) {
+  if (
+    !connectionString.startsWith("postgres://") &&
+    !connectionString.startsWith("postgresql://")
+  ) {
     throw new Error("DATABASE_URL must be a PostgreSQL connection string.");
   }
   const maxConnections = Number.parseInt(process.env.DATABASE_POOL_MAX ?? "10", 10);
-  const statementTimeoutMs = Number.parseInt(process.env.DATABASE_STATEMENT_TIMEOUT_MS ?? "5000", 10);
+  const statementTimeoutMs = Number.parseInt(
+    process.env.DATABASE_STATEMENT_TIMEOUT_MS ?? "5000",
+    10,
+  );
   if (!Number.isInteger(maxConnections) || maxConnections < 1 || maxConnections > 64) {
     throw new Error("DATABASE_POOL_MAX is outside the supported range.");
   }
-  if (!Number.isInteger(statementTimeoutMs) || statementTimeoutMs < 100 || statementTimeoutMs > 60_000) {
+  if (
+    !Number.isInteger(statementTimeoutMs) ||
+    statementTimeoutMs < 100 ||
+    statementTimeoutMs > 60_000
+  ) {
     throw new Error("DATABASE_STATEMENT_TIMEOUT_MS is outside the supported range.");
   }
   return new PostgresIdentityRepository(

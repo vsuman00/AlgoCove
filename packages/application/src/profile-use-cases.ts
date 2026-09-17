@@ -42,9 +42,14 @@ export async function saveLearnerProfile(
     return repository.create(profile);
   }
 
-  const version = typeof input === "object" && input !== null ? (input as { version?: unknown }).version : undefined;
+  const version =
+    typeof input === "object" && input !== null
+      ? (input as { version?: unknown }).version
+      : undefined;
   if (!Number.isInteger(version) || version !== current.version) {
-    throw conflictError("Profile changed since it was loaded.", { currentVersion: current.version });
+    throw conflictError("Profile changed since it was loaded.", {
+      currentVersion: current.version,
+    });
   }
   const next = repository.update({
     learnerId: context.actor.userId,
@@ -59,7 +64,9 @@ export async function saveLearnerProfile(
   });
   const updated = await next;
   if (updated === null) {
-    throw conflictError("Profile changed since it was loaded.", { currentVersion: current.version });
+    throw conflictError("Profile changed since it was loaded.", {
+      currentVersion: current.version,
+    });
   }
   return updated;
 }

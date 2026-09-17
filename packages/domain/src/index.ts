@@ -83,10 +83,7 @@ export {
 
 export type { ContentAssignment, Permission, SeparationFailure } from "./authorization.ts";
 
-export {
-  parseLearnerProfileInput,
-  SUPPORTED_LEARNER_LANGUAGES,
-} from "./learner-profile.ts";
+export { parseLearnerProfileInput, SUPPORTED_LEARNER_LANGUAGES } from "./learner-profile.ts";
 
 export type {
   AccessibilitySettings,

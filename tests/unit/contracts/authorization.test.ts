@@ -9,7 +9,11 @@ import {
   formatId,
 } from "@algocove/domain";
 import { requireContentSeparation, requirePermission } from "@algocove/application";
-import { createRequestContext, createFixedClock, createSequenceIdGenerator } from "@algocove/application";
+import {
+  createRequestContext,
+  createFixedClock,
+  createSequenceIdGenerator,
+} from "@algocove/application";
 import { parseInstant } from "@algocove/domain";
 
 const learner = formatId("learner", "0000000000000001");
@@ -32,7 +36,9 @@ describe("authorization contract", () => {
     expect(hasPermission([ROLES.author], PERMISSIONS.contentAuthor)).toBe(true);
     expect(hasPermission([ROLES.author], PERMISSIONS.contentPublish)).toBe(false);
     expect(hasPermission([ROLES.technicalReviewer], PERMISSIONS.contentTechnicalReview)).toBe(true);
-    expect(hasPermission([ROLES.pedagogicalReviewer], PERMISSIONS.contentPedagogicalReview)).toBe(true);
+    expect(hasPermission([ROLES.pedagogicalReviewer], PERMISSIONS.contentPedagogicalReview)).toBe(
+      true,
+    );
     expect(hasPermission([ROLES.publisher], PERMISSIONS.contentPublish)).toBe(true);
     expect(hasPermission([ROLES.evaluator], PERMISSIONS.contentEvaluate)).toBe(true);
     expect(hasPermission([ROLES.operator], PERMISSIONS.operationsManage)).toBe(true);
@@ -48,25 +54,34 @@ describe("authorization contract", () => {
       ok: false,
       error: { code: "separation_of_duties_violation", actorId: learner.value },
     });
-    expect(validateContentSeparation([
-      { actorId: learner.value, role: ROLES.author },
-      { actorId: otherLearner.value, role: ROLES.technicalReviewer },
-      { actorId: learner.value, role: ROLES.author },
-    ])).toMatchObject({ ok: true });
+    expect(
+      validateContentSeparation([
+        { actorId: learner.value, role: ROLES.author },
+        { actorId: otherLearner.value, role: ROLES.technicalReviewer },
+        { actorId: learner.value, role: ROLES.author },
+      ]),
+    ).toMatchObject({ ok: true });
   });
 
   it("enforces permissions at the application boundary", () => {
     const context = createRequestContext({
-      actor: { userId: learner.value, sessionId: session.value, roles: [ROLES.learner], privileged: false },
+      actor: {
+        userId: learner.value,
+        sessionId: session.value,
+        roles: [ROLES.learner],
+        privileged: false,
+      },
       clock: createFixedClock(instant.value),
       ids: createSequenceIdGenerator(),
       serviceName: "algocove-web",
     });
     expect(() => requirePermission(context, PERMISSIONS.profileWrite)).not.toThrow();
     expect(() => requirePermission(context, PERMISSIONS.operationsManage)).toThrow("permission");
-    expect(() => requireContentSeparation([
-      { actorId: learner.value, role: ROLES.author },
-      { actorId: learner.value, role: ROLES.publisher },
-    ])).toThrow("separate identities");
+    expect(() =>
+      requireContentSeparation([
+        { actorId: learner.value, role: ROLES.author },
+        { actorId: learner.value, role: ROLES.publisher },
+      ]),
+    ).toThrow("separate identities");
   });
 });

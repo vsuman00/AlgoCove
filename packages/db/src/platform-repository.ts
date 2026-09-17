@@ -15,7 +15,10 @@ type IdempotencyClaimResult =
   | { readonly kind: "claimed" }
   | {
       readonly kind: "replay";
-      readonly response: { readonly status: number; readonly body: Readonly<Record<string, unknown>> };
+      readonly response: {
+        readonly status: number;
+        readonly body: Readonly<Record<string, unknown>>;
+      };
     }
   | { readonly kind: "in_progress" }
   | { readonly kind: "conflict" };
@@ -85,7 +88,8 @@ export class PostgresPlatformRepository {
     if (row.request_hash !== input.requestHash) return { kind: "conflict" };
     if (row.state === "pending") return { kind: "in_progress" };
     if (row.state === "completed") {
-      if (row.response_status === null) throw new Error("Completed idempotency claim has no status.");
+      if (row.response_status === null)
+        throw new Error("Completed idempotency claim has no status.");
       return {
         kind: "replay",
         response: { status: row.response_status, body: objectResponse(row.response_body) },
@@ -102,13 +106,21 @@ export class PostgresPlatformRepository {
     return retried.rows.length > 0 ? { kind: "claimed" } : { kind: "in_progress" };
   }
 
-  async complete(input: IdempotencyInput & { readonly response: IdempotencyResponse }): Promise<void> {
+  async complete(
+    input: IdempotencyInput & { readonly response: IdempotencyResponse },
+  ): Promise<void> {
     const result = await this.database.query(
       `UPDATE platform.idempotency_claim
           SET state = 'completed', response_status = $4, response_body = $5::jsonb,
               completed_at = now()
         WHERE scope = $1 AND claim_key = $2 AND request_hash = $3 AND state = 'pending'`,
-      [input.scope, input.key, input.requestHash, input.response.status, JSON.stringify(input.response.body)],
+      [
+        input.scope,
+        input.key,
+        input.requestHash,
+        input.response.status,
+        JSON.stringify(input.response.body),
+      ],
     );
     if (result.rowCount !== 1) throw new Error("Idempotency claim was not pending for completion.");
   }
@@ -144,7 +156,13 @@ export class PostgresPlatformRepository {
       `INSERT INTO platform.outbox_event
         (event_id, topic, aggregate_id, payload, occurred_at)
        VALUES ($1, $2, $3, $4::jsonb, $5)`,
-      [event.eventId, event.topic, event.aggregateId, JSON.stringify(event.payload), event.occurredAt],
+      [
+        event.eventId,
+        event.topic,
+        event.aggregateId,
+        JSON.stringify(event.payload),
+        event.occurredAt,
+      ],
     );
   }
 }

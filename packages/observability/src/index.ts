@@ -63,7 +63,11 @@ function boundedStatus(value: number | undefined): number | undefined {
  */
 export function redactTelemetryValue(value: unknown): unknown {
   if (typeof value === "string") {
-    if (/(bearer\s+|token|secret|password|cookie|authorization|postgres(?:ql)?:\/\/|-----begin)/i.test(value)) {
+    if (
+      /(bearer\s+|token|secret|password|cookie|authorization|postgres(?:ql)?:\/\/|-----begin)/i.test(
+        value,
+      )
+    ) {
       return "[redacted]";
     }
     return value.length > 500 ? `${value.slice(0, 499)}…` : value;
@@ -75,7 +79,10 @@ export function redactTelemetryValue(value: unknown): unknown {
   if (typeof value === "object" && value !== null) {
     return Object.fromEntries(
       Object.entries(value)
-        .filter(([key]) => !/(token|secret|password|cookie|authorization|source|code|prompt|body)/i.test(key))
+        .filter(
+          ([key]) =>
+            !/(token|secret|password|cookie|authorization|source|code|prompt|body)/i.test(key),
+        )
         .slice(0, 32)
         .map(([key, nested]) => [key, redactTelemetryValue(nested)]),
     );
@@ -94,7 +101,9 @@ export function createTelemetryEvent(input: TelemetryEventInput): TelemetryEvent
     ...(durationMs === undefined ? {} : { durationMs }),
     ...(status === undefined ? {} : { status }),
     ...(input.retryable === undefined ? {} : { retryable: input.retryable }),
-    ...(input.dependency === undefined ? {} : { dependency: boundedLabel(input.dependency, "unknown") }),
+    ...(input.dependency === undefined
+      ? {}
+      : { dependency: boundedLabel(input.dependency, "unknown") }),
     ...(input.result === undefined ? {} : { result: input.result }),
   };
 }

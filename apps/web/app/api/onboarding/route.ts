@@ -23,7 +23,10 @@ async function contextFor(request: Request) {
 
 function errorResponse(error: unknown): NextResponse {
   const traceId = "req_0000000000000000";
-  const status = error instanceof Error && "code" in error && error.code === "unauthenticated" ? 401 : toHttpStatus(error);
+  const status =
+    error instanceof Error && "code" in error && error.code === "unauthenticated"
+      ? 401
+      : toHttpStatus(error);
   return NextResponse.json(toErrorEnvelope(error, traceId), {
     status,
     headers: { "Cache-Control": "no-store" },
@@ -45,7 +48,10 @@ export async function PUT(request: Request): Promise<NextResponse> {
     const context = await contextFor(request);
     const input: unknown = await request.json();
     const profile = await saveLearnerProfile(context, getClerkIdentityStore(), input);
-    return NextResponse.json({ profile }, { status: 200, headers: { "Cache-Control": "no-store" } });
+    return NextResponse.json(
+      { profile },
+      { status: 200, headers: { "Cache-Control": "no-store" } },
+    );
   } catch (error) {
     return errorResponse(error);
   }

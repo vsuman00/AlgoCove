@@ -25,10 +25,12 @@ function sanitize(value: unknown, key: string | undefined, depth: number): unkno
   }
   if (typeof value === "object") {
     const entries = Object.entries(value).slice(0, MAX_KEYS);
-    return Object.fromEntries(entries.map(([entryKey, entryValue]) => [
-      entryKey,
-      sanitize(entryValue, entryKey, depth + 1),
-    ]));
+    return Object.fromEntries(
+      entries.map(([entryKey, entryValue]) => [
+        entryKey,
+        sanitize(entryValue, entryKey, depth + 1),
+      ]),
+    );
   }
   return "[unsupported]";
 }

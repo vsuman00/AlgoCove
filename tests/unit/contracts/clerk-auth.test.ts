@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { createClerkIdentityAdapter, createInMemoryClerkIdentityStore } from "../../../apps/web/src/auth/clerk-adapter";
+import {
+  createClerkIdentityAdapter,
+  createInMemoryClerkIdentityStore,
+} from "../../../apps/web/src/auth/clerk-adapter";
 import { ROLES } from "@algocove/domain";
 
 describe("Clerk identity boundary", () => {
