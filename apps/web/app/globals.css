@@ -1,0 +1,61 @@
+@import "tailwindcss";
+@import "../src/styles/tokens.css";
+
+/* Tailwind v4 maps the approved design tokens into utility namespaces. */
+@theme inline {
+  --color-cove-page: var(--bg-page);
+  --color-cove-surface: var(--bg-surface);
+  --color-cove-primary: var(--text-primary);
+  --color-cove-body: var(--text-body);
+  --color-cove-secondary: var(--text-secondary);
+  --color-cove-on-dark: var(--text-on-dark);
+  --color-cove-link: var(--text-link);
+  --color-cove-default: var(--border-default);
+  --color-cove-strong: var(--border-strong);
+  --color-cove-action-primary: var(--action-primary);
+  --color-cove-action-primary-hover: var(--action-primary-hover);
+  --color-cove-success: var(--state-success);
+
+  --font-cove-ui: var(--font-ui);
+  --font-cove-display: var(--font-display);
+  --font-cove-mono: var(--font-mono);
+
+  --radius-cove-sm: var(--radius-sm);
+
+  --text-cove-display: var(--text-display-size);
+  --text-cove-display--line-height: var(--text-display-line-height);
+  --text-cove-h2: var(--text-h2-size);
+  --text-cove-h2--line-height: var(--text-h2-line-height);
+  --text-cove-body-lg: var(--text-body-lg-size);
+  --text-cove-body-lg--line-height: var(--text-body-lg-line-height);
+  --text-cove-body-sm: var(--text-body-sm-size);
+  --text-cove-label: var(--text-label-size);
+  --text-cove-meta: var(--text-meta-size);
+}
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html {
+    @apply bg-cove-page;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply m-0 bg-cove-page font-cove-ui text-cove-primary;
+    font-size: var(--text-body-size);
+    line-height: var(--text-body-line-height);
+  }
+
+  a {
+    @apply text-inherit;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

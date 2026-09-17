@@ -1,0 +1,39 @@
+# Local development services.
+#
+# PostgreSQL 17 with pgvector is the single source of truth (ADR-0002). The image
+# tag is pinned so the integration harness is reproducible.
+#
+# The host port is deliberately 54329 rather than 5432 so a locally installed
+# PostgreSQL instance cannot be mistaken for the project database.
+name: algocove
+
+services:
+  db:
+    image: pgvector/pgvector:0.8.1-pg17
+    container_name: algocove-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: algocove
+      # Deterministic collation so text indexes and ordering match in tests.
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C"
+    ports:
+      - "54329:5432"
+    command:
+      - postgres
+      - -c
+      - max_connections=100
+      - -c
+      - log_min_duration_statement=500
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d algocove"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 10s
+    volumes:
+      - algocove-db-data:/var/lib/postgresql/data
+
+volumes:
+  algocove-db-data:

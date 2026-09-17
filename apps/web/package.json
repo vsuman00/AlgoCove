@@ -1,0 +1,22 @@
+{
+  "name": "@algocove/web",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Next.js application shell: delivery, BFF, and application composition root.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build --webpack",
+    "start": "next start",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "@algocove/application": "workspace:*",
+    "@algocove/config": "workspace:*",
+    "@algocove/db": "workspace:*",
+    "@algocove/domain": "workspace:*",
+    "next": "16.3.5",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  }
+}

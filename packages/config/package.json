@@ -1,0 +1,16 @@
+{
+  "name": "@algocove/config",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Fail-closed environment parsing and redaction-safe configuration display.",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "zod": "4.6.5"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  }
+}

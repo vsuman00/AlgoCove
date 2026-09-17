@@ -1,0 +1,228 @@
+/*
+ * Generated file. Do not edit by hand.
+ *
+ * Source of truth: apps/web/src/styles/tokens.ts (approved in DESIGN.md).
+ * Regenerate with: pnpm tokens:build
+ * Verify with:     pnpm tokens:check
+ */
+/* Tracked missing approved assets: Instrument Sans font files; Fraunces font files; JetBrains Mono font files; Canonical cove logo, light and dark variants; Coastal illustration washes for both shells */
+:root {
+  /* Brand, neutral, and supporting primitives */
+  --color-ocean-950: #082F35;
+  --color-ocean-900: #0B3B42;
+  --color-ocean-800: #123F46;
+  --color-ocean-700: #18565D;
+  --color-ocean-600: #247079;
+  --color-jade-800: #0C5C4E;
+  --color-jade-700: #0F6F5E;
+  --color-jade-600: #147E69;
+  --color-jade-500: #1A8F78;
+  --color-jade-400: #42A991;
+  --color-jade-200: #A9DED2;
+  --color-jade-100: #DDF2ED;
+  --color-jade-50: #EEF8F5;
+  --color-cloud-0: #FFFFFF;
+  --color-cloud-25: #FBFCFB;
+  --color-cloud-50: #F6F8F7;
+  --color-cloud-100: #EEF3F1;
+  --color-slate-200: #DCE6E3;
+  --color-slate-300: #C8D6D3;
+  --color-slate-400: #99ABA8;
+  --color-slate-500: #6E8280;
+  --color-slate-600: #536966;
+  --color-ink-700: #294146;
+  --color-ink-800: #1B3338;
+  --color-ink-900: #102A2E;
+  --color-ink-950: #081D21;
+  --color-tide-700: #225E78;
+  --color-tide-500: #3C8FAD;
+  --color-tide-200: #B9DCE6;
+  --color-tide-100: #DCECEF;
+  --color-tide-50: #EFF7F8;
+  --color-current-700: #1F63AF;
+  --color-current-600: #2D7DD2;
+  --color-current-100: #DCEBFC;
+  --color-current-50: #EFF6FE;
+  --color-sand-700: #80551D;
+  --color-sand-600: #9A6A27;
+  --color-sand-300: #DFC99D;
+  --color-sand-100: #F1E7D5;
+  --color-sand-50: #F8F3E9;
+  --color-coral-700: #AE4037;
+  --color-coral-600: #C65349;
+  --color-coral-500: #D96B5F;
+  --color-coral-100: #F5D7D3;
+  --color-coral-50: #FBEDEC;
+  --color-blue-600: #276EA6;
+  --color-blue-100: #DDECF7;
+
+  /* Semantic aliases: components consume these names */
+  --bg-page: var(--color-cloud-50);
+  --bg-surface: var(--color-cloud-0);
+  --bg-subtle: var(--color-cloud-100);
+  --bg-nav: var(--color-ocean-900);
+  --bg-selected: var(--color-jade-100);
+  --bg-info: var(--color-tide-50);
+  --bg-review: var(--color-sand-50);
+  --bg-danger: var(--color-coral-50);
+  --bg-current-plan: var(--color-current-50);
+  --bg-external-practice: var(--color-blue-100);
+  --text-primary: var(--color-ink-900);
+  --text-body: var(--color-ink-700);
+  --text-secondary: var(--color-slate-600);
+  --text-disabled: var(--color-slate-400);
+  --text-on-dark: var(--color-cloud-0);
+  --text-link: var(--color-tide-700);
+  --border-default: var(--color-slate-200);
+  --border-strong: var(--color-slate-300);
+  --action-primary: var(--color-jade-600);
+  --action-primary-hover: var(--color-jade-700);
+  --action-primary-pressed: var(--color-jade-800);
+  --action-workspace: var(--color-ocean-800);
+  --action-workspace-hover: var(--color-ocean-900);
+  --action-workspace-pressed: var(--color-ocean-950);
+  --state-success: var(--color-jade-500);
+  --state-info: var(--color-tide-500);
+  --state-review: var(--color-sand-700);
+  --state-danger: var(--color-coral-500);
+  --state-current-plan: var(--color-current-600);
+  --state-external: var(--color-blue-600);
+
+  /* Spacing: 4px base unit */
+  --space-0: 0;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* Radius hierarchy */
+  --radius-xs: 3px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-pill: 999px;
+
+  /* Elevation: flat by default */
+  --shadow-none: none;
+  --shadow-float: 0 4px 12px rgba(8, 29, 33, 0.08);
+  --shadow-dialog: 0 16px 40px rgba(8, 29, 33, 0.16);
+
+  /* Typography */
+  --font-ui: "Instrument Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Fraunces", ui-serif, Georgia, "Times New Roman", serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  --text-display-size: 40px;
+  --text-display-size-mobile: 32px;
+  --text-display-line-height: 1.1;
+  --text-display-weight: 600;
+  --text-display-family: var(--font-display);
+  --text-h1-size: 34px;
+  --text-h1-size-mobile: 28px;
+  --text-h1-line-height: 1.15;
+  --text-h1-weight: 700;
+  --text-h1-family: var(--font-ui);
+  --text-h2-size: 26px;
+  --text-h2-size-mobile: 23px;
+  --text-h2-line-height: 1.2;
+  --text-h2-weight: 700;
+  --text-h2-family: var(--font-ui);
+  --text-h3-size: 20px;
+  --text-h3-size-mobile: 19px;
+  --text-h3-line-height: 1.25;
+  --text-h3-weight: 600;
+  --text-h3-family: var(--font-ui);
+  --text-h4-size: 17px;
+  --text-h4-size-mobile: 17px;
+  --text-h4-line-height: 1.3;
+  --text-h4-weight: 600;
+  --text-h4-family: var(--font-ui);
+  --text-body-lg-size: 17px;
+  --text-body-lg-size-mobile: 16px;
+  --text-body-lg-line-height: 1.55;
+  --text-body-lg-weight: 400;
+  --text-body-lg-family: var(--font-ui);
+  --text-body-size: 15px;
+  --text-body-size-mobile: 15px;
+  --text-body-line-height: 1.5;
+  --text-body-weight: 400;
+  --text-body-family: var(--font-ui);
+  --text-body-sm-size: 14px;
+  --text-body-sm-size-mobile: 14px;
+  --text-body-sm-line-height: 1.45;
+  --text-body-sm-weight: 400;
+  --text-body-sm-family: var(--font-ui);
+  --text-label-size: 13px;
+  --text-label-size-mobile: 13px;
+  --text-label-line-height: 1.3;
+  --text-label-weight: 600;
+  --text-label-family: var(--font-ui);
+  --text-meta-size: 12px;
+  --text-meta-size-mobile: 12px;
+  --text-meta-line-height: 1.35;
+  --text-meta-weight: 500;
+  --text-meta-family: var(--font-ui);
+  --text-code-size: 14px;
+  --text-code-size-mobile: 13px;
+  --text-code-line-height: 1.6;
+  --text-code-weight: 400;
+  --text-code-family: var(--font-mono);
+  --measure-lesson: 68ch;
+  --measure-help: 55ch;
+  --measure-dialog: 60ch;
+
+  /* Layout */
+  --breakpoint-xs: 320px;
+  --breakpoint-sm: 480px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+  --shell-utility-bar-height: 64px;
+  --shell-workspace-top-bar-height: 52px;
+  --shell-workspace-step-rail-width: 70px;
+  --shell-page-gutter-lg: 24px;
+  --shell-page-gutter-xl: 32px;
+  --shell-content-max-width: 1600px;
+  --shell-focus-ring-width: 2px;
+  --shell-focus-ring-offset: 2px;
+  --focus-ring: 2px solid #1F63AF;
+  --focus-ring-offset: 2px;
+
+  /* Approved shell families, selected by [data-shell] on the shell root */
+  --shell-quiet-home-rail-width: 240px;
+  --shell-quiet-home-rail-collapsed-width: 72px;
+  --shell-quiet-home-rail-surface: var(--color-cloud-0);
+  --shell-quiet-home-rail-border: var(--color-slate-200);
+  --shell-quiet-home-selected-surface: var(--color-jade-100);
+  --shell-quiet-home-selected-text: var(--color-ink-900);
+  --shell-quiet-home-selected-indicator: var(--color-jade-500);
+  --shell-deep-journey-rail-width: 208px;
+  --shell-deep-journey-rail-collapsed-width: 72px;
+  --shell-deep-journey-rail-surface: var(--color-ocean-900);
+  --shell-deep-journey-rail-border: var(--color-ocean-800);
+  --shell-deep-journey-selected-surface: var(--color-ocean-700);
+  --shell-deep-journey-selected-text: var(--color-cloud-0);
+  --shell-deep-journey-selected-indicator: var(--color-jade-400);
+}
+
+@media (max-width: 767px) {
+  :root {
+    --text-display-size: 32px;
+    --text-h1-size: 28px;
+    --text-h2-size: 23px;
+    --text-h3-size: 19px;
+    --text-h4-size: 17px;
+    --text-body-lg-size: 16px;
+    --text-body-size: 15px;
+    --text-body-sm-size: 14px;
+    --text-label-size: 13px;
+    --text-meta-size: 12px;
+    --text-code-size: 13px;
+  }
+}

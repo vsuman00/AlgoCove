@@ -1,0 +1,16 @@
+{
+  "name": "@algocove/application",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Use cases, owned ports, and transaction orchestration. Depends on the domain, never on concrete adapters.",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@algocove/domain": "workspace:*"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  }
+}
