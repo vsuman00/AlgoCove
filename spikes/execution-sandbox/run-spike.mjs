@@ -263,7 +263,9 @@ function runConcurrentNormal() {
           images[language],
           "sh",
           "-c",
-          `cat > /work/${filenames[language]} && ${concurrencyCommands[language]}`,
+          ["cpp", "c"].includes(language)
+            ? concurrencyCommands[language]
+            : `cat > /work/${filenames[language]} && ${concurrencyCommands[language]}`,
         ],
         { stdio: ["pipe", "pipe", "pipe"] },
       );
@@ -284,7 +286,7 @@ function runConcurrentNormal() {
         if (remaining === 0)
           resolve({ durationMs: Math.round(performance.now() - started), results });
       });
-      child.stdin.end(concurrencyNormal[language]);
+      child.stdin.end(["cpp", "c"].includes(language) ? undefined : concurrencyNormal[language]);
     }
   });
 }
