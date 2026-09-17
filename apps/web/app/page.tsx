@@ -42,6 +42,9 @@ export default function HomePage(): ReactElement {
           >
             How it works
           </a>
+          <a className={`no-underline hover:text-cove-primary ${focusRing}`} href="/onboarding">
+            Learner setup
+          </a>
           <a className={`no-underline hover:text-cove-primary ${focusRing}`} href="/api/health">
             System status
           </a>
