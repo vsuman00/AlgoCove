@@ -46,7 +46,8 @@ export const rawConfigSchema = z.object({
   DATABASE_STATEMENT_TIMEOUT_MS: z.coerce.number().int().min(100).max(60_000).default(5_000),
   TUTOR_ENABLED: booleanFromEnv.default(false),
   EXECUTION_ENABLED: booleanFromEnv.default(false),
-  LOCAL_IDENTITY_ENABLED: booleanFromEnv.default(true),
+  NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string().min(1).optional(),
+  CLERK_SECRET_KEY: z.string().min(1).optional(),
 });
 
 export type RawConfig = z.infer<typeof rawConfigSchema>;

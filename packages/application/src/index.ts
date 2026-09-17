@@ -52,14 +52,6 @@ export type {
   RequestContext,
 } from "./request-context.ts";
 
-export {
-  authenticateSession,
-  createSessionActor,
-  revokeSession,
-} from "./authenticate.ts";
+export { getLearnerProfile, saveLearnerProfile } from "./profile-use-cases.ts";
 
-export type {
-  SessionStore,
-  StoredSession,
-  TokenHasher,
-} from "./authenticate.ts";
+export type { LearnerProfileRepository } from "./profile-use-cases.ts";

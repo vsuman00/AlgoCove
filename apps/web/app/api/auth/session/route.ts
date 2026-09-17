@@ -1,13 +1,17 @@
 import { NextResponse } from "next/server";
-import { sessionTokenFromRequest } from "../../../../src/auth/cookies";
-import { getLocalIdentityAdapter } from "../../../../src/auth/local-adapter";
+import { getClerkIdentityAdapter } from "../../../../src/auth/clerk-adapter";
+import { auth } from "../../../../src/auth/clerk-server";
 
 export const dynamic = "force-dynamic";
 
-export async function GET(request: Request): Promise<NextResponse> {
-  const token = sessionTokenFromRequest(request);
+export async function GET(): Promise<NextResponse> {
   try {
-    const actor = await getLocalIdentityAdapter().authenticate(token);
+    const clerkAuth = await auth();
+    const actor = await getClerkIdentityAdapter().authenticate({
+      isAuthenticated: clerkAuth.isAuthenticated,
+      userId: clerkAuth.userId,
+      sessionId: clerkAuth.sessionId,
+    });
     return NextResponse.json(
       { authenticated: true, user: { id: actor.userId, roles: actor.roles } },
       { headers: { "Cache-Control": "no-store" } },

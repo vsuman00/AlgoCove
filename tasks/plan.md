@@ -311,21 +311,21 @@ Review the evidence after every two or three task slices. Replan if assumptions 
 
 ## Phase 2: Identity, authorization, and durable platform primitives
 
-### Task 10: Implement local-session identity adapter and actor context
+### Task 10: Integrate Clerk identity and actor context
 
-**Description:** Build a deterministic local identity adapter for development/tests behind the same port later used by hosted OIDC or magic-link authentication.
+**Description:** Integrate Clerk as the hosted authentication boundary while keeping AlgoCove's internal opaque learner IDs, server-owned roles, and actor context behind an application port. Clerk owns sign-in, sign-out, session rotation, and revocation; AlgoCove never trusts browser-submitted roles, IDs, or provider metadata for authorization.
 
 **Acceptance criteria:**
-- [ ] Browser session maps to one internal opaque user ID.
-- [ ] Actor roles/scopes are loaded server-side and cannot be submitted by the browser.
-- [ ] Session rotation/revocation behavior has test fixtures.
+- [ ] A verified Clerk session maps to one internal opaque learner ID.
+- [ ] Actor roles/scopes are loaded server-side and cannot be submitted by the browser or Clerk public metadata.
+- [ ] Clerk sign-in/sign-out/session behavior is exposed through the approved Next.js integration and has adapter/route fixtures.
 
 **Verification:**
 - [ ] Run authentication integration tests including forged-role negatives.
 - [ ] Manually verify login, logout, and revoked-session behavior.
 
 **Dependencies:** Checkpoint F1  
-**Files likely touched:** `packages/domain/src/identity.ts`, `packages/application/src/authenticate.ts`, `apps/web/src/auth/local-adapter.ts`, `tests/integration/auth.test.ts`  
+**Files likely touched:** `apps/web/proxy.ts`, `apps/web/src/auth/clerk-adapter.ts`, `apps/web/app/sign-in/[[...sign-in]]/page.tsx`, `packages/application/src/request-context.ts`, `tests/unit/contracts/clerk-auth.test.ts`
 **Estimated scope:** Medium
 
 ### Task 11: Deliver learner onboarding and profile preferences

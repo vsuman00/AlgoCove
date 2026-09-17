@@ -74,13 +74,14 @@ export {
 export type { Role, RoleFailure } from "./roles.ts";
 
 export {
-  assertActiveSession,
-  revokeSession,
-  sessionStatus,
-} from "./identity.ts";
+  parseLearnerProfileInput,
+  SUPPORTED_LEARNER_LANGUAGES,
+} from "./learner-profile.ts";
 
 export type {
-  SessionFailure,
-  SessionRecord,
-  SessionStatus,
-} from "./identity.ts";
+  AccessibilitySettings,
+  LearnerLanguage,
+  LearnerProfile,
+  LearnerProfileFailure,
+  LearnerProfileInput,
+} from "./learner-profile.ts";

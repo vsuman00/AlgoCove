@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ClerkProvider } from "@clerk/nextjs";
 import type { ReactElement, ReactNode } from "react";
 import "./globals.css";
 
@@ -8,9 +9,11 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>): ReactElement {
+  const publishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
+  const content = publishableKey === undefined ? children : <ClerkProvider publishableKey={publishableKey}>{children}</ClerkProvider>;
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>{content}</body>
     </html>
   );
 }

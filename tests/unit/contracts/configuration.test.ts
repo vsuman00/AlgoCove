@@ -24,7 +24,7 @@ describe("validated configuration", () => {
     expect(config.logLevel).toBe("info");
     expect(config.web.port).toBe(3000);
     expect(config.database.runtimeUrl).toBeNull();
-    expect(config.features).toEqual({ tutor: false, execution: false, localIdentity: true });
+    expect(config.features).toEqual({ tutor: false, execution: false });
   });
 
   it("parses explicit values without changing the secret boundary", () => {
@@ -41,13 +41,14 @@ describe("validated configuration", () => {
       DATABASE_STATEMENT_TIMEOUT_MS: "1200",
       TUTOR_ENABLED: "true",
       EXECUTION_ENABLED: false,
-      LOCAL_IDENTITY_ENABLED: "false",
+      NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: "pk_test_example",
+      CLERK_SECRET_KEY: "sk_test_example",
     });
 
     expect(config.web.port).toBe(3100);
     expect(config.database.poolMax).toBe(12);
     expect(config.database.statementTimeoutMs).toBe(1200);
-    expect(config.features).toEqual({ tutor: true, execution: false, localIdentity: false });
+    expect(config.features).toEqual({ tutor: true, execution: false });
     expect(config.database.runtimeUrl?.toString()).toBe("[redacted]");
     expect(config.database.adminUrl?.toJSON()).toBe("[redacted]");
     expect(describeConfig(config)).toContainEqual({
@@ -117,6 +118,21 @@ describe("validated configuration", () => {
         message: "is required in production",
       });
     }
+  });
+
+  it("requires Clerk keys together and redacts both values", () => {
+    expect(() =>
+      loadConfig({ ...baseEnvironment, NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: "pk_test_only" }),
+    ).toThrow(/must be provided together/);
+
+    const config = loadConfig({
+      ...baseEnvironment,
+      NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: "pk_test_example",
+      CLERK_SECRET_KEY: "sk_test_example",
+    });
+    expect(config.clerk.publishableKey?.toString()).toBe("[redacted]");
+    expect(config.clerk.secretKey?.toString()).toBe("[redacted]");
+    expect(JSON.stringify(config)).not.toContain("sk_test_example");
   });
 
   it("redacts registered secrets from diagnostic text", () => {

@@ -31,7 +31,10 @@ export type Config = {
   readonly features: {
     readonly tutor: boolean;
     readonly execution: boolean;
-    readonly localIdentity: boolean;
+  };
+  readonly clerk: {
+    readonly publishableKey: SecretString | null;
+    readonly secretKey: SecretString | null;
   };
 };
 
@@ -76,6 +79,8 @@ function collectEnvironmentIssues(raw: {
   readonly APP_ORIGIN: string;
   readonly DATABASE_ADMIN_URL?: string | undefined;
   readonly DATABASE_URL?: string | undefined;
+  readonly NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY?: string | undefined;
+  readonly CLERK_SECRET_KEY?: string | undefined;
 }): ConfigIssue[] {
   const issues: ConfigIssue[] = [];
 
@@ -105,6 +110,25 @@ function collectEnvironmentIssues(raw: {
       message:
         "must differ from DATABASE_URL so the runtime role cannot run migrations or bypass schema ownership",
     });
+  }
+
+  if (
+    (raw.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY === undefined) !==
+    (raw.CLERK_SECRET_KEY === undefined)
+  ) {
+    issues.push({
+      key: "CLERK_SECRET_KEY",
+      message: "must be provided together with NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY",
+    });
+  }
+
+  if (raw.NODE_ENV === "production") {
+    if (raw.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY === undefined) {
+      issues.push({ key: "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY", message: "is required in production" });
+    }
+    if (raw.CLERK_SECRET_KEY === undefined) {
+      issues.push({ key: "CLERK_SECRET_KEY", message: "is required in production" });
+    }
   }
 
   return issues;
@@ -144,7 +168,13 @@ export function loadConfig(source: EnvironmentSource): Config {
     features: {
       tutor: raw.TUTOR_ENABLED,
       execution: raw.EXECUTION_ENABLED,
-      localIdentity: raw.LOCAL_IDENTITY_ENABLED,
+    },
+    clerk: {
+      publishableKey:
+        raw.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY === undefined
+          ? null
+          : new SecretString(raw.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY),
+      secretKey: raw.CLERK_SECRET_KEY === undefined ? null : new SecretString(raw.CLERK_SECRET_KEY),
     },
   };
 }
@@ -189,9 +219,14 @@ export function describeConfig(config: Config): readonly ConfigEntry[] {
     { key: "TUTOR_ENABLED", value: String(config.features.tutor), sensitive: false },
     { key: "EXECUTION_ENABLED", value: String(config.features.execution), sensitive: false },
     {
-      key: "LOCAL_IDENTITY_ENABLED",
-      value: String(config.features.localIdentity),
-      sensitive: false,
+      key: "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY",
+      value: config.clerk.publishableKey === null ? "<unset>" : "[redacted]",
+      sensitive: config.clerk.publishableKey !== null,
+    },
+    {
+      key: "CLERK_SECRET_KEY",
+      value: config.clerk.secretKey === null ? "<unset>" : "[redacted]",
+      sensitive: config.clerk.secretKey !== null,
     },
   ];
 }
