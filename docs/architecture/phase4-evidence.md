@@ -1,17 +1,17 @@
 # Phase 4 implementation evidence
 
-**Status:** Tasks 20, 21, 23, and the bounded Task 24 fixture/control slice are
-complete locally. Task 22 is partially validated locally: all six pinned
-profiles build with SBOM/provenance, pass normal/failure smoke fixtures, and
-Docker Scout reports zero critical/high findings for all four image profiles;
-the digest-based GHCR/Cosign release workflow is configured but has not yet
-been executed. Task 19 remains open: the local Docker `runc` baseline passed
-the six-language normal and hostile fixture matrix, but it is explicitly
-rejected as the production hostile-code boundary. The spike now accepts an
-explicit runtime and the CI workflow provisions gVisor `runsc`, but no
-candidate-runtime result or security-owner decision exists in this checkout.
-Phase 4 remains open until the stronger runtime and signed-image workflow are
-executed and the security decision is recorded.
+**Status:** Tasks 20, 21, 22, 23, and the bounded Task 24 fixture/control slice
+are complete with local and remote evidence. Task 19's candidate-runtime
+technical evidence is complete: GitHub CI run
+[`35260662910`](https://github.com/vsuman00/AlgoCove/actions/runs/35260662910)
+executed the six-language matrix under explicitly selected gVisor `runsc` and
+passed normal, hostile-boundary, and concurrent startup fixtures. The release
+workflow also passed remotely in run
+[`35261137554`](https://github.com/vsuman00/AlgoCove/actions/runs/35261137554),
+including Trivy's fixable critical/high gate, SBOM/provenance image builds, and
+keyless Cosign signing and verification for all four image profiles. Phase 4
+remains open only for the required explicit security-owner decision on the
+candidate runtime; Docker `runc` is still rejected for hostile learner code.
 
 ## Task 19 slice delivered
 
@@ -29,8 +29,12 @@ executed and the security decision is recorded.
 - Added explicit `ALGO_COVE_DOCKER_RUNTIME` selection with fail-closed runtime
   availability validation. The `stronger-sandbox` CI job installs gVisor,
   verifies Docker registration with `hello-world`, runs the same matrix with
-  `runsc`, and uploads the report as an artifact; its result is still pending
-  a remote workflow run and security-owner review.
+  `runsc`, and uploads the report as an artifact. CI run
+  [`35260662910`](https://github.com/vsuman00/AlgoCove/actions/runs/35260662910)
+  passed all normal, hostile-boundary, and concurrent fixtures for Python,
+  JavaScript, TypeScript, Java, C++, and C. The artifact records the enforced
+  limits, pinned image provenance, and the explicit statement that approval is
+  still a security-owner decision.
 
 ## Task 20 slice delivered
 
@@ -108,9 +112,15 @@ executed and the security decision is recorded.
   `sha256:f8146f392efe2fb048115c7f98ca90843dfbe5294044b60650bd07c4fbefe421`.
   Added `.github/workflows/execution-release.yml` to build with SBOM/provenance,
   scan the pushed digest with Trivy (gating fixable critical/high findings),
-  keylessly sign it with Cosign via GitHub OIDC, and
-  verify the certificate identity. The workflow is configured but has not yet
-  been executed against GHCR, so signing is not claimed.
+  keylessly sign it with Cosign via GitHub OIDC, and verify the certificate
+  identity. Release run
+  [`35261137554`](https://github.com/vsuman00/AlgoCove/actions/runs/35261137554)
+  passed all four image jobs. The signed GHCR digests were:
+
+  - Python: `ghcr.io/vsuman00/algocove/execution-python@sha256:b4b54669e108953fa4fe205a007157b84a94af076dd345b0a0fc084f1ea6f753`
+  - JavaScript/TypeScript: `ghcr.io/vsuman00/algocove/execution-javascript-typescript@sha256:d60b4e3a559fd23be341a1a1f6d246d80ab726ef9737747827c893387fc1e4f1`
+  - Java: `ghcr.io/vsuman00/algocove/execution-java@sha256:c89b44196054c059ceba60303277085729a4d145a9c36f6d6b56418185fbac2b`
+  - C/C++: `ghcr.io/vsuman00/algocove/execution-c-cpp@sha256:e2f112e027c3b30ff82a95224022fe8e10ca9f537d6c815f358e9d9e8882939b`
 
 ## Task 23 slice delivered
 
@@ -161,9 +171,11 @@ stronger candidate, not a production approval.
 
 Docker’s default `runc` runtime is useful for local control probing but does
 not satisfy the architecture’s required gVisor-class, microVM-class, or
-equivalently isolated managed boundary. Task 19 remains open until the same
-matrix is run with an approved stronger candidate and a security owner records
-approval, rejection, or a narrowed decision.
+equivalently isolated managed boundary. The remote candidate matrix now passes
+under gVisor `runsc`, but Task 19 remains open until a security owner records
+approval, rejection, or a narrowed decision with threat-model evidence. No
+production promotion or learner execution is authorized by the passing CI run
+alone.
 
 The Task 24 fixture runner is a local control-baseline test only. No learner
 source is accepted or executed by the application, Next.js, the general worker,
