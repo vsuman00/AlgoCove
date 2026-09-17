@@ -4,11 +4,15 @@ import {
   bootstrapDatabase,
   createPool,
   migrate,
+  PostgresIdentityRepository,
+  PostgresPlatformRepository,
   probeDatabase,
   readMigrationState,
   withTransaction,
   type DatabaseConnection,
 } from "@algocove/db";
+import { createAuditEvent, createOutboxEvent } from "@algocove/application";
+import { formatId, parseContentChecksum, parseInstant, parseLearnerProfileInput } from "@algocove/domain";
 
 const baseOperatorUrl =
   process.env.DATABASE_TEST_OPERATOR_URL ??
@@ -71,7 +75,12 @@ describe("PostgreSQL and pgvector lifecycle", () => {
       applicationName: "algocove-integration-migrate",
       logger: { info: () => undefined },
     });
-    expect(migrationResult.applied).toEqual(["0001_platform.sql"]);
+    expect(migrationResult.applied).toEqual([
+      "0001_platform.sql",
+      "0002_identity.sql",
+      "0003_roles.sql",
+      "0004_platform_primitives.sql",
+    ]);
 
     runtimePool = createPool(profile(runtimeUrl, "algocove-integration-runtime"));
   });
@@ -114,10 +123,15 @@ describe("PostgreSQL and pgvector lifecycle", () => {
 
     expect(result).toEqual({
       applied: [],
-      skipped: ["0001_platform.sql"],
+      skipped: [
+        "0001_platform.sql",
+        "0002_identity.sql",
+        "0003_roles.sql",
+        "0004_platform_primitives.sql",
+      ],
       appliedCount: 0,
     });
-    expect(state).toHaveLength(1);
+    expect(state).toHaveLength(4);
     expect(state[0]).toMatchObject({ id: "0001", name: "0001_platform.sql" });
     expect(state[0]?.checksum).toMatch(/^sha256:[0-9a-f]{64}$/);
   });
@@ -127,7 +141,7 @@ describe("PostgreSQL and pgvector lifecycle", () => {
 
     expect(readiness.ok).toBe(true);
     if (readiness.ok) {
-      expect(readiness.appliedMigrations).toBe(1);
+      expect(readiness.appliedMigrations).toBe(4);
       expect(readiness.serverTime).toMatch(/Z$/);
     }
   });
@@ -153,5 +167,89 @@ describe("PostgreSQL and pgvector lifecycle", () => {
 
     const result = await runtimePool!.query<{ ok: boolean }>("SELECT true AS ok");
     expect(result.rows[0]?.ok).toBe(true);
+  });
+
+  it("persists Clerk identity, server roles, and an optimistic learner profile", async () => {
+    const identity = new PostgresIdentityRepository(runtimePool!);
+    const learnerId = await identity.findOrCreateLearner(`clerk:integration-${runSuffix}`);
+    expect(await identity.getRoles(learnerId)).toEqual(["learner"]);
+
+    const input = parseLearnerProfileInput({
+      goal: "Prepare for an algorithms interview",
+      targetRole: "software engineer",
+      timezone: "Asia/Kolkata",
+      dailyCapacityMinutes: 45,
+      horizonDays: 30,
+      accessibility: { reducedMotion: true, highContrast: false, screenReader: false },
+      preferredLanguages: ["python", "typescript"],
+    });
+    const instant = parseInstant("2026-09-17T10:00:00.000Z");
+    if (!input.ok || !instant.ok) throw new Error("database profile fixture is invalid");
+    const created = await identity.create({
+      ...input.value,
+      learnerId,
+      version: 1,
+      createdAt: instant.value,
+      updatedAt: instant.value,
+      updatedBy: learnerId,
+    });
+    expect(created.version).toBe(1);
+    expect((await identity.get(learnerId))?.goal).toBe(input.value.goal);
+
+    const updated = await identity.update({
+      learnerId,
+      expectedVersion: 1,
+      profile: { ...created, goal: "Build durable DSA intuition", version: 2 },
+    });
+    expect(updated).toMatchObject({ version: 2, goal: "Build durable DSA intuition" });
+    await expect(identity.update({
+      learnerId,
+      expectedVersion: 1,
+      profile: { ...created, goal: "stale write", version: 2 },
+    })).resolves.toBeNull();
+  });
+
+  it("replays idempotent effects and persists immutable audit plus outbox records", async () => {
+    const identity = new PostgresIdentityRepository(runtimePool!);
+    const learnerId = await identity.findOrCreateLearner(`clerk:platform-${runSuffix}`);
+    const platform = new PostgresPlatformRepository(runtimePool!);
+    const checksum = parseContentChecksum(`sha256:${"c".repeat(64)}`);
+    const instant = parseInstant("2026-09-17T10:00:00.000Z");
+    const eventId = formatId("event", "0000000000000000");
+    const outboxEventId = formatId("event", "0000000000000001");
+    if (!checksum.ok || !instant.ok || !eventId.ok || !outboxEventId.ok) throw new Error("platform fixture is invalid");
+
+    const claim = { scope: "integration", key: `effect-${runSuffix}`, requestHash: checksum.value };
+    expect(await platform.claim(claim)).toEqual({ kind: "claimed" });
+    await platform.complete({ ...claim, response: { status: 200, body: { ok: true } } });
+    expect(await platform.claim(claim)).toEqual({ kind: "replay", response: { status: 200, body: { ok: true } } });
+
+    await platform.append(createAuditEvent({
+      eventId: eventId.value,
+      actorId: learnerId,
+      action: "integration.checked",
+      resourceType: "learner",
+      resourceId: learnerId,
+      occurredAt: instant.value,
+      payload: { outcome: "accepted", code: "must not persist" },
+    }));
+    await platform.enqueue(createOutboxEvent({
+      eventId: outboxEventId.value,
+      topic: "integration.checked",
+      aggregateId: learnerId,
+      occurredAt: instant.value,
+      payload: { outcome: "accepted", prompt: "must not persist" },
+    }));
+
+    const counts = await inspectionPool!.query<{ audit_count: string; outbox_count: string }>(
+      `SELECT
+         (SELECT count(*)::text FROM platform.audit_event WHERE event_id = $1) AS audit_count,
+         (SELECT count(*)::text FROM platform.outbox_event WHERE event_id = $2) AS outbox_count`,
+      [eventId.value, outboxEventId.value],
+    );
+    expect(counts.rows[0]).toEqual({ audit_count: "1", outbox_count: "1" });
+    await expect(
+      runtimePool!.query("UPDATE platform.audit_event SET action = 'tampered' WHERE event_id = $1", [eventId.value]),
+    ).rejects.toMatchObject({ code: "55006" });
   });
 });
