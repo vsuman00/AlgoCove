@@ -2,8 +2,8 @@
 
 **Status:** Tasks 20, 21, 22, 23, and the bounded Task 24 fixture/control slice
 are complete with local and remote evidence. Task 19's candidate-runtime
-technical evidence is complete: GitHub CI run
-[`35263228343`](https://github.com/vsuman00/AlgoCove/actions/runs/35263228343)
+technical evidence is complete: final GitHub CI run
+[`35264360185`](https://github.com/vsuman00/AlgoCove/actions/runs/35264360185)
 executed the six-language matrix under explicitly selected gVisor `runsc` and
 passed normal, hostile-boundary, and concurrent startup fixtures. The release
 workflow also passed remotely in run
