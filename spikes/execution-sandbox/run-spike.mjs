@@ -37,6 +37,8 @@ const commands = {
 const concurrencyCommands = {
   ...commands,
   typescript: "node /work/fixture.ts",
+  cpp: "/usr/bin/true",
+  c: "/usr/bin/true",
 };
 const normal = {
   python: 'print("NORMAL_OK")\n',
@@ -47,8 +49,8 @@ const normal = {
   c: '#include <stdio.h>\nint main(void) { puts("NORMAL_OK"); }\n',
 };
 // The concurrency probe measures parallel sandbox startup and teardown. Keep
-// its compile inputs intentionally tiny so a slower candidate runtime is not
-// mistaken for a compiler-memory failure under six simultaneous containers.
+// compiler-image commands lightweight so a slower candidate runtime is not
+// mistaken for compiler-memory pressure under six simultaneous containers.
 const concurrencyNormal = {
   python: 'print("NORMAL_OK")\n',
   javascript: 'console.log("NORMAL_OK");\n',
@@ -197,8 +199,8 @@ const limits = [
   "--cap-drop=ALL",
   "--security-opt=no-new-privileges:true",
   "--pids-limit=32",
-  "--memory=768m",
-  "--memory-swap=768m",
+  "--memory=512m",
+  "--memory-swap=512m",
   "--cpus=0.5",
   "--ulimit=nofile=64:64",
   "--ulimit=fsize=1048576:1048576",
@@ -401,9 +403,11 @@ const report = [
   "",
   "## Concurrency",
   "",
-  `- Six normal fixtures launched concurrently: ${concurrency.durationMs} ms wall time`,
+  `- Six lightweight language-container fixtures launched concurrently: ${concurrency.durationMs} ms wall time`,
   `- Results: ${concurrency.results.map((result) => `${result.language}=${result.exitCode} (${result.output || "empty"})`).join(", ")}`,
   `- Concurrent fixtures all passed: ${concurrencyPassed}`,
+  "",
+  "The concurrent probe uses lightweight startup commands; sequential fixtures above cover language-specific compile/run and boundary behavior.",
   "",
   "This is a local startup/concurrency observation, not a capacity or cost claim.",
   "",

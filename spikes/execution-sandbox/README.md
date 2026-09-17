@@ -27,8 +27,11 @@ probe images:
 The normal and hostile fixtures check execution, network denial, metadata
 denial, absent host mounts, absent Docker sockets, and absent credential-shaped
 environment variables. The report also records image IDs/digests, startup
-latency, a six-container concurrency observation, and whether `runsc` or
-Firecracker is installed.
+latency, a lightweight six-container startup/teardown observation, and whether
+`runsc` or Firecracker is installed. Sequential fixtures retain the
+language-specific compile/run checks; the concurrency probe intentionally uses
+small startup commands so compiler memory pressure does not obscure the
+runtime-isolation observation.
 
 The spike cannot close Task 19 by itself when only `runc` is available. In that
 case the report is evidence for rejecting the default runtime and the next
