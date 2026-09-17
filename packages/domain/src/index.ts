@@ -112,6 +112,25 @@ export {
   validateContentProvenance,
 } from "./content.ts";
 
+export {
+  completeProblemManifest,
+  languageProfile,
+  LANGUAGE_PROFILES,
+  PROBLEM_LANGUAGES,
+  validateProblemManifest,
+} from "./language-manifest.ts";
+
+export type {
+  LanguageProfile,
+  ManifestFailure,
+  ManifestFailureCode,
+  ProblemLanguage,
+  ProblemLanguageManifest,
+  ProblemManifest,
+  ProblemVersionId as ManifestProblemVersionId,
+  SemanticFixture,
+} from "./language-manifest.ts";
+
 export type {
   ContentFailure,
   ContentFailureCode,

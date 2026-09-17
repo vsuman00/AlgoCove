@@ -97,6 +97,7 @@ describe("PostgreSQL and pgvector lifecycle", () => {
       "0004_platform_primitives.sql",
       "0005_curriculum.sql",
       "0006_content.sql",
+      "0007_language_manifests.sql",
     ]);
 
     runtimePool = testPool(profile(runtimeUrl, "algocove-integration-runtime"));
@@ -147,10 +148,11 @@ describe("PostgreSQL and pgvector lifecycle", () => {
         "0004_platform_primitives.sql",
         "0005_curriculum.sql",
         "0006_content.sql",
+        "0007_language_manifests.sql",
       ],
       appliedCount: 0,
     });
-    expect(state).toHaveLength(6);
+    expect(state).toHaveLength(7);
     expect(state[0]).toMatchObject({ id: "0001", name: "0001_platform.sql" });
     expect(state[0]?.checksum).toMatch(/^sha256:[0-9a-f]{64}$/);
   });
@@ -160,7 +162,7 @@ describe("PostgreSQL and pgvector lifecycle", () => {
 
     expect(readiness.ok).toBe(true);
     if (readiness.ok) {
-      expect(readiness.appliedMigrations).toBe(6);
+      expect(readiness.appliedMigrations).toBe(7);
       expect(readiness.serverTime).toMatch(/Z$/);
     }
   });
@@ -432,5 +434,38 @@ describe("PostgreSQL and pgvector lifecycle", () => {
       title: "Original pair sum",
       statement: "An original problem statement.",
     });
+  });
+
+  it("installs six distinct language profiles and protects published manifests", async () => {
+    const profiles = await inspectionPool!.query<{
+      language: string;
+      adapter_id: string;
+      runtime_family: string;
+    }>(
+      "SELECT language, adapter_id, runtime_family FROM content.language_profile ORDER BY language",
+    );
+    expect(profiles.rows).toHaveLength(6);
+    expect(profiles.rows.map((row) => row.language)).toEqual([
+      "c",
+      "cpp",
+      "java",
+      "javascript",
+      "python",
+      "typescript",
+    ]);
+    expect(new Set(profiles.rows.map((row) => row.adapter_id)).size).toBe(6);
+    expect(profiles.rows.find((row) => row.language === "c")?.runtime_family).not.toBe(
+      profiles.rows.find((row) => row.language === "cpp")?.runtime_family,
+    );
+    await expect(
+      runtimePool!.query(
+        `INSERT INTO content.problem_language_manifest
+          (manifest_id, problem_version_id, language, starter_template,
+           entry_signature, adapter_id, limits_profile, status)
+         VALUES ('man_eeeeeeeeeeeeeeee', 'prb_dddddddddddddddd', 'python',
+                 'solve(input)', 'solve(input)', 'harness.python',
+                 '{"runTimeoutMs":2000}', 'published')`,
+      ),
+    ).rejects.toMatchObject({ code: "55006" });
   });
 });
