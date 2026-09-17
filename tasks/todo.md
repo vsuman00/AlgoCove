@@ -1,8 +1,10 @@
 # AlgoCove implementation task ledger
 
-**Status:** Proposed; documentation only. No implementation is marked complete.  
+**Status:** Implementation in progress; Phase 1 foundation slice is implemented, with remaining validation and human gates explicitly tracked below.  
 **Detailed acceptance criteria:** [Implementation plan](plan.md)  
-**Ordering:** Follow phase/document order, not numeric sorting. Suffix tasks close review gaps; Task 51 is intentionally before live AI. Parent packages need bounded subcards before coding.
+**Ordering:** Follow phase/document order, not numeric sorting. Suffix tasks close review gaps; Task 51 is intentionally before live AI. Parent packages need bounded subcards before coding.  
+
+**Current evidence:** The repository has a clean GitHub-synchronized `main` commit. `pnpm verify`, the production build, the frozen-lockfile install, the dependency audit, and local HTTP smoke checks pass. Browser-level accessibility checks, database integration, Phase 0 approvals, and the F1 human checkpoint remain pending.
 
 ## Phase 0: Resolve gates and freeze the build contract
 
@@ -19,11 +21,11 @@
 
 ## Phase 1: Establish the repository foundation
 
-- [ ] Task 5: Create root workspace and quality manifests
-- [ ] Task 6: Create the minimal web application shell
-- [ ] Task 6a: Integrate approved design tokens and page-shell contracts
-- [ ] Task 7: Create package boundaries and architecture tests
-- [ ] Task 8: Implement validated configuration and request primitives
+- [x] Task 5: Create root workspace and quality manifests — IMPLEMENTED; clean frozen-lockfile install, quality scripts, CI, secret scan, and dependency audit pass. Temporary-directory clone verification remains pending.
+- [ ] Task 6: Create the minimal web application shell — PARTIAL; routes, error boundary, production build, and HTTP smoke checks pass. Manual keyboard and failure-boundary verification remains pending.
+- [ ] Task 6a: Integrate approved design tokens and page-shell contracts — PARTIAL; Tailwind token mapping and the home shell are implemented. Workspace/Roadmap traceability and desktop/narrow contrast checks remain pending.
+- [x] Task 7: Create package boundaries and architecture tests — IMPLEMENTED; import-boundary fixtures, architecture tests, and typecheck pass.
+- [ ] Task 8: Implement validated configuration and request primitives — PARTIAL; configuration, IDs, request context, and error contracts are implemented. Focused unit/property and secret-shaped error/logging tests remain pending.
 - [ ] Task 9: Establish PostgreSQL, pgvector, migrations, and integration harness
 
 ### Checkpoint F1: Foundation
