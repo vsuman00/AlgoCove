@@ -29,7 +29,7 @@ const filenames = {
 const commands = {
   python: "python /work/fixture.py",
   javascript: "node /work/fixture.mjs",
-  typescript: "node --experimental-strip-types /work/fixture.ts",
+  typescript: "node /work/fixture.ts",
   java: "javac /work/Main.java && java -cp /work Main",
   cpp: "g++ -std=c++23 -O0 /work/main.cpp -o /work/main && /work/main",
   c: "gcc -std=c23 -O0 /work/main.c -o /work/main && /work/main",
