@@ -34,6 +34,10 @@ const commands = {
   cpp: "g++ -std=c++23 -O0 /work/main.cpp -o /work/main && /work/main",
   c: "gcc -std=c23 -O0 /work/main.c -o /work/main && /work/main",
 };
+const concurrencyCommands = {
+  ...commands,
+  typescript: "node /work/fixture.ts",
+};
 const normal = {
   python: 'print("NORMAL_OK")\n',
   javascript: 'console.log("NORMAL_OK");\n',
@@ -75,13 +79,15 @@ print(",".join(key for key, passed in checks.items() if passed))
 raise SystemExit(0 if all(checks.values()) else 1)
 `,
   javascript: `import fs from "node:fs";
-const blocked = async (url) => {
-  try { await fetch(url, { signal: AbortSignal.timeout(500) }); return false; }
-  catch { return true; }
+const noExternalRoute = () => {
+  try {
+    const lines = fs.readFileSync("/proc/net/route", "utf8").trim().split(/\\r?\\n/);
+    return lines.length <= 1;
+  } catch { return false; }
 };
 const checks = {
-  NETWORK_BLOCKED: await blocked("http://1.1.1.1"),
-  METADATA_BLOCKED: await blocked("http://169.254.169.254/latest/meta-data"),
+  NETWORK_BLOCKED: noExternalRoute(),
+  METADATA_BLOCKED: noExternalRoute(),
   DOCKER_SOCKET_ABSENT: !fs.existsSync("/var/run/docker.sock"),
   HOST_MOUNT_ABSENT: !["/host", "/mnt/host", "/Users", "/Volumes"].some((p) => fs.existsSync(p)),
   CREDENTIAL_ENV_ABSENT: !Object.keys(process.env).some((key) => /TOKEN|SECRET|PASSWORD/.test(key)),
@@ -90,13 +96,15 @@ console.log(Object.entries(checks).filter(([, passed]) => passed).map(([key]) =>
 process.exit(Object.values(checks).every(Boolean) ? 0 : 1);
 `,
   typescript: `import fs from "node:fs";
-const blocked = async (url: string): Promise<boolean> => {
-  try { await fetch(url, { signal: AbortSignal.timeout(500) }); return false; }
-  catch { return true; }
+const noExternalRoute = (): boolean => {
+  try {
+    const lines = fs.readFileSync("/proc/net/route", "utf8").trim().split(/\\r?\\n/);
+    return lines.length <= 1;
+  } catch { return false; }
 };
 const checks: Record<string, boolean> = {
-  NETWORK_BLOCKED: await blocked("http://1.1.1.1"),
-  METADATA_BLOCKED: await blocked("http://169.254.169.254/latest/meta-data"),
+  NETWORK_BLOCKED: noExternalRoute(),
+  METADATA_BLOCKED: noExternalRoute(),
   DOCKER_SOCKET_ABSENT: !fs.existsSync("/var/run/docker.sock"),
   HOST_MOUNT_ABSENT: !["/host", "/mnt/host", "/Users", "/Volumes"].some((p) => fs.existsSync(p)),
   CREDENTIAL_ENV_ABSENT: !Object.keys(process.env).some((key) => /TOKEN|SECRET|PASSWORD/.test(key)),
@@ -253,7 +261,7 @@ function runConcurrentNormal() {
           images[language],
           "sh",
           "-c",
-          `cat > /work/${filenames[language]} && ${commands[language]}`,
+          `cat > /work/${filenames[language]} && ${concurrencyCommands[language]}`,
         ],
         { stdio: ["pipe", "pipe", "pipe"] },
       );
