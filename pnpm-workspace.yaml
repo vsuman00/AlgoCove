@@ -7,3 +7,8 @@ packages:
 # deterministic for the repository's explicit latest-version policy rather
 # than making CI wait for pnpm's one-day release cooldown.
 minimumReleaseAge: 0
+
+# pnpm 12 blocks lifecycle scripts by default. This native resolver is the
+# only dependency that must run its postinstall step for the Next/Vite toolchain.
+allowBuilds:
+  unrs-resolver: true
