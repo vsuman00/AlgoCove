@@ -95,6 +95,7 @@ describe("PostgreSQL and pgvector lifecycle", () => {
       "0002_identity.sql",
       "0003_roles.sql",
       "0004_platform_primitives.sql",
+      "0005_curriculum.sql",
     ]);
 
     runtimePool = testPool(profile(runtimeUrl, "algocove-integration-runtime"));
@@ -143,10 +144,11 @@ describe("PostgreSQL and pgvector lifecycle", () => {
         "0002_identity.sql",
         "0003_roles.sql",
         "0004_platform_primitives.sql",
+        "0005_curriculum.sql",
       ],
       appliedCount: 0,
     });
-    expect(state).toHaveLength(4);
+    expect(state).toHaveLength(5);
     expect(state[0]).toMatchObject({ id: "0001", name: "0001_platform.sql" });
     expect(state[0]?.checksum).toMatch(/^sha256:[0-9a-f]{64}$/);
   });
@@ -156,7 +158,7 @@ describe("PostgreSQL and pgvector lifecycle", () => {
 
     expect(readiness.ok).toBe(true);
     if (readiness.ok) {
-      expect(readiness.appliedMigrations).toBe(4);
+      expect(readiness.appliedMigrations).toBe(5);
       expect(readiness.serverTime).toMatch(/Z$/);
     }
   });
@@ -319,5 +321,65 @@ describe("PostgreSQL and pgvector lifecycle", () => {
       [eventId.value],
     );
     expect(rolledBack.rows[0]?.count).toBe("0");
+  });
+
+  it("pins curriculum graph rows and blocks mutation after publication", async () => {
+    const conceptA = "cpt_aaaaaaaaaaaaaaaa";
+    const conceptB = "cpt_bbbbbbbbbbbbbbbb";
+    const versionId = "cur_cccccccccccccccc";
+    await runtimePool!.query(
+      `INSERT INTO learning.concept (concept_id, slug, title, summary)
+       VALUES ($1, $2, $3, $4), ($5, $6, $7, $8)`,
+      [
+        conceptA,
+        "arrays",
+        "Arrays",
+        "A collection concept.",
+        conceptB,
+        "hashing",
+        "Hashing",
+        "A lookup concept.",
+      ],
+    );
+    await runtimePool!.query(
+      `INSERT INTO learning.curriculum_graph_version
+        (curriculum_version_id, version_number, status, published_at)
+       VALUES ($1, 1, 'draft', NULL)`,
+      [versionId],
+    );
+    await runtimePool!.query(
+      `INSERT INTO learning.curriculum_node
+        (curriculum_version_id, concept_id, objective, ordinal)
+       VALUES ($1, $2, $3, 0), ($1, $4, $5, 1)`,
+      [versionId, conceptA, "Explain arrays", conceptB, "Explain hashing"],
+    );
+    await runtimePool!.query(
+      `INSERT INTO learning.curriculum_edge
+        (curriculum_version_id, from_concept_id, to_concept_id, edge_kind)
+       VALUES ($1, $2, $3, 'required')`,
+      [versionId, conceptA, conceptB],
+    );
+    await runtimePool!.query(
+      `UPDATE learning.curriculum_graph_version
+          SET status = 'published', published_at = now()
+        WHERE curriculum_version_id = $1`,
+      [versionId],
+    );
+
+    await expect(
+      runtimePool!.query(
+        "UPDATE learning.curriculum_node SET objective = 'tampered' WHERE curriculum_version_id = $1",
+        [versionId],
+      ),
+    ).rejects.toMatchObject({ code: "55006" });
+    const pinned = await inspectionPool!.query<{ status: string; edge_kind: string }>(
+      `SELECT version.status, edge.edge_kind
+         FROM learning.curriculum_graph_version AS version
+         JOIN learning.curriculum_edge AS edge
+           ON edge.curriculum_version_id = version.curriculum_version_id
+        WHERE version.curriculum_version_id = $1`,
+      [versionId],
+    );
+    expect(pinned.rows[0]).toEqual({ status: "published", edge_kind: "required" });
   });
 });

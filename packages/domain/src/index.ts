@@ -92,3 +92,23 @@ export type {
   LearnerProfileFailure,
   LearnerProfileInput,
 } from "./learner-profile.ts";
+
+export {
+  CURRICULUM_EDGE_KINDS,
+  isPublishedCurriculumGraphImmutable,
+  publishCurriculumGraph,
+  validateCurriculumGraph,
+} from "./curriculum.ts";
+
+export type {
+  ConceptId,
+  CurriculumConcept,
+  CurriculumEdge,
+  CurriculumEdgeKind,
+  CurriculumFailure,
+  CurriculumFailureCode,
+  CurriculumGraphInput,
+  CurriculumGraphVersion,
+  CurriculumNode,
+  CurriculumVersionId,
+} from "./curriculum.ts";

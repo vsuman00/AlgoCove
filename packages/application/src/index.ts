@@ -79,3 +79,9 @@ export type {
 
 export { redactPayload } from "./platform-safety.ts";
 export type { SafePayload } from "./platform-safety.ts";
+
+export {
+  publishCurriculumVersion,
+  resolvePublishedCurriculumVersion,
+} from "./curriculum-use-cases.ts";
+export type { CurriculumGraphRepository } from "./curriculum-use-cases.ts";

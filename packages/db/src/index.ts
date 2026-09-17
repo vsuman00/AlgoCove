@@ -35,6 +35,7 @@ export {
   BOOKKEEPING_TABLE,
   BOOKKEEPING_TABLE_DDL,
   BootstrapError,
+  DATA_SCHEMAS,
   PLATFORM_SCHEMA,
   quoteIdentifier,
   quoteLiteral,

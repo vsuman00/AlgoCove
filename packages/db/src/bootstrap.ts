@@ -84,6 +84,8 @@ export function quoteLiteral(value: string): string {
 }
 
 export const PLATFORM_SCHEMA = "platform";
+/** Schemas owned by the migration role and writable by the runtime role. */
+export const DATA_SCHEMAS = ["platform", "learning", "content"] as const;
 export const BOOKKEEPING_TABLE = "schema_migration";
 
 export const BOOKKEEPING_TABLE_DDL = `CREATE TABLE IF NOT EXISTS ${PLATFORM_SCHEMA}.${BOOKKEEPING_TABLE} (
@@ -138,9 +140,9 @@ export async function bootstrapDatabase(options: BootstrapOptions): Promise<Boot
     // them; the operator connection never becomes the long-lived owner.
     await pool.query(`SET ROLE ${migrationRole}`);
     try {
-      await pool.query(
-        `CREATE SCHEMA IF NOT EXISTS ${PLATFORM_SCHEMA} AUTHORIZATION ${migrationRole}`,
-      );
+      for (const schema of DATA_SCHEMAS) {
+        await pool.query(`CREATE SCHEMA IF NOT EXISTS ${schema} AUTHORIZATION ${migrationRole}`);
+      }
       await pool.query(BOOKKEEPING_TABLE_DDL);
     } finally {
       await pool.query("RESET ROLE");
@@ -205,28 +207,26 @@ async function applyPrivileges(
   const { migrationRole, runtimeRole } = input;
 
   await pool.query(`GRANT CONNECT ON DATABASE ${database} TO ${runtimeRole}`);
-  await pool.query(`GRANT USAGE ON SCHEMA ${PLATFORM_SCHEMA} TO ${runtimeRole}`);
+  for (const schema of DATA_SCHEMAS) {
+    await pool.query(`GRANT USAGE ON SCHEMA ${schema} TO ${runtimeRole}`);
+    await pool.query(
+      `GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA ${schema} TO ${runtimeRole}`,
+    );
+    await pool.query(`GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA ${schema} TO ${runtimeRole}`);
+    await pool.query(
+      `ALTER DEFAULT PRIVILEGES FOR ROLE ${migrationRole} IN SCHEMA ${schema}
+       GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO ${runtimeRole}`,
+    );
+    await pool.query(
+      `ALTER DEFAULT PRIVILEGES FOR ROLE ${migrationRole} IN SCHEMA ${schema}
+       GRANT USAGE, SELECT ON SEQUENCES TO ${runtimeRole}`,
+    );
+  }
 
   // The public schema stays locked down so a compromised runtime role cannot
   // create objects and impersonate platform tables.
   await pool.query("REVOKE CREATE ON SCHEMA public FROM PUBLIC");
   await pool.query(`REVOKE ALL ON SCHEMA public FROM ${runtimeRole}`);
-
-  // Existing objects, plus future objects created by the migration role.
-  await pool.query(
-    `GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA ${PLATFORM_SCHEMA} TO ${runtimeRole}`,
-  );
-  await pool.query(
-    `GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA ${PLATFORM_SCHEMA} TO ${runtimeRole}`,
-  );
-  await pool.query(
-    `ALTER DEFAULT PRIVILEGES FOR ROLE ${migrationRole} IN SCHEMA ${PLATFORM_SCHEMA}
-       GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO ${runtimeRole}`,
-  );
-  await pool.query(
-    `ALTER DEFAULT PRIVILEGES FOR ROLE ${migrationRole} IN SCHEMA ${PLATFORM_SCHEMA}
-       GRANT USAGE, SELECT ON SEQUENCES TO ${runtimeRole}`,
-  );
 
   // Bookkeeping is internal: the runtime role may read the watermark, never write.
   await pool.query(
