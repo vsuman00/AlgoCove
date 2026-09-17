@@ -1,0 +1,16 @@
+{
+  "name": "@algocove/execution-contracts",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Versioned, signed contracts between application-owned runs and isolated execution control.",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@algocove/domain": "workspace:*"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  }
+}

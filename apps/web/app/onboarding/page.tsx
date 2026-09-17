@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, type FormEvent, type ReactElement } from "react";
+import AlgoCoveShell from "../../src/components/algocove-shell";
 
 type ProfileForm = {
   goal: string;
@@ -124,143 +125,149 @@ export default function OnboardingPage(): ReactElement {
   }
 
   return (
-    <main className="mx-auto min-h-svh w-[calc(100%-32px)] max-w-[760px] py-10 sm:w-[calc(100%-48px)] sm:py-16">
-      <a className={`text-cove-body-sm text-cove-link underline ${focusRing}`} href="/">
-        Back to home
-      </a>
-      <header className="mb-8 mt-8">
-        <p className="mb-3 text-cove-label font-semibold uppercase tracking-[0.08em] text-cove-link">
-          Learner setup
-        </p>
-        <h1 className="mb-4 font-cove-display text-cove-h2 font-semibold text-cove-primary">
-          Shape the learning loop around your week.
-        </h1>
-        <p className="max-w-[60ch] text-cove-body-lg text-cove-body">
-          These settings are private to your AlgoCove learner profile and can be changed later.
-        </p>
-      </header>
-
-      <div
-        role="status"
-        aria-live="polite"
-        className="mb-6 border-l-2 border-cove-link pl-3 text-cove-body-sm text-cove-secondary"
+    <AlgoCoveShell active="Today">
+      <main
+        id="main-content"
+        tabIndex={-1}
+        className="ac-form-page mx-auto min-h-svh w-[calc(100%-32px)] max-w-[760px] py-10 sm:w-[calc(100%-48px)] sm:py-16"
       >
-        {message}
-      </div>
-
-      {status === "signed-out" ? (
-        <a
-          className={`inline-flex min-h-11 items-center rounded-cove-sm bg-cove-action-primary px-4 py-3 font-semibold text-cove-on-dark no-underline ${focusRing}`}
-          href="/sign-in"
-        >
-          Sign in with Clerk
+        <a className={`text-cove-body-sm text-cove-link underline ${focusRing}`} href="/">
+          Back to home
         </a>
-      ) : (
-        <form className="grid gap-6" onSubmit={submit} aria-busy={status === "loading"}>
-          <div className="grid gap-6 sm:grid-cols-2">
-            <label className="text-cove-body-sm font-semibold sm:col-span-2">
-              Learning goal
-              <textarea
-                className={`${inputClass} min-h-28`}
-                value={form.goal}
-                onChange={(event) => update("goal", event.target.value)}
-                required
-                maxLength={500}
-              />
-            </label>
-            <label className="text-cove-body-sm font-semibold">
-              Target role
-              <input
-                className={inputClass}
-                value={form.targetRole}
-                onChange={(event) => update("targetRole", event.target.value)}
-                required
-                maxLength={120}
-              />
-            </label>
-            <label className="text-cove-body-sm font-semibold">
-              Time zone
-              <input
-                className={inputClass}
-                value={form.timezone}
-                onChange={(event) => update("timezone", event.target.value)}
-                required
-              />
-            </label>
-            <label className="text-cove-body-sm font-semibold">
-              Daily minutes
-              <input
-                className={inputClass}
-                type="number"
-                min="15"
-                max="480"
-                step="1"
-                value={form.dailyCapacityMinutes}
-                onChange={(event) => update("dailyCapacityMinutes", event.target.value)}
-                required
-              />
-            </label>
-            <label className="text-cove-body-sm font-semibold">
-              Planning horizon (days)
-              <input
-                className={inputClass}
-                type="number"
-                min="7"
-                max="365"
-                step="1"
-                value={form.horizonDays}
-                onChange={(event) => update("horizonDays", event.target.value)}
-                required
-              />
-            </label>
-            <label className="text-cove-body-sm font-semibold sm:col-span-2">
-              Preferred languages
-              <input
-                className={inputClass}
-                value={form.preferredLanguages}
-                onChange={(event) => update("preferredLanguages", event.target.value)}
-                aria-describedby="language-help"
-                required
-              />
-              <span
-                id="language-help"
-                className="mt-2 block font-normal text-cove-meta text-cove-secondary"
-              >
-                Comma-separated: python, javascript, typescript, java, cpp, or c.
-              </span>
-            </label>
-          </div>
+        <header className="mb-8 mt-8">
+          <p className="mb-3 text-cove-label font-semibold uppercase tracking-[0.08em] text-cove-link">
+            Learner setup
+          </p>
+          <h1 className="mb-4 font-cove-display text-cove-h2 font-semibold text-cove-primary">
+            Shape the learning loop around your week.
+          </h1>
+          <p className="max-w-[60ch] text-cove-body-lg text-cove-body">
+            These settings are private to your AlgoCove learner profile and can be changed later.
+          </p>
+        </header>
 
-          <fieldset className="grid gap-3 border-t border-cove-default pt-6">
-            <legend className="text-cove-body-sm font-semibold">Accessibility preferences</legend>
-            {(
-              [
-                ["reducedMotion", "Reduce motion"],
-                ["highContrast", "Use higher contrast"],
-                ["screenReader", "Optimize for screen reader use"],
-              ] as const
-            ).map(([key, label]) => (
-              <label className="flex min-h-11 items-center gap-3 text-cove-body-sm" key={key}>
-                <input
-                  className="size-5 accent-cove-action-primary"
-                  type="checkbox"
-                  checked={form[key]}
-                  onChange={(event) => update(key, event.target.checked)}
-                />
-                {label}
-              </label>
-            ))}
-          </fieldset>
+        <div
+          role="status"
+          aria-live="polite"
+          className="mb-6 border-l-2 border-cove-link pl-3 text-cove-body-sm text-cove-secondary"
+        >
+          {message}
+        </div>
 
-          <button
-            className={`inline-flex min-h-11 w-fit items-center justify-center rounded-cove-sm bg-cove-action-primary px-4 py-3 font-semibold text-cove-on-dark hover:bg-cove-action-primary-hover disabled:cursor-not-allowed disabled:opacity-60 ${focusRing}`}
-            disabled={status === "loading"}
-            type="submit"
+        {status === "signed-out" ? (
+          <a
+            className={`inline-flex min-h-11 items-center rounded-cove-sm bg-cove-action-primary px-4 py-3 font-semibold text-cove-on-dark no-underline ${focusRing}`}
+            href="/sign-in"
           >
-            {status === "loading" ? "Saving…" : "Save profile"}
-          </button>
-        </form>
-      )}
-    </main>
+            Sign in with Clerk
+          </a>
+        ) : (
+          <form className="grid gap-6" onSubmit={submit} aria-busy={status === "loading"}>
+            <div className="grid gap-6 sm:grid-cols-2">
+              <label className="text-cove-body-sm font-semibold sm:col-span-2">
+                Learning goal
+                <textarea
+                  className={`${inputClass} min-h-28`}
+                  value={form.goal}
+                  onChange={(event) => update("goal", event.target.value)}
+                  required
+                  maxLength={500}
+                />
+              </label>
+              <label className="text-cove-body-sm font-semibold">
+                Target role
+                <input
+                  className={inputClass}
+                  value={form.targetRole}
+                  onChange={(event) => update("targetRole", event.target.value)}
+                  required
+                  maxLength={120}
+                />
+              </label>
+              <label className="text-cove-body-sm font-semibold">
+                Time zone
+                <input
+                  className={inputClass}
+                  value={form.timezone}
+                  onChange={(event) => update("timezone", event.target.value)}
+                  required
+                />
+              </label>
+              <label className="text-cove-body-sm font-semibold">
+                Daily minutes
+                <input
+                  className={inputClass}
+                  type="number"
+                  min="15"
+                  max="480"
+                  step="1"
+                  value={form.dailyCapacityMinutes}
+                  onChange={(event) => update("dailyCapacityMinutes", event.target.value)}
+                  required
+                />
+              </label>
+              <label className="text-cove-body-sm font-semibold">
+                Planning horizon (days)
+                <input
+                  className={inputClass}
+                  type="number"
+                  min="7"
+                  max="365"
+                  step="1"
+                  value={form.horizonDays}
+                  onChange={(event) => update("horizonDays", event.target.value)}
+                  required
+                />
+              </label>
+              <label className="text-cove-body-sm font-semibold sm:col-span-2">
+                Preferred languages
+                <input
+                  className={inputClass}
+                  value={form.preferredLanguages}
+                  onChange={(event) => update("preferredLanguages", event.target.value)}
+                  aria-describedby="language-help"
+                  required
+                />
+                <span
+                  id="language-help"
+                  className="mt-2 block font-normal text-cove-meta text-cove-secondary"
+                >
+                  Comma-separated: python, javascript, typescript, java, cpp, or c.
+                </span>
+              </label>
+            </div>
+
+            <fieldset className="grid gap-3 border-t border-cove-default pt-6">
+              <legend className="text-cove-body-sm font-semibold">Accessibility preferences</legend>
+              {(
+                [
+                  ["reducedMotion", "Reduce motion"],
+                  ["highContrast", "Use higher contrast"],
+                  ["screenReader", "Optimize for screen reader use"],
+                ] as const
+              ).map(([key, label]) => (
+                <label className="flex min-h-11 items-center gap-3 text-cove-body-sm" key={key}>
+                  <input
+                    className="size-5 accent-cove-action-primary"
+                    type="checkbox"
+                    checked={form[key]}
+                    onChange={(event) => update(key, event.target.checked)}
+                  />
+                  {label}
+                </label>
+              ))}
+            </fieldset>
+
+            <button
+              className={`inline-flex min-h-11 w-fit items-center justify-center rounded-cove-sm bg-cove-action-primary px-4 py-3 font-semibold text-cove-on-dark hover:bg-cove-action-primary-hover disabled:cursor-not-allowed disabled:opacity-60 ${focusRing}`}
+              disabled={status === "loading"}
+              type="submit"
+            >
+              {status === "loading" ? "Saving…" : "Save profile"}
+            </button>
+          </form>
+        )}
+      </main>
+    </AlgoCoveShell>
   );
 }

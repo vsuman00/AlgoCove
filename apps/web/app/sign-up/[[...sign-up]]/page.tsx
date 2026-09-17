@@ -1,6 +1,8 @@
 import { SignUp } from "@clerk/nextjs";
 import type { ReactElement } from "react";
 import { isClerkConfigured } from "../../../src/auth/clerk-config";
+import AlgoCoveMark from "../../../src/components/algocove-mark";
+import ClerkConnectionStatus from "../../../src/components/clerk-connection-status";
 
 function ClerkSetupNotice(): ReactElement {
   return (
@@ -19,9 +21,14 @@ function ClerkSetupNotice(): ReactElement {
 }
 
 export default function SignUpPage(): ReactElement {
+  const clerkConfigured = isClerkConfigured();
   return (
-    <main className="grid min-h-svh place-items-center bg-cove-page p-6">
-      {isClerkConfigured() ? (
+    <main className="ac-auth-page">
+      <a href="/" aria-label="AlgoCove home">
+        <AlgoCoveMark />
+      </a>
+      <ClerkConnectionStatus configured={clerkConfigured} />
+      {clerkConfigured ? (
         <SignUp path="/sign-up" routing="path" signInUrl="/sign-in" />
       ) : (
         <ClerkSetupNotice />

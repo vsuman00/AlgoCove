@@ -12,10 +12,21 @@ export function isClerkConfigured(
     CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY,
   },
 ): boolean {
-  return (
+  const hasPublishableKey =
     typeof environment.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY === "string" &&
-    environment.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY.trim().length > 0 &&
-    typeof environment.CLERK_SECRET_KEY === "string" &&
-    environment.CLERK_SECRET_KEY.trim().length > 0
-  );
+    environment.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY.trim().length > 0;
+
+  // CLERK_SECRET_KEY is server-only (not prefixed with NEXT_PUBLIC_), so it's
+  // never available in the browser.  Only check it on the server to avoid
+  // hydration mismatches caused by different return values on server vs client.
+  const isServer = typeof window === "undefined";
+  if (isServer) {
+    return (
+      hasPublishableKey &&
+      typeof environment.CLERK_SECRET_KEY === "string" &&
+      environment.CLERK_SECRET_KEY.trim().length > 0
+    );
+  }
+
+  return hasPublishableKey;
 }

@@ -25,6 +25,16 @@ test.describe("Learner Home shell", () => {
     );
   });
 
+  test("shows real authentication entry points without a placeholder identity", async ({
+    page,
+  }) => {
+    await page.goto("/");
+
+    await expect(page.getByRole("button", { name: "Sign in", exact: true })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Create account", exact: true })).toBeVisible();
+    await expect(page.getByText("VS", { exact: true })).toHaveCount(0);
+  });
+
   test("reflows at the narrowest supported shell width", async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 800 });
     await page.goto("/");

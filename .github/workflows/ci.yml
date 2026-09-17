@@ -20,7 +20,7 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5.1.0
 
       - name: Set up pnpm
         uses: pnpm/action-setup@v4
@@ -29,7 +29,7 @@ jobs:
           run_install: false
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7.0.0
         with:
           node-version-file: .nvmrc
           cache: pnpm
@@ -59,3 +59,87 @@ jobs:
 
       - name: Audit dependencies
         run: pnpm security:audit
+
+  execution-gates:
+    name: Execution contract and sandbox gates
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5.1.0
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 12.4.2
+          run_install: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build pinned execution images
+        run: pnpm images:build
+
+      - name: Run execution-image smoke fixtures
+        run: pnpm images:test
+
+      - name: Run six-language semantic conformance
+        run: pnpm test:conformance
+
+      - name: Run bounded sandbox abuse fixtures
+        run: pnpm test:sandbox
+
+  stronger-sandbox:
+    name: Stronger runtime sandbox spike
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5.1.0
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 12.4.2
+          run_install: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install gVisor runsc
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y apt-transport-https ca-certificates curl gnupg
+          curl -fsSL https://gvisor.dev/archive.key | sudo gpg --dearmor --yes -o /usr/share/keyrings/gvisor-archive-keyring.gpg
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/gvisor-archive-keyring.gpg] https://storage.googleapis.com/gvisor/releases release main" | sudo tee /etc/apt/sources.list.d/gvisor.list > /dev/null
+          sudo apt-get update
+          sudo apt-get install -y runsc
+          sudo runsc install
+          sudo systemctl restart docker
+          docker info --format '{{json .Runtimes}}'
+          docker run --rm --runtime=runsc hello-world
+
+      - name: Run the candidate-runtime sandbox spike
+        env:
+          ALGO_COVE_DOCKER_RUNTIME: runsc
+        run: pnpm test:sandbox:spike
+
+      - name: Upload Task 19 runtime evidence
+        if: always()
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: task-19-gvisor-evidence
+          path: spikes/execution-sandbox/reports/task-19-2026-09-17.md
+          if-no-files-found: error

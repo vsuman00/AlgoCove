@@ -1,6 +1,7 @@
 packages:
   - "apps/*"
   - "packages/*"
+  - "services/*"
 
 # This workspace pins exact dependency versions and validates them with the
 # frozen lockfile, dependency audit, and secret scan in CI. Keep installs

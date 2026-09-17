@@ -5,13 +5,16 @@ const SENSITIVE_KEY =
   /(source|code|pseudocode|prompt|token|secret|password|cookie|authorization|private[_-]?key|raw[_-]?body|model[_-]?output)/i;
 const SENSITIVE_VALUE =
   /(bearer\s+[a-z0-9._-]+|postgres(?:ql)?:\/\/|-----begin\s+(?:rsa|openssh|private)|sk-[a-z0-9_-]{8,})/i;
+const SAFE_CHECKSUM_KEY = /^(?:source|manifest|fixture|runtimeImage|descriptor)Digest$/;
 const MAX_DEPTH = 5;
 const MAX_KEYS = 64;
 const MAX_ITEMS = 64;
 const MAX_STRING_LENGTH = 1_000;
 
 function sanitize(value: unknown, key: string | undefined, depth: number): unknown {
-  if (key !== undefined && SENSITIVE_KEY.test(key)) return "[redacted]";
+  if (key !== undefined && SENSITIVE_KEY.test(key) && !SAFE_CHECKSUM_KEY.test(key)) {
+    return "[redacted]";
+  }
   if (depth > MAX_DEPTH) return "[truncated]";
   if (typeof value === "string") {
     if (SENSITIVE_VALUE.test(value)) return "[redacted]";

@@ -1,10 +1,10 @@
 # AlgoCove implementation task ledger
 
-**Status:** Phase 3 technical implementation slices complete; the F2 live Clerk evidence and F3 transition authorization remain pending. Runnable content publication remains intentionally blocked until Task 23.
+**Status:** Phase 2 identity/profile evidence is complete from owner-verified Clerk sign-in/sign-up and profile use. Phase 3 technical implementation and manual browser validation are complete. The owner authorized Phase 4 transition work on 2026-09-17. Tasks 20, 21, 23, and the bounded Task 24 abuse/control slice are complete locally. Task 22 now has four clean local critical/high scans and a configured digest-signing workflow, but the GHCR/Cosign workflow has not run. Task 19 has an explicit-runtime spike and a configured gVisor CI job, but no remote candidate evidence or security-owner decision exists. Phase 4 remains open and runnable content publication remains blocked.
 **Detailed acceptance criteria:** [Implementation plan](plan.md)  
 **Ordering:** Follow phase/document order, not numeric sorting. Suffix tasks close review gaps; Task 51 is intentionally before live AI. Parent packages need bounded subcards before coding.  
 
-**Current evidence:** Phase 1, Phase 2, and the Phase 3 implementation slices pass the local gate: `pnpm verify`, `pnpm test:all`, production build, dependency audit, 12 isolated PostgreSQL/pgvector integration tests, 8 deterministic anonymous browser accessibility tests, Clerk adapter/route fixtures, profile ownership/version tests, authorization matrix tests, curriculum cycle/version tests, content provenance/review/tombstone tests, six-language manifest tests, reviewed external-link/domain tests, collection deduplication, and the fixture-backed author/review/publish UI. The Clerk CLI is authenticated, linked to the AlgoCove application, and has pulled development keys into the ignored `apps/web/.env.local`; enabled-key build and liveness smoke checks pass. Live Clerk login/logout/revocation and an authenticated browser journey still require a test account; Task 23 execution conformance is not implemented, so runnable content publication remains blocked. Phase 0 planning approvals remain unchanged.
+**Current evidence:** Phase 1, Phase 2, and the Phase 3 implementation slices pass the local gate: `pnpm verify`, `pnpm test:all`, production build, dependency audit, 13 isolated PostgreSQL/pgvector integration tests, 9 deterministic Chromium accessibility tests, Clerk adapter/route fixtures, profile ownership/version tests, authorization matrix tests, curriculum cycle/version tests, content provenance/review/tombstone tests, six-language manifest tests, reviewed external-link/domain tests, collection deduplication, and the fixture-backed author/review/publish UI. The Clerk CLI is authenticated, linked to the AlgoCove application, and has pulled development keys into the ignored `apps/web/.env.local`; enabled-key build and liveness smoke checks pass. The owner manually verified Clerk sign-up/sign-in, profile use, and the Clerk user record. The profile persistence boundary remains covered by the application path and isolated PostgreSQL tests; no separate live SQL inspection is claimed here. Task 20's signed execution-contract package and 7 focused tests pass. Task 21's execution-control and descriptor-only outbox relay slice passes 8 focused tests, the full local gate, the 13-test PostgreSQL suite with migration 0009, production build, and 9 Chromium accessibility tests. Task 22 has four pinned image profiles for six languages with SBOM/provenance, smoke evidence, and zero local Docker Scout critical/high findings; a GHCR/Cosign digest-signing workflow is configured but not remotely executed. Task 23's local conformance runner passes 36 correct executions, rejects six mutated solutions, and rejects spoofed/malformed/expected-value output. Task 24's local abuse runner passes 14 bounded escape/egress/resource/path/signal/cancellation/teardown fixtures with no container residue; the existing signed-result and lifecycle tests cover correlation, fencing, cancellation classification, and infrastructure-error handling. Task 19 now has fail-closed explicit runtime selection and a gVisor CI job, but no remote candidate result or security-owner approval. Phase 4 still does not approve Docker `runc` for hostile learner code. The architecture A0-A2 approval records and Phase 0 planning decisions remain explicitly proposed or pending where the architecture documents say owner input is required.
 
 ## Phase 0: Resolve gates and freeze the build contract
 
@@ -37,18 +37,18 @@
 
 ## Phase 2: Identity, authorization, and durable platform primitives
 
-- [x] Task 10: Integrate Clerk identity and actor context — IMPLEMENTED; verified Clerk session claims map to deterministic internal opaque learner IDs, roles are loaded from the server store, provider metadata is ignored, the Clerk CLI app is linked, development keys are locally configured, and sign-in/up/session route fixtures pass. Live Clerk account/revocation verification remains pending a test account.
-- [x] Task 11: Deliver learner onboarding and profile preferences — IMPLEMENTED locally; PostgreSQL learner/profile migrations, owner/version use cases, Clerk-backed API, Tailwind onboarding UI, invalid-input and cross-user tests, six deterministic anonymous browser accessibility checks, and enabled-key build/liveness checks pass. Authenticated browser proof remains pending a Clerk test account.
+- [x] Task 10: Integrate Clerk identity and actor context — IMPLEMENTED; verified Clerk session claims map to deterministic internal opaque learner IDs, roles are loaded from the server store, provider metadata is ignored, the Clerk CLI app is linked, development keys are locally configured, sign-in/up/session route fixtures pass, and the owner manually verified live sign-in/sign-up and the Clerk user record.
+- [x] Task 11: Deliver learner onboarding and profile preferences — IMPLEMENTED; PostgreSQL learner/profile migrations, owner/version use cases, Clerk-backed API, Tailwind onboarding UI, invalid-input and cross-user tests, six deterministic anonymous browser accessibility checks, enabled-key build/liveness checks, and owner-verified authenticated profile use pass. Profile persistence is covered by the application path and isolated PostgreSQL tests.
 - [x] Task 12: Implement privileged roles and authorization matrix — IMPLEMENTED; every role has an explicit permission set, negative learner checks pass, and content author/reviewer separation-of-duties is enforced.
 - [x] Task 13: Implement idempotency, audit, and transactional outbox foundations — IMPLEMENTED; PostgreSQL-backed claims replay/conflict safely, audit rows are append-only, payloads redact source material, outbox writes participate in transaction rollback, and concurrent claim fixtures pass.
 - [x] Task 13a: Establish privacy-safe observability before service integration — IMPLEMENTED; allowlisted correlation/error fields and bounded telemetry redaction are covered by canary tests.
 
 ### Checkpoint F2: Identity and platform integrity
 
-- [ ] Onboarding works end to end — API and mocked verified-Clerk route tests pass, and local Clerk development keys are configured; live Clerk login/logout/revocation and the authenticated browser journey still require a test account.
+- [x] Onboarding works end to end — the owner manually verified Clerk sign-up/sign-in and profile use; API, verified-Clerk route, application, and isolated PostgreSQL tests pass.
 - [x] Cross-user and privilege negative tests pass.
 - [x] Idempotency/audit/outbox concurrency fixtures pass.
-- [ ] Human owner authorizes Phase 3.
+- [x] Human owner authorizes Phase 3 by directing continuation after confirming authentication and profile completion.
 
 ## Phase 3: Governed curriculum, problems, and external references
 
@@ -63,16 +63,20 @@
 - [x] One original problem candidate has complete rights/reviews; runnable publication remains blocked until Task 23.
 - [x] Six-language manifest completeness and external-link boundaries pass.
 - [x] No third-party statement, solution, test, or credential is stored.
-- [ ] Human owner authorizes Phase 4.
+- [x] Human owner authorizes Phase 4 transition work by directing completion of the Phase 3 closure and Phase 4 readiness boundary on 2026-09-17.
+
+**Manual F3 browser evidence (2026-09-17):** The current production build was loaded in Chromium at `/admin/content`; the candidate workflow was opened and visibly confirmed to show original provenance/rights, separate approved technical and pedagogical reviews, passed metadata validation, six language rows (`python`, `javascript`, `typescript`, `java`, `cpp`, `c`), reviewed outbound metadata, no-third-party-copy disclosure, and a disabled `Publish fixture (locked)` control with Task 23 as the blocker. The detail page had no horizontal overflow, no application console errors, and the official Chromium accessibility suite passed all 9 tests, including the 320px workflow check.
 
 ## Phase 4: Prove isolated six-language execution
 
-- [ ] Task 19: Complete the sandbox selection spike
-- [ ] Task 20: Implement signed execution contracts
-- [ ] Task 21: Implement execution-control admission and lifecycle
-- [ ] Task 22: Build pinned runtime images for all six languages
-- [ ] Task 23: Prove semantic conformance across six languages
-- [ ] Task 24: Pass sandbox abuse and execution-port contract gates
+**Entry status (2026-09-17):** Transition work is authorized. Task 19 must first complete the sandbox-selection spike, using the provider/sandbox decision criteria required by Task 3. No Phase 4 task is marked implemented until its acceptance criteria and evidence are complete.
+
+- [ ] Task 19: Complete the sandbox selection spike — IN PROGRESS; the six-language Docker control baseline passes normal/hostile fixtures, the spike now fails closed unless an explicit runtime is registered, and a gVisor `runsc` CI job is configured. Default `runc` remains rejected for production until the remote candidate run and security-owner review are complete.
+- [x] Task 20: Implement signed execution contracts — COMPLETE locally; schema, digest binding, Ed25519 signatures, key rotation window, expiry, result classification, replay identity, lease epoch fencing, tamper rejection, and compatibility tests pass. This does not close the unresolved Task 19 production sandbox decision.
+- [x] Task 21: Implement execution-control admission and lifecycle — COMPLETE locally; internal admission/lifecycle, separate journal port, signed descriptor-only PostgreSQL relay, bounded claims/retries, and focused fault/concurrency tests pass. This does not close Task 19 or the later runtime/conformance gates.
+- [ ] Task 22: Build pinned runtime images for all six languages — PARTIAL locally; profiles, immutable base references, SBOM/provenance, smoke fixtures, and four clean local Docker Scout critical/high scans pass. The GHCR/Cosign OIDC workflow is configured for digest signing and verification but has not yet been executed, so signed-image promotion is not claimed.
+- [x] Task 23: Prove semantic conformance across six languages — COMPLETE locally; one shared six-fixture manifest runs through six explicit adapters, 36 correct executions pass, six not-equal mutations are rejected by the trusted host judge, and lineage/spoofing/serialization checks pass. This does not override the Task 19 production sandbox blocker or authorize runnable publication.
+- [x] Task 24: Pass sandbox abuse and execution-port contract gates — COMPLETE locally for the bounded fixture/control baseline; 14 abuse fixtures pass with no container residue, and Task 20/21 tests cover signed correlation, cancellation, fencing, teardown, and infrastructure classification. This does not approve Docker `runc` for hostile learner code while Task 19 remains open.
 
 ### Checkpoint F4: Execution safety
 

@@ -84,7 +84,7 @@ This prevents documentation from being mistaken for implementation or validation
 | PostgreSQL/pgvector | Proposed | Not started | No schema/query/benchmark evidence |
 | Tutor/RAG | Proposed | Not started | No evaluation suite results |
 | Visualization runtime | Proposed | Not started | No accessibility/learning evidence |
-| Multi-language execution plane | Proposed | Not started | No isolation, conformance, image, or performance evidence |
+| Multi-language execution plane | Proposed | Task 19 spike in progress; Tasks 20-21 contracts/control/relay complete locally | Docker control baseline passes six-language normal/hostile fixtures; signed descriptor/result contracts, execution-control lifecycle, separate journal port, and descriptor-only outbox relay pass focused/full gates; stronger runtime and security-owner evidence remain pending |
 | Content governance | Proposed | Not started | No reviewed corpus |
 | Mastery/review | Proposed | Not started | No learner calibration evidence |
 | Security/privacy | Proposed controls | Not started | No threat-test/privacy review evidence |

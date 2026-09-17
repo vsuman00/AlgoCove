@@ -5,6 +5,7 @@ import {
   createPool,
   migrate,
   PostgresIdentityRepository,
+  PostgresOutboxRelayRepository,
   PostgresPlatformRepository,
   probeDatabase,
   readMigrationState,
@@ -99,6 +100,7 @@ describe("PostgreSQL and pgvector lifecycle", () => {
       "0006_content.sql",
       "0007_language_manifests.sql",
       "0008_external_references.sql",
+      "0009_outbox_claims.sql",
     ]);
 
     runtimePool = testPool(profile(runtimeUrl, "algocove-integration-runtime"));
@@ -151,10 +153,11 @@ describe("PostgreSQL and pgvector lifecycle", () => {
         "0006_content.sql",
         "0007_language_manifests.sql",
         "0008_external_references.sql",
+        "0009_outbox_claims.sql",
       ],
       appliedCount: 0,
     });
-    expect(state).toHaveLength(8);
+    expect(state).toHaveLength(9);
     expect(state[0]).toMatchObject({ id: "0001", name: "0001_platform.sql" });
     expect(state[0]?.checksum).toMatch(/^sha256:[0-9a-f]{64}$/);
   });
@@ -164,7 +167,7 @@ describe("PostgreSQL and pgvector lifecycle", () => {
 
     expect(readiness.ok).toBe(true);
     if (readiness.ok) {
-      expect(readiness.appliedMigrations).toBe(8);
+      expect(readiness.appliedMigrations).toBe(9);
       expect(readiness.serverTime).toMatch(/Z$/);
     }
   });
@@ -327,6 +330,73 @@ describe("PostgreSQL and pgvector lifecycle", () => {
       [eventId.value],
     );
     expect(rolledBack.rows[0]?.count).toBe("0");
+  });
+
+  it("claims execution dispatches with a lease and supports retry release", async () => {
+    const platform = new PostgresPlatformRepository(runtimePool!);
+    const relay = new PostgresOutboxRelayRepository(runtimePool!);
+    const checksum = parseContentChecksum(`sha256:${"e".repeat(64)}`);
+    const instant = parseInstant("2026-09-17T10:00:00.000Z");
+    const eventId = formatId("event", "0000000000000003");
+    if (!checksum.ok || !instant.ok || !eventId.ok) throw new Error("relay fixture is invalid");
+    const relayNow = new Date().toISOString();
+    const retryAt = new Date(Date.parse(relayNow) + 2_000).toISOString();
+
+    await platform.enqueue(
+      createOutboxEvent({
+        eventId: eventId.value,
+        topic: "execution.run.requested",
+        aggregateId: "run_aaaaaaaaaaaaaaaa",
+        occurredAt: instant.value,
+        payload: {
+          topic: "execution.run.requested",
+          dispatchKey: "dispatch-integration",
+          descriptorDigest: checksum.value,
+        },
+      }),
+    );
+
+    const first = await relay.claimNext({
+      topic: "execution.run.requested",
+      relayId: "relay-integration-a",
+      now: relayNow,
+      leaseDurationMs: 5_000,
+    });
+    expect(first).toMatchObject({
+      eventId: eventId.value,
+      attempts: 1,
+      payload: { descriptorDigest: checksum.value },
+    });
+    await expect(
+      relay.claimNext({
+        topic: "execution.run.requested",
+        relayId: "relay-integration-b",
+        now: relayNow,
+        leaseDurationMs: 5_000,
+      }),
+    ).resolves.toBeNull();
+
+    await relay.retry({
+      eventId: eventId.value,
+      relayId: "relay-integration-a",
+      availableAt: retryAt,
+    });
+    await expect(
+      relay.claimNext({
+        topic: "execution.run.requested",
+        relayId: "relay-integration-b",
+        now: relayNow,
+        leaseDurationMs: 5_000,
+      }),
+    ).resolves.toBeNull();
+    const retried = await relay.claimNext({
+      topic: "execution.run.requested",
+      relayId: "relay-integration-b",
+      now: retryAt,
+      leaseDurationMs: 5_000,
+    });
+    expect(retried?.attempts).toBe(2);
+    await relay.acknowledge({ eventId: eventId.value, relayId: "relay-integration-b" });
   });
 
   it("pins curriculum graph rows and blocks mutation after publication", async () => {

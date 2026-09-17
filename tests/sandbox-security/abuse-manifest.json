@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "target": "algocove/execution-python:2026-09-17",
+  "maxOutputBytes": 8192,
+  "maxDurationMs": 2500,
+  "fixtures": [
+    {
+      "id": "escape-boundary",
+      "threat": "escape",
+      "terminalExpectation": "safe_probe",
+      "maxDurationMs": 1000
+    },
+    {
+      "id": "egress-denial",
+      "threat": "egress",
+      "terminalExpectation": "safe_probe",
+      "maxDurationMs": 1000
+    },
+    {
+      "id": "metadata-denial",
+      "threat": "metadata",
+      "terminalExpectation": "safe_probe",
+      "maxDurationMs": 1000
+    },
+    {
+      "id": "fork-thread-bomb",
+      "threat": "fork-thread-bomb",
+      "terminalExpectation": "safe_probe",
+      "maxDurationMs": 1500
+    },
+    {
+      "id": "memory-flood",
+      "threat": "memory-flood",
+      "terminalExpectation": "bounded_limit",
+      "maxDurationMs": 1500
+    },
+    {
+      "id": "cpu-flood",
+      "threat": "cpu-flood",
+      "terminalExpectation": "control_plane",
+      "maxDurationMs": 1500
+    },
+    {
+      "id": "disk-flood",
+      "threat": "disk-flood",
+      "terminalExpectation": "safe_probe",
+      "maxDurationMs": 1500
+    },
+    {
+      "id": "output-flood",
+      "threat": "output-flood",
+      "terminalExpectation": "control_plane",
+      "maxDurationMs": 1500
+    },
+    {
+      "id": "path-traversal",
+      "threat": "path-traversal",
+      "terminalExpectation": "safe_probe",
+      "maxDurationMs": 1000
+    },
+    {
+      "id": "symlink-boundary",
+      "threat": "symlink",
+      "terminalExpectation": "safe_probe",
+      "maxDurationMs": 1000
+    },
+    {
+      "id": "container-residue",
+      "threat": "residue",
+      "terminalExpectation": "safe_probe",
+      "maxDurationMs": 1000
+    },
+    {
+      "id": "signal-boundary",
+      "threat": "signal",
+      "terminalExpectation": "control_plane",
+      "maxDurationMs": 1500
+    },
+    {
+      "id": "explicit-cancellation",
+      "threat": "cancellation",
+      "terminalExpectation": "control_plane",
+      "maxDurationMs": 1500
+    },
+    {
+      "id": "teardown-residue",
+      "threat": "teardown",
+      "terminalExpectation": "safe_probe",
+      "maxDurationMs": 1000
+    }
+  ]
+}

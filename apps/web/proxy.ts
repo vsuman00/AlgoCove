@@ -1,5 +1,5 @@
 import { clerkMiddleware } from "@clerk/nextjs/server";
-import { NextResponse, type NextFetchEvent, type NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import { isClerkConfigured } from "./src/auth/clerk-config";
 
 /**
@@ -12,21 +12,8 @@ const middleware = isClerkConfigured()
   ? clerkMiddleware({ publishableKey })
   : () => NextResponse.next();
 
-export default function proxy(
-  request: NextRequest,
-  event: NextFetchEvent,
-): Response | Promise<Response> {
-  if (request.nextUrl.pathname === "/api/health") {
-    return NextResponse.next();
-  }
-
-  return middleware(request, event);
-}
+export default middleware;
 
 export const config = {
-  matcher: [
-    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
-    "/(api|trpc)(.*)",
-    "/__clerk/:path*",
-  ],
+  matcher: ["/(api|trpc)(.*)", "/__clerk/(.*)"],
 };

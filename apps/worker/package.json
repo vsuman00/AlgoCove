@@ -1,0 +1,19 @@
+{
+  "name": "@algocove/worker",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Application-owned outbox relay for isolated execution dispatch.",
+  "exports": {
+    ".": "./src/index.ts",
+    "./outbox-relay": "./src/outbox-relay.ts"
+  },
+  "dependencies": {
+    "@algocove/db": "workspace:*",
+    "@algocove/execution-control": "workspace:*",
+    "pg": "8.23.0"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  }
+}

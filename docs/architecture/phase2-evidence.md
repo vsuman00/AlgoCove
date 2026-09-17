@@ -1,6 +1,6 @@
 # Phase 2 implementation evidence
 
-**Status:** Implementation slices complete; the Clerk CLI app link and local development-key setup are verified. F2 transition gate remains pending live Clerk account verification and owner authorization.
+**Status:** Implementation slices and owner-provided live Clerk verification are complete. F2 is closed for the current local scope, and Phase 3 continuation was authorized by the owner. This record is closed for Phase 2; later execution work remains phase-owned.
 
 ## Implemented
 
@@ -18,19 +18,20 @@
 - `clerk doctor --json`: pass with expected warnings for no production instance and no zsh completion
 - `pnpm verify`: pass
 - `pnpm test:all`: pass
-- Unit/web/architecture: 51 tests passed
+- Unit/web/architecture: 70 tests passed
 - Isolated PostgreSQL/pgvector integration: 8 tests passed
-- Browser accessibility: 6 deterministic anonymous tests passed
+- Browser accessibility: 9 deterministic Chromium tests passed
 - Production build: pass
 - Enabled-key liveness smoke: `/api/health` returned 200 with local development keys loaded
 - Secret scan and high-severity dependency audit: pass
 
-## Pending F2 evidence
+## Owner manual verification
 
-The repository does not contain committed Clerk keys, and no Clerk test account has been provisioned for the browser suite. Therefore the following are intentionally not claimed as validated:
+- The owner manually verified Clerk sign-up and sign-in in the local application.
+- The owner verified that the authenticated profile flow works.
+- The owner verified that the identity is present in the Clerk database/dashboard.
+- The profile persistence boundary is implemented through the Clerk-backed application path and covered by isolated PostgreSQL tests. A separate live SQL inspection of the owner’s database row was not performed in this evidence run.
 
-- live Clerk sign-in and sign-up;
-- sign-out/session revocation against the provider;
-- an authenticated browser journey that creates and updates a profile through Clerk.
+These observations close the live provider/account evidence for the current F2 local scope. Production deployment, production-key rotation, and hosted operational evidence remain outside this phase.
 
-The API and adapter tests use a verified-Clerk fixture boundary and cover forged-role/provider-metadata negatives. Use the locally configured development keys and a test account to run the authenticated browser journey before authorizing Phase 3.
+The API and adapter tests use a verified-Clerk fixture boundary and cover forged-role/provider-metadata negatives. The owner’s manual sign-in/profile verification complements those deterministic tests rather than replacing them.

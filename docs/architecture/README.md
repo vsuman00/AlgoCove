@@ -84,7 +84,9 @@ AlgoCove is multi-language by design, not a JavaScript product with later transl
 4. [Security, reliability, and operations](security-reliability-operations.md) — how the design fails safely and can be operated.
 5. [Quality and traceability](quality-and-traceability.md) — measurable scenarios, source traceability, standards, and review checks.
 6. [Product plan and closure matrix](product-plan-and-closure-matrix.md) — end-to-end journeys, plan horizons, gates, loopholes, and non-goals.
-7. [ADRs](../adr/README.md) — why the expensive-to-reverse decisions were selected.
+7. [Phase evidence](phase2-evidence.md) and [Phase 3 evidence](phase3-evidence.md) — implementation and validation records through governed content.
+8. [Phase 4 evidence](phase4-evidence.md) — execution-boundary spikes and security gates.
+9. [ADRs](../adr/README.md) — why the expensive-to-reverse decisions were selected.
 
 The [implementation contracts](implementation-contracts.md) resolve roadmap, judging, evidence and recovery details. The [review findings](review-findings.md) record corrections and remaining validation gates. [DESIGN.md](../../DESIGN.md) is the approved UI input; architecture review does not replace it.
 

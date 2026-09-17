@@ -281,6 +281,18 @@ importers:
         specifier: 19.3.0
         version: 19.3.0(react@19.3.0)
 
+  apps/worker:
+    dependencies:
+      '@algocove/db':
+        specifier: workspace:*
+        version: link:../../packages/db
+      '@algocove/execution-control':
+        specifier: workspace:*
+        version: link:../../services/execution-control
+      pg:
+        specifier: 8.23.0
+        version: 8.23.0
+
   packages/application:
     dependencies:
       '@algocove/domain':
@@ -304,7 +316,22 @@ importers:
 
   packages/domain: {}
 
+  packages/execution-contracts:
+    dependencies:
+      '@algocove/domain':
+        specifier: workspace:*
+        version: link:../domain
+
   packages/observability: {}
+
+  services/execution-control:
+    dependencies:
+      '@algocove/domain':
+        specifier: workspace:*
+        version: link:../../packages/domain
+      '@algocove/execution-contracts':
+        specifier: workspace:*
+        version: link:../../packages/execution-contracts
 
 packages:
 

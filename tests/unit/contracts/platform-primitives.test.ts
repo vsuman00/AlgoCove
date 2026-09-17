@@ -83,6 +83,22 @@ describe("platform primitives", () => {
     expect(serialized).toContain("accepted");
   });
 
+  it("retains signed execution digests without permitting source material", () => {
+    const outbox = createOutboxEvent({
+      eventId: event.value,
+      topic: "execution.run.requested",
+      aggregateId: "run_aaaaaaaaaaaaaaaa",
+      occurredAt: instant.value,
+      payload: {
+        sourceDigest: hash.value,
+        manifestDigest: hash.value,
+        source: "private source must not persist",
+      },
+    });
+    expect(outbox.payload).toMatchObject({ sourceDigest: hash.value, manifestDigest: hash.value });
+    expect(outbox.payload.source).toBe("[redacted]");
+  });
+
   it("claims an effect once and replays the stored response", async () => {
     const repository = memoryIdempotency();
     let calls = 0;

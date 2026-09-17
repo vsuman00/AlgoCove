@@ -68,3 +68,5 @@ export type {
 
 export { PostgresIdentityRepository } from "./identity-repository.ts";
 export { PostgresPlatformRepository } from "./platform-repository.ts";
+export { PostgresOutboxRelayRepository } from "./outbox-relay-repository.ts";
+export type { ClaimedOutboxEvent, OutboxRelayRepository } from "./outbox-relay-repository.ts";

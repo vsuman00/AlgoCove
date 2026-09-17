@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "problemVersionId": "prb_dddddddddddddddd",
+  "harnessVersion": "harness.v1",
+  "policyVersion": "execution-policy-v1",
+  "semanticPolicy": {
+    "integerWidth": "signed-64-bit",
+    "unicode": "UTF-8 input and output; labels are normalized to NFC by the trusted judge",
+    "ordering": "lexicographically smallest pair of zero-based indices",
+    "floatTolerance": "not-applicable; decimal output is invalid for this integer problem",
+    "serialization": "one UTF-8 line: <i>,<j>|<label> or none|<label>"
+  },
+  "fixtures": [
+    {
+      "fixtureId": "pair-sum-small",
+      "semanticKey": "pair_sum_small",
+      "input": "9\n2,7,11,15\nascii-small\n",
+      "expectedOutput": "0,1|ascii-small"
+    },
+    {
+      "fixtureId": "pair-sum-empty",
+      "semanticKey": "pair_sum_empty",
+      "input": "9\n\n空-集合\n",
+      "expectedOutput": "none|空-集合"
+    },
+    {
+      "fixtureId": "pair-sum-64-bit",
+      "semanticKey": "pair_sum_signed_64_bit",
+      "input": "3000000000\n1000000000,2000000000,-1\nwide-整数\n",
+      "expectedOutput": "0,1|wide-整数"
+    },
+    {
+      "fixtureId": "pair-sum-duplicate-order",
+      "semanticKey": "pair_sum_lexicographic_order",
+      "input": "6\n3,3,3,3\nstable-order\n",
+      "expectedOutput": "0,1|stable-order"
+    },
+    {
+      "fixtureId": "pair-sum-unicode",
+      "semanticKey": "pair_sum_unicode_label",
+      "input": "10\n4,6\nΣ-उत्तर\n",
+      "expectedOutput": "0,1|Σ-उत्तर"
+    },
+    {
+      "fixtureId": "pair-sum-no-match",
+      "semanticKey": "pair_sum_no_match",
+      "input": "10\n1,2,3\nno-match\n",
+      "expectedOutput": "none|no-match"
+    }
+  ],
+  "languages": [
+    {
+      "language": "python",
+      "profileId": "python",
+      "source": "solutions/python.py",
+      "sourceFile": "fixture.py",
+      "limitsProfile": { "compileTimeoutMs": 5000, "runTimeoutMs": 2000, "memoryLimitMb": 256 }
+    },
+    {
+      "language": "javascript",
+      "profileId": "javascript-typescript",
+      "source": "solutions/javascript.mjs",
+      "sourceFile": "fixture.mjs",
+      "limitsProfile": { "compileTimeoutMs": 5000, "runTimeoutMs": 2000, "memoryLimitMb": 256 }
+    },
+    {
+      "language": "typescript",
+      "profileId": "javascript-typescript",
+      "source": "solutions/typescript.ts",
+      "sourceFile": "fixture.ts",
+      "limitsProfile": { "compileTimeoutMs": 8000, "runTimeoutMs": 2000, "memoryLimitMb": 256 }
+    },
+    {
+      "language": "java",
+      "profileId": "java",
+      "source": "solutions/java.java",
+      "sourceFile": "Main.java",
+      "limitsProfile": { "compileTimeoutMs": 10000, "runTimeoutMs": 3000, "memoryLimitMb": 384 }
+    },
+    {
+      "language": "cpp",
+      "profileId": "c-cpp",
+      "source": "solutions/cpp.cpp",
+      "sourceFile": "main.cpp",
+      "limitsProfile": { "compileTimeoutMs": 8000, "runTimeoutMs": 2000, "memoryLimitMb": 256 }
+    },
+    {
+      "language": "c",
+      "profileId": "c-cpp",
+      "source": "solutions/c.c",
+      "sourceFile": "main.c",
+      "limitsProfile": { "compileTimeoutMs": 8000, "runTimeoutMs": 2000, "memoryLimitMb": 256 }
+    }
+  ]
+}

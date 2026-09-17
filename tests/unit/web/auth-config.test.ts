@@ -3,10 +3,12 @@ import { isClerkConfigured } from "../../../apps/web/src/auth/clerk-config";
 
 afterEach(() => {
   vi.unstubAllEnvs();
+  vi.unstubAllGlobals();
 });
 
 describe("Clerk runtime configuration", () => {
   it("requires non-empty publishable and secret keys", () => {
+    vi.stubGlobal("window", undefined);
     expect(
       isClerkConfigured({
         NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: "pk_test_fixture",

@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "buildDate": "2026-09-17",
+  "profiles": [
+    {
+      "id": "python",
+      "languages": ["python"],
+      "directory": "python",
+      "image": "algocove/execution-python:2026-09-17",
+      "baseImage": "python@sha256:c6ead215bfd31f1e433d968853b7a769989117115b728874824e6c0a27cb96fc",
+      "toolchain": "Python 3.14.7",
+      "commands": {
+        "python": { "run": ["python", "/work/fixture.py"] }
+      },
+      "network": "none",
+      "user": "65532:65532",
+      "writablePaths": ["/work", "/tmp"],
+      "learnerFlagsAllowed": false,
+      "packageInstallAllowed": false
+    },
+    {
+      "id": "javascript-typescript",
+      "languages": ["javascript", "typescript"],
+      "directory": "javascript-typescript",
+      "image": "algocove/execution-javascript-typescript:2026-09-17",
+      "baseImage": "node@sha256:ef24c5053d50fdc3e4e56eb4e7ddb7861874ab0fdc797046ba897581deb8e868",
+      "toolchain": "Node.js 26.8.2; TypeScript 5.9.3",
+      "commands": {
+        "javascript": { "run": ["node", "/work/fixture.mjs"] },
+        "typescript": {
+          "typecheck": ["tsc", "--project", "/opt/algocove/tsconfig.typecheck.json"],
+          "transpile": ["tsc", "--project", "/opt/algocove/tsconfig.transpile.json"],
+          "run": ["node", "/tmp/algocove-output/fixture.js"]
+        }
+      },
+      "network": "none",
+      "user": "65532:65532",
+      "writablePaths": ["/work", "/tmp"],
+      "learnerFlagsAllowed": false,
+      "packageInstallAllowed": false
+    },
+    {
+      "id": "java",
+      "languages": ["java"],
+      "directory": "java",
+      "image": "algocove/execution-java:2026-09-17",
+      "baseImage": "eclipse-temurin@sha256:010ab2b79329b951bf052dbf515843ab345ae4e4f0ef72287d85c9fa54da275f",
+      "toolchain": "OpenJDK 25.0.4 Temurin",
+      "commands": {
+        "java": {
+          "compile": ["javac", "-d", "/tmp/algocove-output", "/work/Main.java"],
+          "run": ["java", "-cp", "/tmp/algocove-output", "Main"]
+        }
+      },
+      "network": "none",
+      "user": "65532:65532",
+      "writablePaths": ["/work", "/tmp"],
+      "learnerFlagsAllowed": false,
+      "packageInstallAllowed": false
+    },
+    {
+      "id": "c-cpp",
+      "languages": ["c", "cpp"],
+      "directory": "c-cpp",
+      "image": "algocove/execution-c-cpp:2026-09-17",
+      "baseImage": "gcc@sha256:fb2568a8cc0609134396aeb1eae1f3a91c8ceec54aaee67c798d9602593abd66",
+      "toolchain": "GCC 15.3.0; C23/C++23",
+      "commands": {
+        "c": {
+          "compile": ["gcc", "-std=c23", "-O2", "/work/main.c", "-o", "/work/algocove-output/main"],
+          "run": ["/work/algocove-output/main"]
+        },
+        "cpp": {
+          "compile": [
+            "g++",
+            "-std=c++23",
+            "-O2",
+            "/work/main.cpp",
+            "-o",
+            "/work/algocove-output/main"
+          ],
+          "run": ["/work/algocove-output/main"]
+        }
+      },
+      "network": "none",
+      "user": "65532:65532",
+      "writablePaths": ["/work", "/tmp"],
+      "learnerFlagsAllowed": false,
+      "packageInstallAllowed": false
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "name": "@algocove/execution-control",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Internal admission and lifecycle control for isolated code execution.",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@algocove/domain": "workspace:*",
+    "@algocove/execution-contracts": "workspace:*"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  }
+}
