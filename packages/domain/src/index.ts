@@ -94,6 +94,106 @@ export type {
 } from "./learner-profile.ts";
 
 export {
+  abandonAttempt,
+  abandonLearningSession,
+  ATTEMPT_STATUSES,
+  completeLearningSession,
+  expireAttempt,
+  expireLearningSession,
+  LEARNING_MODES,
+  recordRunRequested,
+  recordSourceSaved,
+  resetAttemptForLanguage,
+  SESSION_STATUSES,
+  startAttempt,
+  startLearningSession,
+  submitAttempt,
+} from "./practice.ts";
+
+export {
+  evaluatePseudocodeReadiness,
+  PSEUDOCODE_FIELD_MAX_LENGTH,
+  PSEUDOCODE_FIELDS,
+  replacePseudocodeCurrent,
+  savePseudocodeRevision,
+  startPseudocodeArtifact,
+} from "./pseudocode.ts";
+
+export {
+  createHintExposure,
+  decideHintReveal,
+  HINT_CEILINGS,
+  HINT_LADDER,
+  validateAuthoredHint,
+} from "./hints.ts";
+
+export type {
+  AuthoredHint,
+  HintDecision,
+  HintExposure,
+  HintExposureId,
+  HintFailure,
+  HintFailureCode,
+  HintKind,
+  HintTier,
+} from "./hints.ts";
+
+export type {
+  AuthoredPseudocodeRubric,
+  ExplainBackFeedback,
+  PseudocodeArtifact,
+  PseudocodeFailure,
+  PseudocodeFailureCode,
+  PseudocodeField,
+  PseudocodeFields,
+  PseudocodeId,
+  PseudocodeReadiness,
+  PseudocodeRevision,
+  PseudocodeTransition,
+  StructuredPseudocodeCheck,
+  VerifiedRunEvidence,
+} from "./pseudocode.ts";
+
+export {
+  DRAFT_KINDS,
+  DRAFT_TTL_MS,
+  PSEUDOCODE_DRAFT_MAX_LENGTH,
+  SOURCE_DRAFT_MAX_LENGTH,
+  draftExpiry,
+  replaceDraftCurrent,
+  saveDraftRevision,
+  startPracticeDraft,
+} from "./drafts.ts";
+
+export type {
+  DraftFailure,
+  DraftFailureCode,
+  DraftId,
+  DraftKind,
+  DraftTransition,
+  PracticeDraft,
+  SavedDraftRevision,
+} from "./drafts.ts";
+
+export type {
+  AttemptEvent,
+  AttemptEventKind,
+  AttemptFailure,
+  AttemptFailureCode,
+  AttemptReset,
+  AttemptStatus,
+  AttemptTransition,
+  CodeRunId,
+  LanguageManifestId,
+  LearningAttempt,
+  LearningMode,
+  LearningSession,
+  LearningSessionFailure,
+  LearningSessionFailureCode,
+  LearningSessionStatus,
+} from "./practice.ts";
+
+export {
   CURRICULUM_EDGE_KINDS,
   isPublishedCurriculumGraphImmutable,
   publishCurriculumGraph,

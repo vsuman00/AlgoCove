@@ -53,17 +53,18 @@ Every important design decision should reinforce that idea.
 
 ### 1.5 Approved mockup registry
 
-The three approved references are preserved as local design artifacts. These files are immutable visual references; create a new dated version rather than replacing them.
+The product UI is governed by the approved visual references, augmented by the high-fidelity enterprise mockups generated with the Nano Banana Pro vision engine:
 
-| Reference | Stable artifact | SHA-256 | Authority |
-|---|---|---|---|
-| Learner Home | `/Users/vaibhavsuman/.gstack/projects/AlgoCove/designs/approved-dsa-20260917/learner-home.png` | `6b2497a86a27084f3f06c795af9e95eb05bfbeb8007c20a7a9b08399f61a08fd` | Logo, light home shell, greeting, Continue Learning, daily plan, review queue, learning signals, coastal-header treatment |
-| Guided Problem Workspace | `/Users/vaibhavsuman/.gstack/projects/AlgoCove/designs/approved-dsa-20260917/guided-problem-workspace.png` | `7265b7cfff0dce39282ae5ca3ad059366319cb375f451c4e467799a79f98e16a` | Focused shell, step rail, three-pane workspace, pseudocode dock, prediction visualizer, evidence and hint treatment |
-| DSA Roadmap | `/Users/vaibhavsuman/.gstack/projects/AlgoCove/designs/approved-dsa-20260917/dsa-roadmap.png` | `8263fd561aeff48c74d1fad38b711a8f31517af175b23ad0f86b6afc04ff9a08` | Deep-ocean journey shell, prerequisite path, current-plan blue, weekly capacity, safe replan, plan health and provenance |
+| Reference | Stable artifact | Purpose & Authority |
+|---|---|---|
+| Learner Home (Baseline) | `/Users/vaibhavsuman/.gstack/projects/AlgoCove/designs/approved-dsa-20260917/learner-home.png` | Canonical brand mark, light application shell, greeting, Continue Learning hero card, daily plan, review queue, learning signals |
+| Guided Problem Workspace (Baseline) | `/Users/vaibhavsuman/.gstack/projects/AlgoCove/designs/approved-dsa-20260917/guided-problem-workspace.png` | Focused deep-ocean shell, 6-stage evidence stepper, 3-column workspace, pseudocode dock, prediction visualizer, evidence checklist |
+| DSA Roadmap (Baseline) | `/Users/vaibhavsuman/.gstack/projects/AlgoCove/designs/approved-dsa-20260917/dsa-roadmap.png` | Prerequisite DAG grouped into 4 phase columns, weekly capacity allocation, plan health audit, upcoming spaced reviews |
+| Today Dashboard (Glass & 3D Stage) | `/Users/vaibhavsuman/.gemini/antigravity/brain/2e06c97e-2eb6-4286-ba16-3e0003eecf8f/today_dashboard_redesign_1789715495580.jpg` | High-fidelity Glassmorphic Today Dashboard, live 3D isometric array stage with floating glass tiles, glowing jade/coral pointers, dynamic sum pill |
+| DSA Roadmap (Glass & Flow) | `/Users/vaibhavsuman/.gemini/antigravity/brain/2e06c97e-2eb6-4286-ba16-3e0003eecf8f/dsa_roadmap_redesign_1789715528506.jpg` | Elevated Phase band visualization, frosted glass plan health cards, weekly schedule progress bar, buffer reallocation alerts |
+| Guided Workspace (Glass & 3D Visualizer) | `/Users/vaibhavsuman/.gemini/antigravity/brain/2e06c97e-2eb6-4286-ba16-3e0003eecf8f/problem_workspace_mockup_1789715559782.jpg` | Focused dark command center, tactile 3D prediction stage, structured pseudocode dock, multi-language selector, session evidence drawer |
 
-The incorrect triangular and double-wave logos visible in the second and third generated images are explicitly superseded by the first mockup's cove-and-angle-brackets mark. All screens use the first mockup's logo when implemented.
-
-The references are machine-local visual artifacts, not portable repository assets. Their absolute paths and checksums above are the transfer manifest for this machine. If another collaborator needs to inspect them, transfer the reference set separately and retain the checksums. Approval covers the visual direction and first logo, not every illustrative date, arithmetic value, learning-state label, or generated sentence in the images. Product data and state consistency must come from the product contracts.
+The canonical cove-and-angle-brackets mark from the Learner Home mockup is the sole authoritative brand mark. All screens utilize this mark.
 
 ---
 
@@ -103,51 +104,57 @@ Jade means learning progress, readiness, or a top-level primary action. Deep Oce
 
 ### 3.1 Direction name
 
-**Calm Computational Cove**
+**Calm Computational Cove 2.0 (Modern Glassmorphism & Live 3D Algorithmic Stage)**
 
 The design combines:
 
-- the clarity and density of a strong developer tool;
-- the warmth and reassurance of a thoughtful learning product;
-- a cove-inspired marine palette that gives the product a recognizable identity;
-- editorial moments for reflection without turning the application into a marketing page.
+- the tactile precision and visual hierarchy of modern elite developer tools (Linear, Raycast, Stripe);
+- a refined, translucent glassmorphism that gives physical depth, lightness, and calmness to learning cards without visual noise;
+- a live, interactive 3D algorithmic stage where learners manipulate pointers, simulate array mutations, and predict data structure states with physical presence;
+- a cove-inspired coastal palette (Deep Ocean, Jade, Seafoam, Coral, Sand) that imparts serene natural rhythm;
+- editorial serif typography for moments of reflection, grounded by crisp sans-serif interface elements and high-legibility monospace code blocks.
 
 ### 3.2 Aesthetic properties
 
 | Dimension | Direction |
 |---|---|
-| Decoration | Intentional, not expressive |
-| Layout | Grid-disciplined application shell with focused workspace variants |
-| Density | Comfortable on guidance pages; compact inside workspaces and data views |
-| Shape | Mostly rectangular with modest radii and clear borders |
-| Depth | Flat surfaces; hierarchy comes from spacing, tone, and borders |
-| Illustration | Limited to purposeful cove landscapes, algorithm diagrams, and learning-state visuals |
-| Motion | Minimal and instructional |
-| Theme | Canonical light theme; dark theme is deferred until designed independently |
+| Surface & Depth | Translucent frosted glass layers (`backdrop-filter: blur(16px)`), razor-thin 1px border highlights (`rgba(255,255,255,0.5)` on light, `rgba(115,214,196,0.18)` on dark), soft ambient multi-layered shadows |
+| Layout | Grid-disciplined application shell with focused dark workspace variants |
+| Density | Comfortable on guidance and dashboard pages; high-efficiency 3-column layout inside workspaces |
+| Shape | Balanced radii (8px–12px for cards, 6px for interactive buttons, 20px for pills) with crisp inner paddings |
+| 3D & Visualization | Live isometric WebGL/Canvas 2.5D visual stage featuring floating glass array tiles, dynamic pointer lighting (Jade Left, Coral Right), and calculation callout pills |
+| Illustration | Serene misty coastal landscapes, Japanese woodblock-inspired mountain silhouettes, and pedagogical algorithm diagrams |
+| Motion | Fluid, physical spring-based transitions for algorithmic steps; strict instant fallbacks when reduced motion is preferred |
+| Theme Architecture | Canonical serene light theme for dashboard, roadmaps, and journals; dedicated deep-ocean dark theme (`#082F35`) for the focused guided problem workspace |
 
 ### 3.3 Deliberate departures from category conventions
 
-1. **No gamified mastery theater.** Progress uses evidence and review health rather than coins, lives, leaderboards, or giant streaks.
-2. **The visualizer is prediction-first.** Playback remains unavailable until the learner commits a prediction at required checkpoints.
-3. **The roadmap is a prerequisite path, not a task board.** It shows why concepts appear in sequence and whether the schedule fits the learner's capacity.
-4. **External practice is visually separated.** Provider handoffs use a distinct outbound symbol and learner-confirmed label.
+1. **Modern Glassmorphism over Flat Monotony.** Instead of dull opaque cards that look like administrative portals, surfaces possess optical depth and translucent luminosity.
+2. **Interactive 3D Prediction over Passive Video.** The algorithmic visualizer is an active 3D playground where the learner predicts state changes before execution occurs.
+3. **No gamified mastery theater.** Progress uses multi-dimensional evidence ledgers and review health rather than coins, lives, leaderboards, or giant streaks.
+4. **The roadmap is a prerequisite DAG, not a task board.** It shows why concepts appear in sequence and whether the schedule fits the learner's declared capacity.
+5. **External practice is visually separated.** Provider handoffs use a distinct outbound symbol and learner-confirmed label, maintaining honest attribution without fake synchronizations.
 
 ### 3.4 Anti-patterns
 
 Do not introduce:
 
-- purple or violet gradients;
-- glassmorphism or frosted panels;
-- maximum rounding on every surface;
-- large generic metric-card grids;
-- marketing-style hero blocks inside the authenticated product;
-- neon developer aesthetics;
-- passive visualizations presented as proof of understanding;
-- celebratory confetti for ordinary completion;
-- color-only status indicators;
-- XP, coins, hearts, ranking, or public leaderboards;
-- giant streak flames or shame-oriented missed-day states;
-- copied visual language from external coding platforms.
+- purple or violet neon gradients;
+- muddy or low-contrast text on translucent backgrounds (WCAG AAA/AA contrast is strictly enforced);
+- cartoonish gamification (coins, hearts, leaderboards, streak shaming);
+- marketing-style hero carousels inside the authenticated learning environment;
+- passive animations presented as proof of understanding;
+- celebratory confetti or distracting sound effects for routine step completions;
+- color-only status indicators without accompanying text labels;
+- copied visual patterns from generic LeetCode or competitive programming clones.
+
+### 3.5 The Live 3D Algorithmic Stage Experience
+
+The live 3D visual section represents AlgoCove's signature pedagogical interaction:
+- **Spatial Immersion:** Data structures (arrays, linked lists, trees, graphs) are rendered as physical, tactile glass blocks suspended in an isometric coordinate space.
+- **Dynamic Pointer Lighting:** Pointers (`L` in Jade `#1A8F78`, `R` in Coral `#EA580C`) project soft ambient point-lights onto the active elements.
+- **Physical Verification:** As values are inspected or summed (e.g. $1 + 11 = 12$), a floating computation pill reflects the mathematical state in real time.
+- **Universal Accessibility:** If WebGL is unavailable or if `prefers-reduced-motion` is enabled, the 3D stage seamlessly degrades to a clean, accessible HTML/CSS 2D table without loss of pedagogical function.
 
 ---
 
@@ -347,7 +354,27 @@ All final text/background pairings must be measured before release. Target WCAG 
 
 ### 5.7 Dark theme policy
 
-The approved system is light-first. Do not automatically invert the palette or ship a dark theme from these tokens. A dark theme requires separate surface, border, code-editor, visualizer, and semantic-state evaluation. Until that work is approved, only isolated technical surfaces such as an editor may use a dark treatment, and only if the page preserves visual coherence and accessibility.
+The approved system is light-first for dashboard, roadmaps, and journals, paired with a dedicated, focused deep-ocean dark theme (`#082F35`) for the guided problem workspace. The deep-ocean workspace reduces eye fatigue during intense multi-hour problem solving, while preserving the serene, coastal atmospheric character of AlgoCove.
+
+### 5.8 Modern Glassmorphism & Atmospheric Tokens
+
+To deliver the tactile depth and visual polish of modern billion-dollar enterprise tools, AlgoCove utilizes calibrated frosted glass surfaces:
+
+| Token | Value | Purpose |
+|---|---|---|
+| `--bg-glass-card-light` | `rgba(255, 255, 255, 0.75)` | Translucent card surface on light cloud backgrounds |
+| `--bg-glass-card-hover` | `rgba(255, 255, 255, 0.88)` | Interactive card hover surface |
+| `--bg-glass-card-dark` | `rgba(11, 43, 38, 0.82)` | Translucent card surface on deep-ocean workspaces |
+| `--border-glass-light` | `1px solid rgba(255, 255, 255, 0.55)` | Specular top/side rim highlight on light surfaces |
+| `--border-glass-dark` | `1px solid rgba(115, 214, 196, 0.22)` | Subtle seafoam rim highlight on dark surfaces |
+| `--border-glass-subtle` | `1px solid rgba(0, 0, 0, 0.06)` | Bottom shadow rim for physical grounding |
+| `--backdrop-blur-sm` | `blur(8px)` | Filter for tooltips, floating badges, and sub-panels |
+| `--backdrop-blur-md` | `blur(16px)` | Filter for primary cards, modals, and sticky rails |
+| `--backdrop-blur-lg` | `blur(24px)` | Filter for full-screen sheets and navigation overlays |
+| `--shadow-glass-sm` | `0 4px 16px rgba(11, 43, 38, 0.04), 0 1px 2px rgba(11, 43, 38, 0.06)` | Quiet elevation for resting cards |
+| `--shadow-glass-hover` | `0 12px 32px rgba(11, 43, 38, 0.08), 0 2px 6px rgba(11, 43, 38, 0.08)` | Lifted elevation on interactive card focus/hover |
+| `--glow-jade` | `0 0 24px rgba(26, 143, 120, 0.35)` | Luminous focus glow for Jade elements and L pointers |
+| `--glow-coral` | `0 0 24px rgba(234, 88, 12, 0.35)` | Luminous glow for Coral warning and R pointer elements |
 
 ---
 
@@ -469,10 +496,22 @@ Never stack multiple shadowed cards. Hierarchy should remain understandable with
 | `2xl` | `1536px+` | Wide desktop, maximum workspace visibility |
 
 ### 8.2 Approved top-level shell family
+### 8.2 Approved top-level shell family: Floating Glossy Navbar Shell
 
 The mockups establish two intentional visual modes within one shared shell structure. Do not flatten them into one treatment.
+To provide an airy, luxurious, and modern enterprise experience without visual heaviness or dark sidebar friction, AlgoCove adopts a **Floating Glossy Top Navbar** architecture:
 
 **Quiet Home shell — Learner Home authority**
+**Primary Product Shell: Floating Glossy Top Navbar**
+- **Form Factor:** Centered, floating pill-dock navigation bar (`max-w-7xl`, `margin: 1rem auto`, `border-radius: 1rem`).
+- **Surface & Polish:** Translucent frosted glass (`rgba(255, 255, 255, 0.78)`), `backdrop-filter: blur(20px)`, specular top highlight (`1px solid rgba(255, 255, 255, 0.85)`), and soft ambient drop shadow (`box-shadow: 0 10px 30px -10px rgba(11, 43, 38, 0.08)`).
+- **Navigation Dock:** Integrated pill switcher (`Today`, `Roadmap`, `Learn`, `Practice Journal`, `Progress`) with active Jade indicator (`#147E69`, white text, soft elevation).
+- **Top Utility Elements:**
+  - Canonical circular cove `< >` logo and **AlgoCove** wordmark on the left.
+  - Search command palette trigger (`⌘K`).
+  - **Location / Timezone Pill (`Asia/Kolkata (IST)`):** Positioned prominently in the top navbar for immediate temporal context.
+  - Notification counter and user avatar (`VS`).
+- **Content Canvas:** Full-width expansive canvas with soft radial ambient coastal gradient (`radial-gradient(circle at 50% 0%, #EEF6F4 0%, #F5F8F7 50%, #EDF3F1 100%)`). Eliminates heavy solid sidebars.
 
 - Used for `Today` only.
 - Navigation rail: `240px` reference width at the `1536px` mockup canvas.
@@ -481,6 +520,10 @@ The mockups establish two intentional visual modes within one shared shell struc
 - Logo: canonical dark cove mark plus ink wordmark.
 - Header area may use the approved pale coastal landscape wash.
 - Purpose: welcoming, reflective entry into the day's work.
+**Focused Workspace Shell (Deep-Ocean Command Center)**
+- Used exclusively for `/workspace/[id]` during intense algorithmic solving.
+- Top navigation ribbon with session timer, save state, and 6-stage evidence stepper.
+- High-efficiency 3-column command layout (Invariant Brief, 3D State Prediction + Code Dock, Evidence Checklist).
 
 **Deep Journey shell — DSA Roadmap authority**
 
@@ -807,221 +850,244 @@ Do not collapse these into `Something went wrong` when a safer, clearer category
 
 ---
 
-## 13. Global Page Patterns
+## 13. Global Page Patterns & Comprehensive Screen Blueprints
+
+### 13.1 Page 1: Today / Learner Home (`/`)
+
+**Purpose:** Provide the primary daily cockpit. Recommends exactly one clear next action with contextual rationale, displays the daily timeboxed sequence, highlights spaced reviews, and reports multi-dimensional learning signals without cognitive overload.
+
+**Mockup Authority:** High-fidelity generated artifact `today_dashboard_redesign_1789715495580.jpg` and baseline `learner-home.png`.
+**Mockup Authority:** Interactive HTML mockup `mockup_floating_navbar_dashboard.html`, generated artifact `today_dashboard_redesign_1789715495580.jpg`, and baseline `learner-home.png`.
+
+**Desktop Layout & Anatomy:**
+1. **Application Shell & Sidebar:** Deep Ocean navigation rail (`#0B3B42`), canonical cove logo, navigation links (`Today` active pill with soft jade glow, `Roadmap`, `Learn`, `Practice Journal`, `Progress`, `Settings`), coastal mountain illustration wash with motto *"Calmer minds / Stronger problem solvers"*.
+2. **Top Utility Bar:** Search bar (`Search concepts, patterns, problems... ⌘K`), timezone pill (`Asia/Kolkata (IST)`), notification bell with badge counter, and user profile avatar (`VS`).
+3. **Hero Header:** Editorial serif greeting (`Good morning, Vaibhav / Your next useful step is ready.`), horizon tracking pill (`Week 3 of 16 · On track`), and subtle misty coastal landscape wash in the background.
+1. **Floating Glossy Top Navbar (Pill Dock):** Translucent frosted glass navbar (`max-w-7xl mx-auto`, `backdrop-filter: blur(20px)`), canonical cove `< >` logo and **AlgoCove** wordmark, central pill-dock navigation (`Today` active jade pill, `Roadmap`, `Learn`, `Practice Journal`, `Progress`), search command palette (`⌘K`), **Location / Timezone Pill (`Asia/Kolkata (IST)`)**, notification bell with badge, and user avatar (`VS`).
+2. **Hero Header:** Editorial serif greeting (`Good morning, Vaibhav / Your next useful step is ready.`), horizon tracking pill (`Week 3 of 16 · On track`), and subtle radial coastal ambient glow in the background. No heavy solid sidebar.
+4. **Primary Hero Card ("Continue learning"):**
+   - Translucent frosted glass panel with 1px border highlight and soft elevation.
+   - Lesson Identity: Badge `Two Pointers`, Title `Converging on a sorted array`, duration `32-minute session`, difficulty `Intermediate`.
+   - Pedagogical rationale: *"Recommended because Arrays foundations are secure and this pattern unlocks 6 planned problems."*
+   - Six-Stage Workflow Stepper: `Learn` (Completed ✓) → `Plan` (Completed ✓) → `Predict` (Next) → `Code` (Upcoming) → `Visualize` (Upcoming) → `Explain` (Upcoming).
+   - Actions: Primary Jade button `Continue session →` and secondary outlined button `Why this next?`.
+   - **Live 3D Algorithmic Preview Stage:** On the right half of the hero card, an interactive 3D/isometric visual array `[1, 3, 4, 6, 8, 11]` with floating glass cells, glowing Jade `L` pointer (at index 0) and Coral `R` pointer (at index 5), and a floating computation pill `Sum = 12 > Target 10`.
+5. **Middle Row (Split 60/40 Grid):**
+   - **Left Card: Today's Plan:**
+     - Header with `Adjust today` button.
+     - Timeline nodes:
+       - Item 1: `Two Pointers · Guided lesson` (32 min, badge `Now`).
+       - Item 2: `Review: Hash Map invariant` (8 min, badge `Due today`).
+       - Item 3: `External practice · Pair Sum` (LeetCode self-reported, 25 min, badge `Optional`).
+     - Transparent callout: *"External practice is self-reported. We keep it separate from internally observed work to give you a clearer picture."*
+   - **Right Card: Review Queue:**
+     - Header with `See all →` link.
+     - Three frosted metric cards: `Due today: 2` (warm sand), `This week: 5` (seafoam), `Overdue: 1` (soft coral alert).
+     - Next Review Action Item: Document icon, `Hash Map invariant · Why it works and when it breaks`, duration `~ 8 min`, primary CTA `Start review`.
+6. **Bottom Section: Your Learning Signals:**
+   - Five independent glass cards:
+     1. `Internal mastery`: *4 patterns developing* (Based on lesson performance, quizzes, explanations).
+     2. `External practice`: *7 learner-confirmed* (Self-reported LeetCode practice, kept separate).
+     3. `Plan adherence`: *82% this week* (Completed 9 of 11 planned items).
+     4. `Review health`: *5 due* (Across all learned topics).
+     5. `Consistency`: *6 active days* (M T W T F S S dot tracker).
+   - Pedagogical reflection banner: Leaf icon, *"You're building the invariant before speed. That is the right tradeoff for this stage."*
+
+---
+
+### 13.2 Page 2: DSA Roadmap & Capacity Planner (`/roadmap`)
+
+**Purpose:** Visualizes the prerequisite Directed Acyclic Graph (DAG) grouped into 4 phase columns, weekly capacity allocation, real-time plan health validation, upcoming reviews, and compassionate replanning.
+
+**Mockup Authority:** High-fidelity generated artifact `dsa_roadmap_redesign_1789715528506.jpg` and baseline `dsa-roadmap.png`.
+
+**Desktop Layout & Anatomy:**
+1. **Header & Context:**
+   - Title: `Your DSA roadmap` in bold serif, subtitle `Backend interview preparation · 4 months · Python + TypeScript`.
+   - Action controls: `Plan v2 · Active ▾` dropdown, `Plan history` button, and `Adjust plan` primary Jade button.
+2. **Deterministic Feasibility Banner:**
+   - Green pill banner with checkmark: *"Validated · fits 5 days/week × 60 min · includes review spacing and 12% buffer"* with outbound link *"Why this plan? →"*.
+3. **Main Prerequisite Flow (The 4 Phase Columns):**
+   - **Phase 1: Foundations (Weeks 1–3):** *"Build the basics. Make them solid."*
+     - Node: `Arrays & Hashing` (Weeks 1–2, Core operations, hash maps) [Completed ✓].
+     - Node: `Binary Search` (Week 3, Search on sorted data) [Completed ✓].
+   - **Phase 2: Core Patterns (Weeks 4–8):** *"Learn essential problem-solving patterns."*
+     - Node: `Two Pointers` (Week 4) [Active blue play icon ▶].
+     - Node: `Sliding Window` (Week 5, Builds on two pointers) [Locked 🔒].
+     - Node: `Stack` (Week 6, LIFO, monotonic stack) [Ready ○].
+   - **Phase 3: Trees & Graphs (Weeks 9–12):** *"Tackle non-linear structures."*
+     - Node: `Trees` (Weeks 9–10, BST, traversals, properties) [Ready ○].
+     - Node: `BFS / DFS` (Week 11, Graph traversal patterns) [Ready ○].
+     - Node: `Graphs` (Week 12, Shortest paths, connectivity) [Ready ○].
+   - **Phase 4: Interview Transfer (Weeks 13–16):** *"Apply, practice, perform."*
+     - Node: `Dynamic Programming` (Weeks 13–16, Optional stretch) [Dashed circle ◌].
+     - Motivational anchor: *"Same concepts. A stronger you."* with cove wave stroke.
+   - **Interactive Node Legend:** Complete, Active, Ready, Locked, Review due, Directed prerequisite connector.
+4. **Right Sidebar Widgets:**
+   - **Plan Health (All Good ✓):** Capacity fits (5 days/wk × 60 min, 12% buffer), Prerequisites valid (All dependencies satisfied), Reviews spaced (Spaced repetition scheduled), Languages available (Python and TypeScript track ready).
+   - **Upcoming Reviews:** Hash Map fundamentals (12 min, Fri 12 Sep), Binary Search (15 min, Tue 16 Sep).
+   - **Plans Can Bend:** Compassionate rescheduling card: *"Missed a day or changed your goal? Completed evidence stays. Only future work is rescheduled."* with `Preview a replan` button.
+   - **Plan Provenance:** Baseline: Deterministic, AI sequencing: Yes, Validation policy: v1.2, Accepted: 3 Sep 2026.
+5. **Bottom Section: This Week (Mon 7 Sep – Fri 11 Sep):**
+   - Weekly capacity meter: `167 of 300 min planned` (56% progress bar), `133 min remaining · buffer intact`.
+   - Adaptive reallocation banner: *"Yesterday was missed. 18 min moved into Friday buffer. No catch-up overload."*
+   - Five day columns with exact scheduled activities (Mon Completed, Tue In Progress, Wed Planned, Thu Planned, Fri Planned) plus Weekend Rest card (*"Consolidate learning. No scheduled sessions. Rest well. Sharper next week."*).
+
+---
+
+### 13.3 Page 3: Guided Problem Workspace (`/workspace/[id]`)
+
+**Purpose:** Focused, dark deep-ocean command center (`#082F35`) uniting lesson context, structured pseudocode reasoning, active 3D state prediction, multi-language code execution, test verification, and readiness evidence.
+
+**Mockup Authority:** High-fidelity generated artifact `problem_workspace_mockup_1789715559782.jpg` and baseline `guided-problem-workspace.png`.
+
+**Desktop Layout & Anatomy (3 Distinct Functional Columns):**
+1. **Top Navigation Ribbon:**
+   - Logo mark | Breadcrumb `Roadmap / Two Pointers / Pair Sum` | Session timer `24 min` | `Saved ✓` | Action `Exit & resume later`.
+   - **6-Stage Evidence Stepper:** `1. Learn` (Done) → `2. Plan` (Done) → `3. Predict` (In progress) → `4. Code` (Locked) → `5. Visualize` (Locked) → `6. Explain` (Locked).
+2. **Left Column (300px): Problem Brief & Invariant Dock:**
+   - Title: `Pair Sum in a sorted array`, tag `Foundational`.
+   - Segmented tabs: `[Brief]` `[Invariant (Active)]` `[Examples]`.
+   - Key Invariant Box: *"Everything outside [left, right] has already been ruled out. Because the array is sorted, if the current sum is too large, any element to the right of right will only make the sum larger..."*
+   - Prerequisites checklist: Arrays (You're set ✓), Sorted order (You're set ✓).
+   - Progressive Hint Dock: `Need a nudge? Hint 1 of 4 available` (non-spoiling progressive ladder).
+3. **Center Main Area (Dominant Workspace):**
+   - **Top Pane: Interactive State Prediction Stage:**
+     - Stage controls: `[Text view]`, `[Reduced motion toggle]`.
+     - 3D Floating Glass Array Cells: Indices 0 through 5 with values `[1, 3, 4, 6, 8, 11]`.
+     - Glowing pointer markers: `L` (Jade down-arrow) at index 0, `R` (Coral down-arrow) at index 5.
+     - Live computation callout: `Current sum: 1 + 11 = 12`, Target pill `10`.
+     - Multiple choice prediction: `( ) Move L right` `(•) Move R left` `( ) Return pair`.
+     - Action button: `Commit prediction >`.
+     - Step playback timeline below (playback unlocks only after prediction commit).
+   - **Bottom Pane: Code & Pseudocode Dock:**
+     - Tab bar: `[Pseudocode (Active)]` `[Code]` `[Tests]` `[Trace transcript]`.
+     - Language selector dropdown: `Python ▾` (options: Python, JavaScript, TypeScript, Java, C++, C).
+     - Structured pseudocode editor with numbered fields: Inputs, State, Initialize, Invariant, Loop rule, Termination, Output, Complexity.
+     - Action: `Save revision` (tracks revisions for evidence ledger).
+4. **Right Column (280px): Session Evidence & Guidance:**
+   - **Session Evidence Checklist:** Concept check (Complete), Pattern recognized (Complete), Invariant explained (Complete), Pseudocode draft (Complete), Prediction (In progress), Tests (Not started), Explain-back (Not started).
+   - **External Practice Readiness Gate:** *"External practice unlocks after required evidence"* with `View readiness rules` button.
+   - **Socratic Tutor Drawer:** Collapsible card providing gentle guidance (*"Think about which pointer can reduce the sum"*).
 
-### 13.1 Today / Learner Home
+---
 
-**Purpose:** Recommend one calm next action and provide honest awareness of the learner's day and learning health.
+### 13.4 Page 4: Concept & Pattern Lesson (`/learn/[topic]`)
 
-**Desktop structure:**
+**Purpose:** Teach recognition cues, invariant proofs, failure modes, and mental models before problem solving.
 
-1. Quiet Home shell with the light rail, canonical dark logo, pale coastal header wash, greeting, and plan-week context.
-2. Primary Continue Learning module spanning the full content width.
-3. Two-column row: Today's Plan and Review Queue.
-4. Full-width Learning Signals section.
-5. One short evidence-based insight.
+**Desktop Layout & Anatomy:**
+1. **Header & Context:** Breadcrumbs (`Learn / Two Pointers / Converging on a Sorted Array`), estimated reading time (14 min), prerequisite badges.
+2. **Mental Model Theater:** Interactive 3D visual explanation demonstrating pointer convergence. Slider to step through invariant proofs.
+3. **Invariant Formulation:** Rigorous explanation of search space reduction:
+   $$\text{Search Space}(t) = [L_t, R_t], \quad |\text{Search Space}(t+1)| = |\text{Search Space}(t)| - 1$$
+4. **Pattern Variations Grid:** Comparison cards contrasting *Opposing Pointers* (Pair sum, Container with most water), *Fast & Slow Pointers* (Floyd's cycle detection), and *Sliding Window* (Subarray sums).
+5. **Comprehension Check Gate:** 3 multiple-choice checks requiring 100% mastery before the first guided problem unlocks.
 
-**Continue Learning module must include:**
+---
 
-- pattern and lesson title;
-- estimated session duration;
-- learner-readable recommendation reason;
-- session path: Learn → Plan → Predict → Code → Visualize → Explain;
-- one meaningful algorithm preview;
-- `Continue session` primary action;
-- `Why this next?` secondary action.
+### 13.5 Page 5: Learn Library & Curriculum Catalog (`/learn`)
 
-**Learning Signals must remain separate:**
+**Purpose:** Comprehensive directory of all DSA topics, patterns, and problem collections.
 
-- Internal mastery
-- External practice
-- Plan adherence
-- Review health
-- Consistency
+**Desktop Layout & Anatomy:**
+1. **Header & Search:** Filter bar with search (`⌘K`), language filter (`Python`, `TypeScript`, etc.), difficulty chips (`Foundational`, `Intermediate`, `Advanced`), and pattern categories.
+2. **Pattern Matrix Cards (Glassmorphic Grid):**
+   - *Arrays & Hashing* (12 problems, 100% Mastered, Spaced review scheduled).
+   - *Two Pointers* (8 problems, 68% in progress, Active).
+   - *Sliding Window* (6 problems, Unlocked).
+   - *Monotonic Stack* (5 problems, Ready).
+   - *Binary Search & Divide and Conquer* (7 problems, Mastered).
+   - *Trees & BSTs* (14 problems, Phase 3).
+   - *Graph Traversals (BFS/DFS)* (10 problems, Phase 3).
+   - *Dynamic Programming* (16 problems, Phase 4 stretch).
+3. **Visual Indicators:** Translucent difficulty tags, progress arc indicators, and prerequisite dependency lines.
 
-Never add an overall score above or between these dimensions.
+---
 
-### 13.2 Roadmap
+### 13.6 Page 6: Practice Handoff & Outbound Gate (`/workspace/[id]/external`)
 
-**Purpose:** Show what the learner is building, why the order is valid, and whether the schedule fits their capacity.
+**Purpose:** Safe, honest, one-way transition to external platforms (LeetCode, Codeforces).
 
-**Desktop structure:**
+**Desktop Layout & Anatomy:**
+1. **Readiness Summary:** Verification checklist showing completed internal evidence.
+2. **Outbound Destination Card:** Canonical provider logo, problem title (`167. Two Sum II - Input Array Is Sorted`), canonical HTTPS URL, difficulty tag, and attribution.
+3. **One-Way Navigation Action:** Primary button `Open on LeetCode ↗` (opens in new tab; records outbound navigation timestamp without storing third-party credentials).
+4. **Self-Reported Journal Confirmation:** Return prompt: *"I completed this externally on LeetCode"*, with fields for reflections and self-reported difficulty.
 
-1. Plan title, target, horizon, and preferred languages.
-2. Active immutable plan version and history access.
-3. Validation strip containing capacity, review spacing, and buffer summary.
-4. Prerequisite roadmap across phases.
-5. Current-week schedule and capacity meter.
-6. Sidebar: Plan Health, Upcoming Reviews, safe replan, Plan Provenance.
+---
 
-**Required roadmap node states:**
+### 13.7 Page 7: Practice Journal (`/journal`)
 
-- Complete: check icon + complete label.
-- Active: Current Blue outline/fill, play/current icon, and active label, matching the approved Two Pointers node.
-- Ready: open circle + ready label.
-- Locked: lock icon + prerequisite explanation.
-- Review due: dotted ring/clock + review label.
-- Optional stretch: explicit optional label.
+**Purpose:** Longitudinal log of internal attempts and confirmed external practice.
 
-Current Blue is also used for `Today` and `In progress` inside the weekly plan. Jade remains the validated/complete/primary-action color. This distinction shown in the mockup must be preserved.
+**Desktop Layout & Anatomy:**
+1. **Filterable Timeline:** Filter by date range, pattern, programming language, and problem source (Internal vs. External LeetCode).
+2. **Journal Entry Card:**
+   - Problem name and pattern badge.
+   - Solving metadata: Language used, internal assistance tier score (e.g. `0 hints used · Pristine solve`), external completion badge (`Learner-confirmed`).
+   - Pseudocode snapshot toggle to review the learner's original thinking.
+   - Spaced Repetition Due Date: Countdown until the next scheduled retrieval practice.
 
-**Safe replan language:**
+---
 
-Use: `Completed evidence stays. Only future work is rescheduled.`  
-Avoid: `You fell behind`, `Catch up now`, or streak-loss messaging.
+### 13.8 Page 8: Progress & Multi-Dimensional Learning Signals (`/progress`)
 
-### 13.3 Learn Library
+**Purpose:** Deep analytics on understanding, retention, and consistency without toxic gamification.
 
-**Purpose:** Browse concepts, patterns, internal problems, and review material without undermining the recommended path.
+**Desktop Layout & Anatomy:**
+1. **Internal Mastery Radar:** 5-axis spider chart measuring Invariant Formulation, State Prediction Accuracy, Code Implementation, Diagnostic Recovery, and Pattern Transfer.
+2. **Ebbinghaus Spaced Retention Curves:** Visual graph showing memory decay curves and optimal review checkpoints across all learned patterns.
+3. **Language Proficiency Matrix:** Breakdown of problems solved and tests passed per language (Python, TypeScript, C++, etc.).
+4. **Honest Consistency Ledger:** 16-week calendar grid displaying active study sessions, planned rest days, and buffer-absorbed days (zero guilt, zero broken streak penalties).
 
-**Structure:**
+---
 
-- search and filters by concept, pattern, difficulty, language availability, and state;
-- recommended path section first;
-- concept/pattern list grouped by prerequisite relationship;
-- clear labels for internal content, review items, and external-only references;
-- availability labels for all six languages;
-- no provider problem content copied into internal cards.
+### 13.9 Page 9: Onboarding & Feasible Plan Generator (`/onboarding`)
 
-Cards should emphasize what the learner will understand, not only difficulty and completion.
+**Purpose:** Diagnostic intake and deterministic schedule generation.
 
-### 13.4 Concept and Pattern Lesson
+**Desktop Layout & Anatomy:**
+1. **Step 1: Goal & Target Role:** Select target (e.g. *Backend Engineer @ Tier 1 Tech*, *DSA Foundations*).
+2. **Step 2: Horizon & Schedule Capacity:** Timebox slider (1, 2, 3, 4, or 6 months), days per week (default: 5), session duration (30, 45, 60, or 90 min/day).
+3. **Step 3: Language Preference:** Multi-select for Python, TypeScript, JavaScript, Java, C++, C.
+4. **Step 4: Diagnostic Baseline:** 3 rapid pattern identification questions to calibrate initial starting phase.
+5. **Step 5: Live Plan Proposal & Feasibility Check:** Generates a versioned roadmap (e.g. Plan v1.0). Displays deterministic validation badge (*"Validated: Fits 5 days/wk with 14% buffer"*). Learners review and accept before the plan becomes active.
 
-**Purpose:** Teach recognition cues, invariants, examples, failure modes, and complexity before a problem attempt.
+---
 
-**Structure:**
+### 13.10 Page 10: Settings & Learner Profile (`/settings`)
 
-1. Objective and prerequisites.
-2. Recognition cues.
-3. Core invariant.
-4. Worked example with active checkpoints.
-5. Common mistakes.
-6. Complexity reasoning.
-7. Short concept check.
-8. Continue to structured planning.
+**Purpose:** User preferences, accessibility configurations, and schedule adjustments.
 
-Reading column should remain within the line-length rules. Supporting diagrams may sit beside the content on desktop and follow it on mobile.
+**Desktop Layout & Anatomy:**
+1. **Profile & Target:** Update goal, target role, timezone (`Asia/Kolkata (IST)`), and preferred languages.
+2. **Schedule Management:** Adjust daily capacity minutes or initiate a safe replan ("Plans can bend").
+3. **Accessibility & Motion:** Reduced motion toggle (disables 3D canvas animations and switches to text-equivalent tables), High contrast mode, Text-first visualization default.
+4. **Data & Privacy:** View all recorded mastery evidence, export journal as Markdown/JSON, zero third-party telemetry.
 
-### 13.5 Guided Problem Workspace
+---
 
-**Purpose:** Unite lesson context, structured reasoning, prediction, code, tests, visualization, hints, and readiness evidence.
+### 13.11 Page 11: Authentication & Access (`/sign-in`, `/sign-up`)
 
-**Desktop anatomy:**
+**Purpose:** Calm, welcoming entry point into AlgoCove.
 
-- Top: compact breadcrumb, timer, save state, exit/resume.
-- Step rail: Learn, Plan, Predict, Code, Visualize, Explain.
-- Left pane: brief, invariant, examples, prerequisites, bounded hint entry.
-- Center pane: current learning activity or active visualizer.
-- Right pane: session evidence and tutor/hint context.
-- Bottom dock: Pseudocode, Code, Tests, Trace transcript, spanning center and right columns only; the left lesson pane remains full height.
+**Desktop Layout & Anatomy:**
+1. **Visual Backdrop:** Serene, high-resolution misty coastal cove illustration with subtle glassmorphic overlay.
+2. **Card Design:** Frosted glass card (`backdrop-filter: blur(20px)`, `border: 1px solid rgba(255, 255, 255, 0.4)`).
+3. **Content:** Canonical AlgoCove logo, wordmark, and reassuring tagline: *"A calm place for serious algorithmic practice."*
+4. **Authentication Options:** Secure email/password and single sign-on (Google, GitHub) via Clerk, zero distracting marketing popups.
 
-**Step rules:**
+---
 
-- Completed steps remain reviewable.
-- A locked step states what is required to unlock it.
-- Practice-mode bypass is explicit and recorded.
-- Autosave status is visible but quiet.
-- Resume returns to the exact meaningful checkpoint.
+### 13.12 Page 12: Content Operations & Governed Admin (`/admin/content`)
 
-### 13.6 Practice Handoff
+**Purpose:** Internal editorial workflow for curriculum engineers to author, review, and validate problems.
 
-**Purpose:** Make an honest, safe, one-way transition to the original provider.
-
-**Required content:**
-
-- provider name and icon;
-- canonical destination title and URL host;
-- attribution and last link check;
-- readiness state or explicit practice-mode bypass;
-- statement that the solve happens outside AlgoCove;
-- statement that AlgoCove does not receive credentials or verify submission;
-- `Open on LeetCode` or provider-specific primary action;
-- cancel/back action.
-
-After return, offer `I completed this externally` with a clear `Learner-confirmed` label. Do not use `Verified`, `Synced`, or equivalent language.
-
-### 13.7 Practice Journal
-
-**Purpose:** Record outbound handoffs, learner-confirmed outcomes, reflections, and scheduled follow-up.
-
-Visually distinguish:
-
-- outbound handoff recorded;
-- learner-confirmed completion;
-- internal AlgoCove evidence;
-- scheduled review or transfer problem.
-
-Use a timeline/list. Avoid totals that imply externally verified solved counts.
-
-### 13.8 Progress
-
-**Purpose:** Explain learning state without collapsing unlike measures.
-
-Use five persistent sections:
-
-1. Internal Mastery
-2. External Practice
-3. Plan Adherence
-4. Review Health
-5. Consistency
-
-Each section must show:
-
-- what the measure means;
-- evidence source;
-- `as of` time;
-- policy/version where relevant;
-- trend or history;
-- next action.
-
-Do not place a single score, ring, or rank above the five dimensions.
-
-### 13.9 Settings and Learner Profile
-
-Organize settings into:
-
-- Goal and target role
-- Timezone and weekly capacity
-- Preferred languages
-- Accessibility and learning preferences
-- Notifications
-- Privacy, export, and deletion
-- Account and session security
-
-Dangerous privacy actions sit in a separate final section and require explicit confirmation. Accessibility settings must be reachable without entering an active session.
-
-### 13.10 Onboarding
-
-Use a short, resumable sequence:
-
-1. Goal and target role
-2. Current level or diagnostic choice
-3. Plan horizon
-4. Available days and session duration
-5. Preferred languages
-6. Collections/interests
-7. Accessibility and learning preferences
-8. Review and create baseline
-
-Show progress as steps, not a percentage. Explain why each input affects the plan. Validate capacity before presenting a plan.
-
-### 13.11 Authentication
-
-- Keep the page quiet and brand-led.
-- Use the canonical logo on a light surface.
-- One clear form and one primary action.
-- Do not show decorative product screenshots behind the form if they reduce readability.
-- Preserve return-to-session context after successful sign-in when safe.
-
-### 13.12 Content Operations and Administration
-
-Privileged surfaces use the same tokens with a denser layout.
-
-- Display an explicit role label and environment label.
-- Use tables for versioned content, provenance, rights, review, publication, and link health.
-- Draft, published, quarantined, retired, and rights-blocked states require text and icons.
-- Destructive or publishing actions require clear consequence copy and audit context.
-- Never make the admin surface look like a learner page merely by hiding actions.
+**Desktop Layout & Anatomy:**
+1. **Curriculum Graph Inspector:** DAG visualization of concepts and prerequisite edges.
+2. **Problem Authoring Suite:** Multi-tab editor for problem statements, 6-language starter code, canonical test harnesses, semantic fixtures, hint ladders, and trace schemas.
+3. **Governance Gate:** Automated checks verifying rights, license provenance, checksums, and 6-language compilation readiness before publication.
 
 ---
 

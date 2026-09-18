@@ -5,23 +5,13 @@ import {
   toErrorEnvelope,
   toHttpStatus,
 } from "@algocove/application";
-import { getClerkIdentityAdapter, getClerkIdentityStore } from "../../../src/auth/clerk-adapter";
-import { isClerkConfigured } from "../../../src/auth/clerk-config";
-import { auth } from "../../../src/auth/clerk-server";
-import { createWebRequestContext } from "../../../src/auth/request-context";
+import { getClerkIdentityStore } from "../../../src/auth/clerk-adapter";
+import { authenticatedWebRequestContext } from "../../../src/auth/request-context";
 
 export const dynamic = "force-dynamic";
 
 async function contextFor(request: Request) {
-  const clerkAuth = isClerkConfigured()
-    ? await auth()
-    : { isAuthenticated: false, userId: null, sessionId: null };
-  const actor = await getClerkIdentityAdapter().authenticate({
-    isAuthenticated: clerkAuth.isAuthenticated,
-    userId: clerkAuth.userId,
-    sessionId: clerkAuth.sessionId,
-  });
-  return createWebRequestContext(actor, request.headers.get("x-trace-id") ?? undefined);
+  return authenticatedWebRequestContext(request);
 }
 
 function errorResponse(error: unknown): NextResponse {

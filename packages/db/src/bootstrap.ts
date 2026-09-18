@@ -85,7 +85,7 @@ export function quoteLiteral(value: string): string {
 
 export const PLATFORM_SCHEMA = "platform";
 /** Schemas owned by the migration role and writable by the runtime role. */
-export const DATA_SCHEMAS = ["platform", "learning", "content"] as const;
+export const DATA_SCHEMAS = ["platform", "learning", "content", "practice"] as const;
 export const BOOKKEEPING_TABLE = "schema_migration";
 
 export const BOOKKEEPING_TABLE_DDL = `CREATE TABLE IF NOT EXISTS ${PLATFORM_SCHEMA}.${BOOKKEEPING_TABLE} (

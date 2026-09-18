@@ -46,6 +46,16 @@ export const rawConfigSchema = z.object({
   DATABASE_STATEMENT_TIMEOUT_MS: z.coerce.number().int().min(100).max(60_000).default(5_000),
   TUTOR_ENABLED: booleanFromEnv.default(false),
   EXECUTION_ENABLED: booleanFromEnv.default(false),
+  EXECUTION_RELAY_URL: z
+    .string()
+    .url()
+    .refine(
+      (value) => value.startsWith("http://") || value.startsWith("https://"),
+      "must use http or https",
+    )
+    .optional(),
+  EXECUTION_RELAY_TOKEN: z.string().min(16).optional(),
+  EXECUTION_RESULT_CALLBACK_TOKEN: z.string().min(16).optional(),
   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string().min(1).optional(),
   CLERK_SECRET_KEY: z.string().min(1).optional(),
 });

@@ -8,6 +8,7 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
+    "@algocove/application": "workspace:*",
     "@algocove/domain": "workspace:*",
     "pg": "8.23.0"
   },

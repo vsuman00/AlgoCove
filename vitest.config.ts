@@ -28,6 +28,7 @@ export default defineConfig({
       "@algocove/execution-contracts": path.join(root, "packages/execution-contracts/src/index.ts"),
       "@algocove/execution-control": path.join(root, "services/execution-control/src/index.ts"),
       "@algocove/domain": path.join(root, "packages/domain/src/index.ts"),
+      "@algocove/visualizer": path.join(root, "packages/visualizer/src/index.ts"),
     },
   },
   test: {

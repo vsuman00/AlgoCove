@@ -29,6 +29,7 @@
     "images:test": "pnpm run images:validate && node services/execution-images/test-images.mjs",
     "test:all": "pnpm run test && pnpm run test:integration && pnpm run build && pnpm run test:a11y",
     "test:e2e": "playwright test --config tests/e2e/playwright.config.ts",
+    "test:execution-browser": "playwright test --config tests/execution-browser/playwright.config.ts",
     "test:a11y": "playwright test --config tests/accessibility/playwright.config.ts",
     "tokens:build": "node apps/web/src/styles/generate-tokens.ts",
     "tokens:check": "node apps/web/src/styles/generate-tokens.ts --check",
@@ -39,6 +40,7 @@
     "db:stop": "docker compose down",
     "db:roles": "node packages/db/src/cli/bootstrap-roles.ts",
     "db:migrate": "node packages/db/src/cli/migrate.ts",
+    "db:seed:practice": "node packages/db/src/cli/seed-practice.ts",
     "verify": "pnpm run format:check && pnpm run lint && pnpm run typecheck && pnpm run tokens:check && pnpm run test && pnpm run docs:check && pnpm run security:secrets"
   },
   "devDependencies": {

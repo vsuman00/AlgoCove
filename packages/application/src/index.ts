@@ -103,3 +103,64 @@ export type { ExternalReferenceRepository } from "./external-reference-use-cases
 
 export { buildContentWorkflowReadModel } from "./content-read-models.ts";
 export type { ContentWorkflowReadModel } from "./content-read-models.ts";
+
+export {
+  abandonPracticeAttempt,
+  abandonPracticeSession,
+  completePracticeSession,
+  expirePracticeAttempt,
+  expirePracticeSession,
+  getOwnedAttemptHistory,
+  requestAttemptRun,
+  resetPracticeAttemptLanguage,
+  saveAttemptSource,
+  startPracticeAttempt,
+  startPracticeSession,
+  submitPracticeAttempt,
+} from "./practice-use-cases.ts";
+export type { PracticeRepository } from "./practice-use-cases.ts";
+
+export {
+  clearOwnedPracticeDrafts,
+  getOwnedPracticeDraft,
+  getOwnedPracticeDraftHistory,
+  replacePracticeDraftCurrent,
+  savePracticeDraftRevision,
+  startPracticeDraft,
+} from "./save-draft.ts";
+export type { DraftRepository, DraftSaveResult, DraftSaveState } from "./save-draft.ts";
+
+export {
+  clearOwnedPseudocode,
+  evaluateOwnedPseudocode,
+  getOwnedPseudocode,
+  getOwnedPseudocodeHistory,
+  replaceOwnedPseudocodeCurrent,
+  saveOwnedPseudocodeRevision,
+  startOwnedPseudocode,
+} from "./pseudocode-use-cases.ts";
+export type { PseudocodeRepository, PseudocodeSaveResult } from "./pseudocode-use-cases.ts";
+
+export {
+  cancelPracticeCodeRun,
+  ingestTrustedPracticeResult,
+  reconcilePracticeCodeRun,
+  requestPracticeCodeRun,
+} from "./code-run-use-cases.ts";
+
+export { revealAuthoredHint } from "./reveal-hint.ts";
+export type { HintRepository, HintRevealReceipt } from "./reveal-hint.ts";
+export type {
+  AssessmentObservation,
+  CodeRunCommit,
+  CodeRunMode,
+  CodeRunRecord,
+  CodeRunRepository,
+  CodeRunRequest,
+  ExecutionRelay,
+  ExecutionRelayPreparation,
+  ExecutionResultLookup,
+  ExecutionResultClassification,
+  ExecutionTerminalCategory,
+  TrustedExecutionResult,
+} from "./code-run-use-cases.ts";

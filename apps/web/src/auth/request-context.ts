@@ -7,6 +7,9 @@ import {
   type RequestContext,
 } from "@algocove/application";
 import { formatId } from "@algocove/domain";
+import { getClerkIdentityAdapter } from "./clerk-adapter";
+import { isClerkConfigured } from "./clerk-config";
+import { auth } from "./clerk-server";
 
 const randomIds: IdGenerator = {
   generate<TKind extends Parameters<typeof formatId>[0]>(kind: TKind) {
@@ -24,4 +27,16 @@ export function createWebRequestContext(actor: Actor, traceId?: string): Request
     serviceName: process.env.SERVICE_NAME ?? "algocove-web",
     ...(traceId === undefined ? {} : { traceId }),
   });
+}
+
+export async function authenticatedWebRequestContext(request: Request): Promise<RequestContext> {
+  const clerkAuth = isClerkConfigured()
+    ? await auth()
+    : { isAuthenticated: false, userId: null, sessionId: null };
+  const actor = await getClerkIdentityAdapter().authenticate({
+    isAuthenticated: clerkAuth.isAuthenticated,
+    userId: clerkAuth.userId,
+    sessionId: clerkAuth.sessionId,
+  });
+  return createWebRequestContext(actor, request.headers.get("x-trace-id") ?? undefined);
 }

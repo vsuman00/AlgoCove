@@ -25,6 +25,9 @@ describe("validated configuration", () => {
     expect(config.web.port).toBe(3000);
     expect(config.database.runtimeUrl).toBeNull();
     expect(config.features).toEqual({ tutor: false, execution: false });
+    expect(config.execution.relayUrl).toBeNull();
+    expect(config.execution.relayToken).toBeNull();
+    expect(config.execution.resultCallbackToken).toBeNull();
   });
 
   it("parses explicit values without changing the secret boundary", () => {
@@ -41,6 +44,9 @@ describe("validated configuration", () => {
       DATABASE_STATEMENT_TIMEOUT_MS: "1200",
       TUTOR_ENABLED: "true",
       EXECUTION_ENABLED: false,
+      EXECUTION_RELAY_URL: "https://execution-relay.example",
+      EXECUTION_RELAY_TOKEN: "relay-secret-example",
+      EXECUTION_RESULT_CALLBACK_TOKEN: "callback-secret-example",
       NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: "pk_test_example",
       CLERK_SECRET_KEY: "sk_test_example",
     });
@@ -49,6 +55,9 @@ describe("validated configuration", () => {
     expect(config.database.poolMax).toBe(12);
     expect(config.database.statementTimeoutMs).toBe(1200);
     expect(config.features).toEqual({ tutor: true, execution: false });
+    expect(config.execution.relayUrl).toBe("https://execution-relay.example");
+    expect(config.execution.relayToken?.toString()).toBe("[redacted]");
+    expect(config.execution.resultCallbackToken?.toString()).toBe("[redacted]");
     expect(config.database.runtimeUrl?.toString()).toBe("[redacted]");
     expect(config.database.adminUrl?.toJSON()).toBe("[redacted]");
     expect(describeConfig(config)).toContainEqual({
@@ -57,6 +66,8 @@ describe("validated configuration", () => {
       sensitive: true,
     });
     expect(JSON.stringify(config)).not.toContain("super-secret-password");
+    expect(JSON.stringify(config)).not.toContain("callback-secret-example");
+    expect(JSON.stringify(config)).not.toContain("relay-secret-example");
   });
 
   it("reports all schema and cross-field failures without including values", () => {
@@ -118,6 +129,44 @@ describe("validated configuration", () => {
         message: "is required in production",
       });
     }
+  });
+
+  it("requires an internal result callback token when production execution is enabled", () => {
+    expect(() =>
+      loadConfig({
+        ...baseEnvironment,
+        NODE_ENV: "production",
+        APP_ORIGIN: "https://production.example",
+        DATABASE_URL: "postgres://runtime@localhost/algocove",
+        EXECUTION_ENABLED: true,
+        EXECUTION_RELAY_URL: "https://execution-relay.example",
+        EXECUTION_RELAY_TOKEN: "relay-secret-example",
+      }),
+    ).toThrow(/EXECUTION_RESULT_CALLBACK_TOKEN is required/);
+  });
+
+  it("requires the relay URL and token as a pair", () => {
+    expect(() =>
+      loadConfig({
+        ...baseEnvironment,
+        EXECUTION_RELAY_URL: "https://execution-relay.example",
+      }),
+    ).toThrow(/must be provided together with EXECUTION_RELAY_URL/);
+  });
+
+  it("requires a secure relay URL when production execution is enabled", () => {
+    expect(() =>
+      loadConfig({
+        ...baseEnvironment,
+        NODE_ENV: "production",
+        APP_ORIGIN: "https://production.example",
+        DATABASE_URL: "postgres://runtime@localhost/algocove",
+        EXECUTION_ENABLED: true,
+        EXECUTION_RELAY_URL: "http://execution-relay.example",
+        EXECUTION_RELAY_TOKEN: "relay-secret-example",
+        EXECUTION_RESULT_CALLBACK_TOKEN: "callback-secret-example",
+      }),
+    ).toThrow(/EXECUTION_RELAY_URL must use https in production/);
   });
 
   it("requires Clerk keys together and redacts both values", () => {

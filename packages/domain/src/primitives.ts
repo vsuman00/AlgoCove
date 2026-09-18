@@ -64,6 +64,8 @@ export const ID_KINDS = {
   learner: "usr",
   session: "ses",
   attempt: "att",
+  draft: "drf",
+  pseudocode: "psc",
   concept: "cpt",
   curriculumVersion: "cur",
   content: "con",

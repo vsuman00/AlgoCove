@@ -125,7 +125,7 @@ export default function OnboardingPage(): ReactElement {
   }
 
   return (
-    <AlgoCoveShell active="Today">
+    <AlgoCoveShell active="Learner profile">
       <main
         id="main-content"
         tabIndex={-1}

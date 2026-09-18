@@ -4,12 +4,14 @@ import {
   type ExecutionDispatchMessage,
 } from "@algocove/execution-control";
 import { OutboxRelay } from "../../apps/worker/src/outbox-relay.ts";
+import { createHttpExecutionResultSink } from "../../apps/worker/src/execution-result-forwarder.ts";
 import type { ClaimedOutboxEvent, OutboxRelayRepository } from "@algocove/db";
 import {
   createRunDescriptor,
   generateSigningKeyPair,
   signRunDescriptor,
   type ExecutionLimits,
+  type SignedExecutionResult,
   type SignedRunDescriptor,
   type VerificationKey,
 } from "@algocove/execution-contracts";
@@ -165,5 +167,26 @@ describe("application outbox execution relay", () => {
       attempts: 1,
     });
     expect(store.retried).toEqual(["evt_aaaaaaaaaaaaaaaa"]);
+  });
+
+  it("sends only the signed result envelope to the authenticated application callback", async () => {
+    const fetchMock = async (_input: RequestInfo | URL, init?: RequestInit) => {
+      expect(init?.headers).toMatchObject({ Authorization: "Bearer callback-secret-2026" });
+      expect(String(init?.body)).not.toContain("private learner source");
+      return new Response(null, { status: 204 });
+    };
+    const sink = createHttpExecutionResultSink({
+      endpoint: "http://execution-callback.test/api/internal/practice/results",
+      token: "callback-secret-2026",
+      fetch: fetchMock,
+    });
+    const result = {
+      algorithm: "ed25519",
+      keyId: "worker-relay-2026",
+      payload: { resultId: "result-1" },
+      signature: "signed-result",
+    } as unknown as SignedExecutionResult;
+
+    await expect(sink.deliver(result)).resolves.toBeUndefined();
   });
 });

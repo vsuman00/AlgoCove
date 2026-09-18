@@ -22,8 +22,9 @@ export function WorkflowStatus({
           Runnable publication is blocked
         </h2>
         <p className="max-w-[68ch] text-cove-body-sm text-cove-secondary">
-          This preview proves the governed authoring path. It cannot publish runnable code until the
-          isolated execution conformance gate in Task 23 is complete.
+          The six-language contract and execution conformance evidence are present. Learner-facing
+          execution stays locked until the selected hostile-code sandbox is approved by the security
+          owner.
         </p>
       </div>
       <ul className="m-0 grid gap-2 p-0 text-cove-body-sm" aria-label="Publication blockers">
@@ -119,13 +120,28 @@ export function ManifestPanel({
         aria-label="Language support"
       >
         {model.languageRows.map((language) => (
-          <li className="grid gap-1 border border-cove-default p-3" key={language.language}>
-            <span className="font-semibold">{language.language}</span>
+          <li
+            className="grid gap-2 border border-cove-default bg-cove-surface p-4"
+            key={language.language}
+          >
+            <div className="flex items-baseline justify-between gap-3">
+              <span className="font-semibold">{language.displayName}</span>
+              <code className="font-cove-mono text-cove-meta text-cove-secondary">
+                {language.runtimeFamily}
+              </code>
+            </div>
             <code className="font-cove-mono text-cove-meta text-cove-secondary">
               {language.adapterId}
             </code>
+            <code className="overflow-x-auto whitespace-nowrap font-cove-mono text-cove-meta text-cove-primary">
+              {language.entrySignature}
+            </code>
             <span className="text-cove-meta text-cove-secondary">
               {language.fixtureCount} shared fixtures
+            </span>
+            <span className="text-cove-meta text-cove-secondary">
+              Compile {language.compileTimeoutMs / 1000}s · Run {language.runTimeoutMs / 1000}s ·{" "}
+              {language.memoryLimitMb} MB
             </span>
           </li>
         ))}

@@ -8,7 +8,8 @@
     "esModuleInterop": true,
     "plugins": [{ "name": "next" }],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@algocove/visualizer": ["packages/visualizer/src/index.ts"]
     }
   },
   "include": [

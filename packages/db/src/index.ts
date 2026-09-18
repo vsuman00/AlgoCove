@@ -70,3 +70,8 @@ export { PostgresIdentityRepository } from "./identity-repository.ts";
 export { PostgresPlatformRepository } from "./platform-repository.ts";
 export { PostgresOutboxRelayRepository } from "./outbox-relay-repository.ts";
 export type { ClaimedOutboxEvent, OutboxRelayRepository } from "./outbox-relay-repository.ts";
+export { PostgresPracticeRepository } from "./practice-repository.ts";
+export type { PracticeAttemptReset, PracticeAttemptWrite } from "./practice-repository.ts";
+export { PostgresDraftRepository } from "./draft-repository.ts";
+export { PostgresPseudocodeRepository } from "./pseudocode-repository.ts";
+export { PostgresHintRepository } from "./hint-repository.ts";

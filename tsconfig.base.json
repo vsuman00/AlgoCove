@@ -13,7 +13,8 @@
       "@algocove/observability": ["packages/observability/src/index.ts"],
       "@algocove/execution-contracts": ["packages/execution-contracts/src/index.ts"],
       "@algocove/execution-control": ["services/execution-control/src/index.ts"],
-      "@algocove/domain": ["packages/domain/src/index.ts"]
+      "@algocove/domain": ["packages/domain/src/index.ts"],
+      "@algocove/visualizer": ["packages/visualizer/src/index.ts"]
     },
     "moduleDetection": "force",
     "resolveJsonModule": true,

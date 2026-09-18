@@ -2,6 +2,7 @@ import {
   canNavigateToExternalReference,
   canUseForNewWork,
   renderableContentPayload,
+  languageProfile,
   validateProblemManifest,
   type ExternalReference,
   type ProblemContentVersion,
@@ -23,7 +24,13 @@ export type ContentWorkflowReadModel = {
   readonly validationLabel: string;
   readonly languageRows: readonly {
     readonly language: string;
+    readonly displayName: string;
+    readonly runtimeFamily: string;
     readonly adapterId: string;
+    readonly entrySignature: string;
+    readonly compileTimeoutMs: number;
+    readonly runTimeoutMs: number;
+    readonly memoryLimitMb: number;
     readonly fixtureCount: number;
   }[];
   readonly publicationStatus: "fixture_only_blocked" | "blocked";
@@ -70,7 +77,9 @@ export function buildContentWorkflowReadModel(input: {
     blockers.push("External link review is required.");
   if (!canUseForNewWork(candidate, candidate.createdAt))
     blockers.push("The draft is not eligible for learner recommendations.");
-  blockers.push("Runnable publication is blocked until Task 23 execution conformance is complete.");
+  blockers.push(
+    "Runnable publication is blocked until the hostile-code sandbox is approved by the security owner.",
+  );
   const payload = renderableContentPayload(candidate);
   return {
     candidateId: candidate.problemVersionId,
@@ -97,11 +106,20 @@ export function buildContentWorkflowReadModel(input: {
     ],
     validationLabel:
       candidate.validation.status === "passed" ? "Passed" : candidate.validation.status,
-    languageRows: manifest.languages.map((language) => ({
-      language: language.language,
-      adapterId: language.adapterId,
-      fixtureCount: language.fixtureIds.length,
-    })),
+    languageRows: manifest.languages.map((language) => {
+      const profile = languageProfile(language.language);
+      return {
+        language: language.language,
+        displayName: profile.displayName,
+        runtimeFamily: profile.runtimeFamily,
+        adapterId: language.adapterId,
+        entrySignature: profile.entrySignature,
+        compileTimeoutMs: profile.limitsProfile.compileTimeoutMs,
+        runTimeoutMs: profile.limitsProfile.runTimeoutMs,
+        memoryLimitMb: profile.limitsProfile.memoryLimitMb,
+        fixtureCount: language.fixtureIds.length,
+      };
+    }),
     publicationStatus: "fixture_only_blocked",
     publicationBlockers: blockers,
     timeline: [

@@ -21,6 +21,10 @@ import {
   type InternalOperation,
   type InternalPrincipal,
 } from "@algocove/execution-control";
+import {
+  forwardExecutionResult,
+  forwardTeardownFailure,
+} from "../../apps/worker/src/execution-result-forwarder.ts";
 
 const now = "2026-09-17T10:00:00.000Z";
 const after = "2026-09-17T10:00:00.500Z";
@@ -331,6 +335,107 @@ describe("execution-control service boundary", () => {
     await expect(
       request(server, "execution-worker", { kind: "record_result", result, now: later }),
     ).resolves.toMatchObject({ ok: true, value: { replayed: true, state: "terminal" } });
+  });
+
+  it("forwards only control-plane terminal results after teardown confirmation", async () => {
+    const server = createServer();
+    const descriptor = signedDescriptor("0000000000000008");
+    await request(server, "application-relay", {
+      kind: "admit",
+      dispatchKey: "dispatch-forward",
+      descriptor,
+      quota: quota(),
+      now,
+    });
+    await request(server, "execution-worker", {
+      kind: "lease_next",
+      workerId: "worker-a",
+      now,
+      leaseDurationMs: 900,
+    });
+    const delivered: SignedExecutionResult[] = [];
+    const result = signedResult(descriptor, "pass", "result-forward");
+    await expect(
+      forwardExecutionResult(
+        server,
+        {
+          deliver: async (value) => {
+            delivered.push(value);
+          },
+        },
+        {
+          token: "worker-secret-2026",
+          workerId: "worker-a",
+          runId: descriptor.payload.runId,
+          leaseEpoch: 1,
+          result,
+          now: after,
+        },
+      ),
+    ).resolves.toMatchObject({ ok: true, value: { state: "terminal", terminalCategory: "pass" } });
+    expect(delivered).toHaveLength(1);
+    expect(delivered[0]).toEqual(result);
+
+    await forwardExecutionResult(
+      server,
+      {
+        deliver: async (value) => {
+          delivered.push(value);
+        },
+      },
+      {
+        token: "worker-secret-2026",
+        workerId: "worker-a",
+        runId: descriptor.payload.runId,
+        leaseEpoch: 1,
+        result,
+        now: later,
+      },
+    );
+    expect(delivered).toHaveLength(2);
+    expect(delivered[1]).toEqual(result);
+
+    const failureServer = createServer();
+    const failureDescriptor = signedDescriptor("0000000000000009");
+    await request(failureServer, "application-relay", {
+      kind: "admit",
+      dispatchKey: "dispatch-forward-failure",
+      descriptor: failureDescriptor,
+      quota: quota(),
+      now,
+    });
+    await request(failureServer, "execution-worker", {
+      kind: "lease_next",
+      workerId: "worker-a",
+      now,
+      leaseDurationMs: 900,
+    });
+    await request(failureServer, "execution-worker", {
+      kind: "record_result",
+      result: signedResult(failureDescriptor, "wrong_answer", "result-before-teardown"),
+      now: after,
+    });
+    await expect(
+      forwardTeardownFailure(
+        failureServer,
+        {
+          deliver: async (value) => {
+            delivered.push(value);
+          },
+        },
+        {
+          token: "worker-secret-2026",
+          workerId: "worker-a",
+          runId: failureDescriptor.payload.runId,
+          leaseEpoch: 1,
+          now: later,
+        },
+      ),
+    ).resolves.toMatchObject({
+      ok: true,
+      value: { state: "terminal", terminalCategory: "infrastructure_error" },
+    });
+    expect(delivered.at(-1)?.payload.terminalCategory).toBe("infrastructure_error");
   });
 
   it("converts teardown failure into an infrastructure terminal result", async () => {

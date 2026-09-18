@@ -10,12 +10,14 @@ import type { NextConfig } from "next";
  */
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  agentRules: false,
   poweredByHeader: false,
   transpilePackages: [
     "@algocove/application",
     "@algocove/config",
     "@algocove/db",
     "@algocove/domain",
+    "@algocove/visualizer",
   ],
   async headers() {
     return [

@@ -32,6 +32,11 @@ export type Config = {
     readonly tutor: boolean;
     readonly execution: boolean;
   };
+  readonly execution: {
+    readonly relayUrl: string | null;
+    readonly relayToken: SecretString | null;
+    readonly resultCallbackToken: SecretString | null;
+  };
   readonly clerk: {
     readonly publishableKey: SecretString | null;
     readonly secretKey: SecretString | null;
@@ -79,6 +84,10 @@ function collectEnvironmentIssues(raw: {
   readonly APP_ORIGIN: string;
   readonly DATABASE_ADMIN_URL?: string | undefined;
   readonly DATABASE_URL?: string | undefined;
+  readonly EXECUTION_ENABLED: boolean;
+  readonly EXECUTION_RELAY_URL?: string | undefined;
+  readonly EXECUTION_RELAY_TOKEN?: string | undefined;
+  readonly EXECUTION_RESULT_CALLBACK_TOKEN?: string | undefined;
   readonly NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY?: string | undefined;
   readonly CLERK_SECRET_KEY?: string | undefined;
 }): ConfigIssue[] {
@@ -109,6 +118,40 @@ function collectEnvironmentIssues(raw: {
       key: "DATABASE_ADMIN_URL",
       message:
         "must differ from DATABASE_URL so the runtime role cannot run migrations or bypass schema ownership",
+    });
+  }
+
+  if (raw.NODE_ENV === "production" && raw.EXECUTION_ENABLED) {
+    if (raw.EXECUTION_RELAY_URL === undefined) {
+      issues.push({
+        key: "EXECUTION_RELAY_URL",
+        message: "is required when execution is enabled in production",
+      });
+    }
+    if (raw.EXECUTION_RELAY_TOKEN === undefined) {
+      issues.push({
+        key: "EXECUTION_RELAY_TOKEN",
+        message: "is required when execution is enabled in production",
+      });
+    }
+    if (raw.EXECUTION_RELAY_URL !== undefined && !raw.EXECUTION_RELAY_URL.startsWith("https://")) {
+      issues.push({
+        key: "EXECUTION_RELAY_URL",
+        message: "must use https in production",
+      });
+    }
+    if (raw.EXECUTION_RESULT_CALLBACK_TOKEN === undefined) {
+      issues.push({
+        key: "EXECUTION_RESULT_CALLBACK_TOKEN",
+        message: "is required when execution is enabled in production",
+      });
+    }
+  }
+
+  if ((raw.EXECUTION_RELAY_URL === undefined) !== (raw.EXECUTION_RELAY_TOKEN === undefined)) {
+    issues.push({
+      key: "EXECUTION_RELAY_TOKEN",
+      message: "must be provided together with EXECUTION_RELAY_URL",
     });
   }
 
@@ -172,6 +215,17 @@ export function loadConfig(source: EnvironmentSource): Config {
       tutor: raw.TUTOR_ENABLED,
       execution: raw.EXECUTION_ENABLED,
     },
+    execution: {
+      relayUrl: raw.EXECUTION_RELAY_URL ?? null,
+      relayToken:
+        raw.EXECUTION_RELAY_TOKEN === undefined
+          ? null
+          : new SecretString(raw.EXECUTION_RELAY_TOKEN),
+      resultCallbackToken:
+        raw.EXECUTION_RESULT_CALLBACK_TOKEN === undefined
+          ? null
+          : new SecretString(raw.EXECUTION_RESULT_CALLBACK_TOKEN),
+    },
     clerk: {
       publishableKey:
         raw.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY === undefined
@@ -221,6 +275,21 @@ export function describeConfig(config: Config): readonly ConfigEntry[] {
     },
     { key: "TUTOR_ENABLED", value: String(config.features.tutor), sensitive: false },
     { key: "EXECUTION_ENABLED", value: String(config.features.execution), sensitive: false },
+    {
+      key: "EXECUTION_RELAY_URL",
+      value: config.execution.relayUrl ?? "<unset>",
+      sensitive: false,
+    },
+    {
+      key: "EXECUTION_RELAY_TOKEN",
+      value: config.execution.relayToken === null ? "<unset>" : "[redacted]",
+      sensitive: config.execution.relayToken !== null,
+    },
+    {
+      key: "EXECUTION_RESULT_CALLBACK_TOKEN",
+      value: config.execution.resultCallbackToken === null ? "<unset>" : "[redacted]",
+      sensitive: config.execution.resultCallbackToken !== null,
+    },
     {
       key: "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY",
       value: config.clerk.publishableKey === null ? "<unset>" : "[redacted]",

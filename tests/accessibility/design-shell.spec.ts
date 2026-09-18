@@ -19,10 +19,29 @@ test.describe("Learner Home shell", () => {
     await expect(page.locator("#main-content")).toBeFocused();
 
     await expect(page.getByRole("navigation", { name: "Primary navigation" })).toBeVisible();
+    const primaryNavigation = page.getByRole("navigation", { name: "Primary navigation" });
+    await expect(
+      primaryNavigation.getByRole("link", { name: "Learner profile", exact: true }),
+    ).toHaveAttribute("href", "/onboarding");
+    await expect(
+      primaryNavigation.getByRole("link", { name: "Content", exact: true }),
+    ).toHaveAttribute("href", "/admin/content");
+    await expect(
+      primaryNavigation.getByRole("link", { name: "Runtimes", exact: true }),
+    ).toHaveAttribute("href", "/execution-readiness");
     await expect(page.getByRole("link", { name: "System status" })).toHaveAttribute(
       "href",
       "/api/health",
     );
+  });
+
+  test("does not advertise unimplemented global controls", async ({ page }) => {
+    await page.goto("/");
+
+    await expect(page.getByRole("searchbox")).toHaveCount(0);
+    await expect(page.getByRole("button", { name: "Notifications" })).toHaveCount(0);
+    await expect(page.getByText("Asia/Kolkata", { exact: true })).toHaveCount(0);
+    await expect(page.getByRole("link", { name: "Settings" })).toHaveCount(0);
   });
 
   test("shows real authentication entry points without a placeholder identity", async ({
@@ -30,10 +49,14 @@ test.describe("Learner Home shell", () => {
   }) => {
     await page.goto("/");
 
-    const signInButton = page.getByRole("button", { name: "Sign in", exact: true });
-    const signInLink = page.getByRole("link", { name: "Sign in", exact: true });
-    const createAccountButton = page.getByRole("button", { name: "Create account", exact: true });
-    const createAccountLink = page.getByRole("link", { name: "Create account", exact: true });
+    const header = page.getByRole("banner");
+    const signInButton = header.getByRole("button", { name: "Sign in", exact: true });
+    const signInLink = header.getByRole("link", { name: "Sign in", exact: true });
+    const createAccountButton = header.getByRole("button", {
+      name: "Create account",
+      exact: true,
+    });
+    const createAccountLink = header.getByRole("link", { name: "Create account", exact: true });
     await expect(signInButton.or(signInLink)).toBeVisible();
     await expect(createAccountButton.or(createAccountLink)).toBeVisible();
     if ((await signInLink.count()) > 0) {

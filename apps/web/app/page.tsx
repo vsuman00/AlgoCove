@@ -4,7 +4,7 @@ import HomeExperience from "../src/components/home-experience";
 
 export default function HomePage(): ReactElement {
   return (
-    <AlgoCoveShell active="Today">
+    <AlgoCoveShell active="Home">
       <HomeExperience />
     </AlgoCoveShell>
   );

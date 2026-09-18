@@ -22,7 +22,7 @@ export default async function ContentWorkflowPage({
   const model = phase3ContentFixture();
   if (id !== model.candidateId) notFound();
   return (
-    <AlgoCoveShell active="">
+    <AlgoCoveShell active="Content">
       <main
         id="main-content"
         tabIndex={-1}
@@ -65,8 +65,8 @@ export default async function ContentWorkflowPage({
               Original internal preview
             </h2>
             <p className="m-0 text-cove-body-sm text-cove-secondary">
-              Rendered as authored text from the original candidate. It is not runnable until Task
-              23.
+              Rendered as authored text from the original candidate. Runnable delivery remains
+              locked behind the sandbox security approval.
             </p>
             {model.internalPreview === null ? (
               <p className="text-cove-secondary">Payload unavailable.</p>

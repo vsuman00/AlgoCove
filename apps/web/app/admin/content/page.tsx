@@ -9,7 +9,7 @@ const focusRing =
 export default function ContentOperationsPage(): ReactElement {
   const model = phase3ContentFixture();
   return (
-    <AlgoCoveShell active="">
+    <AlgoCoveShell active="Content">
       <main
         id="main-content"
         tabIndex={-1}
