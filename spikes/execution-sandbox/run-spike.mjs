@@ -8,13 +8,16 @@ const root = path.dirname(fileURLToPath(import.meta.url));
 const reportPath = path.join(root, "reports", "task-19-2026-09-17.md");
 const requestedRuntime = process.env.ALGO_COVE_DOCKER_RUNTIME?.trim() || null;
 const runtimeArgs = requestedRuntime ? [`--runtime=${requestedRuntime}`] : [];
+// Candidate-runtime evidence must not drift when a mutable upstream tag is
+// republished. These digests are the image set from the last passing runsc CI
+// matrix (GitHub Actions run 35264360185).
 const images = {
-  python: "python:3.14-alpine",
-  javascript: "node:26-alpine",
-  typescript: "node:26-alpine",
-  java: "eclipse-temurin:25-jdk",
-  cpp: "gcc:15-bookworm",
-  c: "gcc:15-bookworm",
+  python: "python@sha256:c6ead215bfd31f1e433d968853b7a769989117115b728874824e6c0a27cb96fc",
+  javascript: "node@sha256:2c45bdcbf63561a54da9549612084b43ca309854a4110c87857d609ddeb61c9e",
+  typescript: "node@sha256:2c45bdcbf63561a54da9549612084b43ca309854a4110c87857d609ddeb61c9e",
+  java: "eclipse-temurin@sha256:010ab2b79329b951bf052dbf515843ab345ae4e4f0ef72287d85c9fa54da275f",
+  cpp: "gcc@sha256:9ca91b05c7b07d2979f16413e8b2cd6ec8a7c80ffca4121ccab0aeba33f90460",
+  c: "gcc@sha256:9ca91b05c7b07d2979f16413e8b2cd6ec8a7c80ffca4121ccab0aeba33f90460",
 };
 const probeImages = [...new Set(Object.values(images))];
 const languages = ["python", "javascript", "typescript", "java", "cpp", "c"];
