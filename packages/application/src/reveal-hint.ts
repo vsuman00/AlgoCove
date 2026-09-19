@@ -103,7 +103,11 @@ export async function revealAuthoredHint(
       learnerId: context.actor.userId,
       idempotencyKey: input.idempotencyKey,
     });
-    if (raced !== null && raced.hintId === hint.hintId) {
+    if (
+      raced !== null &&
+      raced.hintId === hint.hintId &&
+      raced.problemVersionId === hint.problemVersionId
+    ) {
       return { disposition: "replayed", exposure: raced, hint };
     }
     throw conflictError("Hint reveal raced with another request.");

@@ -143,6 +143,9 @@ export async function POST(request: Request): Promise<NextResponse> {
                 },
               }
             : null;
+    if (latestRun !== null && latestRun.terminalResultId !== null && activeRun === null) {
+      throw dependencyUnavailableError("Execution result is temporarily unavailable.");
+    }
 
     return NextResponse.json(
       {

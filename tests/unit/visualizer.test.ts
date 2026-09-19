@@ -67,6 +67,12 @@ describe("Task 27 deterministic trace protocol", () => {
       ok: false,
       error: { code: "step_out_of_range" },
     });
+    expect(
+      replayTrace({ ...trace, events: [...trace.events, { kind: "move_left" }] }),
+    ).toMatchObject({
+      ok: false,
+      error: { code: "invalid_event" },
+    });
   });
 
   it("labels reviewed reference disclosure as assistance instead of inventing source traces", () => {

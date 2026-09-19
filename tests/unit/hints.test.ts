@@ -84,6 +84,7 @@ class FakeHintRepository implements HintRepository {
   ]);
   readonly exposures: HintExposure[] = [];
   failNextSave = false;
+  racedExposure: HintExposure | null = null;
 
   async getAttempt(id: LearningAttempt["attemptId"], owner: LearningAttempt["learnerId"]) {
     const value = this.attempts.get(id);
@@ -122,6 +123,12 @@ class FakeHintRepository implements HintRepository {
   }
 
   async saveExposure(exposure: HintExposure) {
+    if (this.racedExposure !== null) {
+      const raced = this.racedExposure;
+      this.racedExposure = null;
+      this.exposures.push(raced);
+      return null;
+    }
     if (this.failNextSave) {
       this.failNextSave = false;
       return null;
@@ -178,6 +185,30 @@ describe("Task 28 deterministic authored hints", () => {
       }),
     ).rejects.toMatchObject({ code: "version_conflict" });
     expect(repository.exposures).toHaveLength(0);
+  });
+
+  it("rejects an idempotency race whose exposure belongs to another problem version", async () => {
+    const repository = new FakeHintRepository();
+    const otherProblemVersionId = must(formatId("problemVersion", "1111111111111111"));
+    repository.racedExposure = {
+      exposureId: must(formatId("event", "5555555555555555")),
+      learnerId: learner,
+      attemptId,
+      problemVersionId: otherProblemVersionId,
+      hintId: "hint-1",
+      tier: 1,
+      idempotencyKey: "wrong-problem-race",
+      exposedAt: now,
+    };
+
+    await expect(
+      revealAuthoredHint(context(), repository, {
+        attemptId,
+        hintId: "hint-1",
+        requestedTier: 1,
+        idempotencyKey: "wrong-problem-race",
+      }),
+    ).rejects.toMatchObject({ code: "version_conflict" });
   });
 
   it("keeps the ladder deterministic and cumulative across attempts", async () => {

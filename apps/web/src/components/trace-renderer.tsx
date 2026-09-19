@@ -115,8 +115,8 @@ export default function TraceRenderer({ trace }: TraceRendererProps): ReactEleme
       </div>
 
       <ol aria-label="Trace transcript" className="ac-trace-transcript">
-        {transcript.value.slice(0, step + 1).map((line) => (
-          <li key={line}>{line}</li>
+        {transcript.value.slice(0, step + 1).map((line, index) => (
+          <li key={`${index}-${line}`}>{line}</li>
         ))}
       </ol>
     </section>

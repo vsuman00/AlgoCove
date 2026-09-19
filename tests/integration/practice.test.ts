@@ -422,6 +422,16 @@ describe("PostgreSQL practice state", () => {
     ).toBe(1);
   });
 
+  it("rejects authored hint content when its kind does not match its ladder tier", async () => {
+    await expect(
+      runtimePool!.query(
+        `INSERT INTO content.problem_hint (problem_version_id, hint_id, tier, kind, body)
+         VALUES ($1, 'hint-invalid-ladder', 1, 'example', 'This pairing must be rejected.')`,
+        [problem.value],
+      ),
+    ).rejects.toMatchObject({ code: "23514" });
+  });
+
   it("runs application orchestration against PostgreSQL and preserves lost dispatches", async () => {
     let applicationEntropy = 0;
     const applicationIds: IdGenerator = {

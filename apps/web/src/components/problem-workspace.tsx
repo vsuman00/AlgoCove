@@ -238,15 +238,21 @@ export default function ProblemWorkspace({
           lastSource: sourceDraft.currentText,
           lastPseudocode: { ...EMPTY_PSEUDOCODE, ...pseudocodeArtifact.current },
         };
-        setWorkspace({
+        const serverWorkspace: WorkspaceState = {
           language,
           source:
             sourceDraft.currentRevision === 0 ? body.starterTemplate : sourceDraft.currentText,
           pseudocode: { ...EMPTY_PSEUDOCODE, ...pseudocodeArtifact.current },
-        });
+        };
+        const recovery = readRecovery(learnerId, language);
+        const hasUnsyncedRecovery =
+          recovery !== null &&
+          (recovery.source !== serverWorkspace.source ||
+            !samePseudocode(recovery.pseudocode, serverWorkspace.pseudocode));
+        setWorkspace(hasUnsyncedRecovery ? { language, ...recovery } : serverWorkspace);
         const recoveredExecution = executionStateFromRemote(body.activeRun);
         setExecutionState(recoveredExecution ?? { kind: "idle" });
-        setSaveState("saved");
+        setSaveState(hasUnsyncedRecovery ? "saving" : "saved");
       })
       .catch(() => {
         if (!cancelled && remoteWorkspace.current?.language === language) {

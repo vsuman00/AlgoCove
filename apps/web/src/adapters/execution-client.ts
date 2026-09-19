@@ -9,6 +9,7 @@ import { sha256Digest } from "@algocove/execution-contracts";
 
 const EXECUTION_DISPATCH_TOPIC = "execution.run.requested";
 const MAX_RELAY_TOKEN_LENGTH = 4_096;
+const RELAY_REQUEST_TIMEOUT_MS = 5_000;
 const FORBIDDEN_PAYLOAD_KEY = /^(?:source(?:Text|Code|Material)?|code|pseudocode|keystrokes)$/i;
 
 export type HttpExecutionRelayOptions = {
@@ -110,6 +111,7 @@ async function postJson(
         "Content-Type": "application/json",
       },
       body: JSON.stringify(body),
+      signal: AbortSignal.timeout(RELAY_REQUEST_TIMEOUT_MS),
     });
   } catch {
     throw new Error("Execution relay request failed.");

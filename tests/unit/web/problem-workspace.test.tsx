@@ -106,6 +106,90 @@ describe("Task 29 guided problem workspace", () => {
     );
   });
 
+  it("preserves unsynced local recovery and queues it for durable sync", async () => {
+    window.localStorage.setItem(
+      "algocove:workspace-recovery:arrays-two-pointer:usr_workspace_recovery:python",
+      JSON.stringify({
+        source: "recovered source",
+        pseudocode: {
+          inputs: "recovered inputs",
+          state: "",
+          initialization: "",
+          invariant: "",
+          loop: "",
+          termination: "",
+          output: "",
+          complexity: "",
+        },
+      }),
+    );
+    const fetchMock = vi.fn().mockImplementation(async (input: RequestInfo | URL) => {
+      const url = String(input);
+      if (url.endsWith("/api/auth/session")) {
+        return new Response(
+          JSON.stringify({ authenticated: true, user: { id: "usr_workspace_recovery" } }),
+          { status: 200, headers: { "Content-Type": "application/json" } },
+        );
+      }
+      if (url.endsWith("/api/practice/workspace")) {
+        return new Response(
+          JSON.stringify({
+            attempt: { attemptId: "att_workspace_recovery" },
+            firstHintId: "hint-arrays-1",
+            sourceDraft: {
+              draftId: "drf_workspace_recovery",
+              version: 1,
+              currentRevision: 1,
+              currentText: "remote source",
+            },
+            starterTemplate: "starter source",
+            pseudocode: {
+              pseudocodeId: "psc_workspace_recovery",
+              version: 1,
+              current: {
+                inputs: "remote inputs",
+                state: "",
+                initialization: "",
+                invariant: "",
+                loop: "",
+                termination: "",
+                output: "",
+                complexity: "",
+              },
+            },
+          }),
+          { status: 200, headers: { "Content-Type": "application/json" } },
+        );
+      }
+      return new Response(JSON.stringify({ draft: { version: 2 }, artifact: { version: 2 } }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      });
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    render(<ProblemWorkspace executionEnabled={false} />);
+
+    await waitFor(() =>
+      expect(screen.getByRole("textbox", { name: "Python source" })).toHaveValue(
+        "recovered source",
+      ),
+    );
+    expect(screen.getByRole("textbox", { name: "Inputs" })).toHaveValue("recovered inputs");
+    await waitFor(() =>
+      expect(fetchMock).toHaveBeenCalledWith(
+        "/api/practice/drafts/drf_workspace_recovery",
+        expect.objectContaining({ method: "PUT" }),
+      ),
+    );
+    await waitFor(() =>
+      expect(fetchMock).toHaveBeenCalledWith(
+        "/api/practice/pseudocode/psc_workspace_recovery",
+        expect.objectContaining({ method: "PUT" }),
+      ),
+    );
+  });
+
   it("sends Run through the authenticated execution boundary and shows queued state", async () => {
     const fetchMock = vi.fn().mockImplementation(async (input: RequestInfo | URL) => {
       const url = String(input);

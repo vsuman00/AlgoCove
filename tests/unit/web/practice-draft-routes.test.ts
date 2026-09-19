@@ -259,6 +259,60 @@ describe("authenticated practice draft routes", () => {
     expect(runtime.pseudocode.createPseudocode).toHaveBeenCalledOnce();
   });
 
+  it("does not hide a partially persisted terminal execution result", async () => {
+    authMock.mockResolvedValue({
+      isAuthenticated: true,
+      userId: "user_workspace_partial_result",
+      sessionId: "sess_workspace_partial_result",
+    });
+    runtimeMock.getPracticeRuntime.mockReturnValue({
+      pool: {
+        query: vi.fn().mockResolvedValue({
+          rows: [{ manifest_id: "man_eeeeeeeeeeeeeeee", starter_template: "starter" }],
+        }),
+      },
+      practice: {
+        findActiveSession: vi.fn().mockResolvedValue({ sessionId: session }),
+        findActiveAttempt: vi.fn().mockResolvedValue(activeAttempt),
+        getLatestRun: vi.fn().mockResolvedValue({
+          runId: codeRun,
+          mode: "run",
+          terminalResultId: "result-partial",
+          terminalCategory: null,
+          classification: null,
+          completedAt: null,
+        }),
+      },
+      drafts: {
+        findDraftByAttempt: vi.fn().mockResolvedValue({
+          draftId: draft,
+          currentText: "starter",
+          currentRevision: 0,
+          version: 1,
+        }),
+      },
+      pseudocode: {
+        findPseudocodeByAttempt: vi.fn().mockResolvedValue({
+          pseudocodeId: "psc_partial_result",
+          current: {},
+          version: 1,
+        }),
+      },
+    });
+
+    const response = await startWorkspace(
+      new Request("http://localhost/api/practice/workspace", {
+        method: "POST",
+        body: JSON.stringify({ problemId: "arrays-two-pointer", language: "python" }),
+      }),
+    );
+
+    expect(response.status).toBe(503);
+    await expect(response.json()).resolves.toMatchObject({
+      error: { code: "dependency_unavailable", retryable: true },
+    });
+  });
+
   it("requires authentication before accepting a hint exposure request", async () => {
     authMock.mockResolvedValue({ isAuthenticated: false, userId: null, sessionId: null });
 

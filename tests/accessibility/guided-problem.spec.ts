@@ -97,7 +97,7 @@ test.describe("Guided problem workspace", () => {
       });
     });
     await page.route("**/api/practice/drafts/*", async (route) => {
-      sourcePut = true;
+      if (route.request().method() === "PUT") sourcePut = true;
       await route.fulfill({
         contentType: "application/json",
         body: JSON.stringify({ state: "saved_current", draft: { version: 2 } }),

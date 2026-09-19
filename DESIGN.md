@@ -51,20 +51,19 @@ The product should be remembered as **the learning environment that makes algori
 
 Every important design decision should reinforce that idea.
 
-### 1.5 Approved mockup registry
+### 1.5 Versioned visual authority
 
-The product UI is governed by the approved visual references, augmented by the high-fidelity enterprise mockups generated with the Nano Banana Pro vision engine:
+The repository owns the visual contract. No developer-local path, generated-image cache, or uncommitted mockup is an authority for implementation.
 
-| Reference | Stable artifact | Purpose & Authority |
+| Reference screen | Versioned contract | Purpose & authority |
 |---|---|---|
-| Learner Home (Baseline) | `/Users/vaibhavsuman/.gstack/projects/AlgoCove/designs/approved-dsa-20260917/learner-home.png` | Canonical brand mark, light application shell, greeting, Continue Learning hero card, daily plan, review queue, learning signals |
-| Guided Problem Workspace (Baseline) | `/Users/vaibhavsuman/.gstack/projects/AlgoCove/designs/approved-dsa-20260917/guided-problem-workspace.png` | Focused deep-ocean shell, 6-stage evidence stepper, 3-column workspace, pseudocode dock, prediction visualizer, evidence checklist |
-| DSA Roadmap (Baseline) | `/Users/vaibhavsuman/.gstack/projects/AlgoCove/designs/approved-dsa-20260917/dsa-roadmap.png` | Prerequisite DAG grouped into 4 phase columns, weekly capacity allocation, plan health audit, upcoming spaced reviews |
-| Today Dashboard (Glass & 3D Stage) | `/Users/vaibhavsuman/.gemini/antigravity/brain/2e06c97e-2eb6-4286-ba16-3e0003eecf8f/today_dashboard_redesign_1789715495580.jpg` | High-fidelity Glassmorphic Today Dashboard, live 3D isometric array stage with floating glass tiles, glowing jade/coral pointers, dynamic sum pill |
-| DSA Roadmap (Glass & Flow) | `/Users/vaibhavsuman/.gemini/antigravity/brain/2e06c97e-2eb6-4286-ba16-3e0003eecf8f/dsa_roadmap_redesign_1789715528506.jpg` | Elevated Phase band visualization, frosted glass plan health cards, weekly schedule progress bar, buffer reallocation alerts |
-| Guided Workspace (Glass & 3D Visualizer) | `/Users/vaibhavsuman/.gemini/antigravity/brain/2e06c97e-2eb6-4286-ba16-3e0003eecf8f/problem_workspace_mockup_1789715559782.jpg` | Focused dark command center, tactile 3D prediction stage, structured pseudocode dock, multi-language selector, session evidence drawer |
+| Learner Home | Sections 8.2, 13.1, and 26.1 | Light shell, canonical cove-and-angle-brackets mark, daily learning hierarchy, review queue, and learning signals |
+| Guided Problem Workspace | Sections 8.3, 13.3, and 26.2; `apps/web/src/components/problem-workspace.tsx` | Focused rail-free workspace, evidence stepper, structured pseudocode, reviewed trace, and durable learner recovery |
+| DSA Roadmap | Sections 8.2, 13.2, and 26.3 | Deep-ocean journey rail, prerequisite DAG, capacity allocation, plan health, and scheduled reviews |
 
-The canonical cove-and-angle-brackets mark from the Learner Home mockup is the sole authoritative brand mark. All screens utilize this mark.
+A screenshot may become a visual baseline only when it is committed under `docs/design-assets/<content-sha256>/` with a manifest containing its SHA-256, viewport, route, and approval date. Until then, the versioned contracts above and automated accessibility/browser checks are the shared source of truth.
+
+The canonical cove-and-angle-brackets mark is the sole authoritative brand mark. All screens utilize this mark.
 
 ---
 
@@ -496,34 +495,18 @@ Never stack multiple shadowed cards. Hierarchy should remain understandable with
 | `2xl` | `1536px+` | Wide desktop, maximum workspace visibility |
 
 ### 8.2 Approved top-level shell family
-### 8.2 Approved top-level shell family: Floating Glossy Navbar Shell
 
-The mockups establish two intentional visual modes within one shared shell structure. Do not flatten them into one treatment.
-To provide an airy, luxurious, and modern enterprise experience without visual heaviness or dark sidebar friction, AlgoCove adopts a **Floating Glossy Top Navbar** architecture:
+AlgoCove uses a persistent labeled sidebar on desktop. The light Home rail and deep Roadmap rail are intentional visual modes within that one navigation model; do not introduce a second floating-navbar primary navigation.
 
 **Quiet Home shell — Learner Home authority**
-**Primary Product Shell: Floating Glossy Top Navbar**
-- **Form Factor:** Centered, floating pill-dock navigation bar (`max-w-7xl`, `margin: 1rem auto`, `border-radius: 1rem`).
-- **Surface & Polish:** Translucent frosted glass (`rgba(255, 255, 255, 0.78)`), `backdrop-filter: blur(20px)`, specular top highlight (`1px solid rgba(255, 255, 255, 0.85)`), and soft ambient drop shadow (`box-shadow: 0 10px 30px -10px rgba(11, 43, 38, 0.08)`).
-- **Navigation Dock:** Integrated pill switcher (`Today`, `Roadmap`, `Learn`, `Practice Journal`, `Progress`) with active Jade indicator (`#147E69`, white text, soft elevation).
-- **Top Utility Elements:**
-  - Canonical circular cove `< >` logo and **AlgoCove** wordmark on the left.
-  - Search command palette trigger (`⌘K`).
-  - **Location / Timezone Pill (`Asia/Kolkata (IST)`):** Positioned prominently in the top navbar for immediate temporal context.
-  - Notification counter and user avatar (`VS`).
-- **Content Canvas:** Full-width expansive canvas with soft radial ambient coastal gradient (`radial-gradient(circle at 50% 0%, #EEF6F4 0%, #F5F8F7 50%, #EDF3F1 100%)`). Eliminates heavy solid sidebars.
 
-- Used for `Today` only.
+- Used for `Today`.
 - Navigation rail: `240px` reference width at the `1536px` mockup canvas.
 - Rail surface: `cloud-0`/`cloud-25`, separated by a cool 1px divider.
 - Selected Today row: `jade-100` tint with ink label and jade icon.
 - Logo: canonical dark cove mark plus ink wordmark.
 - Header area may use the approved pale coastal landscape wash.
 - Purpose: welcoming, reflective entry into the day's work.
-**Focused Workspace Shell (Deep-Ocean Command Center)**
-- Used exclusively for `/workspace/[id]` during intense algorithmic solving.
-- Top navigation ribbon with session timer, save state, and 6-stage evidence stepper.
-- High-efficiency 3-column command layout (Invariant Brief, 3D State Prediction + Code Dock, Evidence Checklist).
 
 **Deep Journey shell — DSA Roadmap authority**
 
@@ -856,15 +839,12 @@ Do not collapse these into `Something went wrong` when a safer, clearer category
 
 **Purpose:** Provide the primary daily cockpit. Recommends exactly one clear next action with contextual rationale, displays the daily timeboxed sequence, highlights spaced reviews, and reports multi-dimensional learning signals without cognitive overload.
 
-**Mockup Authority:** High-fidelity generated artifact `today_dashboard_redesign_1789715495580.jpg` and baseline `learner-home.png`.
-**Mockup Authority:** Interactive HTML mockup `mockup_floating_navbar_dashboard.html`, generated artifact `today_dashboard_redesign_1789715495580.jpg`, and baseline `learner-home.png`.
+**Visual contract:** Sections 1.5, 8.2, and 26.1.
 
 **Desktop Layout & Anatomy:**
-1. **Application Shell & Sidebar:** Deep Ocean navigation rail (`#0B3B42`), canonical cove logo, navigation links (`Today` active pill with soft jade glow, `Roadmap`, `Learn`, `Practice Journal`, `Progress`, `Settings`), coastal mountain illustration wash with motto *"Calmer minds / Stronger problem solvers"*.
+1. **Application Shell & Sidebar:** Light navigation rail, canonical cove logo, navigation links (`Today` active pale-jade row, `Roadmap`, `Learn`, `Practice Journal`, `Progress`, `Settings`), and a restrained coastal mountain wash.
 2. **Top Utility Bar:** Search bar (`Search concepts, patterns, problems... ⌘K`), timezone pill (`Asia/Kolkata (IST)`), notification bell with badge counter, and user profile avatar (`VS`).
 3. **Hero Header:** Editorial serif greeting (`Good morning, Vaibhav / Your next useful step is ready.`), horizon tracking pill (`Week 3 of 16 · On track`), and subtle misty coastal landscape wash in the background.
-1. **Floating Glossy Top Navbar (Pill Dock):** Translucent frosted glass navbar (`max-w-7xl mx-auto`, `backdrop-filter: blur(20px)`), canonical cove `< >` logo and **AlgoCove** wordmark, central pill-dock navigation (`Today` active jade pill, `Roadmap`, `Learn`, `Practice Journal`, `Progress`), search command palette (`⌘K`), **Location / Timezone Pill (`Asia/Kolkata (IST)`)**, notification bell with badge, and user avatar (`VS`).
-2. **Hero Header:** Editorial serif greeting (`Good morning, Vaibhav / Your next useful step is ready.`), horizon tracking pill (`Week 3 of 16 · On track`), and subtle radial coastal ambient glow in the background. No heavy solid sidebar.
 4. **Primary Hero Card ("Continue learning"):**
    - Translucent frosted glass panel with 1px border highlight and soft elevation.
    - Lesson Identity: Badge `Two Pointers`, Title `Converging on a sorted array`, duration `32-minute session`, difficulty `Intermediate`.
@@ -899,7 +879,7 @@ Do not collapse these into `Something went wrong` when a safer, clearer category
 
 **Purpose:** Visualizes the prerequisite Directed Acyclic Graph (DAG) grouped into 4 phase columns, weekly capacity allocation, real-time plan health validation, upcoming reviews, and compassionate replanning.
 
-**Mockup Authority:** High-fidelity generated artifact `dsa_roadmap_redesign_1789715528506.jpg` and baseline `dsa-roadmap.png`.
+**Visual contract:** Sections 1.5, 8.2, and 26.3.
 
 **Desktop Layout & Anatomy:**
 1. **Header & Context:**
@@ -939,7 +919,7 @@ Do not collapse these into `Something went wrong` when a safer, clearer category
 
 **Purpose:** Focused, dark deep-ocean command center (`#082F35`) uniting lesson context, structured pseudocode reasoning, active 3D state prediction, multi-language code execution, test verification, and readiness evidence.
 
-**Mockup Authority:** High-fidelity generated artifact `problem_workspace_mockup_1789715559782.jpg` and baseline `guided-problem-workspace.png`.
+**Visual contract:** Sections 1.5, 8.3, and 26.2.
 
 **Desktop Layout & Anatomy (3 Distinct Functional Columns):**
 1. **Top Navigation Ribbon:**
@@ -1610,7 +1590,7 @@ The approved brand direction is fixed. The table distinguishes documentary decis
 
 | ID | Prerequisite | Priority | Current status | Completion evidence |
 |---|---|---|---|---|
-| D-01 | Three approved reference mockups preserved under stable names | Critical | Complete | Artifact paths and SHA-256 values in Section 1.5 |
+| D-01 | Shared visual authority is versioned | Critical | Complete | Section 1.5 prohibits local-path authority and defines the committed-baseline manifest rule |
 | D-02 | Visual-authority rule established | Critical | Complete | Mockups govern aesthetics; this document governs behavior and accessibility |
 | D-03 | Canonical logo direction selected | Critical | Complete | First-mockup cove-and-angle-brackets mark; later generated marks rejected |
 | D-04 | Production logo asset set | Critical | Open | Human-reviewed SVG; light/dark/monochrome lockups; favicon exports at 16/24/32px; visual comparison against Learner Home reference |
@@ -1649,7 +1629,7 @@ The applicable architecture and implementation phase gates remain unchanged. Thi
 For each implemented reference page:
 
 1. Render at the approved `1536 × 1024` reference viewport.
-2. Compare side-by-side with the stable mockup artifact.
+2. Compare against the committed visual baseline when one exists; otherwise review against the versioned screen contract and record the first approved baseline in `docs/design-assets/`.
 3. Check shell mode, logo, type hierarchy, panel boundaries, color roles, icon weight, illustration placement, and primary-action treatment.
 4. Overlay screenshots when practical to find alignment drift.
 5. Record intentional accessibility differences.
@@ -1787,7 +1767,7 @@ These blueprints translate the approved mockups into stable composition rules.
 | 2026-09-17 | Keep progress dimensions separate | Preserves AlgoCove's product rule that activity, mastery, external practice, reviews, and consistency are not interchangeable |
 | 2026-09-17 | Make visualization prediction-first with a text-equivalent state | Aligns the UI with active learning and accessibility requirements |
 | 2026-09-17 | Preserve Current Blue for roadmap/today and Deep Ocean for workspace commits | Matches the approved mockups while keeping Jade for completion and top-level primary actions |
-| 2026-09-17 | Preserve immutable mockups in the local AlgoCove design-artifact store | Prevents future implementation from relying on temporary generated-image paths or prose alone |
+| 2026-09-19 | Make repository contracts and committed baselines the only visual authority | Prevents implementation from relying on developer-local or temporary generated-image paths |
 
 ---
 

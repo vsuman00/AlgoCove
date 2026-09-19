@@ -84,6 +84,7 @@ describe("HTTP execution relay adapter", () => {
     expect(fetchMock.mock.calls[0]?.[1]?.headers).toMatchObject({
       Authorization: "Bearer relay-token-2026-example",
     });
+    expect(fetchMock.mock.calls[0]?.[1]?.signal).toBeInstanceOf(AbortSignal);
 
     await expect(relay.dispatch({ run: run(), source, preparation })).resolves.toEqual({
       runId,

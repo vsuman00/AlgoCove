@@ -180,6 +180,8 @@ function reduceTraceEvent(
   | { readonly ok: false; readonly error: TraceFailure } {
   if (state.status === "invalid")
     return failure("invalid_event", "Trace cannot continue after an invalid state.");
+  if (state.status === "complete")
+    return failure("invalid_event", "Trace cannot continue after completion.");
   switch (event.kind) {
     case "compare":
       if (!validIndex(state.values, event.left) || !validIndex(state.values, event.right)) {
