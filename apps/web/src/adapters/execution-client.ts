@@ -51,7 +51,7 @@ export function createHttpExecutionRelay(options: HttpExecutionRelayOptions): Ex
         run: input.run,
       });
       return {
-        outbox: parsePreparation(response, input.run),
+        outbox: parsePreparation(response, input.run, input.eventId),
         token: parseDispatchPreparation(response, input.run),
       };
     },
@@ -134,7 +134,11 @@ function validateSource(run: CodeRunRequest, source: string): void {
   }
 }
 
-function parsePreparation(value: unknown, run: CodeRunRequest): OutboxEvent {
+function parsePreparation(
+  value: unknown,
+  run: CodeRunRequest,
+  expectedEventId: OutboxEvent["eventId"],
+): OutboxEvent {
   if (!isRecord(value) || !isRecord(value.outbox)) {
     throw new Error("Execution relay preparation is invalid.");
   }
@@ -142,6 +146,7 @@ function parsePreparation(value: unknown, run: CodeRunRequest): OutboxEvent {
   const occurredAt = parseInstant(value.outbox.occurredAt);
   if (
     !eventId.ok ||
+    eventId.value !== expectedEventId ||
     typeof value.outbox.aggregateId !== "string" ||
     value.outbox.aggregateId !== run.attemptId ||
     value.outbox.topic !== EXECUTION_DISPATCH_TOPIC ||
@@ -158,7 +163,10 @@ function parsePreparation(value: unknown, run: CodeRunRequest): OutboxEvent {
     !isRecord(payload.descriptor) ||
     !isRecord(payload.descriptor.payload) ||
     payload.descriptor.payload.runId !== run.runId ||
-    payload.descriptor.payload.attemptId !== run.attemptId
+    payload.descriptor.payload.attemptId !== run.attemptId ||
+    payload.descriptor.payload.problemVersionId !== run.problemVersionId ||
+    payload.descriptor.payload.language !== run.language ||
+    payload.descriptor.payload.sourceDigest !== run.sourceChecksum
   ) {
     throw new Error("Execution relay preparation must be descriptor-only and run-bound.");
   }
@@ -178,7 +186,7 @@ function parseDispatchPreparation(value: unknown, run: CodeRunRequest): Dispatch
   if (
     value.dispatchToken.length === 0 ||
     value.dispatchToken.length > MAX_RELAY_TOKEN_LENGTH ||
-    ("runId" in value && value.runId !== run.runId)
+    value.runId !== run.runId
   ) {
     throw new Error("Execution relay dispatch preparation is not run-bound.");
   }

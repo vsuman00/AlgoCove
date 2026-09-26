@@ -76,6 +76,8 @@
 
 **Local revalidation (2026-09-26):** Frozen pnpm 12.4.2 installation, `pnpm verify` (153 unit/web/architecture tests), dependency audit, 21 live PostgreSQL integration tests across 17 migrations, production build, 16 Chromium accessibility tests, 1 draft-recovery E2E test, and 5 fixture-backed execution-browser cases pass. Four pinned image profiles build locally and their six-language smoke checks pass; conformance passes 36 correct runs and rejects 6 mutations, and all 14 bounded sandbox-abuse fixtures pass without residue. The local development server returns HTTP 200 for health, readiness, execution-readiness, and the guided workspace with `EXECUTION_ENABLED=false`. These runs used the local Docker baseline; gVisor `runsc` was not available on this macOS host. The prior remote gVisor candidate evidence remains separate from the still-open F5 real-run gate.
 
+**Task 25a preparation-correlation slice (2026-09-26):** The web execution adapter now rejects a relay preparation unless its outbox event ID, run ID, attempt ID, problem version, language, and source digest match the exact application request. The preparation receipt must identify the same run alongside its ephemeral dispatch token; the relay must enforce token binding independently. Five focused negative fixtures cover event, receipt, source, problem, and language mismatches; the local gate passes 158 unit/web/architecture tests. This prevents mismatched relay responses from being saved as durable requests. The isolated execution host and real learner-run evidence remain open; execution stays disabled.
+
 ## Phase 0: Resolve gates and freeze the build contract
 
 - [ ] Task 1: Approve product semantics and launch slice

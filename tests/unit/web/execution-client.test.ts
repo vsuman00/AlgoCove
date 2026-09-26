@@ -42,6 +42,7 @@ function response(body: unknown, status = 200): Response {
 
 function preparationResponse(overrides: Record<string, unknown> = {}) {
   return {
+    runId,
     outbox: {
       eventId,
       topic: "execution.run.requested",
@@ -53,7 +54,13 @@ function preparationResponse(overrides: Record<string, unknown> = {}) {
         descriptor: {
           algorithm: "ed25519",
           keyId: "execution-key",
-          payload: { runId, attemptId },
+          payload: {
+            runId,
+            attemptId,
+            problemVersionId,
+            language: "javascript",
+            sourceDigest: sha256Digest(source),
+          },
           signature: "signature",
         },
         quota: { quotaKey: `learner:${learnerId}`, profileId: "javascript", maxConcurrent: 1 },
@@ -132,5 +139,74 @@ describe("HTTP execution relay adapter", () => {
     });
 
     await expect(relay.prepare({ run: run(), source, eventId })).rejects.toThrow(/descriptor-only/);
+  });
+
+  it("rejects a preparation for another event before the outbox can be saved", async () => {
+    const prepared = preparationResponse();
+    const fetchMock = vi.fn().mockResolvedValue(
+      response({
+        ...prepared,
+        outbox: {
+          ...prepared.outbox,
+          eventId: must(formatId("event", "1111111111111111")),
+        },
+      }),
+    );
+    const relay = createHttpExecutionRelay({
+      baseUrl: "https://execution-relay.example",
+      token: "relay-token-2026-example",
+      fetch: fetchMock as unknown as typeof fetch,
+    });
+
+    await expect(relay.prepare({ run: run(), source, eventId })).rejects.toThrow(
+      /outbox is invalid/,
+    );
+  });
+
+  it("rejects a preparation receipt that labels the dispatch token for another run", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(
+      response({
+        ...preparationResponse(),
+        runId: must(formatId("codeRun", "1111111111111111")),
+      }),
+    );
+    const relay = createHttpExecutionRelay({
+      baseUrl: "https://execution-relay.example",
+      token: "relay-token-2026-example",
+      fetch: fetchMock as unknown as typeof fetch,
+    });
+
+    await expect(relay.prepare({ run: run(), source, eventId })).rejects.toThrow(/not run-bound/);
+  });
+
+  it.each([
+    ["source digest", { sourceDigest: sha256Digest("different source") }],
+    ["problem version", { problemVersionId: must(formatId("problemVersion", "1111111111111111")) }],
+    ["language", { language: "python" }],
+  ])("rejects a descriptor with a mismatched %s", async (_field, mismatch) => {
+    const prepared = preparationResponse();
+    const descriptor = prepared.outbox.payload.descriptor;
+    const fetchMock = vi.fn().mockResolvedValue(
+      response({
+        ...prepared,
+        outbox: {
+          ...prepared.outbox,
+          payload: {
+            ...prepared.outbox.payload,
+            descriptor: {
+              ...descriptor,
+              payload: { ...descriptor.payload, ...mismatch },
+            },
+          },
+        },
+      }),
+    );
+    const relay = createHttpExecutionRelay({
+      baseUrl: "https://execution-relay.example",
+      token: "relay-token-2026-example",
+      fetch: fetchMock as unknown as typeof fetch,
+    });
+
+    await expect(relay.prepare({ run: run(), source, eventId })).rejects.toThrow(/run-bound/);
   });
 });
