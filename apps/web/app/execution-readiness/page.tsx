@@ -48,10 +48,11 @@ export default function ExecutionReadinessPage(): ReactElement {
           <Icon name="info" size={24} />
           <div>
             <p className="ac-eyebrow">Open release gate</p>
-            <h2 id="security-gate-title">Security-owner approval is still required</h2>
+            <h2 id="security-gate-title">Isolated execution setup is still required</h2>
             <p>
-              The technical sandbox evidence is complete, but runnable content remains unavailable
-              until the hostile-code isolation choice receives its required human approval.
+              The security owner approved gVisor runsc for hostile learner code. Runnable content
+              remains unavailable until the isolated host, relay, and real local six-language checks
+              pass.
             </p>
           </div>
           <span>BLOCKED</span>

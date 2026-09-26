@@ -23,8 +23,8 @@ export function WorkflowStatus({
         </h2>
         <p className="max-w-[68ch] text-cove-body-sm text-cove-secondary">
           The six-language contract and execution conformance evidence are present. Learner-facing
-          execution stays locked until the selected hostile-code sandbox is approved by the security
-          owner.
+          execution stays locked until the approved gVisor execution host and relay pass real local
+          end-to-end validation.
         </p>
       </div>
       <ul className="m-0 grid gap-2 p-0 text-cove-body-sm" aria-label="Publication blockers">

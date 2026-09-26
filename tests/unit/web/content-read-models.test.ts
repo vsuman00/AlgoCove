@@ -20,7 +20,7 @@ describe("content operations fixture read model", () => {
     expect(model.externalReference.canNavigate).toBe(true);
     expect(model.publicationStatus).toBe("fixture_only_blocked");
     expect(model.publicationBlockers).toContain(
-      "Runnable publication is blocked until the hostile-code sandbox is approved by the security owner.",
+      "Runnable publication is blocked until the approved gVisor execution plane passes real learner-run validation.",
     );
   });
 });

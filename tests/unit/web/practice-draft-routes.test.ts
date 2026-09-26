@@ -81,6 +81,7 @@ function repository() {
 }
 
 afterEach(() => {
+  vi.useRealTimers();
   authMock.mockReset();
   runtimeMock.getPracticeRuntime.mockReset();
   vi.unstubAllEnvs();
@@ -111,6 +112,8 @@ describe("authenticated practice draft routes", () => {
   });
 
   it("starts an owner-scoped source draft and replaces its current snapshot", async () => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2026-09-19T10:00:00.000Z"));
     authMock.mockResolvedValue({
       isAuthenticated: true,
       userId: "user_practice_routes",

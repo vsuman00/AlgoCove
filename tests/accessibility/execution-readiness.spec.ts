@@ -16,7 +16,7 @@ test.describe("Execution readiness", () => {
     await expect(page.getByRole("heading", { name: "Java", exact: true })).toBeVisible();
     await expect(page.getByRole("heading", { name: "C++" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "C", exact: true })).toBeVisible();
-    await expect(page.getByText("Security-owner approval is still required")).toBeVisible();
+    await expect(page.getByText("Isolated execution setup is still required")).toBeVisible();
     await expect(page.getByRole("textbox")).toHaveCount(0);
 
     const results = await new AxeBuilder({ page }).analyze();

@@ -78,7 +78,7 @@ export function buildContentWorkflowReadModel(input: {
   if (!canUseForNewWork(candidate, candidate.createdAt))
     blockers.push("The draft is not eligible for learner recommendations.");
   blockers.push(
-    "Runnable publication is blocked until the hostile-code sandbox is approved by the security owner.",
+    "Runnable publication is blocked until the approved gVisor execution plane passes real learner-run validation.",
   );
   const payload = renderableContentPayload(candidate);
   return {

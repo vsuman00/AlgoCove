@@ -66,7 +66,7 @@ export default async function ContentWorkflowPage({
             </h2>
             <p className="m-0 text-cove-body-sm text-cove-secondary">
               Rendered as authored text from the original candidate. Runnable delivery remains
-              locked behind the sandbox security approval.
+              locked until the approved isolated execution plane passes real learner-run validation.
             </p>
             {model.internalPreview === null ? (
               <p className="text-cove-secondary">Payload unavailable.</p>

@@ -1,17 +1,19 @@
 # Phase 4 implementation evidence
 
-**Status:** Tasks 20, 21, 22, 23, and the bounded Task 24 fixture/control slice
-are complete with local and remote evidence. Task 19's candidate-runtime
-technical evidence is complete: final GitHub CI run
-[`35264360185`](https://github.com/vsuman00/AlgoCove/actions/runs/35264360185)
-executed the six-language matrix under explicitly selected gVisor `runsc` and
+**Status:** Tasks 19, 20, 21, 22, 23, and the bounded Task 24 fixture/control slice
+are complete for the recorded Phase 4 scope. Task 19's candidate-runtime
+technical evidence includes final GitHub CI run
+[`35264360185`](https://github.com/vsuman00/AlgoCove/actions/runs/35264360185),
+which executed the six-language matrix under explicitly selected gVisor `runsc` and
 passed normal, hostile-boundary, and concurrent startup fixtures. The release
 workflow also passed remotely in run
 [`35261137554`](https://github.com/vsuman00/AlgoCove/actions/runs/35261137554),
 including Trivy's fixable critical/high gate, SBOM/provenance image builds, and
 keyless Cosign signing and verification for all four image profiles. Phase 4
-remains open only for the required explicit security-owner decision on the
-candidate runtime; Docker `runc` is still rejected for hostile learner code.
+was approved by the security owner on 2026-09-26 for the gVisor `runsc`
+candidate. Docker `runc` remains rejected for hostile learner code. This
+decision authorizes Phase 5 execution integration; it does not establish a
+locally integrated isolated host or real learner-run evidence.
 
 ## Task 19 slice delivered
 
@@ -167,23 +169,38 @@ fixtures use an explicitly executable temporary work volume because a native
 binary must be loadable; this is a property to repeat and review under the
 stronger candidate, not a production approval.
 
-## Decision and blocker
+## Security-owner decision (2026-09-26)
+
+The owner confirmed in the AlgoCove task conversation that they approve
+gVisor `runsc` **as the security owner for hostile learner code**. The scope is
+the dedicated, network-denied execution plane using the tested resource,
+filesystem, privilege, and runtime controls with reviewed pinned images.
+This closes the Task 19 candidate-runtime decision and the F4 human security
+checkpoint. Changing to Docker `runc`, another runtime, or weaker controls
+requires a new security review.
+
+The execution relay, durable run/lease journal adapter, isolated host, and
+application callback have not been integrated and exercised together on
+localhost. `EXECUTION_ENABLED` remains false until that boundary is
+implemented and its real six-language result, failure, cancellation, and
+resume evidence is recorded under F5. No live deployment is required for the
+current local validation scope.
+
+## Earlier decision and blocker
 
 Docker’s default `runc` runtime is useful for local control probing but does
 not satisfy the architecture’s required gVisor-class, microVM-class, or
 equivalently isolated managed boundary. The remote candidate matrix now passes
-under gVisor `runsc`, but Task 19 remains open until a security owner records
-approval, rejection, or a narrowed decision with threat-model evidence. No
-production promotion or learner execution is authorized by the passing CI run
-alone.
+under gVisor `runsc`. At the time of this CI result, Task 19 remained open
+pending the security-owner decision recorded above. The passing CI run alone
+did not authorize production promotion or learner execution.
 
 The Task 24 fixture runner is a local control-baseline test only. No learner
 source is accepted or executed by the application, Next.js, the general worker,
 or this conformance fixture runner. Task 23 and Task 24 prove semantic and
 abuse-control contracts in the local baseline; they do not approve Docker
-`runc` for hostile learner code or close the unresolved runtime sandbox
-decision. The CI workflows are implementation evidence, not a substitute for
-their successful remote runs and the required human security decision.
+`runc` for hostile learner code. The CI workflows are implementation evidence;
+the separate human security decision is recorded above.
 
 ## References
 

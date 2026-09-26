@@ -36,7 +36,7 @@ const capabilities = [
     eyebrow: "Execution boundary",
     title: "Execution readiness",
     description:
-      "Review the six code-backed language profiles and the security gate that still prevents learner execution.",
+      "Review the six code-backed language profiles and the local integration evidence still needed for learner execution.",
     href: "/execution-readiness",
     action: "Review runtime contracts",
     icon: "progress",
@@ -164,12 +164,12 @@ export default function HomeExperience(): ReactElement {
         <Icon name="info" size={24} />
         <div>
           <p className="ac-eyebrow">Intentionally not shown</p>
-          <h2 id="not-yet-title">No pretend learner workspace</h2>
+          <h2 id="not-yet-title">No pretend execution result</h2>
           <p>
             Problem search, notifications, roadmaps, mastery, and review queues are absent because
-            their end-to-end product routes are not implemented yet. The Phase 5 session and attempt
-            kernel is syncing behind the scenes; the learner workspace stays hidden until that path
-            is complete. The header contains no location control or inactive icon.
+            their end-to-end product routes are not implemented yet. The guided workspace is
+            available for authored learning and private drafts; real code execution awaits the
+            isolated host and relay. The header contains no location control or inactive icon.
           </p>
         </div>
       </aside>

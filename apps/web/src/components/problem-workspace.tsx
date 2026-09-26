@@ -588,7 +588,7 @@ export default function ProblemWorkspace({
           {!executionEnabled ? (
             <p className="ac-note ac-note--info" role="status">
               {
-                "Execution is unavailable: the security-owner sandbox gate is still open. No result is being simulated."
+                "Execution is unavailable: the isolated execution relay is not configured. No result is being simulated."
               }
             </p>
           ) : null}
