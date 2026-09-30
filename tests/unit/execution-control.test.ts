@@ -1,4 +1,7 @@
 import { describe, expect, it } from "vitest";
+import { mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import {
   createExecutionResult,
   createRunDescriptor,
@@ -16,8 +19,11 @@ import {
   createExecutionControlServer,
   createInternalAuthenticator,
   createExecutionDispatchMessage,
+  createSqliteExecutionJournal,
+  startLoopbackExecutionRelay,
   type ExecutionControlServer,
   type ExecutionJournal,
+  type ExecutionJournalRecord,
   type InternalOperation,
   type InternalPrincipal,
 } from "@algocove/execution-control";
@@ -106,9 +112,10 @@ function signedResult(
 }
 
 function createServer(): ExecutionControlServer {
-  const records = new Map<string, ReturnType<ExecutionJournal["get"]>>();
+  const records = new Map<string, ExecutionJournalRecord>();
   const journal: ExecutionJournal = {
     get: (runId) => records.get(runId),
+    list: () => [...records.values()],
     save: (record) => records.set(record.descriptor.payload.runId, record),
   };
   const control = createExecutionControl({
@@ -148,6 +155,126 @@ function quota(maxConcurrent = 1) {
 }
 
 describe("execution-control service boundary", () => {
+  it("restores a durable queue and fences active work after restart", async () => {
+    const directory = mkdtempSync(join(tmpdir(), "algocove-journal-"));
+    const path = join(directory, "control.sqlite");
+    const first = signedDescriptor("0000000000000021");
+    const second = signedDescriptor("0000000000000022");
+    const options = (journal: ExecutionJournal) => ({
+      verificationKeys: new Map([[verificationKey.keyId, verificationKey]]),
+      terminalSigningKeys: new Map([[signingKey.keyId, signingKey]]),
+      orphanTimeoutMs: 1_000,
+      maxQueuePerQuota: 2,
+      journal,
+    });
+    try {
+      const journal = createSqliteExecutionJournal(path);
+      const control = createExecutionControl(options(journal));
+      expect(
+        control.admit({ dispatchKey: "restart-one", descriptor: first, quota: quota(), now }).ok,
+      ).toBe(true);
+      expect(
+        control.admit({ dispatchKey: "restart-two", descriptor: second, quota: quota(), now }).ok,
+      ).toBe(true);
+      expect(control.leaseNext({ workerId: "worker-a", now, leaseDurationMs: 900 })).toMatchObject({
+        ok: true,
+        value: { runId: first.payload.runId },
+      });
+      journal.close();
+
+      const restoredJournal = createSqliteExecutionJournal(path);
+      const restored = createExecutionControl(options(restoredJournal));
+      expect(
+        restored.admit({ dispatchKey: "restart-two", descriptor: second, quota: quota(), now }),
+      ).toMatchObject({ ok: true, value: { replayed: true, queuePosition: 1 } });
+      expect(restored.leaseNext({ workerId: "worker-b", now, leaseDurationMs: 900 })).toMatchObject(
+        { ok: true, value: null },
+      );
+      expect(
+        restored.workerLost({
+          runId: first.payload.runId,
+          workerId: "worker-a",
+          leaseEpoch: 1,
+          now,
+        }),
+      ).toMatchObject({ ok: true, value: { state: "orphaned" } });
+      expect(restored.reconcile("2026-09-17T10:00:02.000Z")).toMatchObject({
+        ok: true,
+        value: { reconciled: 1 },
+      });
+      expect(
+        restored.leaseNext({
+          workerId: "worker-b",
+          now: "2026-09-17T10:00:03.000Z",
+          leaseDurationMs: 900,
+        }),
+      ).toMatchObject({ ok: true, value: { runId: second.payload.runId } });
+      restoredJournal.close();
+      expect(readFileSync(path).toString("utf8")).not.toContain("private learner source");
+    } finally {
+      rmSync(directory, { recursive: true, force: true });
+    }
+  });
+
+  it("serves authenticated control over loopback with bounded requests", async () => {
+    const relay = await startLoopbackExecutionRelay(createServer());
+    try {
+      const operation = {
+        kind: "admit",
+        dispatchKey: "http-one",
+        descriptor: signedDescriptor("0000000000000023"),
+        quota: quota(),
+        now,
+      };
+      const call = (body: unknown, token = "relay-secret-2026") =>
+        fetch(relay.url, {
+          method: "POST",
+          headers: { authorization: `Bearer ${token}`, "content-type": "application/json" },
+          body: JSON.stringify(body),
+        });
+      expect((await call({ principal: "application-relay", operation }, "wrong")).status).toBe(401);
+      expect((await call({ principal: "application-relay", operation })).status).toBe(200);
+      const replay = await call({ principal: "application-relay", operation });
+      expect(await replay.json()).toMatchObject({ ok: true, value: { replayed: true } });
+      expect(
+        (
+          await call({
+            principal: "application-relay",
+            operation: { ...operation, source: "learner code" },
+          })
+        ).status,
+      ).toBe(400);
+    } finally {
+      await relay.close();
+    }
+  });
+
+  it("stops control after a journal write failure", () => {
+    const control = createExecutionControl({
+      verificationKeys: new Map([[verificationKey.keyId, verificationKey]]),
+      terminalSigningKeys: new Map([[signingKey.keyId, signingKey]]),
+      orphanTimeoutMs: 1_000,
+      maxQueuePerQuota: 2,
+      journal: {
+        get: () => undefined,
+        list: () => [],
+        save: () => {
+          throw new Error("disk unavailable");
+        },
+      },
+    });
+    expect(() =>
+      control.admit({
+        dispatchKey: "write-fails",
+        descriptor: signedDescriptor("0000000000000024"),
+        quota: quota(),
+        now,
+      }),
+    ).toThrow("disk unavailable");
+    expect(() => control.leaseNext({ workerId: "worker-a", now, leaseDurationMs: 900 })).toThrow(
+      "Execution journal failed",
+    );
+  });
   it("rejects browser-origin calls and accepts only authenticated internal relay calls", async () => {
     const server = createServer();
     const descriptor = signedDescriptor("0000000000000001");

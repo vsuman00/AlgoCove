@@ -183,6 +183,8 @@ export type ExecutionJournalRecord = {
 
 export type ExecutionJournal = {
   readonly get: (runId: RunDescriptor["runId"]) => ExecutionJournalRecord | undefined;
+  /** Stable admission order, used to rebuild the queue after a restart. */
+  readonly list: () => readonly ExecutionJournalRecord[];
   readonly save: (record: ExecutionJournalRecord) => void;
 };
 

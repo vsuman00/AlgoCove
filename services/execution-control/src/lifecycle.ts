@@ -52,6 +52,7 @@ export class ExecutionControl {
   private readonly queue: string[] = [];
   private readonly disabledProfiles = new Set<string>();
   private readonly options: ExecutionControlOptions;
+  private journalFailed = false;
 
   constructor(options: ExecutionControlOptions) {
     if (
@@ -69,13 +70,55 @@ export class ExecutionControl {
       throw new Error("Maximum queue length must be between 1 and 1000.");
     }
     this.options = options;
+    for (const saved of options.journal.list()) {
+      const verified = verifyRunDescriptor(saved.descriptor, {
+        keys: options.verificationKeys,
+        now: saved.descriptor.payload.issuedAt,
+      });
+      const runId = saved.descriptor.payload.runId as string;
+      if (
+        !verified.ok ||
+        digestDescriptor(saved.descriptor.payload) !== saved.descriptorDigest ||
+        this.records.has(runId) ||
+        this.dispatches.has(saved.dispatchKey) ||
+        !validateDispatchKey(saved.dispatchKey).ok ||
+        !validateQuota(saved.quota).ok ||
+        !Number.isSafeInteger(saved.activeLeaseEpoch) ||
+        saved.activeLeaseEpoch < saved.descriptor.payload.leaseEpoch ||
+        (saved.state === "queued" &&
+          (saved.workerId !== undefined || saved.leasedUntil !== undefined)) ||
+        (saved.state === "awaiting_teardown" && saved.pendingResult === undefined) ||
+        (saved.state === "terminal" && saved.terminalResult === undefined) ||
+        ![
+          "queued",
+          "leased",
+          "running",
+          "cancellation_requested",
+          "awaiting_teardown",
+          "orphaned",
+          "terminal",
+        ].includes(saved.state)
+      ) {
+        throw new Error("Execution journal contains an invalid or conflicting record.");
+      }
+      const record = cloneJson(saved);
+      this.records.set(runId, record);
+      this.dispatches.set(saved.dispatchKey, runId);
+      if (saved.state === "queued") this.queue.push(runId);
+    }
+  }
+
+  assertHealthy(): void {
+    if (this.journalFailed) throw new Error("Execution journal failed; control must restart.");
   }
 
   disableProfile(profileId: string): void {
+    this.assertHealthy();
     this.disabledProfiles.add(profileId);
   }
 
   enableProfile(profileId: string): void {
+    this.assertHealthy();
     this.disabledProfiles.delete(profileId);
   }
 
@@ -85,6 +128,7 @@ export class ExecutionControl {
     readonly quota: AdmissionQuota;
     readonly now: string;
   }): ControlResult<AdmissionReceipt> {
+    this.assertHealthy();
     const dispatchKey = validateDispatchKey(input.dispatchKey);
     if (!dispatchKey.ok) return dispatchKey;
     const quota = validateQuota(input.quota);
@@ -144,6 +188,7 @@ export class ExecutionControl {
     readonly now: string;
     readonly leaseDurationMs: number;
   }): ControlResult<LeaseReceipt | null> {
+    this.assertHealthy();
     const worker = validateWorkerId(input.workerId);
     if (!worker.ok) return worker;
     const now = validateControlTime(input.now);
@@ -177,6 +222,7 @@ export class ExecutionControl {
     readonly leaseEpoch: number;
     readonly now: string;
   }): ControlResult<LifecycleReceipt> {
+    this.assertHealthy();
     const record = this.authorizeLease(input.runId, input.workerId, input.leaseEpoch, input.now);
     if (!record.ok) return record;
     if (record.value.state !== "leased" && record.value.state !== "cancellation_requested") {
@@ -194,6 +240,7 @@ export class ExecutionControl {
     readonly now: string;
     readonly leaseDurationMs: number;
   }): ControlResult<LifecycleReceipt> {
+    this.assertHealthy();
     const duration = validateLeaseDuration(input.leaseDurationMs);
     if (!duration.ok) return duration;
     const record = this.authorizeLease(input.runId, input.workerId, input.leaseEpoch, input.now);
@@ -217,6 +264,7 @@ export class ExecutionControl {
     readonly leaseEpoch: number;
     readonly now: string;
   }): ControlResult<LifecycleReceipt> {
+    this.assertHealthy();
     const record = this.authorizeLease(input.runId, input.workerId, input.leaseEpoch, input.now);
     if (!record.ok) return record;
     if (!["leased", "running", "cancellation_requested"].includes(record.value.state)) {
@@ -238,6 +286,7 @@ export class ExecutionControl {
     readonly now: string;
     readonly reason: "learner" | "system" | "timeout";
   }): ControlResult<LifecycleReceipt> {
+    this.assertHealthy();
     const now = validateControlTime(input.now);
     if (!now.ok) return now;
     const record = this.records.get(input.runId as string);
@@ -269,6 +318,7 @@ export class ExecutionControl {
     readonly result: SignedExecutionResult;
     readonly now: string;
   }): ControlResult<LifecycleReceipt> {
+    this.assertHealthy();
     const runKey = input.result.payload.runId as string;
     const record = this.records.get(runKey);
     if (record === undefined)
@@ -321,6 +371,7 @@ export class ExecutionControl {
     readonly leaseEpoch: number;
     readonly now: string;
   }): ControlResult<LifecycleReceipt> {
+    this.assertHealthy();
     const record = this.authorizeLease(input.runId, input.workerId, input.leaseEpoch, input.now);
     if (!record.ok) return record;
     if (record.value.state !== "awaiting_teardown" || record.value.pendingResult === undefined) {
@@ -341,6 +392,7 @@ export class ExecutionControl {
     readonly leaseEpoch: number;
     readonly now: string;
   }): ControlResult<LifecycleReceipt> {
+    this.assertHealthy();
     const record = this.authorizeLease(input.runId, input.workerId, input.leaseEpoch, input.now);
     if (!record.ok) return record;
     if (record.value.state !== "awaiting_teardown") {
@@ -363,6 +415,7 @@ export class ExecutionControl {
   }
 
   reconcile(now: string): ControlResult<ReconcileReceipt> {
+    this.assertHealthy();
     const valid = validateControlTime(now);
     if (!valid.ok) return valid;
     const runIds: RunDescriptor["runId"][] = [];
@@ -453,7 +506,13 @@ export class ExecutionControl {
   }
 
   private persist(record: MutableRecord): void {
-    this.options.journal.save(journalRecord(record));
+    this.assertHealthy();
+    try {
+      this.options.journal.save(journalRecord(record));
+    } catch (error) {
+      this.journalFailed = true;
+      throw error;
+    }
   }
 
   private createServiceResult(

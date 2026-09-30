@@ -2,6 +2,8 @@ export { createInternalAuthenticator, requireInternalAuthentication } from "./au
 export { MAX_LEASE_DURATION_MS, validateQuota, validateWorkerId } from "./admission.ts";
 export { ExecutionControl, createExecutionControl, journalRecord } from "./lifecycle.ts";
 export { createExecutionControlServer } from "./server.ts";
+export { createSqliteExecutionJournal } from "./sqlite-journal.ts";
+export { startLoopbackExecutionRelay } from "./http-relay.ts";
 export {
   createExecutionDispatchMessage,
   EXECUTION_DISPATCH_TOPIC,

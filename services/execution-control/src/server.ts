@@ -37,6 +37,7 @@ export function createExecutionControlServer(
 ): ExecutionControlServer {
   return {
     async handle(request): Promise<ControlResult<ExecutionControlResponse>> {
+      control.assertHealthy();
       if (request.source === "browser") {
         return err(controlFailure("browser_forbidden", "Execution control is internal-only."));
       }
