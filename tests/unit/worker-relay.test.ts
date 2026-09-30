@@ -9,11 +9,14 @@ import {
   createInternalAuthenticator,
   createSqliteExecutionJournal,
   startLoopbackExecutionRelay,
+  createWebsiteExecutionRelay,
+  startLoopbackWebsiteExecutionRelay,
   type ExecutionJournal,
   type ExecutionDispatchMessage,
 } from "@algocove/execution-control";
 import { OutboxRelay } from "../../apps/worker/src/outbox-relay.ts";
 import { createLocalExecutionControlSink } from "../../apps/worker/src/execution-control-sink.ts";
+import { createHttpExecutionRelay } from "../../apps/web/src/adapters/execution-client.ts";
 import { createHttpExecutionResultSink } from "../../apps/worker/src/execution-result-forwarder.ts";
 import type { ClaimedOutboxEvent, OutboxRelayRepository } from "@algocove/db";
 import {
@@ -131,7 +134,179 @@ function messagePayload(): ExecutionDispatchMessage {
   return must(message);
 }
 
+function websiteRun(message: ExecutionDispatchMessage) {
+  return {
+    runId: message.descriptor.payload.runId,
+    learnerId: must(formatId("learner", "0000000000000011")),
+    attemptId: message.descriptor.payload.attemptId,
+    problemVersionId: message.descriptor.payload.problemVersionId,
+    manifestId: must(formatId("languageManifest", "0000000000000011")),
+    language: message.descriptor.payload.language,
+    mode: "run" as const,
+    sourceChecksum: message.descriptor.payload.sourceDigest,
+    sourceLength: Buffer.byteLength("private learner source"),
+    requestedAt: message.descriptor.payload.issuedAt,
+  };
+}
+
 describe("application outbox execution relay", () => {
+  it("connects the website adapter to local preparation, dispatch and cancellation endpoints", async () => {
+    const message = messagePayload();
+    const run = websiteRun(message);
+    let dispatches = 0;
+    const cancelled: string[] = [];
+    const relay = createWebsiteExecutionRelay({
+      prepareDescriptor: () => message,
+      verificationKeys: new Map([[verificationKey.keyId, verificationKey]]),
+      now: () => now,
+      host: {
+        dispatch: async ({ source }) => {
+          expect(source).toBe("private learner source");
+          dispatches += 1;
+          return { runId: run.runId, replayed: false };
+        },
+        cancel: async ({ runId }) => {
+          cancelled.push(runId);
+        },
+      },
+    });
+    const transport = await startLoopbackWebsiteExecutionRelay(relay, "website-relay-secret-2026");
+    try {
+      const client = createHttpExecutionRelay({
+        baseUrl: transport.baseUrl,
+        token: "website-relay-secret-2026",
+      });
+      const prepared = await client.prepare({
+        run,
+        source: "private learner source",
+        eventId: must(formatId("event", "0000000000000011")),
+      });
+      expect(JSON.stringify(prepared)).not.toContain("private learner source");
+      expect(
+        await client.dispatch({ run, source: "private learner source", preparation: prepared }),
+      ).toEqual({ runId: run.runId, replayed: false });
+      expect(
+        await client.dispatch({ run, source: "private learner source", preparation: prepared }),
+      ).toEqual({ runId: run.runId, replayed: true });
+      expect(dispatches).toBe(1);
+      await client.cancel({ runId: run.runId, reason: "learner" });
+      expect(cancelled).toEqual([run.runId]);
+      const rejected = await fetch(new URL("v1/runs/prepare", transport.baseUrl), {
+        method: "POST",
+        headers: { authorization: "Bearer wrong", "content-type": "application/json" },
+        body: JSON.stringify({ run, eventId: "evt_0000000000000011" }),
+      });
+      expect(rejected.status).toBe(401);
+      const injected = await fetch(new URL("v1/runs/prepare", transport.baseUrl), {
+        method: "POST",
+        headers: {
+          authorization: "Bearer website-relay-secret-2026",
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          run: { ...run, source: "private learner source" },
+          eventId: "evt_0000000000000011",
+        }),
+      });
+      expect(injected.status).toBe(400);
+    } finally {
+      await transport.close();
+    }
+  });
+
+  it("never repeats an uncertain source dispatch", async () => {
+    const message = messagePayload();
+    const run = websiteRun(message);
+    let dispatches = 0;
+    const relay = createWebsiteExecutionRelay({
+      prepareDescriptor: () => message,
+      verificationKeys: new Map([[verificationKey.keyId, verificationKey]]),
+      now: () => now,
+      host: {
+        dispatch: async () => {
+          dispatches += 1;
+          throw new Error("host response lost");
+        },
+        cancel: async () => undefined,
+      },
+    });
+    const prepared = relay.prepare(run, must(formatId("event", "0000000000000011")));
+    await expect(
+      relay.dispatch(run.runId, prepared.dispatchToken, "private learner source"),
+    ).rejects.toThrow("host response lost");
+    await expect(
+      relay.dispatch(run.runId, prepared.dispatchToken, "private learner source"),
+    ).rejects.toThrow("host response lost");
+    expect(dispatches).toBe(1);
+  });
+
+  it("rejects expired tokens and cancellation before preparation", async () => {
+    const message = messagePayload();
+    const run = websiteRun(message);
+    let clock = now;
+    let dispatches = 0;
+    const relay = createWebsiteExecutionRelay({
+      prepareDescriptor: () => message,
+      verificationKeys: new Map([[verificationKey.keyId, verificationKey]]),
+      now: () => clock,
+      host: {
+        dispatch: async () => {
+          dispatches += 1;
+          return { runId: run.runId, replayed: false };
+        },
+        cancel: async () => undefined,
+      },
+    });
+    const prepared = relay.prepare(run, must(formatId("event", "0000000000000011")));
+    clock = message.descriptor.payload.expiresAt;
+    await expect(
+      relay.dispatch(run.runId, prepared.dispatchToken, "private learner source"),
+    ).rejects.toThrow("unavailable");
+    const cancelledId = must(formatId("codeRun", "0000000000000012"));
+    await relay.cancel(cancelledId, "learner");
+    expect(() =>
+      relay.prepare({ ...run, runId: cancelledId }, must(formatId("event", "0000000000000012"))),
+    ).toThrow("unavailable");
+    expect(dispatches).toBe(0);
+  });
+
+  it("prepares a source-free website descriptor and deduplicates source dispatch", async () => {
+    const message = messagePayload();
+    const run = websiteRun(message);
+    let dispatches = 0;
+    const relay = createWebsiteExecutionRelay({
+      prepareDescriptor: () => message,
+      verificationKeys: new Map([[verificationKey.keyId, verificationKey]]),
+      now: () => now,
+      host: {
+        dispatch: async (input) => {
+          dispatches += 1;
+          expect(input.source).toBe("private learner source");
+          return { runId: run.runId, replayed: false };
+        },
+        cancel: async () => undefined,
+      },
+    });
+    const prepared = relay.prepare(run, must(formatId("event", "0000000000000011")));
+    expect(JSON.stringify(prepared)).not.toContain("private learner source");
+    await expect(
+      relay.dispatch(run.runId, prepared.dispatchToken, "different source"),
+    ).rejects.toThrow("mismatch");
+    const receipts = await Promise.all([
+      relay.dispatch(run.runId, prepared.dispatchToken, "private learner source"),
+      relay.dispatch(run.runId, prepared.dispatchToken, "private learner source"),
+    ]);
+    expect(receipts.every((receipt) => receipt.runId === run.runId)).toBe(true);
+    expect(dispatches).toBe(1);
+    expect(
+      await relay.dispatch(run.runId, prepared.dispatchToken, "private learner source"),
+    ).toMatchObject({ replayed: true });
+    await relay.cancel(run.runId, "learner");
+    await expect(
+      relay.dispatch(run.runId, prepared.dispatchToken, "private learner source"),
+    ).rejects.toThrow("unavailable");
+  });
+
   it.each([
     ["rejected authentication", new Response(null, { status: 401 })],
     [

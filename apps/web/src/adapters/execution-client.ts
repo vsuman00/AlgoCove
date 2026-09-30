@@ -111,6 +111,7 @@ async function postJson(
         "Content-Type": "application/json",
       },
       body: JSON.stringify(body),
+      redirect: "error",
       signal: AbortSignal.timeout(RELAY_REQUEST_TIMEOUT_MS),
     });
   } catch {
