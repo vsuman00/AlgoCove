@@ -1,9 +1,19 @@
 import { describe, expect, it } from "vitest";
+import { mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import {
   createExecutionDispatchMessage,
+  createExecutionControl,
+  createExecutionControlServer,
+  createInternalAuthenticator,
+  createSqliteExecutionJournal,
+  startLoopbackExecutionRelay,
+  type ExecutionJournal,
   type ExecutionDispatchMessage,
 } from "@algocove/execution-control";
 import { OutboxRelay } from "../../apps/worker/src/outbox-relay.ts";
+import { createLocalExecutionControlSink } from "../../apps/worker/src/execution-control-sink.ts";
 import { createHttpExecutionResultSink } from "../../apps/worker/src/execution-result-forwarder.ts";
 import type { ClaimedOutboxEvent, OutboxRelayRepository } from "@algocove/db";
 import {
@@ -122,6 +132,135 @@ function messagePayload(): ExecutionDispatchMessage {
 }
 
 describe("application outbox execution relay", () => {
+  it.each([
+    ["rejected authentication", new Response(null, { status: 401 })],
+    [
+      "another run's receipt",
+      Response.json({
+        ok: true,
+        value: {
+          runId: "run_other",
+          quotaKey: "learner:usr_aaaaaaaaaaaaaaaa",
+          profileId: "javascript-default",
+          replayed: false,
+        },
+      }),
+    ],
+  ])("does not acknowledge %s", async (_name, response) => {
+    const store = repository(event(messagePayload()));
+    const relay = new OutboxRelay(
+      store,
+      createLocalExecutionControlSink({
+        endpoint: "http://127.0.0.1:12345/internal/execution/control",
+        token: "relay-secret-2026",
+        now: () => now,
+        fetch: async () => response,
+      }),
+      {
+        relayId: "relay-a",
+        verificationKeys: new Map([[verificationKey.keyId, verificationKey]]),
+        claimLeaseMs: 1000,
+      },
+    );
+    expect(await relay.pumpOnce(now)).toMatchObject({ kind: "retried", reason: "sink_failure" });
+    expect(store.acknowledged).toEqual([]);
+    expect(store.retried).toEqual(["evt_aaaaaaaaaaaaaaaa"]);
+  });
+
+  it("requires a loopback control URL for local dispatch", () => {
+    expect(() =>
+      createLocalExecutionControlSink({
+        endpoint: "https://external.example/internal/execution/control",
+        token: "relay-secret-2026",
+      }),
+    ).toThrow("loopback control endpoint");
+  });
+
+  it("replays a lost HTTP admission response after control restart without leasing twice", async () => {
+    const directory = mkdtempSync(join(tmpdir(), "algocove-relay-"));
+    const path = join(directory, "control.sqlite");
+    const payload = messagePayload();
+    const makeControl = (journal: ExecutionJournal) =>
+      createExecutionControl({
+        verificationKeys: new Map([[verificationKey.keyId, verificationKey]]),
+        terminalSigningKeys: new Map([[signingKey.keyId, signingKey]]),
+        orphanTimeoutMs: 1000,
+        maxQueuePerQuota: 2,
+        journal,
+      });
+    const authenticator = createInternalAuthenticator({
+      "application-relay": "relay-secret-2026",
+      "execution-worker": "worker-secret-2026",
+      "execution-operator": "operator-secret-2026",
+    });
+    const relayOptions = {
+      relayId: "relay-a",
+      verificationKeys: new Map([[verificationKey.keyId, verificationKey]]),
+      claimLeaseMs: 1000,
+    };
+    let journal = createSqliteExecutionJournal(path);
+    let transport = await startLoopbackExecutionRelay(
+      createExecutionControlServer(makeControl(journal), authenticator),
+    );
+    try {
+      const firstStore = repository(event(payload));
+      const firstRelay = new OutboxRelay(
+        firstStore,
+        createLocalExecutionControlSink({
+          endpoint: transport.url,
+          token: "relay-secret-2026",
+          now: () => now,
+          fetch: async (input, init) => {
+            const response = await fetch(input, init);
+            expect(response.status).toBe(200);
+            await response.json();
+            throw new Error("admission response lost");
+          },
+        }),
+        relayOptions,
+      );
+      expect(await firstRelay.pumpOnce(now)).toMatchObject({
+        kind: "retried",
+        reason: "sink_failure",
+      });
+      expect(firstStore.acknowledged).toEqual([]);
+      expect(journal.list()).toHaveLength(1);
+      expect(JSON.stringify(journal.list())).not.toContain("private learner source");
+      await transport.close();
+      journal.close();
+
+      journal = createSqliteExecutionJournal(path);
+      const restored = makeControl(journal);
+      transport = await startLoopbackExecutionRelay(
+        createExecutionControlServer(restored, authenticator),
+      );
+      const retryStore = repository(event(payload));
+      const retryRelay = new OutboxRelay(
+        retryStore,
+        createLocalExecutionControlSink({
+          endpoint: transport.url,
+          token: "relay-secret-2026",
+          now: () => now,
+        }),
+        relayOptions,
+      );
+      expect(await retryRelay.pumpOnce(now)).toMatchObject({ kind: "delivered" });
+      expect(retryStore.acknowledged).toEqual(["evt_aaaaaaaaaaaaaaaa"]);
+      expect(journal.list()).toHaveLength(1);
+      expect(restored.leaseNext({ workerId: "worker-a", now, leaseDurationMs: 900 })).toMatchObject(
+        { ok: true, value: { runId: payload.descriptor.payload.runId } },
+      );
+      expect(restored.leaseNext({ workerId: "worker-b", now, leaseDurationMs: 900 })).toEqual({
+        ok: true,
+        value: null,
+      });
+    } finally {
+      await transport.close();
+      journal.close();
+      rmSync(directory, { recursive: true, force: true });
+    }
+  });
+
   it("delivers a verified descriptor message and acknowledges it", async () => {
     const store = repository(event(messagePayload()));
     const delivered: ExecutionDispatchMessage[] = [];
