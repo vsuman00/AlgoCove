@@ -5,10 +5,12 @@ AlgoCove is a guided workspace for learning data structures and algorithms throu
 ## Quick start
 
 ```sh
-pnpm install --frozen-lockfile
+npx --yes pnpm@12.4.2 install --frozen-lockfile
 cp .env.example .env
 pnpm dev
 ```
+
+Use Node.js 22 (see `.nvmrc`) and the exact pnpm version in `package.json` for installs and lockfile updates. If your global pnpm is older, use `npx --yes pnpm@12.4.2 <command>`. pnpm 12 records its package-manager dependencies in a separate lockfile document; older pnpm versions can remove that document and break frozen CI installs. CI reads the version from `package.json` and checks that installation leaves the lockfile unchanged.
 
 The web shell runs at `http://localhost:3000`. Liveness is available at `/api/health`; readiness remains unavailable until the local database has been bootstrapped and migrated.
 

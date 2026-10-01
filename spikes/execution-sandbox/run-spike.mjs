@@ -33,7 +33,8 @@ const commands = {
   python: "python /work/fixture.py",
   javascript: "node /work/fixture.mjs",
   typescript: "node /work/fixture.ts",
-  java: "javac /work/Main.java && java -cp /work Main",
+  // Match the execution host: do not size JVM heaps/threads from the host CPU.
+  java: "javac -J-Xmx96m -J-XX:ActiveProcessorCount=1 /work/Main.java && java -Xmx96m -XX:ActiveProcessorCount=1 -cp /work Main",
   cpp: "g++ -std=c++23 -O0 /work/main.cpp -o /work/main && /work/main",
   c: "gcc -std=c23 -O0 /work/main.c -o /work/main && /work/main",
 };
@@ -41,7 +42,7 @@ const concurrencyCommands = {
   python: "python -c 'print(\"NORMAL_OK\")'",
   javascript: "node -e 'console.log(\"NORMAL_OK\")'",
   typescript: "node -e 'console.log(\"NORMAL_OK\")'",
-  java: "java -version >/dev/null 2>&1",
+  java: "java -Xmx96m -XX:ActiveProcessorCount=1 -version",
   cpp: "/usr/bin/true",
   c: "/usr/bin/true",
 };
@@ -235,6 +236,9 @@ function runDocker(name, language, source, mode) {
     durationMs: Math.round(performance.now() - started),
     exitCode: result.status,
     timedOut: result.error?.code === "ETIMEDOUT",
+    error: result.error?.message ?? null,
+    stdout: (result.stdout ?? "").slice(0, 8000),
+    stderr: (result.stderr ?? "").slice(0, 8000),
     output: `${result.stdout ?? ""}${result.stderr ?? ""}`
       .trim()
       .replace(/\s+/g, " ")
@@ -369,7 +373,7 @@ const runtimeStatement = requestedRuntime
 const report = [
   "# Task 19 sandbox-selection spike",
   "",
-  "Date: 2026-09-17",
+  `Date: ${new Date().toISOString()}`,
   "",
   "## Decision",
   "",
@@ -398,6 +402,20 @@ const report = [
   `- Normal fixtures all passed: ${normalPassed}`,
   `- Hostile boundary fixtures all passed: ${hostilePassed}`,
   "",
+  "## Failure diagnostics",
+  "",
+  ...results
+    .filter((result) => result.exitCode !== 0 || result.timedOut)
+    .flatMap((result) => [
+      `### ${result.language} / ${result.mode}`,
+      "",
+      "```text",
+      `Error: ${result.error ?? "none"}`,
+      `stdout: ${result.stdout || "(empty)"}`,
+      `stderr: ${result.stderr || "(empty)"}`,
+      "```",
+      "",
+    ]),
   "## Concurrency",
   "",
   `- Six lightweight language-container fixtures launched concurrently: ${concurrency.durationMs} ms wall time`,
@@ -431,6 +449,11 @@ const report = [
 await mkdir(path.dirname(reportPath), { recursive: true });
 await writeFile(reportPath, report);
 console.log(`Wrote ${reportPath}`);
+for (const result of results.filter((result) => result.exitCode !== 0 || result.timedOut)) {
+  console.error(
+    `${result.language}/${result.mode}: exit=${result.exitCode} error=${result.error ?? "none"} stdout=${result.stdout || "(empty)"} stderr=${result.stderr || "(empty)"}`,
+  );
+}
 console.log(
   `normal=${normalPassed} hostile=${hostilePassed} concurrency=${concurrencyPassed} runsc=${runsc} firecracker=${firecracker}`,
 );

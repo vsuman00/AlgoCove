@@ -1,6 +1,6 @@
 # AlgoCove phased implementation plan
 
-**Status:** Proposed for owner review  
+**Status:** Phase 5 technical implementation verified locally; CI repair/revalidation in progress. Phase 6 requires owner authorization.
 **Prepared:** 2026-09-17  
 **Scope:** Implementation planning only. This document does not authorize application code, hosted infrastructure, external publication, or production claims.  
 **Task ledger:** `tasks/todo.md`
@@ -610,18 +610,20 @@ Review the evidence after every two or three task slices. Replan if assumptions 
 
 ## Phase 5: Deliver the guided internal learning loop
 
+**Evidence alignment (2026-10-01):** Checked criteria below refer to the recorded [localhost Phase 5 evidence](../docs/architecture/phase5-evidence.md) and [task ledger](todo.md). Automated browser suites cover reasoning revision, reduced motion/transcripts and result categories; the original manual checks remain unchecked, including a human screen-reader pass. No hosted deployment is claimed. CI run [36894660888](https://github.com/vsuman00/AlgoCove/actions/runs/36894660888) exposed a missing pnpm 12 package-manager lockfile document and an independent Java gVisor spike failure. The repair preserves frozen installs and isolation limits, bounds Java JVM sizing, and adds failure diagnostics; Linux CI revalidation remains pending.
+
 ### Task 25: Implement learning-session and attempt state machines
 
 **Description:** Add learning sessions, version-pinned attempts, language/mode selection, meaningful attempt events, optimistic concurrency, abandon/expire behavior, and owner-only history.
 
 **Acceptance criteria:**
-- [ ] Attempt transitions are monotonic and version-pinned.
-- [ ] Changing language creates an explicit new attempt/reset path.
-- [ ] Keystrokes are not retained; saved/final snapshots are policy-controlled.
+- [x] Attempt transitions are monotonic and version-pinned.
+- [x] Changing language creates an explicit new attempt/reset path.
+- [x] Keystrokes are not retained; saved/final snapshots are policy-controlled.
 
 **Verification:**
-- [ ] Run state-machine/property and ownership integration tests.
-- [ ] Test concurrent submit/abandon/run races.
+- [x] Run state-machine/property and ownership integration tests.
+- [x] Test concurrent submit/abandon/run races.
 
 **Dependencies:** Tasks 11, 15-16, and 24  
 **Files likely touched:** `packages/domain/src/practice.ts`, `packages/db/migrations/0009_practice.sql`, `packages/application/src/practice-use-cases.ts`, `tests/integration/practice.test.ts`  
@@ -632,13 +634,13 @@ Review the evidence after every two or three task slices. Replan if assumptions 
 **Description:** Wire owned attempts and saved source to the existing execution relay; integrate trusted result ingestion and explicit Run versus Submit behavior.
 
 **Acceptance criteria:**
-- [ ] Submission consumes a result for the exact source checksum, problem, language and manifest version.
-- [ ] Commit the immutable assessment observation and outbox atomically; begin transaction before row locks.
-- [ ] Cancellation, stale lease, duplicate result and lost response do not duplicate credit or leak quota.
+- [x] Submission consumes a result for the exact source checksum, problem, language and manifest version.
+- [x] Commit the immutable assessment observation and outbox atomically; begin transaction before row locks.
+- [x] Cancellation, stale lease, duplicate result and lost response do not duplicate credit or leak quota.
 
 **Verification:**
-- [ ] Race run/submit/abandon/edit operations; kill relay and execution host and reconcile.
-- [ ] Run a correct, wrong and infrastructure-failing attempt in each language.
+- [x] Race run/submit/abandon/edit operations; kill relay and execution host and reconcile.
+- [x] Run a correct, wrong and infrastructure-failing attempt in each language.
 
 **Dependencies:** Tasks 21, 24 and 25  
 **Files likely touched:** `packages/application/src/code-run-use-cases.ts`, `apps/web/src/adapters/execution-client.ts`, `tests/integration/code-run.test.ts`  
@@ -649,12 +651,12 @@ Review the evidence after every two or three task slices. Replan if assumptions 
 **Description:** Implement replaceable debounced current drafts, explicit saved revisions, optimistic revision conflicts and truthful save-state indicators.
 
 **Acceptance criteria:**
-- [ ] Reload/session expiry does not silently discard confirmed saves; conflicts never overwrite newer drafts.
-- [ ] No keystroke history; drafts have limits/TTL and private ownership.
-- [ ] Optional local recovery is learner-scoped and cleared on logout/deletion; shared-device users can disable it.
+- [x] Reload/session expiry does not silently discard confirmed saves; conflicts never overwrite newer drafts.
+- [x] No keystroke history; drafts have limits/TTL and private ownership.
+- [x] Optional local recovery is learner-scoped and cleared on logout/deletion; shared-device users can disable it.
 
 **Verification:**
-- [ ] Browser-test two tabs, offline/reconnect, lost save response, expired session and language switch.
+- [x] Browser-test two tabs, offline/reconnect, lost save response, expired session and language switch.
 
 **Dependencies:** Tasks 6a, 25 and 25a  
 **Files likely touched:** `packages/application/src/save-draft.ts`, `apps/web/src/components/draft-status.tsx`, `tests/e2e/draft-recovery.spec.ts`  
@@ -665,12 +667,12 @@ Review the evidence after every two or three task slices. Replan if assumptions 
 **Description:** Add versioned learner pseudocode fields for inputs, state, initialization, invariant, loop/recurrence, termination, output, and complexity plus explain-back evidence.
 
 **Acceptance criteria:**
-- [ ] Pseudocode is separate from executable code and supports append-only saved revisions.
-- [ ] Readiness uses authored structured answer keys and verified runs, not nonempty prose or model opinion. Free-form pseudocode/explain-back feedback is advisory unless human reviewed.
-- [ ] Tutor access cannot silently rewrite learner artifacts.
+- [x] Pseudocode is separate from executable code and supports append-only saved revisions.
+- [x] Readiness uses authored structured answer keys and verified runs, not nonempty prose or model opinion. Free-form pseudocode/explain-back feedback is advisory unless human reviewed.
+- [x] Tutor access cannot silently rewrite learner artifacts.
 
 **Verification:**
-- [ ] Run rubric, ownership, version, and privacy tests.
+- [x] Run rubric, ownership, version, and privacy tests.
 - [ ] Manually complete and revise one pseudocode artifact.
 
 **Dependencies:** Tasks 25 and 25b  
@@ -682,12 +684,12 @@ Review the evidence after every two or three task slices. Replan if assumptions 
 **Description:** Implement bounded trace authoring/editing and step replay alongside reviewed canonical traces; label provenance and distinguish schema validity from algorithm correctness. Canonical trace disclosure counts as assistance where it reveals strategy. Arbitrary source-level tracing across six languages is not promised. Add versioned trace events, deterministic reducer, textual transcript, prediction checkpoints, keyboard controls, reduced motion, and initial array/two-pointer renderer.
 
 **Acceptance criteria:**
-- [ ] Same trace produces deterministic visual and text states.
-- [ ] Unknown/invalid events fail safely.
-- [ ] Critical controls work without pointer, color, animation, or sound; unsupported arbitrary learner-code traces fall back to the reviewed reference trace instead of fabricated states.
+- [x] Same trace produces deterministic visual and text states.
+- [x] Unknown/invalid events fail safely.
+- [x] Critical controls work without pointer, color, animation, or sound; unsupported arbitrary learner-code traces fall back to the reviewed reference trace instead of fabricated states.
 
 **Verification:**
-- [ ] Run reducer/property, snapshot, keyboard, and accessibility tests.
+- [x] Run reducer/property, snapshot, keyboard, and accessibility tests.
 - [ ] Manually verify reduced-motion and screen-reader transcript.
 
 **Dependencies:** Tasks 15-16  
@@ -699,13 +701,13 @@ Review the evidence after every two or three task slices. Replan if assumptions 
 **Description:** Add mode-aware hint ceilings, append-only reveals, authored hint tiers, solution-review gate, and stable refusal/fallback behavior without AI.
 
 **Acceptance criteria:**
-- [ ] Requested tier above the ceiling is rejected or capped deterministically.
-- [ ] Assistance is persisted before display and cumulative across retries, language switches and new attempts on the same problem version; client bundles never preload locked hints/solutions.
-- [ ] Full solution review requires the approved attempt/gate state.
+- [x] Requested tier above the ceiling is rejected or capped deterministically.
+- [x] Assistance is persisted before display and cumulative across retries, language switches and new attempts on the same problem version; client bundles never preload locked hints/solutions.
+- [x] Full solution review requires the approved attempt/gate state.
 
 **Verification:**
-- [ ] Run hint policy table and concurrency/idempotency tests.
-- [ ] Run adversarial requests for premature final solutions.
+- [x] Run hint policy table and concurrency/idempotency tests.
+- [x] Run adversarial requests for premature final solutions.
 
 **Dependencies:** Tasks 15 and 25  
 **Files likely touched:** `packages/domain/src/hint-policy.ts`, `packages/application/src/reveal-hint.ts`, `apps/web/src/components/hint-panel.tsx`, `tests/unit/hint-policy.test.ts`  
@@ -716,12 +718,12 @@ Review the evidence after every two or three task slices. Replan if assumptions 
 **Description:** Combine topic/pattern learning, pseudocode, prediction, visualization, six-language editor/run, bounded hints, submission, and explicit result categories for one original problem.
 
 **Acceptance criteria:**
-- [ ] The full guided path works in every supported language.
-- [ ] Reload/resume preserves committed state without false completion.
-- [ ] AI outage is irrelevant because this slice uses authored content.
+- [x] The full guided path works in every supported language.
+- [x] Reload/resume preserves committed state without false completion.
+- [x] AI outage is irrelevant because this slice uses authored content.
 
 **Verification:**
-- [ ] Run `pnpm test:e2e`, `pnpm test:conformance`, and accessibility checks.
+- [x] Run `pnpm test:e2e`, `pnpm test:conformance`, and accessibility checks.
 - [ ] Manually exercise correct, wrong, compile-error, timeout, and infrastructure-error paths.
 
 **Dependencies:** Tasks 6a, 25-28, 25a and 25b  
@@ -730,9 +732,9 @@ Review the evidence after every two or three task slices. Replan if assumptions 
 
 ### Checkpoint F5: Learning kernel milestone M2
 
-- [ ] One original problem completes the entire internal learning loop in six languages.
-- [ ] Hint, visualization, pseudocode, execution, and resume failure cases pass.
-- [ ] Accessibility critical path passes.
+- [x] One original problem completes the entire internal learning loop in six languages.
+- [x] Hint, visualization, pseudocode, execution, and resume failure cases pass.
+- [x] Accessibility critical path passes.
 - [ ] Human owner authorizes Phase 6.
 
 ## Phase 6: Mastery, review, recommendation, and progress
