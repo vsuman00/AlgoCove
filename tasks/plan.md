@@ -1,6 +1,6 @@
 # AlgoCove phased implementation plan
 
-**Status:** Phase 5 technical implementation verified locally; CI repair/revalidation in progress. Phase 6 requires owner authorization.
+**Status:** Phase 5 technical implementation verified locally; all three Linux CI jobs pass after toolchain/sandbox repair. Phase 6 requires owner authorization.
 **Prepared:** 2026-09-17  
 **Scope:** Implementation planning only. This document does not authorize application code, hosted infrastructure, external publication, or production claims.  
 **Task ledger:** `tasks/todo.md`
@@ -610,7 +610,7 @@ Review the evidence after every two or three task slices. Replan if assumptions 
 
 ## Phase 5: Deliver the guided internal learning loop
 
-**Evidence alignment (2026-10-01):** Checked criteria below refer to the recorded [localhost Phase 5 evidence](../docs/architecture/phase5-evidence.md) and [task ledger](todo.md). Automated browser suites cover reasoning revision, reduced motion/transcripts and result categories; the original manual checks remain unchecked, including a human screen-reader pass. No hosted deployment is claimed. CI run [36894660888](https://github.com/vsuman00/AlgoCove/actions/runs/36894660888) exposed a missing pnpm 12 package-manager lockfile document and an independent Java gVisor spike failure. The repair preserves frozen installs, bounds Java JVM sizing, aligns the PID ceiling with the approved host (128 rather than 32 after intermittent exit 2 with successful TypeScript boundary output), repeats the full probe three times and adds failure diagnostics; Linux CI revalidation remains pending.
+**Evidence alignment (2026-10-01):** Checked criteria below refer to the recorded [localhost Phase 5 evidence](../docs/architecture/phase5-evidence.md) and [task ledger](todo.md). Automated browser suites cover reasoning revision, reduced motion/transcripts and result categories; the original manual checks remain unchecked, including a human screen-reader pass. No hosted deployment is claimed. CI run [36894660888](https://github.com/vsuman00/AlgoCove/actions/runs/36894660888) exposed a missing pnpm 12 package-manager lockfile document and an independent Java gVisor spike failure. The repair preserves frozen installs, bounds Java JVM sizing, aligns the PID ceiling with the approved host (128 rather than 32 after intermittent exit 2 with successful TypeScript boundary output), repeats the full probe three times and adds failure diagnostics; Linux CI revalidation passed in run [36903686854](https://github.com/vsuman00/AlgoCove/actions/runs/36903686854) on `95dd267`: quality (178 tests, 21 PostgreSQL tests, build, 16 accessibility checks and audit), execution images/conformance/abuse, and gVisor (36 repeated normal/hostile cases plus six concurrent startups). Two opt-in real-host integration scenarios remain skipped in ordinary CI; their separate localhost evidence is linked above.
 
 ### Task 25: Implement learning-session and attempt state machines
 
