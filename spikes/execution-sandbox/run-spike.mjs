@@ -193,7 +193,10 @@ const limits = [
   "--tmpfs=/tmp:rw,nosuid,nodev,size=16m,uid=65532,gid=65532,mode=700",
   "--cap-drop=ALL",
   "--security-opt=no-new-privileges:true",
-  "--pids-limit=32",
+  // Match the approved host budget: runsc Sentry and language threads share
+  // this bound. The old 32-PID probe intermittently exited 2 after successful
+  // fixture output on GitHub Linux runners.
+  "--pids-limit=128",
   // The candidate probe retains a bounded memory ceiling while leaving enough
   // compiler headroom for native C++ linking under runsc. Production language
   // profiles keep their own descriptor-bound memory limits.
@@ -335,9 +338,20 @@ const firecracker = Boolean(
   spawnSync("sh", ["-c", "command -v firecracker"], { encoding: "utf8" }).stdout?.trim(),
 );
 const results = [];
-for (const language of languages) {
-  results.push(runDocker(`normal-${language}`, language, normal[language], "normal"));
-  results.push(runDocker(`hostile-${language}`, language, hostile[language], "hostile"));
+// Repeat every boundary probe to catch resource-budget instability that a
+// single successful startup can miss. Each container still has bounded limits.
+const repetitions = 3;
+for (let repetition = 1; repetition <= repetitions; repetition += 1) {
+  for (const language of languages) {
+    results.push({
+      ...runDocker(`normal-${language}`, language, normal[language], "normal"),
+      repetition,
+    });
+    results.push({
+      ...runDocker(`hostile-${language}`, language, hostile[language], "hostile"),
+      repetition,
+    });
+  }
 }
 const concurrency = await runConcurrentNormal();
 const imageMetadata = Object.fromEntries(
@@ -392,11 +406,11 @@ const report = [
   "",
   "## Fixture results",
   "",
-  "| Language | Mode | Exit | Timed out | Duration (ms) | Output marker |",
-  "| --- | --- | ---: | ---: | ---: | --- |",
+  "| Language | Mode | Repetition | Exit | Timed out | Duration (ms) | Output marker |",
+  "| --- | --- | ---: | ---: | ---: | ---: | --- |",
   ...results.map(
     (result) =>
-      `| ${result.language} | ${result.mode} | ${result.exitCode ?? "none"} | ${result.timedOut} | ${result.durationMs} | ${result.output || "(empty)"} |`,
+      `| ${result.language} | ${result.mode} | ${result.repetition} | ${result.exitCode ?? "none"} | ${result.timedOut} | ${result.durationMs} | ${result.output || "(empty)"} |`,
   ),
   "",
   `- Normal fixtures all passed: ${normalPassed}`,
@@ -407,7 +421,7 @@ const report = [
   ...results
     .filter((result) => result.exitCode !== 0 || result.timedOut)
     .flatMap((result) => [
-      `### ${result.language} / ${result.mode}`,
+      `### ${result.language} / ${result.mode} / repetition ${result.repetition}`,
       "",
       "```text",
       `Error: ${result.error ?? "none"}`,
