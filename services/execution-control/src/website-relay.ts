@@ -111,7 +111,8 @@ export function createWebsiteExecutionRelay(options: WebsiteRelayOptions): Websi
       const candidate = options.prepareDescriptor(run, eventId);
       const verified = createExecutionDispatchMessage({
         ...candidate,
-        now,
+        // Signing can cross a millisecond boundary. Verify after issuance.
+        now: options.now(),
         verificationKeys: options.verificationKeys,
       });
       if (!verified.ok) throw new Error("Invalid server descriptor.");

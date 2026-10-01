@@ -187,6 +187,8 @@ export class ExecutionControl {
     readonly workerId: string;
     readonly now: string;
     readonly leaseDurationMs: number;
+    /** Host-local source readiness; the HTTP worker contract never accepts this callback. */
+    readonly isReady?: (runId: RunDescriptor["runId"]) => boolean;
   }): ControlResult<LeaseReceipt | null> {
     this.assertHealthy();
     const worker = validateWorkerId(input.workerId);
@@ -199,6 +201,7 @@ export class ExecutionControl {
       const runKey = this.queue[index];
       const record = runKey === undefined ? undefined : this.records.get(runKey);
       if (record === undefined || record.state !== "queued") continue;
+      if (input.isReady !== undefined && !input.isReady(record.descriptor.payload.runId)) continue;
       if (this.disabledProfiles.has(record.quota.profileId)) continue;
       if (this.activeCount(record.quota.quotaKey) >= record.quota.maxConcurrent) continue;
       this.queue.splice(index, 1);

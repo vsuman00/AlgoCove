@@ -50,6 +50,7 @@ describe("Task 27 deterministic trace protocol", () => {
       value: expect.arrayContaining([
         "Step 0: pointers at 0 and 4.",
         "Step 1: compare positions 0 and 4.",
+        "Step 3: prediction checkpoint cp-1. Which side moves? Selection: left.",
       ]),
     });
   });

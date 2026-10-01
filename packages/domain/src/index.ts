@@ -118,6 +118,7 @@ export {
   savePseudocodeRevision,
   startPseudocodeArtifact,
 } from "./pseudocode.ts";
+export { validStructuredAnswers } from "./pseudocode.ts";
 
 export {
   createHintExposure,

@@ -8,6 +8,7 @@ import type {
   TrustedExecutionResult,
 } from "@algocove/application";
 import {
+  type VerifiedRunEvidence,
   ATTEMPT_STATUSES,
   LEARNING_MODES,
   PROBLEM_LANGUAGES,
@@ -424,14 +425,21 @@ export class PostgresPracticeRepository {
     readonly problemVersionId: LearningAttempt["problemVersionId"];
     readonly manifestId: LearningAttempt["manifestId"];
     readonly language: LearningAttempt["language"];
+    readonly includeSubmitted?: boolean;
   }): Promise<LearningAttempt | null> {
     const result = await this.pool.query<AttemptRow>(
       `SELECT ${ATTEMPT_COLUMNS} FROM practice.attempt
         WHERE learner_id = $1 AND problem_version_id = $2 AND manifest_id = $3
-          AND language = $4 AND status = 'active'
+          AND language = $4 AND (status = 'active' OR ($5::boolean AND status = 'submitted'))
         ORDER BY updated_at DESC, attempt_id DESC
         LIMIT 1`,
-      [input.learnerId, input.problemVersionId, input.manifestId, input.language],
+      [
+        input.learnerId,
+        input.problemVersionId,
+        input.manifestId,
+        input.language,
+        input.includeSubmitted === true,
+      ],
     );
     const row = result.rows[0];
     return row === undefined ? null : attemptFromRow(row);
@@ -446,6 +454,42 @@ export class PostgresPracticeRepository {
 
   getRunById(runId: CodeRunRecord["runId"]): Promise<CodeRunRecord | null> {
     return oneCodeRunById(this.pool, runId);
+  }
+
+  async getVerifiedRunEvidence(input: {
+    readonly attemptId: LearningAttempt["attemptId"];
+    readonly learnerId: LearningAttempt["learnerId"];
+  }): Promise<readonly VerifiedRunEvidence[]> {
+    const result = await this.pool.query<{
+      observation_id: string;
+      attempt_id: string;
+      problem_version_id: string;
+      manifest_id: string;
+      passed: boolean;
+    }>(
+      `SELECT observation_id, attempt_id, problem_version_id, manifest_id, passed
+         FROM practice.assessment_observation WHERE attempt_id=$1 AND learner_id=$2 AND passed=true`,
+      [input.attemptId, input.learnerId],
+    );
+    return result.rows.map((row) => ({
+      observationId: parseIdOrThrow("event", row.observation_id),
+      attemptId: parseIdOrThrow("attempt", row.attempt_id),
+      problemVersionId: parseIdOrThrow("problemVersion", row.problem_version_id),
+      manifestId: parseIdOrThrow("languageManifest", row.manifest_id),
+      passed: row.passed,
+    }));
+  }
+
+  /** The descriptor committed atomically with the run is the callback trust anchor. */
+  async getRunDispatch(runId: CodeRunRecord["runId"]): Promise<unknown | null> {
+    const result = await this.pool.query<{ payload: unknown }>(
+      `SELECT payload FROM platform.outbox_event
+        WHERE topic = 'execution.run.requested'
+          AND payload->'descriptor'->'payload'->>'runId' = $1
+        LIMIT 2`,
+      [runId],
+    );
+    return result.rows.length === 1 ? (result.rows[0]?.payload ?? null) : null;
   }
 
   async getLatestRun(input: {

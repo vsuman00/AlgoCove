@@ -14,13 +14,18 @@ import { parseExecutionResult, type SignedExecutionResult } from "@algocove/exec
 import { parseId } from "@algocove/domain";
 import { createWebRequestContext } from "../../../../../src/auth/request-context";
 import { getPracticeRuntime } from "../../../../../src/practice/runtime";
+import {
+  executionVerificationKeys,
+  verifyCommittedExecutionResult,
+} from "../../../../../src/adapters/execution-result-verifier";
 
 export const dynamic = "force-dynamic";
 
 /**
  * Internal callback from the execution worker. The worker-side control plane
- * verifies the signature and teardown before calling this endpoint; the web
- * surface still requires a separate server-only callback token and reuses the
+ * confirms teardown before calling this endpoint; the web verifies the result
+ * signature against the atomically committed descriptor, requires a separate
+ * server-only callback token and reuses the
  * owner-scoped application result boundary before changing learner state.
  */
 export async function POST(request: Request): Promise<NextResponse> {
@@ -40,6 +45,20 @@ export async function POST(request: Request): Promise<NextResponse> {
     if (runtime === null) throw dependencyUnavailableError("Practice persistence is unavailable.");
     const run = await runtime.practice.getRunById(runId.value);
     if (run === null) throw validationError("Execution run is not available.", { field: "run" });
+    try {
+      const dispatch = await runtime.practice.getRunDispatch(runId.value);
+      verifyCommittedExecutionResult(
+        signed,
+        dispatch,
+        run,
+        executionVerificationKeys(process.env.EXECUTION_VERIFICATION_KEYS_JSON),
+        new Date().toISOString(),
+      );
+    } catch {
+      throw validationError("Execution result signature or committed binding is invalid.", {
+        field: "result",
+      });
+    }
     const attempt = await runtime.practice.getAttempt(run.attemptId, run.learnerId);
     if (attempt === null) {
       throw validationError("Execution attempt is not available.", { field: "attempt" });

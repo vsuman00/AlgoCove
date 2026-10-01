@@ -2,6 +2,7 @@ import type { Pool, QueryResultRow } from "pg";
 import type { PseudocodeRepository } from "@algocove/application";
 import {
   PSEUDOCODE_FIELDS,
+  validStructuredAnswers,
   PROBLEM_LANGUAGES,
   parseId,
   parseInstant,
@@ -84,7 +85,14 @@ function fields(value: unknown): PseudocodeFields {
       throw new Error(`Database pseudocode ${field} is invalid.`);
     result[field] = record[field];
   }
-  return result;
+  if (!validStructuredAnswers(record.structuredAnswers))
+    throw new Error("Database structured answers are invalid.");
+  return {
+    ...result,
+    ...(record.structuredAnswers === undefined
+      ? {}
+      : { structuredAnswers: record.structuredAnswers }),
+  };
 }
 
 function artifactFromRow(row: ArtifactRow): PseudocodeArtifact {

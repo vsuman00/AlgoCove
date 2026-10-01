@@ -1953,3 +1953,81 @@ button {
     animation-duration: 0.01ms !important;
   }
 }
+
+.ac-trace-workspace {
+  display: grid;
+  gap: 12px;
+}
+.ac-trace-workspace label {
+  display: grid;
+  gap: 6px;
+  max-width: 100%;
+}
+.ac-trace-workspace select,
+.ac-workspace__fields select {
+  min-width: 0;
+  max-width: 100%;
+  padding: 8px;
+  border: 1px solid var(--color-slate-200);
+  border-radius: 4px;
+  background: var(--color-cloud-0);
+}
+.ac-trace-workspace textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--color-slate-200);
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+.ac-trace-workspace > button {
+  justify-self: start;
+}
+.ac-trace-values {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.ac-trace-value {
+  display: grid;
+  place-items: center;
+  min-width: 44px;
+  padding: 8px;
+  border: 1px solid var(--color-slate-200);
+  border-radius: 4px;
+  color: var(--color-ink-950);
+  background: var(--color-cloud-0);
+  font-family: var(--font-mono);
+}
+.ac-trace-value[data-active="true"] {
+  border: 2px solid var(--color-tide-700);
+  font-weight: 700;
+}
+.ac-trace-value small {
+  color: var(--color-tide-700);
+}
+.ac-trace-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0;
+}
+.ac-trace-controls button {
+  padding: 8px 12px;
+  border: 1px solid var(--color-slate-200);
+  border-radius: 4px;
+  color: var(--color-ink-950);
+  background: var(--color-cloud-0);
+}
+.ac-trace-controls button:disabled {
+  opacity: 0.5;
+}
+.ac-trace-transcript {
+  padding-left: 24px;
+  list-style-type: decimal;
+  overflow-wrap: anywhere;
+}
+.ac-trace :focus-visible,
+.ac-trace-workspace :focus-visible {
+  outline: 2px solid var(--color-tide-700);
+  outline-offset: 3px;
+}

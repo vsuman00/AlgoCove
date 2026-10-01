@@ -56,6 +56,7 @@ export const rawConfigSchema = z.object({
     .optional(),
   EXECUTION_RELAY_TOKEN: z.string().min(16).optional(),
   EXECUTION_RESULT_CALLBACK_TOKEN: z.string().min(16).optional(),
+  EXECUTION_VERIFICATION_KEYS_JSON: z.string().min(2).max(16384).optional(),
   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string().min(1).optional(),
   CLERK_SECRET_KEY: z.string().min(1).optional(),
 });

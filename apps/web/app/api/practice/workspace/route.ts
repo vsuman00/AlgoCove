@@ -10,6 +10,7 @@ import {
   validationError,
 } from "@algocove/application";
 import { parseId, PROBLEM_LANGUAGES, type ProblemLanguage } from "@algocove/domain";
+import { sha256Digest } from "@algocove/execution-contracts";
 import { authenticatedWebRequestContext } from "../../../../src/auth/request-context";
 import { getPracticeRuntime, type PracticeRuntime } from "../../../../src/practice/runtime";
 
@@ -52,6 +53,7 @@ export async function POST(request: Request): Promise<NextResponse> {
       problemVersionId,
       manifestId: manifest.manifestId,
       language,
+      includeSubmitted: input.restart !== true,
     });
     if (attempt === null) {
       try {
@@ -143,6 +145,19 @@ export async function POST(request: Request): Promise<NextResponse> {
                 },
               }
             : null;
+    const runView =
+      activeRun === null
+        ? null
+        : {
+            ...activeRun,
+            matchesCurrentDraft:
+              latestRun!.sourceChecksum ===
+              sha256Digest(
+                sourceDraft.currentRevision === 0
+                  ? manifest.starterTemplate
+                  : sourceDraft.currentText,
+              ),
+          };
     if (latestRun !== null && latestRun.terminalResultId !== null && activeRun === null) {
       throw dependencyUnavailableError("Execution result is temporarily unavailable.");
     }
@@ -152,9 +167,13 @@ export async function POST(request: Request): Promise<NextResponse> {
         attempt,
         sourceDraft,
         pseudocode,
-        activeRun,
+        activeRun: runView,
         starterTemplate: manifest.starterTemplate,
         firstHintId: "hint-arrays-1",
+        highestHintTier: await runtime.hints.getHighestExposedTier({
+          learnerId: context.actor.userId,
+          problemVersionId,
+        }),
       },
       { status: 200, headers: { "Cache-Control": "no-store" } },
     );

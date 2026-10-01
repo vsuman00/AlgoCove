@@ -1,14 +1,25 @@
 import { NextResponse } from "next/server";
 import {
   dependencyUnavailableError,
+  evaluateOwnedPseudocode,
   getOwnedPseudocode,
+  getOwnedPseudocodeHistory,
   replaceOwnedPseudocodeCurrent,
   saveOwnedPseudocodeRevision,
   toErrorEnvelope,
   toHttpStatus,
   validationError,
 } from "@algocove/application";
-import { PSEUDOCODE_FIELDS, parseId, type PseudocodeFields } from "@algocove/domain";
+import {
+  PSEUDOCODE_FIELDS,
+  parseId,
+  validStructuredAnswers,
+  type PseudocodeFields,
+} from "@algocove/domain";
+import {
+  containerReasoningChecks,
+  CONTAINER_REASONING_RUBRIC,
+} from "../../../../../src/practice/container-reasoning";
 import { authenticatedWebRequestContext } from "../../../../../src/auth/request-context";
 import { getPracticeRuntime } from "../../../../../src/practice/runtime";
 
@@ -25,7 +36,26 @@ export async function GET(request: Request, route: RouteContext): Promise<NextRe
     const runtime = getPracticeRuntime();
     if (runtime === null) throw dependencyUnavailableError("Practice persistence is unavailable.");
     const artifact = await getOwnedPseudocode(context, runtime.pseudocode, pseudocodeId);
-    return NextResponse.json({ artifact }, { headers: { "Cache-Control": "no-store" } });
+    const revision =
+      artifact.savedRevision < 1
+        ? undefined
+        : (await getOwnedPseudocodeHistory(context, runtime.pseudocode, pseudocodeId)).find(
+            (item) => item.revision === artifact.savedRevision,
+          );
+    const readiness =
+      artifact.savedRevision < 1
+        ? null
+        : await evaluateOwnedPseudocode(context, runtime.pseudocode, {
+            pseudocodeId,
+            revision: artifact.savedRevision,
+            rubric: CONTAINER_REASONING_RUBRIC,
+            structuredChecks: revision === undefined ? [] : containerReasoningChecks(revision),
+            verifiedRuns: await runtime.practice.getVerifiedRunEvidence({
+              attemptId: artifact.attemptId,
+              learnerId: context.actor.userId,
+            }),
+          });
+    return NextResponse.json({ artifact, readiness }, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
     return errorResponse(request, error);
   }
@@ -87,7 +117,14 @@ function parseFields(value: Record<string, unknown>): PseudocodeFields {
     }
     fields[field] = value[field];
   }
-  return fields;
+  if (!validStructuredAnswers(value.structuredAnswers))
+    throw validationError("Structured answers are invalid.");
+  return {
+    ...fields,
+    ...(value.structuredAnswers === undefined
+      ? {}
+      : { structuredAnswers: value.structuredAnswers }),
+  };
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

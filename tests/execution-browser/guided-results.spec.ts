@@ -30,6 +30,7 @@ for (const terminalCase of terminalCases) {
         current: {},
       },
       activeRun: {
+        matchesCurrentDraft: true,
         runId,
         mode: "run",
         status: "completed",

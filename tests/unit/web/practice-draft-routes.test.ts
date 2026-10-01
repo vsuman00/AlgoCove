@@ -12,6 +12,7 @@ const { GET: getDraft, PUT: updateDraft } =
   await import("../../../apps/web/app/api/practice/drafts/[draftId]/route");
 const { POST: startWorkspace } = await import("../../../apps/web/app/api/practice/workspace/route");
 const { POST: requestHint } = await import("../../../apps/web/app/api/practice/hints/route");
+const { POST: requestTrace } = await import("../../../apps/web/app/api/practice/trace/route");
 const { POST: requestRun } = await import("../../../apps/web/app/api/practice/runs/route");
 const { GET: getRunStatus } = await import("../../../apps/web/app/api/practice/runs/[runId]/route");
 const { POST: cancelRun } =
@@ -93,6 +94,47 @@ beforeEach(() => {
 });
 
 describe("authenticated practice draft routes", () => {
+  it("withholds the reviewed trace until owned assistance persistence succeeds", async () => {
+    const request = () =>
+      new Request("http://localhost/api/practice/trace", {
+        method: "POST",
+        body: JSON.stringify({ attemptId: attempt }),
+      });
+    authMock.mockResolvedValue({ isAuthenticated: false, userId: null, sessionId: null });
+    expect((await requestTrace(request())).status).toBe(401);
+    authMock.mockResolvedValue({
+      isAuthenticated: true,
+      userId: "user_trace",
+      sessionId: "sess_trace",
+    });
+    const saveExposure = vi.fn().mockResolvedValue(null);
+    runtimeMock.getPracticeRuntime.mockReturnValue({
+      practice: { getAttempt: vi.fn().mockResolvedValue(activeAttempt) },
+      hints: {
+        getAttempt: vi.fn().mockResolvedValue(activeAttempt),
+        getAuthoredHint: vi.fn().mockResolvedValue({
+          hintId: "hint-arrays-4",
+          problemVersionId: problem,
+          tier: 4,
+          kind: "pseudocode_scaffold",
+          body: "Original scaffold.",
+        }),
+        getExposureByIdempotency: vi.fn().mockResolvedValue(null),
+        getHighestExposedTier: vi.fn().mockResolvedValue(0),
+        saveExposure,
+      },
+    });
+    const blocked = await requestTrace(request());
+    expect(blocked.status).toBe(409);
+    expect(await blocked.json()).not.toHaveProperty("trace");
+    saveExposure.mockImplementation(async (exposure) => exposure);
+    const allowed = await requestTrace(request());
+    expect(allowed.status).toBe(200);
+    expect(await allowed.json()).toMatchObject({
+      trace: { provenance: "authored_reference" },
+      exposure: { tier: 4 },
+    });
+  });
   it("fails closed for signed-out draft creation", async () => {
     authMock.mockResolvedValue({ isAuthenticated: false, userId: null, sessionId: null });
 
@@ -241,6 +283,7 @@ describe("authenticated practice draft routes", () => {
         createPseudocode: vi.fn().mockRejectedValue({ code: "23505" }),
         getAttempt: vi.fn().mockResolvedValue(raceAttempt),
       },
+      hints: { getHighestExposedTier: vi.fn().mockResolvedValue(0) },
     };
     runtimeMock.getPracticeRuntime.mockReturnValue(runtime);
 

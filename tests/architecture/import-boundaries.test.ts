@@ -38,6 +38,15 @@ describe("package import boundaries", () => {
     expect(source).not.toMatch(/from\s+["']next(?:\/|["'])/);
   });
 
+  it("keeps the isolated source host independent of application persistence and identity", async () => {
+    const directory = path.join(root, "services/execution-host");
+    const source = await sourceText(path.join(directory, "src"));
+    const manifest = await readFile(path.join(directory, "package.json"), "utf8");
+    expect(source + manifest).not.toMatch(
+      /@algocove\/(?:application|db|identity)|from\s+["'](?:pg|@clerk\/)/,
+    );
+  });
+
   it("detects the deliberately invalid dependency fixture", async () => {
     const fixture = await readFile(
       path.join(root, "tests/architecture/fixtures/invalid-domain-import.ts"),

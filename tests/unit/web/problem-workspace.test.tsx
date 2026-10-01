@@ -258,7 +258,11 @@ describe("Task 29 guided problem workspace", () => {
         expect.objectContaining({ method: "POST" }),
       ),
     );
-    expect(JSON.parse(String(fetchMock.mock.calls.at(-1)?.[1]?.body))).toMatchObject({
+    expect(
+      JSON.parse(
+        String(fetchMock.mock.calls.find((call) => call[0] === "/api/practice/runs")?.[1]?.body),
+      ),
+    ).toMatchObject({
       attemptId: "att_execution_fixture",
       mode: "run",
       source: "remote source",
@@ -281,6 +285,7 @@ describe("Task 29 guided problem workspace", () => {
             attempt: { attemptId: "att_resume_fixture" },
             firstHintId: "hint-arrays-1",
             activeRun: {
+              matchesCurrentDraft: true,
               runId: "run_resume_fixture",
               mode: "submit",
               status: "completed",
@@ -472,7 +477,17 @@ describe("Task 29 guided problem workspace", () => {
 
     releaseFirstPut();
     await waitFor(() => expect(draftPutCount).toBe(2), { timeout: 1_500 });
-    expect(JSON.parse(String(fetchMock.mock.calls.at(-1)?.[1]?.body))).toMatchObject({
+    expect(
+      JSON.parse(
+        String(
+          fetchMock.mock.calls
+            .filter(
+              (call) => call[0].includes("/api/practice/drafts/") && call[1]?.method === "PUT",
+            )
+            .at(-1)?.[1]?.body,
+        ),
+      ),
+    ).toMatchObject({
       text: "second edit",
       expectedVersion: 2,
     });

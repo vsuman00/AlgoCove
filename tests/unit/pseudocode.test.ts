@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
 import {
+  CONTAINER_REASONING_RUBRIC,
+  containerReasoningChecks,
+} from "../../apps/web/src/practice/container-reasoning";
+import {
   evaluatePseudocodeReadiness,
   formatId,
   parseInstant,
@@ -65,6 +69,53 @@ function artifact() {
 }
 
 describe("Task 26 structured pseudocode and readiness", () => {
+  it("requires saved authored answers even with filled prose and a verified passing submission", () => {
+    const updated = must(
+      replacePseudocodeCurrent(artifact(), {
+        fields: fields({ structuredAnswers: { area: "minimum_times_width", boundary: "taller" } }),
+        updatedAt: later,
+      }),
+    );
+    const saved = must(savePseudocodeRevision(updated.artifact, { savedAt: later }));
+    const revision = saved.revision!;
+    const evaluate = (candidate: typeof revision) =>
+      evaluatePseudocodeReadiness({
+        artifact: saved.artifact,
+        revision: candidate,
+        rubric: CONTAINER_REASONING_RUBRIC,
+        structuredChecks: containerReasoningChecks(candidate),
+        verifiedRuns: [{ observationId, attemptId, problemVersionId, manifestId, passed: true }],
+      });
+    expect(evaluate(revision)).toMatchObject({
+      status: "not_ready",
+      missing: ["structured_checks"],
+    });
+    const correct = {
+      ...revision,
+      fields: fields({ structuredAnswers: { area: "minimum_times_width", boundary: "shorter" } }),
+    };
+    expect(evaluate(correct)).toMatchObject({
+      status: "ready",
+      evidence: { structuredChecks: 2, verifiedPasses: 1 },
+    });
+    expect(
+      evaluate({
+        ...correct,
+        problemVersionId: must(formatId("problemVersion", "aaaaaaaaaaaaaaaa")),
+      }),
+    ).toMatchObject({ status: "not_ready" });
+    expect(
+      replacePseudocodeCurrent(saved.artifact, {
+        fields: fields({ structuredAnswers: { area: "x".repeat(129) } }),
+        updatedAt: later,
+      }).ok,
+    ).toBe(false);
+    const changed = must(
+      replacePseudocodeCurrent(saved.artifact, { fields: correct.fields, updatedAt: later }),
+    );
+    expect(changed.artifact.currentRevision).toBe(2);
+    expect(revision.fields.structuredAnswers?.boundary).toBe("taller");
+  });
   it("keeps current editing separate from explicit append-only revisions", () => {
     const started = artifact();
     const replaced = must(

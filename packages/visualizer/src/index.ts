@@ -304,7 +304,7 @@ function describeEvent(event: TraceEvent, state: TraceState): string {
     case "mark_answer":
       return `record answer using positions ${event.left} and ${event.right}`;
     case "prediction_checkpoint":
-      return `prediction checkpoint ${event.checkpointId}`;
+      return `prediction checkpoint ${event.checkpointId}. ${event.prompt} Selection: ${event.selectedOption ?? "not answered"}`;
     case "complete":
       return "complete the trace";
   }

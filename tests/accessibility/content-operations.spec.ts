@@ -6,6 +6,7 @@ test.describe("Content operations fixture", () => {
     await page.goto("/admin/content");
     await expect(page.getByRole("heading", { name: "Governed authoring preview." })).toBeVisible();
     await expect(page.getByRole("link", { name: "Open workflow" })).toBeVisible();
+    await expect(page).toHaveTitle("AlgoCove | Deliberate DSA practice");
     const results = await new AxeBuilder({ page }).analyze();
     expect(results.violations).toEqual([]);
   });
@@ -17,6 +18,8 @@ test.describe("Content operations fixture", () => {
     await expect(
       page.getByRole("heading", { name: "Runnable publication is blocked" }),
     ).toBeVisible();
+    // Client navigation can reveal the streamed page before its head metadata settles.
+    await expect(page).toHaveTitle("AlgoCove | Deliberate DSA practice");
     const dimensions = await page.evaluate(() => ({
       clientWidth: document.documentElement.clientWidth,
       scrollWidth: document.documentElement.scrollWidth,

@@ -1,0 +1,301 @@
+{
+  "date": "2026-10-01T16:31:06.801Z",
+  "authentication": "fixture actor only; real application routes, PostgreSQL, gVisor and signed callback",
+  "outcomes": [
+    {
+      "language": "python",
+      "mode": "run",
+      "category": "wrong_answer",
+      "classification": "learner_failure"
+    },
+    {
+      "language": "python",
+      "mode": "run",
+      "category": "compile_error",
+      "classification": "learner_failure"
+    },
+    {
+      "language": "python",
+      "mode": "run",
+      "category": "limits",
+      "classification": "learner_failure"
+    },
+    {
+      "language": "python",
+      "mode": "run",
+      "category": "pass",
+      "classification": "success"
+    },
+    {
+      "language": "python",
+      "mode": "submit",
+      "category": "pass",
+      "classification": "success"
+    },
+    {
+      "language": "python",
+      "resumeSameAttempt": true,
+      "reasoningRevision": true,
+      "trace": true,
+      "tracePrediction": true,
+      "invalidTraceRejected": true,
+      "referenceAssistancePersisted": true,
+      "authoredChecks": true,
+      "readiness": true
+    },
+    {
+      "editedSourceDoesNotInheritPass": true,
+      "reloadDoesNotInheritPass": true
+    },
+    {
+      "language": "javascript",
+      "mode": "run",
+      "category": "wrong_answer",
+      "classification": "learner_failure"
+    },
+    {
+      "language": "javascript",
+      "mode": "run",
+      "category": "compile_error",
+      "classification": "learner_failure"
+    },
+    {
+      "language": "javascript",
+      "mode": "run",
+      "category": "limits",
+      "classification": "learner_failure"
+    },
+    {
+      "language": "javascript",
+      "mode": "run",
+      "category": "pass",
+      "classification": "success"
+    },
+    {
+      "language": "javascript",
+      "mode": "submit",
+      "category": "pass",
+      "classification": "success"
+    },
+    {
+      "language": "javascript",
+      "resumeSameAttempt": true,
+      "reasoningRevision": true,
+      "trace": true,
+      "tracePrediction": true,
+      "invalidTraceRejected": true,
+      "referenceAssistancePersisted": true,
+      "authoredChecks": true,
+      "readiness": true
+    },
+    {
+      "language": "typescript",
+      "mode": "run",
+      "category": "wrong_answer",
+      "classification": "learner_failure"
+    },
+    {
+      "language": "typescript",
+      "mode": "run",
+      "category": "type_error",
+      "classification": "learner_failure"
+    },
+    {
+      "language": "typescript",
+      "mode": "run",
+      "category": "limits",
+      "classification": "learner_failure"
+    },
+    {
+      "language": "typescript",
+      "mode": "run",
+      "category": "pass",
+      "classification": "success"
+    },
+    {
+      "language": "typescript",
+      "mode": "submit",
+      "category": "pass",
+      "classification": "success"
+    },
+    {
+      "language": "typescript",
+      "resumeSameAttempt": true,
+      "reasoningRevision": true,
+      "trace": true,
+      "tracePrediction": true,
+      "invalidTraceRejected": true,
+      "referenceAssistancePersisted": true,
+      "authoredChecks": true,
+      "readiness": true
+    },
+    {
+      "language": "java",
+      "mode": "run",
+      "category": "wrong_answer",
+      "classification": "learner_failure"
+    },
+    {
+      "language": "java",
+      "mode": "run",
+      "category": "compile_error",
+      "classification": "learner_failure"
+    },
+    {
+      "language": "java",
+      "mode": "run",
+      "category": "limits",
+      "classification": "learner_failure"
+    },
+    {
+      "language": "java",
+      "mode": "run",
+      "category": "pass",
+      "classification": "success"
+    },
+    {
+      "language": "java",
+      "mode": "submit",
+      "category": "pass",
+      "classification": "success"
+    },
+    {
+      "language": "java",
+      "resumeSameAttempt": true,
+      "reasoningRevision": true,
+      "trace": true,
+      "tracePrediction": true,
+      "invalidTraceRejected": true,
+      "referenceAssistancePersisted": true,
+      "authoredChecks": true,
+      "readiness": true
+    },
+    {
+      "language": "cpp",
+      "mode": "run",
+      "category": "wrong_answer",
+      "classification": "learner_failure"
+    },
+    {
+      "language": "cpp",
+      "mode": "run",
+      "category": "compile_error",
+      "classification": "learner_failure"
+    },
+    {
+      "language": "cpp",
+      "mode": "run",
+      "category": "limits",
+      "classification": "learner_failure"
+    },
+    {
+      "language": "cpp",
+      "mode": "run",
+      "category": "pass",
+      "classification": "success"
+    },
+    {
+      "language": "cpp",
+      "mode": "submit",
+      "category": "pass",
+      "classification": "success"
+    },
+    {
+      "language": "cpp",
+      "resumeSameAttempt": true,
+      "reasoningRevision": true,
+      "trace": true,
+      "tracePrediction": true,
+      "invalidTraceRejected": true,
+      "referenceAssistancePersisted": true,
+      "authoredChecks": true,
+      "readiness": true
+    },
+    {
+      "language": "c",
+      "mode": "run",
+      "category": "wrong_answer",
+      "classification": "learner_failure"
+    },
+    {
+      "language": "c",
+      "mode": "run",
+      "category": "compile_error",
+      "classification": "learner_failure"
+    },
+    {
+      "language": "c",
+      "mode": "run",
+      "category": "limits",
+      "classification": "learner_failure"
+    },
+    {
+      "language": "c",
+      "mode": "run",
+      "category": "pass",
+      "classification": "success"
+    },
+    {
+      "language": "c",
+      "mode": "submit",
+      "category": "pass",
+      "classification": "success"
+    },
+    {
+      "language": "c",
+      "resumeSameAttempt": true,
+      "reasoningRevision": true,
+      "trace": true,
+      "tracePrediction": true,
+      "invalidTraceRejected": true,
+      "referenceAssistancePersisted": true,
+      "authoredChecks": true,
+      "readiness": true
+    },
+    {
+      "realCancellation": true
+    },
+    {
+      "hostCrashReconciled": true,
+      "noCredit": true,
+      "noReplacement": true
+    },
+    {
+      "language": "python",
+      "mode": "submit",
+      "category": "infrastructure_error",
+      "classification": "infrastructure_failure"
+    },
+    {
+      "language": "javascript",
+      "mode": "submit",
+      "category": "infrastructure_error",
+      "classification": "infrastructure_failure"
+    },
+    {
+      "language": "typescript",
+      "mode": "submit",
+      "category": "infrastructure_error",
+      "classification": "infrastructure_failure"
+    },
+    {
+      "language": "java",
+      "mode": "submit",
+      "category": "infrastructure_error",
+      "classification": "infrastructure_failure"
+    },
+    {
+      "language": "cpp",
+      "mode": "submit",
+      "category": "infrastructure_error",
+      "classification": "infrastructure_failure"
+    },
+    {
+      "language": "c",
+      "mode": "submit",
+      "category": "infrastructure_error",
+      "classification": "infrastructure_failure"
+    }
+  ],
+  "webFrameworkAtCapture": "Next.js 16.3.5"
+}

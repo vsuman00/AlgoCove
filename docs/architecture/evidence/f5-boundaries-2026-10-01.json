@@ -1,0 +1,45 @@
+{
+  "date": "2026-10-01T16:08:09.658Z",
+  "outcomes": [
+    {
+      "name": "host-network-metadata-credentials",
+      "expected": "pass",
+      "category": "pass",
+      "phase": "run",
+      "teardownConfirmed": true,
+      "passed": true
+    },
+    {
+      "name": "unsigned-verdict-spoof",
+      "expected": "wrong_answer",
+      "category": "wrong_answer",
+      "phase": "run",
+      "teardownConfirmed": true,
+      "passed": true
+    },
+    {
+      "name": "bounded-output",
+      "expected": "limits",
+      "category": "limits",
+      "phase": "run",
+      "teardownConfirmed": true,
+      "passed": true
+    },
+    {
+      "name": "fork-exhaustion",
+      "expected": "infrastructure_error",
+      "category": "infrastructure_error",
+      "phase": "run",
+      "teardownConfirmed": true,
+      "passed": true
+    },
+    {
+      "name": "memory-exhaustion",
+      "expected": "limits",
+      "category": "limits",
+      "phase": "run",
+      "teardownConfirmed": true,
+      "passed": true
+    }
+  ]
+}

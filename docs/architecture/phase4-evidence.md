@@ -179,12 +179,12 @@ This closes the Task 19 candidate-runtime decision and the F4 human security
 checkpoint. Changing to Docker `runc`, another runtime, or weaker controls
 requires a new security review.
 
-The execution relay, durable run/lease journal adapter, isolated host, and
-application callback have not been integrated and exercised together on
-localhost. `EXECUTION_ENABLED` remains false until that boundary is
-implemented and its real six-language result, failure, cancellation, and
-resume evidence is recorded under F5. No live deployment is required for the
-current local validation scope.
+The localhost execution relay, durable run/lease journal, isolated host and
+signed application callback were integrated and exercised on 2026-10-01.
+[Phase 5 evidence](phase5-evidence.md) records the real six-language results,
+browser failure/cancellation/resume checks and temporary environment cleanup.
+`EXECUTION_ENABLED` remains false in repository environment files; the real local
+suite opts in in its test processes. No live deployment is part of this closure.
 
 ## Earlier decision and blocker
 

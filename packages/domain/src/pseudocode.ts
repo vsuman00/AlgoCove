@@ -15,7 +15,10 @@ export const PSEUDOCODE_FIELDS = [
 export type PseudocodeField = (typeof PSEUDOCODE_FIELDS)[number];
 export type PseudocodeId = OpaqueId<"pseudocode">;
 
-export type PseudocodeFields = Readonly<Record<PseudocodeField, string>>;
+export type PseudocodeFields = Readonly<Record<PseudocodeField, string>> & {
+  /** Bounded authored question selections, saved in the same immutable revision. */
+  readonly structuredAnswers?: Readonly<Record<string, string>>;
+};
 
 export const PSEUDOCODE_FIELD_MAX_LENGTH = 20_000;
 
@@ -131,11 +134,34 @@ function validateFields(fields: PseudocodeFields): Result<undefined, PseudocodeF
       });
     }
   }
+  if (!validStructuredAnswers(fields.structuredAnswers)) {
+    return err({ code: "invalid_field", message: "Structured answers exceed the bounded schema." });
+  }
   return ok(undefined);
 }
 
+export function validStructuredAnswers(
+  value: unknown,
+): value is Readonly<Record<string, string>> | undefined {
+  return (
+    value === undefined ||
+    (typeof value === "object" &&
+      value !== null &&
+      !Array.isArray(value) &&
+      Object.entries(value).length <= 16 &&
+      Object.entries(value).every(
+        ([key, answer]) =>
+          /^[a-z][a-z0-9_]{0,63}$/.test(key) && typeof answer === "string" && answer.length <= 128,
+      ))
+  );
+}
+
 function sameFields(left: PseudocodeFields, right: PseudocodeFields): boolean {
-  return PSEUDOCODE_FIELDS.every((field) => left[field] === right[field]);
+  return (
+    PSEUDOCODE_FIELDS.every((field) => left[field] === right[field]) &&
+    JSON.stringify(Object.entries(left.structuredAnswers ?? {}).sort()) ===
+      JSON.stringify(Object.entries(right.structuredAnswers ?? {}).sort())
+  );
 }
 
 export function startPseudocodeArtifact(input: {

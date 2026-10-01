@@ -36,6 +36,7 @@ export type Config = {
     readonly relayUrl: string | null;
     readonly relayToken: SecretString | null;
     readonly resultCallbackToken: SecretString | null;
+    readonly verificationKeysJson: string | null;
   };
   readonly clerk: {
     readonly publishableKey: SecretString | null;
@@ -88,6 +89,7 @@ function collectEnvironmentIssues(raw: {
   readonly EXECUTION_RELAY_URL?: string | undefined;
   readonly EXECUTION_RELAY_TOKEN?: string | undefined;
   readonly EXECUTION_RESULT_CALLBACK_TOKEN?: string | undefined;
+  readonly EXECUTION_VERIFICATION_KEYS_JSON?: string | undefined;
   readonly NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY?: string | undefined;
   readonly CLERK_SECRET_KEY?: string | undefined;
 }): ConfigIssue[] {
@@ -122,6 +124,11 @@ function collectEnvironmentIssues(raw: {
   }
 
   if (raw.NODE_ENV === "production" && raw.EXECUTION_ENABLED) {
+    if (raw.EXECUTION_VERIFICATION_KEYS_JSON === undefined)
+      issues.push({
+        key: "EXECUTION_VERIFICATION_KEYS_JSON",
+        message: "is required when execution is enabled in production",
+      });
     if (raw.EXECUTION_RELAY_URL === undefined) {
       issues.push({
         key: "EXECUTION_RELAY_URL",
@@ -216,6 +223,7 @@ export function loadConfig(source: EnvironmentSource): Config {
       execution: raw.EXECUTION_ENABLED,
     },
     execution: {
+      verificationKeysJson: raw.EXECUTION_VERIFICATION_KEYS_JSON ?? null,
       relayUrl: raw.EXECUTION_RELAY_URL ?? null,
       relayToken:
         raw.EXECUTION_RELAY_TOKEN === undefined

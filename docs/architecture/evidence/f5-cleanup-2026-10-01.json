@@ -1,0 +1,14 @@
+{
+  "date": "2026-10-01",
+  "environment": "temporary local Lima/VZ Ubuntu 26.04 ARM64",
+  "guestContainerResidue": 0,
+  "vmName": "algocove-gvisor",
+  "vmDeleted": true,
+  "vmDirectoryAbsent": true,
+  "limaInstancesAfterDeletion": 0,
+  "taskImageCacheDeleted": true,
+  "limaUninstalled": true,
+  "measuredVmDirectory": "7.2 GiB",
+  "measuredTaskDownloadCache": "3.3 GiB",
+  "liveDeployment": false
+}

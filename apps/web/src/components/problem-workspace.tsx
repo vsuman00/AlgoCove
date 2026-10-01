@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState, type ReactElement } from "react";
-import type { ProblemLanguage } from "@algocove/domain";
-import TraceRenderer from "./trace-renderer";
+import type { ProblemLanguage, PseudocodeFields } from "@algocove/domain";
+import TraceWorkspace from "./trace-workspace";
 
 const LANGUAGES: readonly { readonly value: ProblemLanguage; readonly label: string }[] = [
   { value: "python", label: "Python" },
@@ -36,27 +36,9 @@ const STARTERS: Record<ProblemLanguage, string> = {
   c: "int max_area(const int heights[], int length) {\n  int left = 0, right = length - 1;\n  int best = 0;\n  return best;\n}",
 };
 
-const REFERENCE_TRACE = {
-  schemaVersion: 1,
-  traceId: "arrays-two-pointer-reference",
-  version: 1,
-  provenance: "authored_reference",
-  structure: "array_two_pointer",
-  initialValues: [1, 8, 6, 2, 5, 4, 8, 3, 7],
-  events: [
-    { kind: "compare", left: 0, right: 8 },
-    { kind: "mark_answer", left: 1, right: 8 },
-    { kind: "move_left" },
-    { kind: "compare", left: 1, right: 8 },
-    { kind: "mark_answer", left: 1, right: 8 },
-    { kind: "move_right" },
-    { kind: "complete" },
-  ],
-} as const;
-
 const RECOVERY_KEY = "algocove:workspace-recovery:arrays-two-pointer";
 
-type PseudocodeState = Record<(typeof PSEUDOCODE_FIELDS)[number][0], string>;
+type PseudocodeState = PseudocodeFields;
 type RecoverySnapshot = { readonly source: string; readonly pseudocode: PseudocodeState };
 type RemoteWorkspace = {
   readonly language: ProblemLanguage;
@@ -90,7 +72,7 @@ type ExecutionClassification =
 type ExecutionState =
   | { readonly kind: "idle" }
   | { readonly kind: "requesting" }
-  | { readonly kind: "queued"; readonly runId: string }
+  | { readonly kind: "queued"; readonly runId: string; readonly sourceAtRun: string | null }
   | { readonly kind: "cancelling"; readonly runId: string }
   | {
       readonly kind: "completed";
@@ -98,6 +80,7 @@ type ExecutionState =
       readonly terminalCategory: ExecutionTerminalCategory;
       readonly classification: ExecutionClassification;
       readonly passed: boolean;
+      readonly sourceAtRun: string | null;
     }
   | { readonly kind: "unavailable" };
 
@@ -128,10 +111,15 @@ export default function ProblemWorkspace({
   const [sessionState, setSessionState] = useState<SessionState>("checking");
   const [learnerId, setLearnerId] = useState<string | null>(null);
   const [hintState, setHintState] = useState("No hint revealed. Start with your invariant.");
+  const [hintTier, setHintTier] = useState(1);
+  const [revisionState, setRevisionState] = useState("No explicit reasoning revision saved.");
+  const [submitted, setSubmitted] = useState(false);
+  const [restart, setRestart] = useState(0);
   const [executionState, setExecutionState] = useState<ExecutionState>({ kind: "idle" });
   const remoteWorkspace = useRef<RemoteWorkspace | null>(null);
   const syncQueue = useRef<Promise<void>>(Promise.resolve());
   const latestSync = useRef(0);
+  const pendingRestart = useRef(false);
   const { language, source, pseudocode } = workspace;
 
   useEffect(() => {
@@ -180,10 +168,11 @@ export default function ProblemWorkspace({
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ problemId, language }),
+      body: JSON.stringify({ problemId, language, restart: pendingRestart.current }),
     })
       .then(async (response) => {
         if (!response.ok) throw new Error("workspace_sync_unavailable");
+        pendingRestart.current = false;
         const body = (await response.json()) as {
           readonly sourceDraft?: {
             readonly draftId?: string;
@@ -195,8 +184,10 @@ export default function ProblemWorkspace({
             readonly pseudocodeId?: string;
             readonly version?: number;
             readonly current?: PseudocodeState;
+            readonly savedRevision?: number;
           };
           readonly activeRun?: {
+            readonly matchesCurrentDraft?: boolean;
             readonly runId?: unknown;
             readonly status?: unknown;
             readonly result?: {
@@ -206,7 +197,8 @@ export default function ProblemWorkspace({
               readonly passed?: unknown;
             } | null;
           } | null;
-          readonly attempt?: { readonly attemptId?: string };
+          readonly attempt?: { readonly attemptId?: string; readonly status?: string };
+          readonly highestHintTier?: number;
           readonly starterTemplate?: string;
           readonly firstHintId?: string;
         };
@@ -238,6 +230,13 @@ export default function ProblemWorkspace({
           lastSource: sourceDraft.currentText,
           lastPseudocode: { ...EMPTY_PSEUDOCODE, ...pseudocodeArtifact.current },
         };
+        setSubmitted(body.attempt.status === "submitted");
+        setHintTier(Math.min(5, (body.highestHintTier ?? 0) + 1));
+        setRevisionState(
+          pseudocodeArtifact.savedRevision
+            ? `Reasoning revision ${pseudocodeArtifact.savedRevision} saved.`
+            : "No explicit reasoning revision saved.",
+        );
         const serverWorkspace: WorkspaceState = {
           language,
           source:
@@ -250,7 +249,7 @@ export default function ProblemWorkspace({
           (recovery.source !== serverWorkspace.source ||
             !samePseudocode(recovery.pseudocode, serverWorkspace.pseudocode));
         setWorkspace(hasUnsyncedRecovery ? { language, ...recovery } : serverWorkspace);
-        const recoveredExecution = executionStateFromRemote(body.activeRun);
+        const recoveredExecution = executionStateFromRemote(body.activeRun, serverWorkspace.source);
         setExecutionState(recoveredExecution ?? { kind: "idle" });
         setSaveState(hasUnsyncedRecovery ? "saving" : "saved");
       })
@@ -263,7 +262,24 @@ export default function ProblemWorkspace({
     return () => {
       cancelled = true;
     };
-  }, [language, learnerId, problemId, sessionState]);
+  }, [language, learnerId, problemId, sessionState, restart]);
+
+  async function executeWorkspace(mode: "run" | "submit"): Promise<void> {
+    setExecutionState({ kind: "requesting" });
+    try {
+      await syncQueue.current;
+      const remote = remoteWorkspace.current;
+      if (remote === null) throw new Error("workspace unavailable");
+      const synced = await syncRemoteDrafts({ remote, source, pseudocode });
+      remoteWorkspace.current = synced;
+      await requestExecution(synced, sessionState, mode, source, (state) => {
+        setExecutionState(state);
+        if (mode === "submit" && state.kind === "queued") setSubmitted(true);
+      });
+    } catch {
+      setExecutionState({ kind: "unavailable" });
+    }
+  }
 
   useEffect(() => {
     if (sessionState !== "authenticated" || learnerId === null) return;
@@ -309,6 +325,7 @@ export default function ProblemWorkspace({
   }, [language, learnerId, pseudocode, sessionState, source]);
 
   const queuedRunId = executionState.kind === "queued" ? executionState.runId : null;
+  const queuedSource = executionState.kind === "queued" ? executionState.sourceAtRun : null;
 
   useEffect(() => {
     if (queuedRunId === null) return;
@@ -345,6 +362,7 @@ export default function ProblemWorkspace({
             terminalCategory: body.result.terminalCategory,
             classification: body.result.classification,
             passed: body.result.passed,
+            sourceAtRun: queuedSource,
           });
         }
       } catch {
@@ -357,7 +375,7 @@ export default function ProblemWorkspace({
       cancelled = true;
       if (timer !== undefined) window.clearTimeout(timer);
     };
-  }, [queuedRunId]);
+  }, [queuedRunId, queuedSource]);
 
   const saveLabel = useMemo(
     () =>
@@ -382,7 +400,7 @@ export default function ProblemWorkspace({
         : executionState.kind === "cancelling"
           ? "Cancellation requested · awaiting trusted result"
           : executionState.kind === "completed"
-            ? `Execution complete · ${executionCategoryLabel(executionState.terminalCategory)}`
+            ? `Execution complete · ${executionState.sourceAtRun === source ? "" : "Previous source · "}${executionCategoryLabel(executionState.terminalCategory)}`
             : executionState.kind === "unavailable"
               ? "Execution unavailable · no result was simulated"
               : null;
@@ -397,7 +415,7 @@ export default function ProblemWorkspace({
 
   const updateSource = (value: string): void => {
     setSaveState("saving");
-    setExecutionState({ kind: "idle" });
+    setExecutionState((current) => (current.kind === "unavailable" ? { kind: "idle" } : current));
     setWorkspace((current) => ({ ...current, source: value }));
   };
 
@@ -433,13 +451,13 @@ export default function ProblemWorkspace({
 
       <ol className="ac-workspace__path" aria-label="Guided problem path">
         {[
-          ["1", "Understand", true],
-          ["2", "Pseudocode", true],
-          ["3", "Trace", true],
-          ["4", "Implement", true],
-          ["5", "Validate", false],
-        ].map(([step, label, complete]) => (
-          <li className={complete ? "is-complete" : "is-current"} key={label as string}>
+          ["1", "Understand"],
+          ["2", "Pseudocode"],
+          ["3", "Trace"],
+          ["4", "Implement"],
+          ["5", "Validate"],
+        ].map(([step, label]) => (
+          <li key={label}>
             <span>{step}</span>
             <strong>{label}</strong>
           </li>
@@ -478,11 +496,139 @@ export default function ProblemWorkspace({
             </div>
             <span className="ac-status-pill is-now">Draft</span>
           </div>
+          <button
+            className="ac-small-button"
+            type="button"
+            onClick={() => {
+              syncQueue.current = syncQueue.current
+                .catch(() => undefined)
+                .then(async () => {
+                  const remote = remoteWorkspace.current;
+                  if (remote === null || sessionState !== "authenticated") {
+                    setRevisionState("Sign in to save a reasoning revision.");
+                    return;
+                  }
+                  try {
+                    const synced = await syncRemoteDrafts({ remote, source, pseudocode });
+                    const response = await fetch(
+                      `/api/practice/pseudocode/${synced.pseudocodeId}`,
+                      {
+                        method: "PUT",
+                        credentials: "include",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                          expectedVersion: synced.pseudocodeVersion,
+                          saveRevision: true,
+                        }),
+                      },
+                    );
+                    if (!response.ok) throw new Error("revision unavailable");
+                    const body = (await response.json()) as {
+                      artifact: { version: number; savedRevision: number };
+                    };
+                    remoteWorkspace.current = {
+                      ...synced,
+                      pseudocodeVersion: body.artifact.version,
+                    };
+                    setRevisionState(`Reasoning revision ${body.artifact.savedRevision} saved.`);
+                  } catch {
+                    setRevisionState(
+                      "Revision could not be saved. Your current draft is retained.",
+                    );
+                  }
+                });
+            }}
+          >
+            Save reasoning revision
+          </button>
+          <p role="status">{revisionState}</p>
+          <button
+            className="ac-small-button"
+            type="button"
+            onClick={() => {
+              const remote = remoteWorkspace.current;
+              if (remote === null) {
+                setRevisionState("Sign in to check reasoning readiness.");
+                return;
+              }
+              void syncQueue.current.then(async () => {
+                const current = remoteWorkspace.current;
+                if (current === null) return;
+                try {
+                  const response = await fetch(`/api/practice/pseudocode/${current.pseudocodeId}`, {
+                    cache: "no-store",
+                  });
+                  if (!response.ok) throw new Error("readiness unavailable");
+                  const body = (await response.json()) as {
+                    readiness: { status: string; missing: string[] } | null;
+                  };
+                  setRevisionState(
+                    body.readiness === null
+                      ? "Save a reasoning revision before checking readiness."
+                      : body.readiness.status === "ready"
+                        ? "Reasoning checkpoint ready: authored checks and a verified passing submission. Free-form reasoning remains advisory."
+                        : `Reasoning checkpoint pending: ${body.readiness.missing.join(", ")}.`,
+                  );
+                } catch {
+                  setRevisionState("Readiness is unavailable. No readiness claim was recorded.");
+                }
+              });
+            }}
+          >
+            Check reasoning readiness
+          </button>
           <p className="ac-workspace__muted">
             Each field is saved as a bounded current snapshot. Explicit revisions and readiness
             checks happen at the trusted application boundary.
           </p>
           <div className="ac-workspace__fields">
+            {[
+              {
+                id: "area",
+                label: "Area checkpoint",
+                options: [
+                  ["minimum_times_width", "Smaller height × distance"],
+                  ["maximum_times_width", "Larger height × distance"],
+                  ["sum", "Sum of the two heights"],
+                ],
+              },
+              {
+                id: "boundary",
+                label: "Boundary checkpoint",
+                options: [
+                  ["shorter", "Move the shorter boundary"],
+                  ["taller", "Move the taller boundary"],
+                  ["both", "Always move both boundaries"],
+                ],
+              },
+            ].map((question) => (
+              <label key={question.id}>
+                <span>{question.label}</span>
+                <select
+                  aria-label={question.label}
+                  value={pseudocode.structuredAnswers?.[question.id] ?? ""}
+                  onChange={(event) =>
+                    setWorkspace((current) => ({
+                      ...current,
+                      pseudocode: {
+                        ...current.pseudocode,
+                        structuredAnswers: {
+                          ...current.pseudocode.structuredAnswers,
+                          [question.id]: event.target.value,
+                        },
+                      },
+                    }))
+                  }
+                >
+                  <option value="">Choose an answer</option>
+                  {question.options.map(([value, label]) => (
+                    <option key={value} value={value}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            ))}
             {PSEUDOCODE_FIELDS.map(([field, label]) => (
               <label key={field}>
                 <span>{label}</span>
@@ -503,7 +649,13 @@ export default function ProblemWorkspace({
         >
           <p className="ac-eyebrow">Visual reasoning</p>
           <h2 id="trace-workspace-title">Step through the reviewed trace</h2>
-          <TraceRenderer trace={REFERENCE_TRACE} />
+          <TraceWorkspace
+            key={language}
+            getAttemptId={() => remoteWorkspace.current?.attemptId}
+            onExposure={(tier) =>
+              setHintTier((current) => Math.max(current, Math.min(5, tier + 1)))
+            }
+          />
         </section>
 
         <section className="ac-panel ac-workspace__panel" aria-labelledby="editor-title">
@@ -538,37 +690,55 @@ export default function ProblemWorkspace({
           <div className="ac-button-row">
             <button
               className="ac-button ac-button--primary"
-              disabled={!executionEnabled || executionState.kind === "requesting"}
-              onClick={() =>
-                void requestExecution(
-                  remoteWorkspace.current,
-                  sessionState,
-                  "run",
-                  source,
-                  setExecutionState,
-                )
+              disabled={
+                !executionEnabled ||
+                sessionState !== "authenticated" ||
+                submitted ||
+                executionState.kind === "requesting" ||
+                executionState.kind === "queued" ||
+                executionState.kind === "cancelling"
               }
+              onClick={() => void executeWorkspace("run")}
               type="button"
             >
               Run checks
             </button>
             <button
               className="ac-button ac-button--secondary"
-              disabled={!executionEnabled || executionState.kind === "requesting"}
-              onClick={() =>
-                void requestExecution(
-                  remoteWorkspace.current,
-                  sessionState,
-                  "submit",
-                  source,
-                  setExecutionState,
-                )
+              disabled={
+                !executionEnabled ||
+                sessionState !== "authenticated" ||
+                submitted ||
+                executionState.kind === "requesting" ||
+                executionState.kind === "queued" ||
+                executionState.kind === "cancelling"
               }
+              onClick={() => void executeWorkspace("submit")}
               type="button"
             >
               Submit attempt
             </button>
           </div>
+          {submitted ? (
+            <button
+              className="ac-small-button"
+              type="button"
+              disabled={
+                executionState.kind === "queued" ||
+                executionState.kind === "requesting" ||
+                executionState.kind === "cancelling"
+              }
+              onClick={() => {
+                setSubmitted(false);
+                setExecutionState({ kind: "idle" });
+                remoteWorkspace.current = null;
+                pendingRestart.current = true;
+                setRestart((value) => value + 1);
+              }}
+            >
+              Start a new attempt
+            </button>
+          ) : null}
           {executionState.kind === "queued" || executionState.kind === "cancelling" ? (
             <button
               className="ac-small-button"
@@ -578,6 +748,7 @@ export default function ProblemWorkspace({
                   executionState.runId,
                   sessionState,
                   setExecutionState,
+                  queuedSource,
                 )
               }
               type="button"
@@ -600,10 +771,14 @@ export default function ProblemWorkspace({
           <p>{hintState}</p>
           <button
             className="ac-small-button ac-small-button--filled"
-            onClick={() => void requestHint(remoteWorkspace.current, sessionState, setHintState)}
+            onClick={() =>
+              void requestHint(remoteWorkspace.current, sessionState, setHintState, hintTier, () =>
+                setHintTier((tier) => Math.min(5, tier + 1)),
+              )
+            }
             type="button"
           >
-            Request clarification hint
+            {hintTier === 1 ? "Request clarification hint" : `Request authored hint ${hintTier}`}
           </button>
           <p className="ac-workspace__muted">
             The authored hint endpoint must persist exposure before revealing the next tier. This
@@ -663,6 +838,8 @@ async function requestHint(
   remote: RemoteWorkspace | null,
   sessionState: SessionState,
   setHintState: (value: string) => void,
+  tier = 1,
+  acknowledged: () => void = () => {},
 ): Promise<void> {
   const pendingMessage =
     "Hint request is pending. The authored hint body will appear only after the authenticated exposure endpoint acknowledges it.";
@@ -677,9 +854,9 @@ async function requestHint(
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         attemptId: remote.attemptId,
-        hintId: remote.firstHintId,
-        requestedTier: 1,
-        idempotencyKey: `workspace-hint-${remote.attemptId}-${remote.language}`,
+        hintId: tier === 1 ? remote.firstHintId : `hint-arrays-${tier}`,
+        requestedTier: tier,
+        idempotencyKey: `workspace-hint-${remote.attemptId}-${remote.language}-${tier}`,
       }),
     });
     if (!response.ok) throw new Error("hint_request_failed");
@@ -688,6 +865,7 @@ async function requestHint(
     };
     if (typeof body.hint?.body !== "string") throw new Error("hint_contract_invalid");
     setHintState(body.hint.body);
+    acknowledged();
   } catch {
     setHintState(pendingMessage);
   }
@@ -717,7 +895,7 @@ async function requestExecution(
     if (body.status !== "queued" || typeof body.runId !== "string") {
       throw new Error("execution_request_contract_invalid");
     }
-    setExecutionState({ kind: "queued", runId: body.runId });
+    setExecutionState({ kind: "queued", runId: body.runId, sourceAtRun: source });
   } catch {
     setExecutionState({ kind: "unavailable" });
   }
@@ -727,6 +905,7 @@ async function requestExecutionCancellation(
   runId: string,
   sessionState: SessionState,
   setExecutionState: (state: ExecutionState) => void,
+  sourceAtRun: string | null,
 ): Promise<void> {
   if (sessionState !== "authenticated") {
     setExecutionState({ kind: "unavailable" });
@@ -744,7 +923,7 @@ async function requestExecutionCancellation(
     if (body.status !== "cancellation_requested" || body.runId !== runId) {
       throw new Error("execution_cancel_contract_invalid");
     }
-    setExecutionState({ kind: "queued", runId });
+    setExecutionState({ kind: "queued", runId, sourceAtRun });
   } catch {
     setExecutionState({ kind: "unavailable" });
   }
@@ -781,6 +960,7 @@ function executionStateFromRemote(
     | {
         readonly runId?: unknown;
         readonly status?: unknown;
+        readonly matchesCurrentDraft?: boolean;
         readonly result?: {
           readonly resultId?: unknown;
           readonly terminalCategory?: unknown;
@@ -790,9 +970,11 @@ function executionStateFromRemote(
       }
     | null
     | undefined,
+  source: string,
 ): ExecutionState | null {
   if (value === null || value === undefined || typeof value.runId !== "string") return null;
-  if (value.status === "queued") return { kind: "queued", runId: value.runId };
+  const sourceAtRun = value.matchesCurrentDraft === true ? source : null;
+  if (value.status === "queued") return { kind: "queued", runId: value.runId, sourceAtRun };
   if (value.status !== "completed" || !isExecutionResult(value.result)) return null;
   return {
     kind: "completed",
@@ -800,6 +982,7 @@ function executionStateFromRemote(
     terminalCategory: value.result.terminalCategory,
     classification: value.result.classification,
     passed: value.result.passed,
+    sourceAtRun,
   };
 }
 
@@ -847,7 +1030,11 @@ function executionCategoryLabel(category: ExecutionTerminalCategory): string {
 }
 
 function samePseudocode(left: PseudocodeState, right: PseudocodeState): boolean {
-  return PSEUDOCODE_FIELDS.every(([field]) => left[field] === right[field]);
+  return (
+    PSEUDOCODE_FIELDS.every(([field]) => left[field] === right[field]) &&
+    JSON.stringify(Object.entries(left.structuredAnswers ?? {}).sort()) ===
+      JSON.stringify(Object.entries(right.structuredAnswers ?? {}).sort())
+  );
 }
 
 function readRecovery(learnerId: string, language: ProblemLanguage): RecoverySnapshot | null {
