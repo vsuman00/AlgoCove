@@ -39,4 +39,26 @@ describe("Task 27 accessible trace renderer", () => {
     expect(screen.getByRole("heading", { name: "Trace unavailable" })).toBeVisible();
     expect(screen.getByRole("status")).toHaveTextContent("will not invent visual states");
   });
+
+  it("keeps deterministic trace state when changing the 3D camera or flat view", async () => {
+    const user = userEvent.setup();
+    render(<TraceRenderer trace={trace} />);
+    await user.click(screen.getByRole("button", { name: "Next step" }));
+    const before = screen.getByRole("status").textContent;
+    const rotate = screen.getByRole("slider", { name: "Rotate" });
+    fireEvent.change(rotate, { target: { value: "35" } });
+    fireEvent.keyDown(rotate, { key: "ArrowRight" });
+    expect(screen.getByRole("status").textContent).toBe(before);
+    expect(screen.getByRole("list", { name: "Array values" })).toHaveStyle({
+      "--trace-angle": "35deg",
+    });
+    await user.click(screen.getByRole("button", { name: "Use flat view" }));
+    expect(screen.getByRole("status").textContent).toBe(before);
+    expect(screen.getByRole("list", { name: "Array values" })).toBeVisible();
+    expect(screen.getByRole("list", { name: "Trace transcript" })).toHaveTextContent("compare");
+    await user.click(screen.getByRole("button", { name: "Use 3D view" }));
+    await user.click(screen.getByRole("button", { name: "Reset view" }));
+    expect(screen.getByRole("slider", { name: "Rotate" })).toHaveValue("-18");
+    expect(screen.getByRole("status").textContent).toBe(before);
+  });
 });

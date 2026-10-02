@@ -2,7 +2,7 @@
   "name": "algocove",
   "version": "0.0.0",
   "private": true,
-  "description": "AlgoCove — guided Data Structures and Algorithms mastery platform (modular monolith workspace).",
+  "description": "AlgoCove \u2014 guided Data Structures and Algorithms mastery platform (modular monolith workspace).",
   "license": "UNLICENSED",
   "type": "module",
   "packageManager": "pnpm@12.4.2",
@@ -43,7 +43,8 @@
     "db:seed:practice": "node packages/db/src/cli/seed-practice.ts",
     "mastery:consume": "node apps/worker/src/mastery-cli.ts consume",
     "mastery:rebuild": "node apps/worker/src/mastery-cli.ts rebuild",
-    "verify": "pnpm run format:check && pnpm run lint && pnpm run typecheck && pnpm run tokens:check && pnpm run test && pnpm run docs:check && pnpm run security:secrets"
+    "verify": "pnpm run format:check && pnpm run lint && pnpm run typecheck && pnpm run tokens:check && pnpm run test && pnpm run docs:check && pnpm run security:secrets",
+    "test:real-learning-loop": "node scripts/test-real-learning-loop.ts"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.13.0",

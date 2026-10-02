@@ -6,6 +6,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "AlgoCove | Deliberate DSA practice",
+  icons: { icon: "/icon.svg" },
   description: "A calm workspace for learning data structures and algorithms.",
 };
 
@@ -19,6 +20,15 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
     );
   return (
     <html lang="en">
+      <head>
+        <link
+          rel="preload"
+          href="/fonts/instrument-sans-400.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+      </head>
       <body>{content}</body>
     </html>
   );

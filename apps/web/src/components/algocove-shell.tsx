@@ -3,6 +3,7 @@ import AlgoCoveMark from "./algocove-mark";
 import { Icon } from "./algocove-icons";
 import AuthControls from "./auth-controls";
 import AuthLinks from "./auth-links";
+import StaffNavigation from "./staff-navigation";
 import { isClerkConfigured } from "../auth/clerk-config";
 
 const navItems = [
@@ -11,8 +12,6 @@ const navItems = [
   ["Reviews", "/review", "book"],
   ["Progress", "/progress", "progress"],
   ["Learner profile", "/onboarding", "target"],
-  ["Content", "/admin/content", "book"],
-  ["Runtimes", "/execution-readiness", "progress"],
 ] as const;
 
 function Navigation({
@@ -28,7 +27,12 @@ function Navigation({
       aria-label={mobile ? "Mobile navigation" : "Primary navigation"}
     >
       {navItems.map(([label, href, icon]) => (
-        <a className={`ac-nav-item${active === label ? " is-active" : ""}`} href={href} key={label}>
+        <a
+          className={`ac-nav-item${active === label ? " is-active" : ""}`}
+          href={href}
+          key={label}
+          aria-current={active === label ? "page" : undefined}
+        >
           <Icon name={icon} size={22} />
           <span>{label}</span>
         </a>
@@ -40,43 +44,58 @@ function Navigation({
 export default function AlgoCoveShell({
   children,
   active = "Home",
+  focused = false,
 }: {
   children: ReactNode;
   active?: string;
+  focused?: boolean;
 }): ReactElement {
   const clerkConfigured = isClerkConfigured();
+  const deep = active === "Planning" || active === "Progress";
   return (
-    <div className="ac-app-shell">
+    <div
+      className="ac-app-shell"
+      data-shell={focused ? "focused" : deep ? "deep-journey" : "light-daily"}
+    >
       <a className="ac-skip-link" href="#main-content">
         Skip to content
       </a>
-      <aside className="ac-sidebar" aria-label="Application sidebar">
-        <a className="ac-sidebar__brand" href="/" aria-label="AlgoCove home">
-          <AlgoCoveMark />
-        </a>
-        <Navigation active={active} />
-        <div className="ac-sidebar__footer">
-          <div className="ac-sidebar__motto">
-            <span className="ac-motto-art" aria-hidden="true">
-              ◒
-            </span>
-            <span>
-              Calmer minds
-              <br />
-              Stronger problem solvers
-            </span>
+      {!focused && (
+        <aside className="ac-sidebar" aria-label="Application sidebar">
+          <a className="ac-sidebar__brand" href="/" aria-label="AlgoCove home">
+            <AlgoCoveMark dark={deep} />
+          </a>
+          <Navigation active={active} />
+          <StaffNavigation active={active} />
+          <div className="ac-sidebar__footer">
+            <div className="ac-sidebar__motto">
+              <span className="ac-motto-art" aria-hidden="true">
+                ◒
+              </span>
+              <span>
+                Calmer minds
+                <br />
+                Stronger problem solvers
+              </span>
+            </div>
           </div>
-        </div>
-      </aside>
+        </aside>
+      )}
       <div className="ac-app-content">
         <header className="ac-utility-bar">
-          <a className="ac-mobile-brand" href="/" aria-label="AlgoCove home">
+          <a
+            className={focused ? "ac-focused-brand" : "ac-mobile-brand"}
+            href="/"
+            aria-label="AlgoCove home"
+          >
             <AlgoCoveMark />
           </a>
-          <div className="ac-product-context" aria-label="Current product scope">
-            <strong>AlgoCove</strong>
-            <span>Guided practice and learning progress</span>
-          </div>
+          {!focused && (
+            <div className="ac-product-context" aria-label="Current product scope">
+              <strong>AlgoCove</strong>
+              <span>Guided practice and learning progress</span>
+            </div>
+          )}
           <div className="ac-utility-actions">
             {clerkConfigured ? <AuthControls /> : <AuthLinks />}
             <a className="ac-sr-only" href="/api/health">
@@ -84,7 +103,12 @@ export default function AlgoCoveShell({
             </a>
           </div>
         </header>
-        <Navigation active={active} mobile />
+        {!focused && <Navigation active={active} mobile />}
+        {!focused && (
+          <div className="ac-mobile-staff">
+            <StaffNavigation active={active} />
+          </div>
+        )}
         <div className="ac-page-content">{children}</div>
       </div>
     </div>

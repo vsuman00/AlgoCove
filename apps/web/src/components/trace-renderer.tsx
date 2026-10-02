@@ -1,6 +1,12 @@
 "use client";
 
-import { useMemo, useState, type KeyboardEvent, type ReactElement } from "react";
+import {
+  useMemo,
+  useState,
+  type CSSProperties,
+  type KeyboardEvent,
+  type ReactElement,
+} from "react";
 import {
   replayTrace,
   traceTranscript,
@@ -20,6 +26,9 @@ export default function TraceRenderer({ trace }: TraceRendererProps): ReactEleme
     trace,
     step: 0,
   });
+  const [spatial, setSpatial] = useState(true);
+  const [angle, setAngle] = useState(-18);
+  const [tilt, setTilt] = useState(24);
   const step = navigation.trace === trace ? navigation.step : 0;
 
   if (!documentResult.ok || !transcript.ok) {
@@ -49,6 +58,8 @@ export default function TraceRenderer({ trace }: TraceRendererProps): ReactEleme
   };
 
   const onKeyDown = (event: KeyboardEvent<HTMLElement>): void => {
+    if (event.target instanceof HTMLElement && event.target.matches("input, select, textarea"))
+      return;
     if (event.key === "ArrowRight") {
       event.preventDefault();
       move(step + 1);
@@ -84,19 +95,78 @@ export default function TraceRenderer({ trace }: TraceRendererProps): ReactEleme
         Step {replay.value.state.step} of {maxStep}. {stateSummary(replay.value)}
       </div>
 
-      <div aria-label="Array values" className="ac-trace-values" role="list">
-        {replay.value.state.values.map((value, index) => (
-          <span
-            aria-label={cellLabel(value, index, replay.value)}
-            className="ac-trace-value"
-            data-active={isActiveIndex(index, replay.value) ? "true" : "false"}
-            key={`${index}-${value}`}
-            role="listitem"
-          >
-            <span aria-hidden="true">{value}</span>
-            <small aria-hidden="true">{index}</small>
-          </span>
-        ))}
+      <div className="ac-trace-view-controls" role="group" aria-label="Trace view">
+        <button type="button" aria-pressed={spatial} onClick={() => setSpatial((value) => !value)}>
+          {spatial ? "Use flat view" : "Use 3D view"}
+        </button>
+        {spatial && (
+          <>
+            <label>
+              Rotate{" "}
+              <input
+                type="range"
+                min="-45"
+                max="45"
+                value={angle}
+                onChange={(event) => setAngle(Number(event.target.value))}
+              />
+            </label>
+            <label>
+              Tilt{" "}
+              <input
+                type="range"
+                min="0"
+                max="45"
+                value={tilt}
+                onChange={(event) => setTilt(Number(event.target.value))}
+              />
+            </label>
+            <button
+              type="button"
+              onClick={() => {
+                setAngle(-18);
+                setTilt(24);
+              }}
+            >
+              Reset view
+            </button>
+          </>
+        )}
+      </div>
+      <div className={`ac-trace-stage${spatial ? " is-spatial" : ""}`}>
+        <div
+          aria-label="Array values"
+          className="ac-trace-values"
+          role="list"
+          style={{ "--trace-angle": `${angle}deg`, "--trace-tilt": `${tilt}deg` } as CSSProperties}
+        >
+          {replay.value.state.values.map((value, index) => (
+            <span
+              aria-label={cellLabel(value, index, replay.value)}
+              className="ac-trace-value"
+              data-active={isActiveIndex(index, replay.value) ? "true" : "false"}
+              data-answer={replay.value.state.answer?.includes(index) ? "true" : "false"}
+              key={`${index}-${value}`}
+              role="listitem"
+            >
+              <span className="ac-trace-cube" aria-hidden="true">
+                <span className="ac-trace-face ac-trace-face--front">{value}</span>
+                <span className="ac-trace-face ac-trace-face--top" />
+                <span className="ac-trace-face ac-trace-face--side" />
+              </span>
+              <small aria-hidden="true">{index}</small>
+              <span className="ac-trace-pointer" aria-hidden="true">
+                {[
+                  replay.value.state.left === index ? "L" : null,
+                  replay.value.state.right === index ? "R" : null,
+                  replay.value.state.answer?.includes(index) ? "✓" : null,
+                ]
+                  .filter(Boolean)
+                  .join(" · ")}
+              </span>
+            </span>
+          ))}
+        </div>
       </div>
 
       <div aria-label="Trace controls" className="ac-trace-controls" role="group">

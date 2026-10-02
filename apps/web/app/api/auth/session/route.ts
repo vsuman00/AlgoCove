@@ -19,10 +19,15 @@ export async function GET(): Promise<NextResponse> {
       { authenticated: true, user: { id: actor.userId, roles: actor.roles } },
       { headers: { "Cache-Control": "no-store" } },
     );
-  } catch {
+  } catch (error) {
+    const unauthenticated =
+      error instanceof Error && "code" in error && error.code === "unauthenticated";
     return NextResponse.json(
-      { authenticated: false, error: { code: "unauthenticated" } },
-      { status: 401, headers: { "Cache-Control": "no-store" } },
+      {
+        authenticated: false,
+        error: { code: unauthenticated ? "unauthenticated" : "session_unavailable" },
+      },
+      { status: unauthenticated ? 401 : 503, headers: { "Cache-Control": "no-store" } },
     );
   }
 }

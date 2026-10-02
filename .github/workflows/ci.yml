@@ -139,6 +139,40 @@ jobs:
           docker info --format '{{json .Runtimes}}'
           docker run --rm --runtime=runsc hello-world
 
+      - name: Install dependencies for the real learning loop
+        run: pnpm install --frozen-lockfile
+
+      - name: Build reviewed execution images
+        env:
+          ALGO_COVE_IMAGE_ATTESTATIONS: "false"
+        run: pnpm images:build
+
+      - name: Build the production UI and install Chromium
+        run: |
+          pnpm build
+          pnpm exec playwright install --with-deps chromium
+
+      - name: Start disposable PostgreSQL
+        run: docker compose up -d --wait db
+
+      - name: Test real six-language guided journeys and host recovery
+        env:
+          ALGO_COVE_REAL_LOOP_CI: "1"
+          DATABASE_TEST_OPERATOR_URL: postgres://postgres:postgres@127.0.0.1:54329/postgres
+        run: node scripts/test-real-learning-loop.ts
+
+      - name: Upload real guided-loop evidence
+        if: always()
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: phase7-real-learning-loop
+          path: .tmp/phase7-learning-loop-report.local.json
+          if-no-files-found: warn
+
+      - name: Stop disposable PostgreSQL
+        if: always()
+        run: docker compose down -v
+
       - name: Run the candidate-runtime sandbox spike
         env:
           ALGO_COVE_DOCKER_RUNTIME: runsc

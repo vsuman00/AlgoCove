@@ -5,7 +5,7 @@
  * Regenerate with: pnpm tokens:build
  * Verify with:     pnpm tokens:check
  */
-/* Tracked missing approved assets: Instrument Sans font files; Fraunces font files; JetBrains Mono font files; Canonical cove logo, light and dark variants; Coastal illustration washes for both shells */
+/* Tracked missing approved assets: Coastal illustration washes for both shells */
 :root {
   /* Brand, neutral, and supporting primitives */
   --color-ocean-950: #082F35;

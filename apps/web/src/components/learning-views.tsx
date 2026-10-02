@@ -42,10 +42,17 @@ function useLearning<T>(url: string) {
       active = false;
     };
   }, [url, refresh]);
-  return { data, error, reload: () => setRefresh((n) => n + 1) };
+  return {
+    data,
+    error,
+    reload: () => {
+      setError(null);
+      setRefresh((n) => n + 1);
+    },
+  };
 }
 export function NextLearningAction(): ReactElement {
-  const { data, error } = useLearning<{
+  const { data, error, reload } = useLearning<{
     action: NextAction;
     alternatives: NextAction[];
     asOf: string;
@@ -55,7 +62,12 @@ export function NextLearningAction(): ReactElement {
     <section className="ac-profile-strip" aria-labelledby="next-learning-title">
       <h2 id="next-learning-title">Your next step</h2>
       {error ? (
-        <p role="status">{error}</p>
+        <div>
+          <p role="status">{error}</p>
+          <button className="ac-small-button" type="button" onClick={reload}>
+            Try again
+          </button>
+        </div>
       ) : data === null ? (
         <p role="status">Finding your next step…</p>
       ) : (
@@ -81,10 +93,7 @@ export function NextLearningAction(): ReactElement {
               </ul>
             </details>
           )}
-          <small>
-            Recommendation policy {data.policyVersion} · As of{" "}
-            {new Date(data.asOf).toLocaleString()}
-          </small>
+          <small>Updated {new Date(data.asOf).toLocaleString()}</small>
         </>
       )}
     </section>
@@ -221,14 +230,17 @@ export function ReviewExperience(): ReactElement {
         remain available; catching up preserves your history.
       </p>
       {error ? (
-        <p role="status">{error}</p>
+        <div>
+          <p role="status">{error}</p>
+          <button className="ac-small-button" type="button" onClick={reload}>
+            Try again
+          </button>
+        </div>
       ) : data === null ? (
         <p role="status">Loading reviews…</p>
       ) : (
         <>
-          <p>
-            Policy {data.policyVersion} · As of {new Date(data.asOf).toLocaleString()}
-          </p>
+          <p>Updated {new Date(data.asOf).toLocaleString()}</p>
           {data.reviews.length === 0 ? (
             <p>
               No reviews yet. Complete a checked practice attempt to schedule your first review.
@@ -244,6 +256,91 @@ export function ReviewExperience(): ReactElement {
   );
 }
 type Progress = ProgressSnapshot & { consistency: ReturnType<typeof projectConsistency> };
+export function HomeLearningSummary(): ReactElement {
+  const { data, error, reload } = useLearning<Progress>("/api/progress");
+  return (
+    <section className="ac-learning-summary" aria-labelledby="learning-summary-title">
+      <header>
+        <p className="ac-eyebrow">Your learning record</p>
+        <h2 id="learning-summary-title">A little practice, lasting progress.</h2>
+        <p>Your checked learning, study habits and personal reports stay separate.</p>
+      </header>
+      {error ? (
+        <div className="ac-profile-strip">
+          <p role="status">{error}</p>
+          <button type="button" className="ac-small-button" onClick={reload}>
+            Retry learning record
+          </button>
+        </div>
+      ) : data === null ? (
+        <p role="status">Loading your learning record…</p>
+      ) : (
+        <>
+          <div className="ac-learning-grid">
+            <article>
+              <p className="ac-eyebrow">Checked learning</p>
+              <h3>{data.mastery.length} concepts with evidence</h3>
+              <p>
+                {data.pendingConcepts.length > 0
+                  ? `${data.pendingConcepts.length} concept updates are pending.`
+                  : data.mastery.length === 0
+                    ? "Your first checked practice will begin this record."
+                    : "See the evidence and practice history behind each concept."}
+              </p>
+              <a href="/progress">Explore progress</a>
+            </article>
+            <article>
+              <p className="ac-eyebrow">Spaced review</p>
+              <h3>{data.reviewHealth.due + data.reviewHealth.overdue} reviews to revisit</h3>
+              <p>
+                {data.reviewHealth.overdue} overdue · {data.reviewHealth.completed} completed
+              </p>
+              <a href="/review">Open your reviews</a>
+            </article>
+            <article>
+              <p className="ac-eyebrow">Study rhythm</p>
+              <h3>{data.consistency.currentStreak} consecutive active days</h3>
+              <p>
+                {data.consistency.activeDays} active days · {data.consistency.longestStreak} longest
+                streak
+              </p>
+              <a href="/progress">View study history</a>
+            </article>
+            <article>
+              <p className="ac-eyebrow">Your plan</p>
+              <h3>
+                {data.planAdherence.status === "no_accepted_plan"
+                  ? "Find your next milestones"
+                  : "Keep your schedule in view"}
+              </h3>
+              <p>
+                {data.planAdherence.totalDue === null
+                  ? "Choose a pace and review your proposed schedule."
+                  : `${data.planAdherence.completedOnTime ?? 0} of ${data.planAdherence.totalDue} due activities completed on time.`}
+              </p>
+              <a href="/plan">Open planning</a>
+            </article>
+            <article>
+              <p className="ac-eyebrow">Confidence</p>
+              <h3>{data.calibration.length} confidence observations</h3>
+              <p>Compare your own confidence with checked outcomes.</p>
+              <a href="/progress">Review calibration</a>
+            </article>
+            <article>
+              <p className="ac-eyebrow">External practice</p>
+              <h3>{data.externalPractice.completed} reported completions</h3>
+              <p>Practice elsewhere stays in your personal journal.</p>
+              <a href="/progress">Open practice journal</a>
+            </article>
+          </div>
+          <p className="ac-summary-updated">
+            Updated {new Date(data.asOf).toLocaleString()} · {data.timezone}
+          </p>
+        </>
+      )}
+    </section>
+  );
+}
 export function ProgressExperience(): ReactElement {
   const { data, error, reload } = useLearning<Progress>("/api/progress");
   const [message, setMessage] = useState("");
@@ -267,14 +364,18 @@ export function ProgressExperience(): ReactElement {
       <h1>Your progress</h1>
       <p>Checked learning, your own reports, and study habits each have their own record.</p>
       {error ? (
-        <p role="status">{error}</p>
+        <div>
+          <p role="status">{error}</p>
+          <button className="ac-small-button" type="button" onClick={reload}>
+            Try again
+          </button>
+        </div>
       ) : data === null ? (
         <p role="status">Loading progress…</p>
       ) : (
         <>
           <p>
-            As of {new Date(data.asOf).toLocaleString()} · Policy {data.policyVersion} ·{" "}
-            {data.timezone}
+            Updated {new Date(data.asOf).toLocaleString()} · {data.timezone}
           </p>
           <section className="ac-profile-strip">
             <h2>Internal mastery</h2>

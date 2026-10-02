@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { phase3ContentFixture } from "../../../apps/web/src/content-fixtures";
+import { phase3ContentFixture } from "../../fixtures/content-workflow";
 
 describe("content operations fixture read model", () => {
   it("shows complete separated review evidence but keeps runnable publication blocked", () => {

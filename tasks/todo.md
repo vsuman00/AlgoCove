@@ -1,5 +1,9 @@
 # AlgoCove implementation task ledger
 
+**Current implementation evidence:** [Real product and 3D UI record](../docs/architecture/phase7-production-ui-evidence-2026-10-03.md) supplements the historical audit with persisted content administration, release identity persistence and the new mandatory Linux guided-loop gate. Final CI status is recorded there.
+
+**Current work (owner clarification, 2026-10-03):** Complete real implementation through Phase 7 and the clean production 3D UI. [UI completion work](phase7-production-ui.md) tracks the scope. No deployment, age/country restrictions, privacy-policy implementation, or later phases are included. Existing security and ownership controls remain required.
+
 **Cumulative audit (2026-10-03):** [The through-Phase-7 audit](../docs/architecture/through-phase7-audit-2026-10-03.md) records fresh passing technical gates, every named test, Phase 0 approval gaps, unreconciled Phase 1–5 plan checkboxes, open UI fidelity/manual accessibility and the two current-head real-host skips. Technical phase closure must not be read as complete governance or full design validation.
 
 **Status:** Phase 5 Tasks 25 through 29 and the technical F5 learning-kernel gates are COMPLETE on localhost for the first original problem in all six languages. The security owner approved gVisor `runsc` on 2026-09-26. Real signed execution, browser result/failure/resume, authored readiness checks, trace prediction/editing and persisted reference assistance pass. See [Phase 5 evidence](../docs/architecture/phase5-evidence.md). The owner authorized Phase 6 on 2026-10-02; Tasks 30–33 and the technical F6 checks are COMPLETE on localhost; Phase 7 was explicitly approved on 2026-10-02; Tasks 34–37 and 51 and technical F7 checks are COMPLETE on localhost as of 2026-10-03. Phase 8 awaits owner authorization. No hosted deployment is authorized. Earlier dated partial-status entries below describe superseded slices.

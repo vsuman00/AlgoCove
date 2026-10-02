@@ -57,7 +57,7 @@ type WorkspaceState = {
   readonly pseudocode: PseudocodeState;
 };
 type RecoveryState = "local" | "saving" | "saved" | "server_pending" | "sign_in";
-type SessionState = "checking" | "signed_out" | "authenticated";
+type SessionState = "checking" | "signed_out" | "authenticated" | "unavailable";
 type ExecutionTerminalCategory =
   | "pass"
   | "wrong_answer"
@@ -110,6 +110,7 @@ export default function ProblemWorkspace({
     pseudocode: EMPTY_PSEUDOCODE,
   });
   const [saveState, setSaveState] = useState<RecoveryState>("local");
+  const [sessionRefresh, setSessionRefresh] = useState(0);
   const [sessionState, setSessionState] = useState<SessionState>("checking");
   const [learnerId, setLearnerId] = useState<string | null>(null);
   const [hintState, setHintState] = useState("No hint revealed. Start with your invariant.");
@@ -131,8 +132,8 @@ export default function ProblemWorkspace({
       .then(async (response) => {
         if (!response.ok) {
           if (!cancelled) {
-            setSessionState("signed_out");
-            setSaveState("sign_in");
+            setSessionState(response.status === 401 ? "signed_out" : "unavailable");
+            setSaveState(response.status === 401 ? "sign_in" : "server_pending");
           }
           return;
         }
@@ -155,14 +156,14 @@ export default function ProblemWorkspace({
       })
       .catch(() => {
         if (!cancelled) {
-          setSessionState("signed_out");
-          setSaveState("sign_in");
+          setSessionState("unavailable");
+          setSaveState("server_pending");
         }
       });
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [sessionRefresh]);
 
   useEffect(() => {
     if (sessionState !== "authenticated" || learnerId === null) return;
@@ -382,17 +383,19 @@ export default function ProblemWorkspace({
 
   const saveLabel = useMemo(
     () =>
-      saveState === "saving"
-        ? "Saving local recovery…"
-        : saveState === "saved"
-          ? "Local recovery saved"
-          : saveState === "server_pending"
-            ? "Local recovery saved · server sync pending"
-            : saveState === "sign_in"
-              ? "Sign in for private recovery"
-              : sessionState === "checking"
-                ? "Checking private recovery…"
-                : "Local recovery ready",
+      sessionState === "unavailable"
+        ? "Account service unavailable. Retry to recover your private workspace."
+        : saveState === "saving"
+          ? "Saving local recovery…"
+          : saveState === "saved"
+            ? "Local recovery saved"
+            : saveState === "server_pending"
+              ? "Local recovery saved · server sync pending"
+              : saveState === "sign_in"
+                ? "Sign in for private recovery"
+                : sessionState === "checking"
+                  ? "Checking private recovery…"
+                  : "Local recovery ready",
     [saveState, sessionState],
   );
   const executionLabel =
@@ -405,7 +408,7 @@ export default function ProblemWorkspace({
           : executionState.kind === "completed"
             ? `Execution complete · ${executionState.sourceAtRun === source ? "" : "Previous source · "}${executionCategoryLabel(executionState.terminalCategory)}`
             : executionState.kind === "unavailable"
-              ? "Execution unavailable · no result was simulated"
+              ? "Execution unavailable · please try again"
               : null;
 
   const updatePseudocode = (field: keyof PseudocodeState, value: string): void => {
@@ -441,13 +444,25 @@ export default function ProblemWorkspace({
           <h1>Container with most water</h1>
           <p>
             Build the invariant first, inspect the reviewed trace, then validate your own solution
-            when the execution gate is available.
+            with checked execution results.
           </p>
         </div>
         <aside className="ac-workspace__status" aria-label="Workspace status">
           <strong>Practice attempt</strong>
           <span>Private recovery · {saveLabel}</span>
-          <span>Run results are never simulated in the browser.</span>
+          <span>Run or submit your code to see checked results.</span>
+          {sessionState === "unavailable" && (
+            <button
+              type="button"
+              className="ac-small-button"
+              onClick={() => {
+                setSessionState("checking");
+                setSessionRefresh((value) => value + 1);
+              }}
+            >
+              Retry account connection
+            </button>
+          )}
           {executionLabel !== null ? <span role="status">{executionLabel}</span> : null}
         </aside>
       </header>
@@ -618,8 +633,8 @@ export default function ProblemWorkspace({
             Check reasoning readiness
           </button>
           <p className="ac-workspace__muted">
-            Each field is saved as a bounded current snapshot. Explicit revisions and readiness
-            checks happen at the trusted application boundary.
+            Your reasoning is saved privately as you work. Save a revision when you are ready to
+            check your answers.
           </p>
           <div className="ac-workspace__fields">
             {[
@@ -798,15 +813,13 @@ export default function ProblemWorkspace({
           ) : null}
           {!executionEnabled ? (
             <p className="ac-note ac-note--info" role="status">
-              {
-                "Execution is unavailable: the isolated execution relay is not configured. No result is being simulated."
-              }
+              {"Execution is temporarily unavailable. Your work remains saved; try again later."}
             </p>
           ) : null}
         </section>
 
         <aside className="ac-panel ac-workspace__panel" aria-labelledby="hint-title">
-          <p className="ac-eyebrow">Deterministic coaching</p>
+          <p className="ac-eyebrow">Guidance</p>
           <h2 id="hint-title">Need a nudge?</h2>
           <p>{hintState}</p>
           <button
@@ -821,8 +834,8 @@ export default function ProblemWorkspace({
             {hintTier === 1 ? "Request clarification hint" : `Request authored hint ${hintTier}`}
           </button>
           <p className="ac-workspace__muted">
-            The authored hint endpoint must persist exposure before revealing the next tier. This
-            workspace does not preload locked hint content or invent a server acknowledgement.
+            Hints reveal progressively more guidance. Each hint is recorded with your attempt so
+            your progress reflects the help you used.
           </p>
         </aside>
       </div>
@@ -881,10 +894,9 @@ async function requestHint(
   tier = 1,
   acknowledged: () => void = () => {},
 ): Promise<void> {
-  const pendingMessage =
-    "Hint request is pending. The authored hint body will appear only after the authenticated exposure endpoint acknowledges it.";
+  const pendingMessage = "Hint request is pending. Try again when your connection is available.";
   if (sessionState !== "authenticated" || remote === null) {
-    setHintState(pendingMessage);
+    setHintState("Sign in or reconnect your account to use hints.");
     return;
   }
   try {

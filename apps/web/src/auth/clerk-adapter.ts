@@ -3,7 +3,7 @@ import { createActor, type Actor, type LearnerProfileRepository } from "@algocov
 import { createPool, PostgresIdentityRepository } from "@algocove/db";
 import { formatId, ROLES, type LearnerId, type OpaqueId, type Role } from "@algocove/domain";
 import type { LearnerProfile } from "@algocove/domain";
-import { authenticationRequired } from "@algocove/application";
+import { authenticationRequired, dependencyUnavailableError } from "@algocove/application";
 
 export type ClerkAuthState = {
   readonly isAuthenticated: boolean;
@@ -105,7 +105,7 @@ let defaultAdapter: ClerkIdentityAdapter | undefined;
 function createConfiguredStore(): ClerkIdentityStore {
   const connectionString = process.env.DATABASE_URL;
   if (connectionString === undefined || connectionString.length === 0) {
-    return createInMemoryClerkIdentityStore();
+    throw dependencyUnavailableError("Identity persistence is unavailable.");
   }
   if (
     !connectionString.startsWith("postgres://") &&
@@ -144,7 +144,19 @@ export function getClerkIdentityStore(): ClerkIdentityStore {
 }
 
 export function getClerkIdentityAdapter(): ClerkIdentityAdapter {
-  defaultStore ??= createConfiguredStore();
-  defaultAdapter ??= createClerkIdentityAdapter({ store: defaultStore });
+  defaultAdapter ??= {
+    async authenticate(state) {
+      if (
+        !state.isAuthenticated ||
+        state.userId === null ||
+        state.sessionId === null ||
+        !SUBJECT_PATTERN.test(state.userId) ||
+        !SUBJECT_PATTERN.test(state.sessionId)
+      )
+        throw authenticationRequired();
+      defaultStore ??= createConfiguredStore();
+      return createClerkIdentityAdapter({ store: defaultStore }).authenticate(state);
+    },
+  };
   return defaultAdapter;
 }

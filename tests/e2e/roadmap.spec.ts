@@ -197,7 +197,9 @@ test("complete AI-off create, review, accept, miss, pause, resume, replan and hi
   await page.getByRole("button", { name: "Save planning preferences" }).click();
   await page.getByRole("button", { name: "Build schedule preview" }).click();
   await expect(page.getByRole("heading", { name: "Schedule preview" })).toBeVisible();
-  await expect(page.getByText("AI is off.", { exact: false })).toBeVisible();
+  await expect(
+    page.getByText("Your schedule follows your capacity and prerequisites.", { exact: false }),
+  ).toBeVisible();
   await expect(page.getByText("Workload:", { exact: false })).toContainText("70 minutes");
   await page.getByRole("button", { name: "Accept this schedule" }).click();
   await expect(page.getByRole("heading", { name: "Accepted schedule — active" })).toBeVisible();

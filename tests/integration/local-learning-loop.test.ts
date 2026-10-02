@@ -1,7 +1,7 @@
 import { createServer, type Server } from "node:http";
-import { readFileSync, writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { randomBytes } from "node:crypto";
-import { execFile, spawn } from "node:child_process";
+import { execFile, spawn, type ChildProcess } from "node:child_process";
 import { promisify } from "node:util";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { chromium, expect as browserExpect, type Browser, type Page } from "@playwright/test";
@@ -66,43 +66,92 @@ let failDrafts = false;
 const workspacePath = process.cwd().replaceAll("'", "'\\''");
 const hostCommand = `cd '${workspacePath}' && echo $$ > /tmp/algocove-host.pid && exec env DOCKER_HOST=unix:///var/run/docker.sock ALGO_COVE_LOCAL_EXECUTION=1 LOCAL_EXECUTION_STATE_DIR=/tmp/algocove-f5-host LOCAL_EXECUTION_IMAGES_FILE=/tmp/algocove-images.json LOCAL_RESULT_CALLBACK_URL=http://host.lima.internal:3301/api/internal/practice/results LOCAL_RESULT_CALLBACK_TOKEN=local-f5-callback-token-for-tests-only-20261001 /tmp/node-v22.22.0-linux-arm64/bin/node services/execution-host/src/cli.ts`;
 
+const nativeHost = process.env.LOCAL_PHASE5_NATIVE_HOST === "1";
+const nativeDirectory = process.env.LOCAL_EXECUTION_STATE_DIR;
+const nativeImages = process.env.LOCAL_EXECUTION_IMAGES_FILE;
+let hostProcess: ChildProcess | undefined;
+async function killHost(): Promise<void> {
+  if (nativeHost) {
+    if (hostProcess?.pid && hostProcess.exitCode === null && hostProcess.signalCode === null) {
+      const closed = new Promise<void>((resolve) => hostProcess!.once("exit", () => resolve()));
+      hostProcess.kill("SIGKILL");
+      await closed;
+    }
+    hostProcess = undefined;
+  } else
+    await command("limactl", [
+      "shell",
+      "algocove-gvisor",
+      "bash",
+      "-lc",
+      "kill -KILL $(cat /tmp/algocove-host.pid)",
+    ]);
+}
 async function restartHost(images?: "missing" | "reviewed") {
-  await command("limactl", [
-    "shell",
-    "algocove-gvisor",
-    "bash",
-    "-lc",
-    "kill -KILL $(cat /tmp/algocove-host.pid)",
-  ]);
-  if (images === "missing")
+  if (nativeHost) {
+    if (!nativeDirectory || !nativeImages)
+      throw Error("Native host requires owned state and image paths");
+    await killHost();
+    if (images === "missing") {
+      writeFileSync(`${nativeImages}.reviewed`, readFileSync(nativeImages));
+      const mapping = JSON.parse(readFileSync(nativeImages, "utf8")) as Record<string, string>;
+      for (const language of Object.keys(mapping)) mapping[language] = `sha256:${"0".repeat(64)}`;
+      writeFileSync(nativeImages, JSON.stringify(mapping));
+    }
+    if (images === "reviewed")
+      writeFileSync(nativeImages, readFileSync(`${nativeImages}.reviewed`));
+    hostProcess = spawn(process.execPath, ["services/execution-host/src/cli.ts"], {
+      env: {
+        PATH: process.env.PATH,
+        NODE_ENV: "test",
+        ALGO_COVE_LOCAL_EXECUTION: "1",
+        LOCAL_EXECUTION_STATE_DIR: nativeDirectory,
+        LOCAL_EXECUTION_IMAGES_FILE: nativeImages,
+        LOCAL_RESULT_CALLBACK_URL: "http://127.0.0.1:3301/api/internal/practice/results",
+        LOCAL_RESULT_CALLBACK_TOKEN: callbackToken,
+      },
+      stdio: "inherit",
+    });
+  } else {
     await command("limactl", [
       "shell",
       "algocove-gvisor",
       "bash",
       "-lc",
-      `cp /tmp/algocove-images.json /tmp/algocove-images-reviewed.json; /tmp/node-v22.22.0-linux-arm64/bin/node -e 'const fs=require("fs");const m=JSON.parse(fs.readFileSync("/tmp/algocove-images.json"));for(const k of Object.keys(m))m[k]="sha256:"+"0".repeat(64);fs.writeFileSync("/tmp/algocove-images.json",JSON.stringify(m));'`,
+      "kill -KILL $(cat /tmp/algocove-host.pid)",
     ]);
-  if (images === "reviewed")
-    await command("limactl", [
-      "shell",
-      "algocove-gvisor",
-      "bash",
-      "-lc",
-      "cp /tmp/algocove-images-reviewed.json /tmp/algocove-images.json",
-    ]);
-  const child = spawn("limactl", ["shell", "algocove-gvisor", "sg", "docker", "-c", hostCommand], {
-    stdio: "ignore",
-  });
-  child.unref();
+    if (images === "missing")
+      await command("limactl", [
+        "shell",
+        "algocove-gvisor",
+        "bash",
+        "-lc",
+        `cp /tmp/algocove-images.json /tmp/algocove-images-reviewed.json; /tmp/node-v22.22.0-linux-arm64/bin/node -e 'const fs=require("fs");const m=JSON.parse(fs.readFileSync("/tmp/algocove-images.json"));for(const k of Object.keys(m))m[k]="sha256:"+"0".repeat(64);fs.writeFileSync("/tmp/algocove-images.json",JSON.stringify(m));'`,
+      ]);
+    if (images === "reviewed")
+      await command("limactl", [
+        "shell",
+        "algocove-gvisor",
+        "bash",
+        "-lc",
+        "cp /tmp/algocove-images-reviewed.json /tmp/algocove-images.json",
+      ]);
+    const child = spawn(
+      "limactl",
+      ["shell", "algocove-gvisor", "sg", "docker", "-c", hostCommand],
+      {
+        stdio: "ignore",
+      },
+    );
+    child.unref();
+  }
   await browserExpect
     .poll(
       async () => {
         try {
-          const response = await fetch("http://127.0.0.1:3302/v1/runs/prepare", {
-            method: "POST",
-            body: "{}",
-          });
-          return response.status;
+          return (
+            await fetch("http://127.0.0.1:3302/v1/runs/prepare", { method: "POST", body: "{}" })
+          ).status;
         } catch {
           return 0;
         }
@@ -110,6 +159,20 @@ async function restartHost(images?: "missing" | "reviewed") {
       { timeout: 15000 },
     )
     .toBe(401);
+}
+
+async function freshLearner(): Promise<void> {
+  const learner = formatId("learner", randomBytes(20).toString("hex")),
+    session = formatId("session", randomBytes(20).toString("hex"));
+  if (!learner.ok || !session.ok) throw Error("Invalid fixture identity");
+  await fixture.runtime!.pool.query("INSERT INTO platform.learner(learner_id) VALUES($1)", [
+    learner.value,
+  ]);
+  fixture.actor = createActor({
+    userId: learner.value,
+    sessionId: session.value,
+    roles: ["learner"],
+  });
 }
 
 async function execute(
@@ -160,12 +223,16 @@ describe.skipIf(process.env.LOCAL_PHASE5_E2E !== "1")(
   "real local guided loop with fixture authentication",
   () => {
     beforeAll(async () => {
-      const connection = JSON.parse(readFileSync(".tmp/f5/connection.local.json", "utf8")) as {
+      if (nativeHost) await restartHost();
+      const connectionFile = nativeHost
+        ? `${nativeDirectory}/connection.local.json`
+        : ".tmp/f5/connection.local.json";
+      const connection = JSON.parse(readFileSync(connectionFile, "utf8")) as {
         relayUrl: string;
         relayToken: string;
         verificationKeys: string;
       };
-      process.loadEnvFile(".env");
+      if (!nativeHost && existsSync(".env")) process.loadEnvFile(".env");
       vi.stubEnv("EXECUTION_RESULT_CALLBACK_TOKEN", callbackToken);
       vi.stubEnv("EXECUTION_VERIFICATION_KEYS_JSON", connection.verificationKeys);
       const learner = formatId("learner", randomBytes(20).toString("hex"));
@@ -265,16 +332,18 @@ describe.skipIf(process.env.LOCAL_PHASE5_E2E !== "1")(
 
     afterAll(async () => {
       await browser?.close();
+      if (nativeHost) await killHost();
       await new Promise<void>((resolve) => (server ? server.close(() => resolve()) : resolve()));
       if (fixture.runtime && fixture.actor) {
-        await fixture.runtime.pool.query("DELETE FROM platform.learner WHERE learner_id=$1", [
-          fixture.actor.userId,
-        ]);
+        if (!nativeHost)
+          await fixture.runtime.pool.query("DELETE FROM platform.learner WHERE learner_id=$1", [
+            fixture.actor.userId,
+          ]);
         await fixture.runtime.pool.end();
       }
       vi.unstubAllEnvs();
       writeFileSync(
-        ".tmp/f5/browser-report.local.json",
+        process.env.LOCAL_PHASE5_REPORT_FILE ?? ".tmp/f5/browser-report.local.json",
         JSON.stringify(
           {
             date: new Date().toISOString(),
@@ -290,6 +359,7 @@ describe.skipIf(process.env.LOCAL_PHASE5_E2E !== "1")(
 
     it("completes reasoning, trace, hints, Run/Submit and submitted-state resume in all six languages", async () => {
       for (const language of PROBLEM_LANGUAGES) {
+        if (nativeHost) await freshLearner();
         const page = await browser!.newPage();
         await page.route("**/api/**", async (route) => {
           const response = await route.fetch({
@@ -511,6 +581,7 @@ describe.skipIf(process.env.LOCAL_PHASE5_E2E !== "1")(
     }, 240000);
 
     it("cancels real execution, recovers a killed host without credit, and rejects missing images in every language", async () => {
+      if (nativeHost) await freshLearner();
       const page = await browser!.newPage();
       await page.route("**/api/**", async (route) => {
         const response = await route.fetch({
@@ -539,13 +610,25 @@ describe.skipIf(process.env.LOCAL_PHASE5_E2E !== "1")(
       );
       await page.getByRole("button", { name: "Submit attempt", exact: true }).click();
       const runId = ((await (await pending).json()) as { runId: string }).runId;
-      await command("limactl", [
-        "shell",
-        "algocove-gvisor",
-        "bash",
-        "-lc",
-        `for i in $(seq 1 100); do sudo docker ps -q --filter name=algocove-local-${runId} | awk 'NF{found=1} END{exit !found}' && exit 0; sleep 0.01; done; exit 1`,
-      ]);
+      if (nativeHost) {
+        await browserExpect
+          .poll(
+            async () =>
+              (
+                await command("docker", ["ps", "-q", "--filter", `name=algocove-local-${runId}`])
+              ).stdout.trim(),
+            { timeout: 10000, intervals: [10, 25, 50] },
+          )
+          .not.toBe("");
+      } else {
+        await command("limactl", [
+          "shell",
+          "algocove-gvisor",
+          "bash",
+          "-lc",
+          `for i in $(seq 1 100); do sudo docker ps -q --filter name=algocove-local-${runId} | awk 'NF{found=1} END{exit !found}' && exit 0; sleep 0.01; done; exit 1`,
+        ]);
+      }
       await restartHost();
       await browserExpect(
         page.getByText("Execution complete · Infrastructure failure", { exact: true }),
@@ -560,14 +643,20 @@ describe.skipIf(process.env.LOCAL_PHASE5_E2E !== "1")(
       outcomes.push({ hostCrashReconciled: true, noCredit: true, noReplacement: true });
       await restartHost("missing");
       for (const language of PROBLEM_LANGUAGES) {
+        if (nativeHost) {
+          await freshLearner();
+          await page.reload();
+        }
         if (language !== "python")
           await page
             .getByRole("combobox", { name: "Implementation language" })
             .selectOption(language);
-        await browserExpect(
-          page.getByRole("button", { name: "Start a new attempt", exact: true }),
-        ).toBeVisible();
-        await page.getByRole("button", { name: "Start a new attempt", exact: true }).click();
+        if (!nativeHost) {
+          await browserExpect(
+            page.getByRole("button", { name: "Start a new attempt", exact: true }),
+          ).toBeVisible();
+          await page.getByRole("button", { name: "Start a new attempt", exact: true }).click();
+        }
         await execute(
           page,
           language,

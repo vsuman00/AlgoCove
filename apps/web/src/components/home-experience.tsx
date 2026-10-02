@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, type ReactElement } from "react";
-import { NextLearningAction } from "./learning-views";
+import { HomeLearningSummary, NextLearningAction } from "./learning-views";
 import { Icon } from "./algocove-icons";
 
 type Profile = {
@@ -14,42 +14,14 @@ type Profile = {
 
 type LoadState = "loading" | "signed-out" | "empty" | "ready" | "error";
 
-const capabilities = [
-  {
-    eyebrow: "Account foundation",
-    title: "Learner profile",
-    description:
-      "Save the goal, target role, schedule, accessibility preferences, and languages used for planning.",
-    href: "/onboarding",
-    action: "Open learner profile",
-    icon: "target",
-  },
-  {
-    eyebrow: "Governed content",
-    title: "Content workflow",
-    description:
-      "Inspect the implemented author, review, validation, rights, source-link, and publication-gate model.",
-    href: "/admin/content",
-    action: "Open content operations",
-    icon: "book",
-  },
-  {
-    eyebrow: "Execution boundary",
-    title: "Execution readiness",
-    description:
-      "Review the six supported language profiles and recorded local execution evidence.",
-    href: "/execution-readiness",
-    action: "Review runtime contracts",
-    icon: "progress",
-  },
-] as const;
-
 export default function HomeExperience(): ReactElement {
   const [state, setState] = useState<LoadState>("loading");
+  const [refresh, setRefresh] = useState(0);
   const [profile, setProfile] = useState<Profile | null>(null);
 
   useEffect(() => {
-    void fetch("/api/onboarding", { cache: "no-store" })
+    const controller = new AbortController();
+    void fetch("/api/onboarding", { cache: "no-store", signal: controller.signal })
       .then(async (response) => {
         if (response.status === 401 || response.status === 403) {
           setState("signed-out");
@@ -63,8 +35,11 @@ export default function HomeExperience(): ReactElement {
         setProfile(body.profile);
         setState(body.profile === null ? "empty" : "ready");
       })
-      .catch(() => setState("error"));
-  }, []);
+      .catch(() => {
+        if (!controller.signal.aborted) setState("error");
+      });
+    return () => controller.abort();
+  }, [refresh]);
 
   return (
     <main className="ac-home-main" id="main-content" tabIndex={-1}>
@@ -78,7 +53,7 @@ export default function HomeExperience(): ReactElement {
           </p>
         </div>
       </section>
-      <NextLearningAction />
+      {(state === "ready" || state === "empty") && <NextLearningAction />}
 
       <section className="ac-profile-strip" aria-labelledby="profile-status-title">
         <div className="ac-section-heading">
@@ -116,8 +91,8 @@ export default function HomeExperience(): ReactElement {
         ) : (
           <p className="ac-profile-message">
             {state === "error"
-              ? "Refresh to retry. AlgoCove will not substitute invented learner data."
-              : "No roadmap, activity, mastery, or review data is generated from a missing profile."}
+              ? "Your profile could not be loaded. Try again when your connection is available."
+              : "Choose a goal and a comfortable daily schedule to personalize your next steps."}
           </p>
         )}
         <a
@@ -133,28 +108,29 @@ export default function HomeExperience(): ReactElement {
         </a>
       </section>
 
-      <section className="ac-capabilities" aria-labelledby="available-title">
-        <header>
-          <p className="ac-eyebrow">Available now</p>
-          <h2 id="available-title">Working surfaces backed by the repository</h2>
-          <p>Every destination below has an implemented route and an explicit source of truth.</p>
-        </header>
-        <div className="ac-capability-grid">
-          {capabilities.map((capability) => (
-            <article className="ac-capability-card" key={capability.title}>
-              <span className="ac-capability-icon">
-                <Icon name={capability.icon} size={25} />
-              </span>
-              <p className="ac-eyebrow">{capability.eyebrow}</p>
-              <h3>{capability.title}</h3>
-              <p>{capability.description}</p>
-              <a href={capability.href}>
-                {capability.action} <Icon name="arrow" size={17} />
-              </a>
-            </article>
-          ))}
-        </div>
-      </section>
+      {state === "error" && (
+        <button
+          className="ac-small-button"
+          onClick={() => {
+            setState("loading");
+            setRefresh((n) => n + 1);
+          }}
+          type="button"
+        >
+          Retry profile
+        </button>
+      )}
+      {(state === "ready" || state === "empty") && <HomeLearningSummary />}
+      {state === "signed-out" && (
+        <section className="ac-profile-strip">
+          <p className="ac-eyebrow">Explore a learning session</p>
+          <h2>See the two-pointer pattern in motion.</h2>
+          <p>Read the authored problem, build your reasoning and explore its interactive trace.</p>
+          <a className="ac-button ac-button--primary" href="/learn/arrays-two-pointer">
+            Explore guided practice
+          </a>
+        </section>
+      )}
     </main>
   );
 }

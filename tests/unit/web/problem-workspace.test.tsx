@@ -9,6 +9,12 @@ afterEach(() => {
 
 describe("Task 29 guided problem workspace", () => {
   it("keeps the critical path visible and fails closed when execution is unavailable", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi
+        .fn()
+        .mockResolvedValue(new Response(JSON.stringify({ authenticated: false }), { status: 401 })),
+    );
     render(<ProblemWorkspace executionEnabled={false} />);
 
     expect(screen.getByRole("heading", { name: "Container with most water" })).toBeVisible();
@@ -30,7 +36,7 @@ describe("Task 29 guided problem workspace", () => {
     ).toContain("number[]");
 
     fireEvent.click(screen.getByRole("button", { name: "Request clarification hint" }));
-    expect(screen.getByText(/authenticated exposure endpoint acknowledges/i)).toBeVisible();
+    expect(screen.getByText(/Sign in or reconnect your account to use hints/i)).toBeVisible();
   });
 
   it("loads the private workspace and sends edited source to the durable route", async () => {

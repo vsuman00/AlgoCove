@@ -180,7 +180,7 @@ export type ElevationToken = keyof typeof ELEVATION;
  * The approved typefaces are Instrument Sans, Fraunces, and JetBrains Mono. The
  * font binaries are not part of this repository yet, so the stacks name the
  * approved family first and fall back to system faces. `MISSING_DESIGN_ASSETS`
- * records that gap explicitly instead of pretending the asset exists.
+ * records any remaining illustration gap. Licensed Latin WOFF2 subsets are bundled locally.
  */
 export const FONT_FAMILIES = {
   ui: '"Instrument Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif',
@@ -288,26 +288,6 @@ export const FOCUS_RING = {
  * fallback in use so a reviewer can judge the gap.
  */
 export const MISSING_DESIGN_ASSETS = [
-  {
-    asset: "Instrument Sans font files",
-    approvedSource: "DESIGN.md section 6.1",
-    fallbackInUse: "System sans-serif stack",
-  },
-  {
-    asset: "Fraunces font files",
-    approvedSource: "DESIGN.md section 6.1",
-    fallbackInUse: "System serif stack, limited to the Home greeting",
-  },
-  {
-    asset: "JetBrains Mono font files",
-    approvedSource: "DESIGN.md section 6.1",
-    fallbackInUse: "System monospace stack for code and trace values",
-  },
-  {
-    asset: "Canonical cove logo, light and dark variants",
-    approvedSource: "DESIGN.md sections 4.1 to 4.6",
-    fallbackInUse: "Typographic wordmark; no substitute mark is drawn",
-  },
   {
     asset: "Coastal illustration washes for both shells",
     approvedSource: "DESIGN.md sections 8.2 and 10.2",

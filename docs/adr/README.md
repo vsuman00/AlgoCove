@@ -19,6 +19,8 @@ Active records are `Proposed` unless individually accepted; ADR-0004 is supersed
 | [ADR-0013](0013-configurable-timeboxed-roadmap-planning.md) | Configurable timeboxed plans with AI proposals and deterministic validation | Accepted for local Phase 7 |
 | [ADR-0014](0014-validate-before-display-and-trust-evidence.md) | Validate tutor content before display; trusted judging and evidence provenance | Proposed |
 
+| [ADR-0018](0018-production-spatial-trace-presentation.md) | Spatial trace presentation with equivalent flat and textual operation | Accepted for local Phase 1–7 |
+
 ## Lifecycle
 
 `Proposed -> Accepted -> Superseded or Deprecated`

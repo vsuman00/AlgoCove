@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState, type ReactElement } from "react";
+import type { PlanSchedule } from "@algocove/domain";
 import type { RoadmapView, PlanCandidate, PlanCommand } from "@algocove/application";
 async function request<T>(body?: unknown): Promise<T> {
   const response = await fetch("/api/planning/roadmap", {
@@ -15,6 +16,31 @@ async function request<T>(body?: unknown): Promise<T> {
   const data = await response.json();
   if (!response.ok) throw Error(data.error?.message ?? "Planning unavailable. Reload to retry.");
   return data as T;
+}
+function PrerequisiteMap({ schedule }: { schedule: PlanSchedule }): ReactElement {
+  const units = [
+    ...new Map(
+      schedule.items.filter((item) => item.kind !== "buffer").map((item) => [item.key, item]),
+    ).values(),
+  ];
+  const titles = new Map(units.map((item) => [item.key, item.title]));
+  return (
+    <section className="ac-prerequisite-map" aria-label="Learning dependencies">
+      <h4>Learning dependencies</h4>
+      <ol>
+        {units.map((item) => (
+          <li key={item.key}>
+            <strong>{item.title}</strong>
+            <span>
+              {item.prerequisites.length
+                ? `Builds on: ${item.prerequisites.map((key) => titles.get(key) ?? key.replaceAll("_", " ")).join(", ")}`
+                : "Starting point · no prerequisites"}
+            </span>
+          </li>
+        ))}
+      </ol>
+    </section>
+  );
 }
 export default function RoadmapWorkspace({ revision }: { revision: number }): ReactElement {
   const [view, setView] = useState<RoadmapView | null>(null),
@@ -91,8 +117,8 @@ export default function RoadmapWorkspace({ revision }: { revision: number }): Re
       <h2 id="roadmap-heading">Your roadmap</h2>
       <p role="status">{message}</p>
       <p>
-        AI is off. The deterministic scheduler remains available. Activity check-ins are learner
-        reported and do not award mastery.
+        Your schedule follows your capacity and prerequisites. Activity check-ins track your study
+        habits; checked practice builds your learning record.
       </p>
       <button
         className="ac-small-button"
@@ -141,8 +167,7 @@ export default function RoadmapWorkspace({ revision }: { revision: number }): Re
                   <li key={c.id}>
                     {c.title ?? "Selected collection"}: {c.total} registered entries · {c.supported}{" "}
                     internally supported · {c.externalOnly} external-only · {c.unavailable}{" "}
-                    unavailable. Selecting this collection does not grant an internal readiness
-                    gate.
+                    unavailable. External activities are tracked separately from guided practice.
                   </li>
                 ))}
               </ul>
@@ -175,11 +200,13 @@ export default function RoadmapWorkspace({ revision }: { revision: number }): Re
                   {candidate.preview.blocked.length} blocked.
                 </p>
               )}
-              <ul>
+              <PrerequisiteMap schedule={candidate.schedule} />
+              <ul className="ac-schedule-list">
                 {candidate.schedule.items.map((i) => (
                   <li key={i.occurrenceId}>
                     {i.day}: {i.title} · {i.minutes} minutes {i.language ? `· ${i.language}` : ""} ·{" "}
-                    {i.required ? "required" : "optional / buffer"} · {i.reasonCodes.join(", ")}
+                    {i.required ? "required" : "optional / buffer"} ·{" "}
+                    {i.reasonCodes.map((code) => code.replaceAll("_", " ")).join(" · ")}
                     {i.frozen ? " · history retained" : ""}
                   </li>
                 ))}
@@ -230,7 +257,8 @@ export default function RoadmapWorkspace({ revision }: { revision: number }): Re
               </button>
             )}
           </div>
-          <ul>
+          <PrerequisiteMap schedule={state.schedule} />
+          <ul className="ac-schedule-list">
             {state.schedule.items
               .filter((i) => i.kind !== "buffer")
               .map((i) => {

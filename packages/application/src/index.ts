@@ -101,9 +101,6 @@ export {
 } from "./external-reference-use-cases.ts";
 export type { ExternalReferenceRepository } from "./external-reference-use-cases.ts";
 
-export { buildContentWorkflowReadModel } from "./content-read-models.ts";
-export type { ContentWorkflowReadModel } from "./content-read-models.ts";
-
 export {
   abandonPracticeAttempt,
   abandonPracticeSession,

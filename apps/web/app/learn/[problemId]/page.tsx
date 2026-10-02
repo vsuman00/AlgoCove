@@ -21,16 +21,16 @@ export default async function ProblemWorkspacePage({
       : "python";
   if (problemId !== "arrays-two-pointer") {
     return (
-      <AlgoCoveShell active="Home">
+      <AlgoCoveShell active="Home" focused>
         <main className="ac-home-main" id="main-content">
           <h1>Problem workspace unavailable</h1>
-          <p>This problem has not been published into the internal learning loop.</p>
+          <p>This problem is not currently available. Choose another activity from Home.</p>
         </main>
       </AlgoCoveShell>
     );
   }
   return (
-    <AlgoCoveShell active="Home">
+    <AlgoCoveShell active="Home" focused>
       <ProblemWorkspace
         executionEnabled={process.env.EXECUTION_ENABLED === "true"}
         problemId={problemId}

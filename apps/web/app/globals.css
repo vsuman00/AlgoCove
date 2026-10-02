@@ -1,5 +1,7 @@
 @import "tailwindcss";
 @import "../src/styles/tokens.css";
+@import "../src/styles/product.css";
+@import "../src/styles/fonts.css";
 
 @theme inline {
   --color-cove-page: var(--bg-page);
@@ -192,17 +194,17 @@ button {
   border-radius: 0 4px 4px 0;
   background: var(--color-jade-500);
 }
-.ac-app-shell[data-shell="deep-journey"] .ac-nav-item {
+.ac-app-shell[data-shell="deep-journey"] .ac-sidebar .ac-nav-item {
   color: var(--color-cloud-100);
 }
-.ac-app-shell[data-shell="deep-journey"] .ac-nav-item:hover {
+.ac-app-shell[data-shell="deep-journey"] .ac-sidebar .ac-nav-item:hover {
   background: var(--color-ocean-700);
 }
-.ac-app-shell[data-shell="deep-journey"] .ac-nav-item.is-active {
+.ac-app-shell[data-shell="deep-journey"] .ac-sidebar .ac-nav-item.is-active {
   color: var(--color-cloud-0);
   background: var(--color-ocean-700);
 }
-.ac-app-shell[data-shell="deep-journey"] .ac-nav-item.is-active::before {
+.ac-app-shell[data-shell="deep-journey"] .ac-sidebar .ac-nav-item.is-active::before {
   background: var(--color-jade-400);
 }
 .ac-sidebar__footer {

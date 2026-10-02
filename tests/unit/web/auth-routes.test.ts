@@ -55,4 +55,13 @@ describe("Clerk session route", () => {
     expect(authMock).not.toHaveBeenCalled();
     expect(response.status).toBe(401);
   });
+  it("reports an unavailable identity service without mislabeling it as signed out or leaking provider details", async () => {
+    authMock.mockRejectedValue(new Error("private provider failure"));
+    const response = await session();
+    expect(response.status).toBe(503);
+    await expect(response.json()).resolves.toEqual({
+      authenticated: false,
+      error: { code: "session_unavailable" },
+    });
+  });
 });

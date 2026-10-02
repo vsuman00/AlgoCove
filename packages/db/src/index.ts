@@ -85,3 +85,5 @@ export * from "./concept-mapping-repository.ts";
 export * from "./roadmap-intent-repository.ts";
 export * from "./roadmap-repository.ts";
 export * from "./budget-repository.ts";
+
+export { PostgresContentRepository } from "./content-repository.ts";

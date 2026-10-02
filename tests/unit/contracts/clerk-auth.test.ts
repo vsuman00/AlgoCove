@@ -1,7 +1,9 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import {
   createClerkIdentityAdapter,
   createInMemoryClerkIdentityStore,
+  getClerkIdentityAdapter,
+  getClerkIdentityStore,
 } from "../../../apps/web/src/auth/clerk-adapter";
 import { ROLES } from "@algocove/domain";
 
@@ -55,5 +57,24 @@ describe("Clerk identity boundary", () => {
 
     expect(first).toEqual(second);
     expect(first.roles).toEqual([ROLES.learner]);
+  });
+  it("never substitutes ephemeral identity persistence when PostgreSQL is missing", async () => {
+    vi.stubEnv("DATABASE_URL", "");
+    try {
+      const adapter = getClerkIdentityAdapter();
+      await expect(
+        adapter.authenticate({ isAuthenticated: false, userId: null, sessionId: null }),
+      ).rejects.toMatchObject({ code: "unauthenticated" });
+      await expect(
+        adapter.authenticate({
+          isAuthenticated: true,
+          userId: "user_real",
+          sessionId: "sess_real",
+        }),
+      ).rejects.toMatchObject({ status: 503 });
+      expect(() => getClerkIdentityStore()).toThrow("Identity persistence is unavailable.");
+    } finally {
+      vi.unstubAllEnvs();
+    }
   });
 });

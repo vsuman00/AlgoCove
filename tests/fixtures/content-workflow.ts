@@ -1,7 +1,7 @@
 import {
   buildContentWorkflowReadModel,
   type ContentWorkflowReadModel,
-} from "@algocove/application";
+} from "./content-read-models";
 import {
   completeProblemManifest,
   createExternalReference,

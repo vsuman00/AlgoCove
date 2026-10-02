@@ -142,6 +142,7 @@ test("progress keeps self-reports separate and records a timezone-fenced prospec
 test("home shows one reasoned action with alternatives and honors recommended language", async ({
   page,
 }) => {
+  await page.route("**/api/onboarding", (route) => route.fulfill({ json: { profile: null } }));
   await page.route("**/api/learner-home", (route) =>
     route.fulfill({
       json: {
@@ -163,6 +164,19 @@ test("home shows one reasoned action with alternatives and honors recommended la
   await page.getByRole("link", { name: "Continue", exact: true }).click();
   await expect(page.getByRole("combobox", { name: "Implementation language" })).toHaveValue("c");
 });
+test("home uses actual learning signals without engineering showcase cards", async ({ page }) => {
+  await page.route("**/api/onboarding", (route) => route.fulfill({ json: { profile: null } }));
+  await page.route("**/api/progress", (route) => route.fulfill({ json: report }));
+  await page.goto("/");
+  await expect(page.getByRole("heading", { name: "1 concepts with evidence" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "1 reviews to revisit" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "0 consecutive active days" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "1 confidence observations" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "1 reported completions" })).toBeVisible();
+  await expect(page.getByText("Working surfaces backed by the repository")).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "Open content operations" })).toHaveCount(0);
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+});
 for (const path of ["/review", "/progress"])
   test(`${path} has accessible signed-out recovery at 320px`, async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 800 });
@@ -182,6 +196,7 @@ for (const path of ["/review", "/progress"])
   });
 
 test("home explains overdue and unavailable scenarios", async ({ page }) => {
+  await page.route("**/api/onboarding", (route) => route.fulfill({ json: { profile: null } }));
   for (const action of [
     {
       kind: "review",

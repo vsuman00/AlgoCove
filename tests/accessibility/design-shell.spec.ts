@@ -23,12 +23,15 @@ test.describe("Learner Home shell", () => {
     await expect(
       primaryNavigation.getByRole("link", { name: "Learner profile", exact: true }),
     ).toHaveAttribute("href", "/onboarding");
-    await expect(
-      primaryNavigation.getByRole("link", { name: "Content", exact: true }),
-    ).toHaveAttribute("href", "/admin/content");
+    await expect(primaryNavigation.getByRole("link", { name: "Content", exact: true })).toHaveCount(
+      0,
+    );
     await expect(
       primaryNavigation.getByRole("link", { name: "Runtimes", exact: true }),
-    ).toHaveAttribute("href", "/execution-readiness");
+    ).toHaveCount(0);
+    await expect(
+      primaryNavigation.getByRole("link", { name: "Home", exact: true }),
+    ).toHaveAttribute("aria-current", "page");
     await expect(page.getByRole("link", { name: "System status" })).toHaveAttribute(
       "href",
       "/api/health",
@@ -42,6 +45,22 @@ test.describe("Learner Home shell", () => {
     await expect(page.getByRole("button", { name: "Notifications" })).toHaveCount(0);
     await expect(page.getByText("Asia/Kolkata", { exact: true })).toHaveCount(0);
     await expect(page.getByRole("link", { name: "Settings" })).toHaveCount(0);
+  });
+
+  test("shows staff destinations only for server-owned staff roles", async ({ page }) => {
+    await page.route("**/api/auth/session", (route) =>
+      route.fulfill({ json: { authenticated: true, user: { roles: ["author"] } } }),
+    );
+    await page.goto("/");
+    const staff = page.getByRole("navigation", { name: "Staff navigation" });
+    await expect(staff.getByRole("link", { name: "Content", exact: true })).toBeVisible();
+    await expect(staff.getByRole("link", { name: "Runtimes", exact: true })).toHaveCount(0);
+    await page.unroute("**/api/auth/session");
+    await page.route("**/api/auth/session", (route) =>
+      route.fulfill({ json: { authenticated: true, user: { roles: ["learner"] } } }),
+    );
+    await page.reload();
+    await expect(page.getByRole("navigation", { name: "Staff navigation" })).toHaveCount(0);
   });
 
   test("shows real authentication entry points without a placeholder identity", async ({

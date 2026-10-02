@@ -2,6 +2,21 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
 test.describe("Guided problem workspace", () => {
+  test("retries an unavailable account service without substituting a learner identity", async ({
+    page,
+  }) => {
+    let unavailable = true;
+    await page.route("**/api/auth/session", (route) =>
+      route.fulfill({ status: unavailable ? 503 : 401, json: { authenticated: false } }),
+    );
+    await page.goto("/learn/arrays-two-pointer");
+    await expect(page.getByRole("button", { name: "Retry account connection" })).toBeVisible();
+    await expect(page.getByText("Account service unavailable.", { exact: false })).toBeVisible();
+    unavailable = false;
+    await page.getByRole("button", { name: "Retry account connection" }).click();
+    await expect(page.getByText("Sign in for private recovery", { exact: false })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Run checks", exact: true })).toBeDisabled();
+  });
   test("renders the complete learner critical path without pretending to run code", async ({
     page,
   }) => {
@@ -16,11 +31,39 @@ test.describe("Guided problem workspace", () => {
     await expect(page.getByRole("button", { name: "Submit attempt" })).toBeDisabled();
 
     await page.getByRole("button", { name: "Request clarification hint" }).click();
-    await expect(page.getByText(/authenticated exposure endpoint acknowledges/i)).toBeVisible();
+    await expect(page.getByText(/Sign in or reconnect your account to use hints/i)).toBeVisible();
     await expect(page.getByText(/shorter boundary limits/i)).toHaveCount(0);
 
     const results = await new AxeBuilder({ page }).analyze();
     expect(results.violations).toEqual([]);
+  });
+
+  test("keeps the focused 3D workspace usable at doubled page scale and with keyboard controls", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/learn/arrays-two-pointer");
+    await page.evaluate(() => {
+      document.documentElement.style.zoom = "2";
+    });
+    await expect(page.getByRole("navigation", { name: "Primary navigation" })).toHaveCount(0);
+    const trace = page.locator(".ac-trace");
+    await trace.focus();
+    await page.keyboard.press("ArrowRight");
+    await expect(trace.getByRole("status")).toContainText("Step 1 of 1");
+    const rotation = page.getByRole("slider", { name: "Rotate" });
+    await rotation.focus();
+    await page.keyboard.press("ArrowRight");
+    await expect(rotation).toHaveValue("-17");
+    await expect(trace.getByRole("status")).toContainText("Step 1 of 1");
+    await page.getByRole("button", { name: "Use flat view" }).click();
+    const dimensions = await page.evaluate(() => ({
+      width: document.documentElement.clientWidth,
+      scroll: document.documentElement.scrollWidth,
+    }));
+    expect(dimensions.scroll).toBeLessThanOrEqual(dimensions.width);
+    expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
   });
 
   test("does not overflow at the narrowest supported width", async ({ page }) => {

@@ -1,0 +1,342 @@
+{
+  "date": "2026-10-02T20:37:32.767Z",
+  "approval": "engineering inspection only; not an owner-approved visual baseline",
+  "samples": [
+    {
+      "route": "/",
+      "viewport": {
+        "width": 320,
+        "height": 1000
+      },
+      "width": 320,
+      "scrollWidth": 320,
+      "fonts": true,
+      "pageErrors": 0,
+      "authentication": "signed out; actual application routes"
+    },
+    {
+      "route": "/plan",
+      "viewport": {
+        "width": 320,
+        "height": 1000
+      },
+      "width": 320,
+      "scrollWidth": 320,
+      "fonts": true,
+      "pageErrors": 0,
+      "authentication": "signed out; actual application routes"
+    },
+    {
+      "route": "/review",
+      "viewport": {
+        "width": 320,
+        "height": 1000
+      },
+      "width": 320,
+      "scrollWidth": 320,
+      "fonts": true,
+      "pageErrors": 0,
+      "authentication": "signed out; actual application routes"
+    },
+    {
+      "route": "/progress",
+      "viewport": {
+        "width": 320,
+        "height": 1000
+      },
+      "width": 320,
+      "scrollWidth": 320,
+      "fonts": true,
+      "pageErrors": 0,
+      "authentication": "signed out; actual application routes"
+    },
+    {
+      "route": "/onboarding",
+      "viewport": {
+        "width": 320,
+        "height": 1000
+      },
+      "width": 320,
+      "scrollWidth": 320,
+      "fonts": true,
+      "pageErrors": 0,
+      "authentication": "signed out; actual application routes"
+    },
+    {
+      "route": "/admin/content",
+      "viewport": {
+        "width": 320,
+        "height": 1000
+      },
+      "width": 320,
+      "scrollWidth": 320,
+      "fonts": true,
+      "pageErrors": 0,
+      "authentication": "signed out; actual application routes"
+    },
+    {
+      "route": "/learn/arrays-two-pointer",
+      "viewport": {
+        "width": 320,
+        "height": 1000
+      },
+      "width": 320,
+      "scrollWidth": 320,
+      "fonts": true,
+      "pageErrors": 0,
+      "authentication": "signed out; actual application routes"
+    },
+    {
+      "route": "/",
+      "viewport": {
+        "width": 768,
+        "height": 1000
+      },
+      "width": 768,
+      "scrollWidth": 768,
+      "fonts": true,
+      "pageErrors": 0,
+      "authentication": "signed out; actual application routes"
+    },
+    {
+      "route": "/plan",
+      "viewport": {
+        "width": 768,
+        "height": 1000
+      },
+      "width": 768,
+      "scrollWidth": 768,
+      "fonts": true,
+      "pageErrors": 0,
+      "authentication": "signed out; actual application routes"
+    },
+    {
+      "route": "/review",
+      "viewport": {
+        "width": 768,
+        "height": 1000
+      },
+      "width": 768,
+      "scrollWidth": 768,
+      "fonts": true,
+      "pageErrors": 0,
+      "authentication": "signed out; actual application routes"
+    },
+    {
+      "route": "/progress",
+      "viewport": {
+        "width": 768,
+        "height": 1000
+      },
+      "width": 768,
+      "scrollWidth": 768,
+      "fonts": true,
+      "pageErrors": 0,
+      "authentication": "signed out; actual application routes"
+    },
+    {
+      "route": "/onboarding",
+      "viewport": {
+        "width": 768,
+        "height": 1000
+      },
+      "width": 768,
+      "scrollWidth": 768,
+      "fonts": true,
+      "pageErrors": 0,
+      "authentication": "signed out; actual application routes"
+    },
+    {
+      "route": "/admin/content",
+      "viewport": {
+        "width": 768,
+        "height": 1000
+      },
+      "width": 768,
+      "scrollWidth": 768,
+      "fonts": true,
+      "pageErrors": 0,
+      "authentication": "signed out; actual application routes"
+    },
+    {
+      "route": "/learn/arrays-two-pointer",
+      "viewport": {
+        "width": 768,
+        "height": 1000
+      },
+      "width": 768,
+      "scrollWidth": 768,
+      "fonts": true,
+      "pageErrors": 0,
+      "authentication": "signed out; actual application routes"
+    },
+    {
+      "route": "/",
+      "viewport": {
+        "width": 1024,
+        "height": 1000
+      },
+      "width": 1024,
+      "scrollWidth": 1024,
+      "fonts": true,
+      "pageErrors": 0,
+      "authentication": "signed out; actual application routes"
+    },
+    {
+      "route": "/plan",
+      "viewport": {
+        "width": 1024,
+        "height": 1000
+      },
+      "width": 1024,
+      "scrollWidth": 1024,
+      "fonts": true,
+      "pageErrors": 0,
+      "authentication": "signed out; actual application routes"
+    },
+    {
+      "route": "/review",
+      "viewport": {
+        "width": 1024,
+        "height": 1000
+      },
+      "width": 1024,
+      "scrollWidth": 1024,
+      "fonts": true,
+      "pageErrors": 0,
+      "authentication": "signed out; actual application routes"
+    },
+    {
+      "route": "/progress",
+      "viewport": {
+        "width": 1024,
+        "height": 1000
+      },
+      "width": 1024,
+      "scrollWidth": 1024,
+      "fonts": true,
+      "pageErrors": 0,
+      "authentication": "signed out; actual application routes"
+    },
+    {
+      "route": "/onboarding",
+      "viewport": {
+        "width": 1024,
+        "height": 1000
+      },
+      "width": 1024,
+      "scrollWidth": 1024,
+      "fonts": true,
+      "pageErrors": 0,
+      "authentication": "signed out; actual application routes"
+    },
+    {
+      "route": "/admin/content",
+      "viewport": {
+        "width": 1024,
+        "height": 1000
+      },
+      "width": 1024,
+      "scrollWidth": 1024,
+      "fonts": true,
+      "pageErrors": 0,
+      "authentication": "signed out; actual application routes"
+    },
+    {
+      "route": "/learn/arrays-two-pointer",
+      "viewport": {
+        "width": 1024,
+        "height": 1000
+      },
+      "width": 1024,
+      "scrollWidth": 1024,
+      "fonts": true,
+      "pageErrors": 0,
+      "authentication": "signed out; actual application routes"
+    },
+    {
+      "route": "/",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "width": 1440,
+      "scrollWidth": 1440,
+      "fonts": true,
+      "pageErrors": 0,
+      "authentication": "signed out; actual application routes"
+    },
+    {
+      "route": "/plan",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "width": 1440,
+      "scrollWidth": 1440,
+      "fonts": true,
+      "pageErrors": 0,
+      "authentication": "signed out; actual application routes"
+    },
+    {
+      "route": "/review",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "width": 1440,
+      "scrollWidth": 1440,
+      "fonts": true,
+      "pageErrors": 0,
+      "authentication": "signed out; actual application routes"
+    },
+    {
+      "route": "/progress",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "width": 1440,
+      "scrollWidth": 1440,
+      "fonts": true,
+      "pageErrors": 0,
+      "authentication": "signed out; actual application routes"
+    },
+    {
+      "route": "/onboarding",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "width": 1440,
+      "scrollWidth": 1440,
+      "fonts": true,
+      "pageErrors": 0,
+      "authentication": "signed out; actual application routes"
+    },
+    {
+      "route": "/admin/content",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "width": 1440,
+      "scrollWidth": 1440,
+      "fonts": true,
+      "pageErrors": 0,
+      "authentication": "signed out; actual application routes"
+    },
+    {
+      "route": "/learn/arrays-two-pointer",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "width": 1440,
+      "scrollWidth": 1440,
+      "fonts": true,
+      "pageErrors": 0,
+      "authentication": "signed out; actual application routes"
+    }
+  ]
+}
