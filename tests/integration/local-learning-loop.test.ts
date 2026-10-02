@@ -45,6 +45,7 @@ vi.mock("../../apps/web/src/auth/request-context", async (original) => {
 });
 
 const routes = {
+  explanation: await import("../../apps/web/app/api/mastery/explanation/route"),
   workspace: await import("../../apps/web/app/api/practice/workspace/route"),
   draft: await import("../../apps/web/app/api/practice/drafts/[draftId]/route"),
   pseudocode: await import("../../apps/web/app/api/practice/pseudocode/[pseudocodeId]/route"),
@@ -283,6 +284,8 @@ describe.skipIf(process.env.LOCAL_PHASE5_E2E !== "1")(
           let response: Response;
           if (path === "/api/auth/session")
             response = Response.json({ authenticated: true, user: { id: fixture.actor!.userId } });
+          else if (path === "/api/mastery/explanation")
+            response = await routes.explanation.POST(request);
           else if (path === "/api/practice/workspace")
             response = await routes.workspace.POST(request);
           else if (path === "/api/practice/runs") response = await routes.run.POST(request);
@@ -418,8 +421,10 @@ describe.skipIf(process.env.LOCAL_PHASE5_E2E !== "1")(
           .getByRole("combobox", { name: "Area checkpoint" })
           .selectOption("minimum_times_width");
         await page.getByRole("combobox", { name: "Boundary checkpoint" }).selectOption("taller");
-        await page.getByRole("button", { name: "Save reasoning revision", exact: true }).click();
-        await browserExpect(page.getByText(/Reasoning revision \d+ saved\./)).toBeVisible();
+        await page
+          .getByRole("button", { name: "Save and check reasoning revision", exact: true })
+          .click();
+        await browserExpect(page.getByText(/Revision \d+ saved\./)).toBeVisible();
         const pendingReadiness = page.waitForResponse(
           (r) => r.url().includes("/api/practice/pseudocode/") && r.request().method() === "GET",
         );
@@ -429,8 +434,10 @@ describe.skipIf(process.env.LOCAL_PHASE5_E2E !== "1")(
           missing: expect.arrayContaining(["structured_checks", "verified_runs"]),
         });
         await page.getByRole("combobox", { name: "Boundary checkpoint" }).selectOption("shorter");
-        await page.getByRole("button", { name: "Save reasoning revision", exact: true }).click();
-        await browserExpect(page.getByText(/Reasoning revision \d+ saved\./)).toBeVisible();
+        await page
+          .getByRole("button", { name: "Save and check reasoning revision", exact: true })
+          .click();
+        await browserExpect(page.getByText(/Revision \d+ saved\./)).toBeVisible();
         await page.getByRole("button", { name: "Next step", exact: true }).click();
         await browserExpect(page.getByText(/Step 1 of/)).toBeVisible();
         if (language === "python") {

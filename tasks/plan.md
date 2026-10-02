@@ -491,7 +491,7 @@ Review the evidence after every two or three task slices. Replan if assumptions 
 - [ ] Run `pnpm build` and accessibility smoke checks.
 
 **Dependencies:** Tasks 14-17  
-**Files likely touched:** `apps/web/app/admin/content/page.tsx`, `apps/web/app/admin/content/[id]/page.tsx`, `packages/application/src/content-read-models.ts`, `tests/e2e/content-publish.spec.ts`  
+**Files likely touched:** `apps/web/app/admin/content/page.tsx`, `apps/web/app/admin/content/[id]/page.tsx`, `apps/web/src/content/operations.ts`, `packages/db/src/content-repository.ts`, `tests/integration/content-operations.test.ts`, `tests/accessibility/content-operations.spec.ts`  
 **Estimated scope:** Medium
 
 ### Checkpoint F3: Governed content foundation
