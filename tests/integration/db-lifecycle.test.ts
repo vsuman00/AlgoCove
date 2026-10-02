@@ -109,6 +109,7 @@ describe("PostgreSQL and pgvector lifecycle", () => {
       "0015_practice_workspace_uniqueness.sql",
       "0016_code_run_terminal_state.sql",
       "0017_hint_kind_tier_constraint.sql",
+      "0018_problem_concept_mapping.sql",
     ]);
 
     runtimePool = testPool(profile(runtimeUrl, "algocove-integration-runtime"));
@@ -170,10 +171,11 @@ describe("PostgreSQL and pgvector lifecycle", () => {
         "0015_practice_workspace_uniqueness.sql",
         "0016_code_run_terminal_state.sql",
         "0017_hint_kind_tier_constraint.sql",
+        "0018_problem_concept_mapping.sql",
       ],
       appliedCount: 0,
     });
-    expect(state).toHaveLength(17);
+    expect(state).toHaveLength(18);
     expect(state[0]).toMatchObject({ id: "0001", name: "0001_platform.sql" });
     expect(state[0]?.checksum).toMatch(/^sha256:[0-9a-f]{64}$/);
   });
@@ -183,7 +185,7 @@ describe("PostgreSQL and pgvector lifecycle", () => {
 
     expect(readiness.ok).toBe(true);
     if (readiness.ok) {
-      expect(readiness.appliedMigrations).toBe(17);
+      expect(readiness.appliedMigrations).toBe(18);
       expect(readiness.serverTime).toMatch(/Z$/);
     }
   });
@@ -508,6 +510,17 @@ describe("PostgreSQL and pgvector lifecycle", () => {
       ["An original problem statement."],
     );
     await runtimePool!.query(
+      `INSERT INTO learning.concept (concept_id, slug, title, summary)
+       VALUES ('cpt_eeeeeeeeeeeeeeee', 'pair-sum', 'Pair sum', 'Find two values with a target sum.')`,
+    );
+    await runtimePool!.query(
+      `INSERT INTO learning.problem_concept
+        (problem_version_id, concept_id, rationale, mapped_by)
+       VALUES ('prb_dddddddddddddddd', 'cpt_eeeeeeeeeeeeeeee',
+               'The task requires finding a pair that meets the target.', $1)`,
+      [author],
+    );
+    await runtimePool!.query(
       `UPDATE content.content_version
           SET status = 'published', published_at = now()
         WHERE content_version_id = 'cnt_cccccccccccccccc'`,
@@ -517,16 +530,47 @@ describe("PostgreSQL and pgvector lifecycle", () => {
         "UPDATE content.problem_version SET statement = 'tampered' WHERE content_version_id = 'cnt_cccccccccccccccc'",
       ),
     ).rejects.toMatchObject({ code: "55006" });
-    const metadata = await inspectionPool!.query<{ title: string; statement: string }>(
-      `SELECT version.title, problem.statement
+    await expect(
+      runtimePool!.query(
+        `UPDATE learning.problem_concept SET rationale = 'tampered'
+          WHERE problem_version_id = 'prb_dddddddddddddddd'`,
+      ),
+    ).rejects.toMatchObject({ code: "55006" });
+    await expect(
+      runtimePool!.query(
+        `INSERT INTO learning.problem_concept
+          (problem_version_id, concept_id, rationale, mapped_by)
+         VALUES ('prb_dddddddddddddddd', 'cpt_eeeeeeeeeeeeeeee', 'late mapping', $1)`,
+        [author],
+      ),
+    ).rejects.toMatchObject({ code: "55006" });
+    await expect(
+      runtimePool!.query(
+        `DELETE FROM learning.problem_concept
+          WHERE problem_version_id = 'prb_dddddddddddddddd'`,
+      ),
+    ).rejects.toMatchObject({ code: "55006" });
+    const metadata = await inspectionPool!.query<{
+      title: string;
+      statement: string;
+      concept_slug: string;
+      rationale: string;
+    }>(
+      `SELECT version.title, problem.statement, concept.slug AS concept_slug,
+              mapping.rationale
          FROM content.content_version AS version
          JOIN content.problem_version AS problem
            ON problem.content_version_id = version.content_version_id
+         JOIN learning.problem_concept AS mapping
+           ON mapping.problem_version_id = problem.problem_version_id
+         JOIN learning.concept AS concept ON concept.concept_id = mapping.concept_id
         WHERE version.content_version_id = 'cnt_cccccccccccccccc'`,
     );
     expect(metadata.rows[0]).toEqual({
       title: "Original pair sum",
       statement: "An original problem statement.",
+      concept_slug: "pair-sum",
+      rationale: "The task requires finding a pair that meets the target.",
     });
   });
 

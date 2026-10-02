@@ -14,6 +14,8 @@ const problemVersionId = "prb_dddddddddddddddd";
 const contentId = "con_aaaaaaaaaaaaaaaa";
 const problemId = "pro_aaaaaaaaaaaaaaaa";
 const contentVersionId = "cnt_aaaaaaaaaaaaaaaa";
+const curriculumVersionId = "cur_aaaaaaaaaaaaaaaa";
+const conceptId = "cpt_aaaaaaaaaaaaaaaa";
 const authorId = "usr_aaaaaaaaaaaaaaaa";
 const technicalReviewerId = "usr_bbbbbbbbbbbbbbbb";
 const pedagogicalReviewerId = "usr_cccccccccccccccc";
@@ -108,9 +110,21 @@ const existingContent = await client.query<{ status: string }>(
   [contentVersionId],
 );
 if (existingContent.rows[0]?.status === "published") {
-  console.log(`Local Phase 5 practice bundle already seeded: ${problemVersionId}`);
+  const mappings = await client.query(
+    `SELECT 1
+       FROM learning.problem_concept
+      WHERE problem_version_id = $1 AND concept_id = $2`,
+    [problemVersionId, conceptId],
+  );
   client.release();
   await pool.end();
+  if (mappings.rowCount === 0) {
+    console.error(
+      `Published local problem ${problemVersionId} predates concept mapping. Create a reviewed successor version before using it for mastery evidence.`,
+    );
+    process.exit(2);
+  }
+  console.log(`Local Phase 5 practice bundle already seeded: ${problemVersionId}`);
   process.exit(0);
 }
 
@@ -128,6 +142,27 @@ try {
             ($3, 'pedagogical_reviewer'), ($4, 'evaluator')
      ON CONFLICT (learner_id, role) DO NOTHING`,
     [authorId, technicalReviewerId, pedagogicalReviewerId, validatorId],
+  );
+  await client.query(
+    `INSERT INTO learning.concept (concept_id, slug, title, summary)
+     VALUES ($1, 'two-pointers', 'Two pointers',
+             'Maintain two positions while preserving an algorithm-specific invariant.')
+     ON CONFLICT (concept_id) DO NOTHING`,
+    [conceptId],
+  );
+  await client.query(
+    `INSERT INTO learning.curriculum_graph_version
+       (curriculum_version_id, version_number, status, published_at)
+     VALUES ($1, 1, 'draft', NULL)
+     ON CONFLICT (curriculum_version_id) DO NOTHING`,
+    [curriculumVersionId],
+  );
+  await client.query(
+    `INSERT INTO learning.curriculum_node
+       (curriculum_version_id, concept_id, objective, ordinal)
+     VALUES ($1, $2, 'Explain when moving one boundary preserves a better candidate.', 0)
+     ON CONFLICT (curriculum_version_id, concept_id) DO NOTHING`,
+    [curriculumVersionId, conceptId],
   );
   await client.query(
     `INSERT INTO content.content_item (content_id, content_kind)
@@ -157,6 +192,15 @@ try {
        'Given an array of heights, return the maximum area formed by two vertical lines and the x-axis.')
      ON CONFLICT (problem_version_id) DO NOTHING`,
     [problemVersionId, problemId, contentVersionId],
+  );
+  await client.query(
+    `INSERT INTO learning.problem_concept
+       (problem_version_id, concept_id, rationale, mapped_by)
+     VALUES ($1, $2,
+             'The reviewed solution compares two boundaries and advances the shorter one.',
+             $3)
+     ON CONFLICT (problem_version_id, concept_id) DO NOTHING`,
+    [problemVersionId, conceptId, authorId],
   );
   await client.query(
     `INSERT INTO content.content_review
@@ -224,6 +268,12 @@ try {
         SET status = 'published', published_at = COALESCE(published_at, now())
       WHERE content_version_id = $1 AND status = 'draft'`,
     [contentVersionId],
+  );
+  await client.query(
+    `UPDATE learning.curriculum_graph_version
+        SET status = 'published', published_at = COALESCE(published_at, now())
+      WHERE curriculum_version_id = $1 AND status = 'draft'`,
+    [curriculumVersionId],
   );
   await client.query("COMMIT");
   console.log(`Seeded local Phase 5 practice bundle: ${problemVersionId}`);

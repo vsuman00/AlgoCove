@@ -1,6 +1,6 @@
 # AlgoCove architecture decision records
 
-Active records are currently `Proposed`; ADR-0004 is superseded. Approval changes status in the record; rejected or superseded records remain in history.
+Active records are `Proposed` unless individually accepted; ADR-0004 is superseded. ADR-0008 was accepted by the owner on 2026-10-02 to authorize Phase 6’s evidence-ledger architecture. Approval changes status in the record; rejected or superseded records remain in history.
 
 | ADR | Decision | Status |
 |---|---|---|
@@ -11,7 +11,7 @@ Active records are currently `Proposed`; ADR-0004 is superseded. Approval change
 | [ADR-0005](0005-versioned-governed-content.md) | Immutable, governed, versioned learning content | Proposed |
 | [ADR-0006](0006-grounded-provider-neutral-tutor.md) | Provider-neutral, evidence-grounded tutor with deterministic policy | Proposed |
 | [ADR-0007](0007-active-2d-visualization-trace-protocol.md) | Active 2D visualization with renderer-neutral trace protocol | Proposed |
-| [ADR-0008](0008-evidence-ledger-for-mastery.md) | Append-only evidence ledger and replaceable mastery projection | Proposed |
+| [ADR-0008](0008-evidence-ledger-for-mastery.md) | Append-only evidence ledger and replaceable mastery projection | Accepted |
 | [ADR-0009](0009-transactional-outbox-for-async-work.md) | Transactional outbox and idempotent asynchronous consumers | Proposed |
 | [ADR-0010](0010-deployment-neutral-single-region-first.md) | Deployment-neutral design and single-region first hosted stage | Proposed |
 | [ADR-0011](0011-isolated-multilanguage-code-execution.md) | Isolated server-side execution for six first-class languages | Proposed |

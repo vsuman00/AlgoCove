@@ -173,7 +173,7 @@ Do not edit an accepted ADR to make history look correct; supersede it.
 ### Data and AI
 
 - [ ] Immutable content/version/provenance model approved
-- [ ] Evidence ledger and mastery projection approved
+- [x] Evidence ledger and mastery projection approved — owner authorized Phase 6 and accepted ADR-0008 on 2026-10-02; the exact scoring policy remains a Task 30 implementation decision.
 - [ ] Retrieval evidence package and evaluation promotion gates approved
 - [ ] Provider-neutral tutor and authored fallback approved
 - [ ] Retention/deletion decisions identified for the pilot

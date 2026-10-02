@@ -1,9 +1,9 @@
 # Phase 5: local guided learning loop evidence
 
-Date: 2026-10-01. Tasks 25 through 29 are complete for the first original problem,
+Evidence date: 2026-10-01. Phase 6 owner authorization recorded: 2026-10-02. Tasks 25 through 29 are complete for the first original problem,
 **Container with most water**, on localhost. The technical F5 learning-kernel
-checks are complete. The separate human authorization to enter Phase 6 remains
-in the [task ledger](../../tasks/todo.md).
+checks are complete. The owner authorized Phase 6 on 2026-10-02; Task 30 is being
+tracked in the [task ledger](../../tasks/todo.md).
 
 ## Implemented boundary
 

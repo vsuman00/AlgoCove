@@ -2,7 +2,9 @@
 
 ## Status
 
-Proposed
+Accepted
+
+Accepted by the owner when Phase 6 was authorized on 2026-10-02. This accepts the architectural choice to retain deduplicated evidence and derive versioned projections; it does not approve an unspecified numeric scoring threshold.
 ## Date
 
 2026-09-17
@@ -27,4 +29,3 @@ Store append-only, deduplicated, versioned mastery evidence linked to attempts/r
 - Recommendations can expose reason codes and uncertainty.
 - Policy changes do not erase learning history.
 - Evidence retention/deletion must follow learner privacy policy.
-
