@@ -93,6 +93,9 @@ export type AssessmentObservation = {
   readonly terminalCategory: ExecutionTerminalCategory;
   readonly passed: boolean;
   readonly observedAt: LearningAttempt["updatedAt"];
+  /** NULL means historical assistance was not captured, never independent. */
+  readonly assistanceTier: number | null;
+  readonly assistanceCapturedAt: LearningAttempt["updatedAt"] | null;
 };
 
 export type CodeRunCommit = {
@@ -287,9 +290,10 @@ export async function ingestTrustedPracticeResult(
           problemVersionId: run.problemVersionId,
           manifestId: run.manifestId,
           language: run.language,
-          sourceChecksum: run.sourceChecksum,
+          sourceDigest: run.sourceChecksum,
           resultId: input.result.resultId,
           terminalCategory: input.result.terminalCategory,
+          classification: input.result.classification,
           passed: observation?.passed,
         },
       })
@@ -369,7 +373,40 @@ function makeAssessmentObservation(
     terminalCategory: result.terminalCategory,
     passed: result.terminalCategory === "pass" && result.classification === "success",
     observedAt: result.completedAt,
+    assistanceTier: null,
+    assistanceCapturedAt: null,
   };
+}
+
+/** The repository calls this after capturing assistance in the commit transaction. */
+export function snapshotAssessmentOutbox(
+  event: OutboxEvent,
+  observation: AssessmentObservation,
+  classification: ExecutionResultClassification,
+): OutboxEvent {
+  return createOutboxEvent({
+    eventId: event.eventId,
+    topic: "practice.assessment.observed",
+    aggregateId: observation.attemptId,
+    occurredAt: observation.observedAt,
+    payload: {
+      schemaVersion: 2,
+      observationId: observation.observationId,
+      runId: observation.runId,
+      attemptId: observation.attemptId,
+      learnerId: observation.learnerId,
+      problemVersionId: observation.problemVersionId,
+      manifestId: observation.manifestId,
+      language: observation.language,
+      sourceDigest: observation.sourceChecksum,
+      resultId: observation.resultId,
+      terminalCategory: observation.terminalCategory,
+      classification,
+      passed: observation.passed,
+      assistanceTier: observation.assistanceTier,
+      assistanceCapturedAt: observation.assistanceCapturedAt,
+    },
+  });
 }
 
 function validateResultMatchesRun(run: CodeRunRecord, result: TrustedExecutionResult): void {

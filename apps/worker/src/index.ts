@@ -12,3 +12,5 @@ export type {
   HttpExecutionResultSinkOptions,
   WorkerResultInput,
 } from "./execution-result-forwarder.ts";
+export { MasteryOutboxRelay } from "./mastery-relay.ts";
+export type { MasteryRelayOptions } from "./mastery-relay.ts";

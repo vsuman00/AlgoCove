@@ -146,6 +146,7 @@ export {
   ingestTrustedPracticeResult,
   reconcilePracticeCodeRun,
   requestPracticeCodeRun,
+  snapshotAssessmentOutbox,
 } from "./code-run-use-cases.ts";
 
 export { revealAuthoredHint } from "./reveal-hint.ts";
@@ -164,3 +165,19 @@ export type {
   ExecutionTerminalCategory,
   TrustedExecutionResult,
 } from "./code-run-use-cases.ts";
+
+export {
+  ASSESSMENT_TOPIC,
+  consumePracticeAssessment,
+  getOwnedMasteryView,
+  getOwnedSubmissionMastery,
+  rebuildMasteryProjection,
+} from "./mastery-projection.ts";
+export type {
+  AssessmentEvidenceSource,
+  MasteryConceptSource,
+  MasteryView,
+  MasteryCommit,
+  MasteryRepository,
+  MasteryIngestionPorts,
+} from "./mastery-projection.ts";

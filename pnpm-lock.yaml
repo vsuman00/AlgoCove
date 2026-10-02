@@ -289,6 +289,12 @@ importers:
 
   apps/worker:
     dependencies:
+      '@algocove/application':
+        specifier: workspace:*
+        version: link:../../packages/application
+      '@algocove/domain':
+        specifier: workspace:*
+        version: link:../../packages/domain
       '@algocove/db':
         specifier: workspace:*
         version: link:../../packages/db

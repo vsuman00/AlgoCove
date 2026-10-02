@@ -4,8 +4,10 @@ import { sha256Digest } from "@algocove/execution-contracts";
 
 const authMock = vi.hoisted(() => vi.fn());
 const runtimeMock = vi.hoisted(() => ({ getPracticeRuntime: vi.fn() }));
+const masteryMock = vi.hoisted(() => ({ getMasteryRuntime: vi.fn() }));
 vi.mock("../../../apps/web/src/auth/clerk-server", () => ({ auth: authMock }));
 vi.mock("../../../apps/web/src/practice/runtime", () => runtimeMock);
+vi.mock("../../../apps/web/src/mastery/runtime", () => masteryMock);
 
 const { POST: startDraft } = await import("../../../apps/web/app/api/practice/drafts/route");
 const { GET: getDraft, PUT: updateDraft } =
@@ -85,6 +87,7 @@ afterEach(() => {
   vi.useRealTimers();
   authMock.mockReset();
   runtimeMock.getPracticeRuntime.mockReset();
+  masteryMock.getMasteryRuntime.mockReset();
   vi.unstubAllEnvs();
 });
 
@@ -457,6 +460,60 @@ describe("authenticated practice draft routes", () => {
         classification: "infrastructure_failure",
         passed: false,
       },
+    });
+  });
+
+  it("returns a saved submission receipt and visible pending mastery", async () => {
+    authMock.mockResolvedValue({
+      isAuthenticated: true,
+      userId: "user_submission_receipt",
+      sessionId: "sess_receipt",
+    });
+    const observationId = must(formatId("event", "8888888888888888"));
+    const conceptId = must(formatId("concept", "aaaaaaaaaaaaaaaa"));
+    runtimeMock.getPracticeRuntime.mockReturnValue({
+      practice: {
+        getRun: vi.fn().mockResolvedValue({
+          runId: codeRun,
+          attemptId: attempt,
+          mode: "submit",
+          terminalResultId: "result-receipt",
+          terminalCategory: "pass",
+          classification: "success",
+          completedAt: updatedAt,
+        }),
+        getAttempt: vi.fn().mockResolvedValue({ ...activeAttempt, status: "submitted" }),
+        getSubmissionObservation: vi
+          .fn()
+          .mockResolvedValue({ observationId, problemVersionId: problem }),
+      },
+    });
+    const readView = vi.fn().mockResolvedValue({
+      status: "projection_pending",
+      projection: { evidenceWatermark: "0", conceptId },
+    });
+    masteryMock.getMasteryRuntime.mockReturnValue({
+      curriculum: { getConcepts: vi.fn().mockResolvedValue([conceptId]) },
+      mastery: { readView },
+    });
+    const response = await getRunStatus(
+      new Request(`http://localhost/api/practice/runs/${codeRun}`),
+      { params: Promise.resolve({ runId: codeRun }) },
+    );
+    expect(response.status).toBe(200);
+    expect(await response.json()).toMatchObject({
+      status: "completed",
+      assessment: {
+        observationId,
+        status: "projection_pending",
+        concepts: [{ projection: { evidenceWatermark: "0" } }],
+      },
+    });
+    expect(readView).toHaveBeenCalledWith({
+      learnerId: expect.stringMatching(/^usr_/),
+      conceptId,
+      policyVersion: 1,
+      afterObservationId: observationId,
     });
   });
 

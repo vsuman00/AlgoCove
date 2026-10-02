@@ -9,6 +9,8 @@
     "./outbox-relay": "./src/outbox-relay.ts"
   },
   "dependencies": {
+    "@algocove/application": "workspace:*",
+    "@algocove/domain": "workspace:*",
     "@algocove/db": "workspace:*",
     "@algocove/execution-control": "workspace:*",
     "pg": "8.23.0"

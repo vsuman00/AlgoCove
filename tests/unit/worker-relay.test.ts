@@ -112,6 +112,9 @@ function repository(initial: ClaimedOutboxEvent): OutboxRelayRepository & {
     async acknowledge(input: { eventId: string }) {
       state.acknowledged.push(input.eventId);
     },
+    async deadLetter() {
+      return;
+    },
     async retry(input: { eventId: string }) {
       state.retried.push(input.eventId);
     },

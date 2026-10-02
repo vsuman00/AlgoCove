@@ -6,6 +6,7 @@ import {
   createSequenceIdGenerator,
   createOutboxEvent,
   ingestTrustedPracticeResult,
+  snapshotAssessmentOutbox,
   reconcilePracticeCodeRun,
   requestPracticeCodeRun,
   startPracticeAttempt,
@@ -225,6 +226,45 @@ function makeResult(
 }
 
 describe("Task 25a code-run application boundary", () => {
+  it("preserves booleans, unknown assistance and the safe digest in assessment events", () => {
+    const event = createOutboxEvent({
+      eventId: must(formatId("event", "aaaaaaaaaaaaaaaa")),
+      topic: "practice.assessment.observed",
+      aggregateId: "attempt",
+      occurredAt: completedAt,
+      payload: {},
+    });
+    const observation: AssessmentObservation = {
+      observationId: event.eventId,
+      runId: must(formatId("codeRun", "aaaaaaaaaaaaaaaa")),
+      attemptId: must(formatId("attempt", "aaaaaaaaaaaaaaaa")),
+      learnerId: learner,
+      problemVersionId,
+      manifestId,
+      language: "python",
+      sourceChecksum: checksum,
+      resultId: "result-1",
+      terminalCategory: "pass",
+      passed: true,
+      observedAt: completedAt,
+      assistanceTier: null,
+      assistanceCapturedAt: null,
+    };
+    expect(snapshotAssessmentOutbox(event, observation, "success").payload).toMatchObject({
+      schemaVersion: 2,
+      passed: true,
+      assistanceTier: null,
+      assistanceCapturedAt: null,
+      sourceDigest: checksum,
+    });
+    expect(
+      snapshotAssessmentOutbox(
+        event,
+        { ...observation, passed: false, terminalCategory: "wrong_answer", assistanceTier: 4 },
+        "learner_failure",
+      ).payload,
+    ).toMatchObject({ passed: false, assistanceTier: 4 });
+  });
   it("commits a durable run request before dispatch and preserves it when the relay response is lost", async () => {
     const repository = new FakeCodeRunRepository();
     const session = must(

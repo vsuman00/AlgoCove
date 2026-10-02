@@ -16,7 +16,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit -p tsconfig.json && pnpm --filter @algocove/web run typecheck",
+    "typecheck": "tsc --noEmit -p tsconfig.json && pnpm --filter @algocove/web run typecheck && pnpm --filter @algocove/worker run typecheck",
     "test": "vitest run --project unit --project web --project architecture",
     "test:architecture": "vitest run --project architecture",
     "test:web": "vitest run --project web",
@@ -41,6 +41,8 @@
     "db:roles": "node packages/db/src/cli/bootstrap-roles.ts",
     "db:migrate": "node packages/db/src/cli/migrate.ts",
     "db:seed:practice": "node packages/db/src/cli/seed-practice.ts",
+    "mastery:consume": "node apps/worker/src/mastery-cli.ts consume",
+    "mastery:rebuild": "node apps/worker/src/mastery-cli.ts rebuild",
     "verify": "pnpm run format:check && pnpm run lint && pnpm run typecheck && pnpm run tokens:check && pnpm run test && pnpm run docs:check && pnpm run security:secrets"
   },
   "devDependencies": {

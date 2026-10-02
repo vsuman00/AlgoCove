@@ -1,4 +1,5 @@
 import type { Pool, QueryResultRow } from "pg";
+import { snapshotAssessmentOutbox } from "@algocove/application";
 import type {
   AssessmentObservation,
   CodeRunCommit,
@@ -456,6 +457,27 @@ export class PostgresPracticeRepository {
     return oneCodeRunById(this.pool, runId);
   }
 
+  async getSubmissionObservation(
+    runId: CodeRunRecord["runId"],
+    learnerId: CodeRunRecord["learnerId"],
+  ): Promise<{
+    observationId: OpaqueId<"event">;
+    problemVersionId: OpaqueId<"problemVersion">;
+  } | null> {
+    const result = await this.pool.query<{ observation_id: string; problem_version_id: string }>(
+      `SELECT observation_id, problem_version_id FROM practice.assessment_observation
+       WHERE run_id=$1 AND learner_id=$2`,
+      [runId, learnerId],
+    );
+    const row = result.rows[0];
+    return row === undefined
+      ? null
+      : {
+          observationId: parseIdOrThrow("event", row.observation_id),
+          problemVersionId: parseIdOrThrow("problemVersion", row.problem_version_id),
+        };
+  }
+
   async getVerifiedRunEvidence(input: {
     readonly attemptId: LearningAttempt["attemptId"];
     readonly learnerId: LearningAttempt["learnerId"];
@@ -478,6 +500,62 @@ export class PostgresPracticeRepository {
       manifestId: parseIdOrThrow("languageManifest", row.manifest_id),
       passed: row.passed,
     }));
+  }
+
+  /** Canonical, committed source facts for the mastery-owned consumer. */
+  async loadAssessment(eventId: OpaqueId<"event">): Promise<{
+    sourceEventId: OpaqueId<"event">;
+    observation: AssessmentObservation;
+    classification: TrustedExecutionResult["classification"];
+  } | null> {
+    const result = await this.pool.query<{
+      observation_id: string;
+      run_id: string;
+      attempt_id: string;
+      learner_id: string;
+      problem_version_id: string;
+      manifest_id: string;
+      language: AssessmentObservation["language"];
+      source_checksum: string;
+      result_id: string;
+      terminal_category: AssessmentObservation["terminalCategory"];
+      passed: boolean;
+      observed_at: Date;
+      assistance_tier: number | null;
+      assistance_captured_at: Date | null;
+      classification: TrustedExecutionResult["classification"];
+    }>(
+      `SELECT o.* FROM platform.outbox_event e
+        JOIN practice.assessment_observation o ON o.observation_id=e.payload->>'observationId'
+        JOIN practice.code_run r ON r.run_id=o.run_id AND r.learner_id=o.learner_id
+          AND r.terminal_result_id=o.result_id AND r.terminal_category=o.terminal_category
+          AND r.classification=o.classification AND r.mode='submit'
+       WHERE e.event_id=$1 AND e.topic='practice.assessment.observed'
+         AND e.aggregate_id=o.attempt_id`,
+      [eventId],
+    );
+    const row = result.rows[0];
+    if (row === undefined) return null;
+    return {
+      sourceEventId: eventId,
+      classification: row.classification,
+      observation: {
+        observationId: parseIdOrThrow("event", row.observation_id),
+        runId: parseIdOrThrow("codeRun", row.run_id),
+        attemptId: parseIdOrThrow("attempt", row.attempt_id),
+        learnerId: parseLearner(row.learner_id),
+        problemVersionId: parseIdOrThrow("problemVersion", row.problem_version_id),
+        manifestId: parseIdOrThrow("languageManifest", row.manifest_id),
+        language: oneOf(PROBLEM_LANGUAGES, row.language, "language"),
+        sourceChecksum: parseChecksum(row.source_checksum),
+        resultId: row.result_id,
+        terminalCategory: row.terminal_category,
+        passed: row.passed,
+        observedAt: instant(row.observed_at),
+        assistanceTier: row.assistance_tier,
+        assistanceCapturedAt: nullableInstant(row.assistance_captured_at),
+      },
+    };
   }
 
   /** The descriptor committed atomically with the run is the callback trust anchor. */
@@ -575,6 +653,15 @@ export class PostgresPracticeRepository {
         };
       }
 
+      // Hint delivery and submissions share this owner lock. A disclosure that
+      // wins first is included; a later disclosure cannot rewrite the snapshot.
+      if (input.observation !== null) {
+        await transaction.query(
+          "SELECT learner_id FROM platform.learner WHERE learner_id=$1 FOR NO KEY UPDATE",
+          [input.run.learnerId],
+        );
+      }
+
       if (input.expectedAttemptVersion !== null) {
         const currentAttempt = await oneAttempt(
           transaction,
@@ -599,14 +686,31 @@ export class PostgresPracticeRepository {
         input.result.classification,
         input.result.completedAt,
       );
-      if (input.observation !== null) {
-        await insertAssessmentObservation(transaction, input.observation, input.result);
+      let observation = input.observation;
+      if (observation !== null) {
+        const snapshot = await transaction.query<{ tier: number; captured_at: Date }>(
+          `SELECT COALESCE(MAX(tier), 0)::integer AS tier, clock_timestamp() AS captured_at
+             FROM practice.hint_exposure WHERE learner_id=$1 AND problem_version_id=$2`,
+          [observation.learnerId, observation.problemVersionId],
+        );
+        observation = {
+          ...observation,
+          assistanceTier: snapshot.rows[0]!.tier,
+          assistanceCapturedAt: instant(snapshot.rows[0]!.captured_at),
+        };
+        await insertAssessmentObservation(transaction, observation, input.result);
       }
-      if (input.outbox !== null) await insertOutboxEvent(transaction, input.outbox);
+      if (input.outbox !== null) {
+        if (observation === null) throw new Error("Assessment event requires an observation.");
+        await insertOutboxEvent(
+          transaction,
+          snapshotAssessmentOutbox(input.outbox, observation, input.result.classification),
+        );
+      }
       return {
         disposition: "committed",
         attempt: input.attempt,
-        observation: input.observation,
+        observation,
       };
     });
   }
@@ -727,8 +831,9 @@ async function insertAssessmentObservation(
     `INSERT INTO practice.assessment_observation
       (observation_id, run_id, attempt_id, learner_id, problem_version_id, manifest_id,
        language, source_checksum, result_id, terminal_category, classification,
-       descriptor_digest, replay_id, lease_epoch, passed, observed_at)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)`,
+       descriptor_digest, replay_id, lease_epoch, passed, observed_at,
+       assistance_tier, assistance_captured_at)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)`,
     [
       observation.observationId,
       observation.runId,
@@ -746,6 +851,8 @@ async function insertAssessmentObservation(
       result.leaseEpoch,
       observation.passed,
       observation.observedAt,
+      observation.assistanceTier,
+      observation.assistanceCapturedAt,
     ],
   );
 }

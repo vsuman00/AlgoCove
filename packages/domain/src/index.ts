@@ -284,3 +284,19 @@ export type {
   CurriculumNode,
   CurriculumVersionId,
 } from "./curriculum.ts";
+
+export {
+  EVIDENCE_CLASSES,
+  MASTERY_OUTCOMES,
+  MASTERY_POLICY_V1,
+  parseMasteryEvidence,
+  projectMastery,
+} from "./mastery.ts";
+export type {
+  EvidenceClass,
+  MasteryEvidence,
+  MasteryBand,
+  MasteryPolicy,
+  MasteryProjection,
+  MasteryFailure,
+} from "./mastery.ts";

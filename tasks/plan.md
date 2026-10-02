@@ -1,6 +1,6 @@
 # AlgoCove phased implementation plan
 
-**Status:** Phase 5 technical implementation verified locally; all three Linux CI jobs pass after toolchain/sandbox repair. Phase 6 authorized by the owner on 2026-10-02; Task 30 is in progress locally.
+**Status:** Phase 5 technical implementation verified locally; all three Linux CI jobs pass after toolchain/sandbox repair. Phase 6 authorized by the owner on 2026-10-02; Task 30 has a locally tested submission ledger/projection path; additional reviewed source coverage remains open.
 **Prepared:** 2026-09-17  
 **Scope:** Phase 6 local implementation is authorized. This does not authorize hosted infrastructure, external publication, or production claims.
 **Task ledger:** `tasks/todo.md`
@@ -739,26 +739,26 @@ Review the evidence after every two or three task slices. Replan if assumptions 
 
 ## Phase 6: Mastery, review, recommendation, and progress
 
-**Phase 6 document review (2026-10-02):** The plan and its relevant contracts were checked against the architecture overview, system/data/interface/security documents, implementation contracts, quality traceability, product closure matrix, ADR-0008, ADR-0009 and ADR-0014, plus the Phase 5 evidence and current practice/outbox code. The architecture ERD requires `PROBLEM_CONCEPT`, but Task 14’s implementation has no persisted problem-to-concept relation; Task 30 therefore starts by closing that prerequisite with an immutable mapping on the exact problem version. The emitted assessment event also needs an assistance summary as required by the interface contract; that remains open for the event-consumer slice. The v1 scoring policy must preserve source facts and explain reason codes; no unsupported confidence or delayed-transfer evidence may be fabricated.
+**Phase 6 document review (2026-10-02):** The plan and its relevant contracts were checked against the architecture overview, system/data/interface/security documents, implementation contracts, quality traceability, product closure matrix, ADR-0008, ADR-0009 and ADR-0014, plus the Phase 5 evidence and current practice/outbox code. The architecture ERD requires `PROBLEM_CONCEPT`, but Task 14’s implementation has no persisted problem-to-concept relation; Task 30 therefore starts by closing that prerequisite with an immutable mapping on the exact problem version. The assessment event now carries the cumulative assistance snapshot required by the interface contract, committed atomically with the immutable observation. The v1 scoring policy must preserve source facts and explain reason codes; no unsupported confidence or delayed-transfer evidence may be fabricated.
 
 ### Task 30: Implement append-only mastery evidence and projection v1
 
 **Description:** Consume practice-owned observations through a deduplicated mastery-owned handler; expose pending projections and evidence watermarks. Concept mastery and language proficiency are separate, and model-advisory or self-reported events cannot become verified evidence. Store deduplicated evidence for correctness, assistance, explanation, confidence, delay, and transfer; derive an interpretable versioned mastery band with replay support. Preserve the source class for each fact, and only project confidence or delayed-transfer evidence when a reviewed, persisted source exists.
 
 **Acceptance criteria:**
-- [ ] Historical evidence is never rewritten by projection changes.
-- [ ] Full-solution completion cannot equal independent delayed transfer.
-- [ ] Projection rebuild produces deterministic watermarks and reason codes.
+- [x] Historical evidence is never rewritten by projection changes.
+- [x] Full-solution completion cannot equal independent delayed transfer.
+- [x] Projection rebuild produces deterministic watermarks and reason codes.
 
 **Verification:**
-- [ ] Run evidence dedupe, replay, and policy-version comparison tests.
-- [ ] Rebuild a learner projection from an empty read model.
+- [x] Run evidence dedupe, replay, and policy-version comparison tests.
+- [x] Rebuild a learner projection from an empty read model.
 
 **Dependencies:** Tasks 13, 14, 25, and 29
-**Files likely touched:** `packages/domain/src/mastery.ts`, `packages/db/migrations/0018_problem_concept_mapping.sql`, `packages/db/migrations/0019_mastery.sql`, `packages/application/src/mastery-projection.ts`, `tests/integration/mastery-replay.test.ts`
+**Files likely touched:** `packages/domain/src/mastery.ts`, `packages/db/migrations/0018_problem_concept_mapping.sql`, `packages/db/migrations/0019_assessment_assistance.sql`, `packages/db/migrations/0020_mastery.sql`, `packages/application/src/mastery-projection.ts`, `tests/integration/mastery-replay.test.ts`
 **Estimated scope:** Medium
 
-**Implementation slices:** First add a rationale-bearing, immutable mapping from each problem version to its stable concepts; Task 14’s curriculum graph alone does not provide this link. Next snapshot the assistance and assessment facts into the practice outbox event, consume it idempotently, then add deterministic projection/replay. The mapping schema and local seed are implemented and the live 21-test PostgreSQL suite passes across 18 migrations; reviewed authoring for new published content, event assistance snapshots, evidence persistence, and projection remain open.
+**Implementation slices:** First add a rationale-bearing, immutable mapping from each problem version to its stable concepts; Task 14’s curriculum graph alone does not provide this link. Next snapshot the assistance and assessment facts into the practice outbox event, consume it idempotently, then add deterministic projection/replay. The mapping schema/seed, immutable cumulative assistance snapshots, deduplicated submission evidence, versioned descriptive policy, deterministic SHA-256 watermarks, replay/compare CLI, leased relay with retry/dead letters, and authenticated pending/receipt APIs are implemented. The live PostgreSQL suite passes 27 tests across 20 migrations; two opt-in execution-host tests are skipped. See [Phase 6 evidence](../docs/architecture/phase6-evidence.md). Task 30 remains PARTIAL: the current source supplies correctness/assistance, while explanation, confidence, delay and transfer are explicitly NULL pending reviewed immutable sources. Pure explanation/transfer tests are policy fixtures, not proof that those persisted sources are implemented. Reviewed mapping authoring for new published content also remains open.
 
 ### Task 31: Implement spaced review and transfer scheduling
 

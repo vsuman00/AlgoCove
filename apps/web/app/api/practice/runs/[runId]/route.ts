@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import {
   dependencyUnavailableError,
+  getOwnedSubmissionMastery,
   notFoundError,
   toErrorEnvelope,
   toHttpStatus,
@@ -8,6 +9,7 @@ import {
 import { parseId } from "@algocove/domain";
 import { authenticatedWebRequestContext } from "../../../../../src/auth/request-context";
 import { getPracticeRuntime } from "../../../../../src/practice/runtime";
+import { getMasteryRuntime } from "../../../../../src/mastery/runtime";
 
 export const dynamic = "force-dynamic";
 
@@ -41,6 +43,16 @@ export async function GET(
     if (run.terminalResultId !== null && terminal === null) {
       throw dependencyUnavailableError("Execution result is temporarily unavailable.");
     }
+    let assessment = null;
+    if (run.mode === "submit" && terminal !== null) {
+      const mastery = getMasteryRuntime();
+      if (mastery === null) throw dependencyUnavailableError("Mastery persistence is unavailable.");
+      assessment = await getOwnedSubmissionMastery(
+        context,
+        { practice: runtime.practice, ...mastery },
+        run.runId,
+      );
+    }
     return NextResponse.json(
       {
         runId: run.runId,
@@ -48,6 +60,7 @@ export async function GET(
         status: terminal === null ? "queued" : "completed",
         attempt: { status: attempt.status },
         result: terminal,
+        assessment,
       },
       { status: 200, headers: { "Cache-Control": "no-store" } },
     );

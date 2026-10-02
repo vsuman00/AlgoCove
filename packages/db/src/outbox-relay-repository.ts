@@ -35,6 +35,11 @@ export type OutboxRelayRepository = {
     readonly relayId: string;
     readonly availableAt: string;
   }) => Promise<void>;
+  readonly deadLetter: (input: {
+    readonly eventId: string;
+    readonly relayId: string;
+    readonly reason: "invalid_source" | "retry_exhausted";
+  }) => Promise<void>;
 };
 
 /** PostgreSQL claim/ack/retry adapter for the application-owned outbox. */
@@ -59,6 +64,7 @@ export class PostgresOutboxRelayRepository implements OutboxRelayRepository {
              FROM platform.outbox_event
             WHERE topic = $1
               AND published_at IS NULL
+              AND dead_lettered_at IS NULL
               AND available_at <= $2
               AND (claim_expires_at IS NULL OR claim_expires_at <= $2)
             ORDER BY available_at, occurred_at
@@ -101,6 +107,19 @@ export class PostgresOutboxRelayRepository implements OutboxRelayRepository {
       [input.eventId, input.relayId, input.availableAt],
     );
     if (result.rowCount !== 1) throw new Error("Outbox event was not owned for retry.");
+  }
+
+  async deadLetter(input: {
+    readonly eventId: string;
+    readonly relayId: string;
+    readonly reason: "invalid_source" | "retry_exhausted";
+  }): Promise<void> {
+    const result = await this.pool.query(
+      `UPDATE platform.outbox_event SET dead_lettered_at=now(),dead_letter_reason=$3,claimed_by=NULL,claim_expires_at=NULL
+      WHERE event_id=$1 AND claimed_by=$2 AND published_at IS NULL`,
+      [input.eventId, input.relayId, input.reason],
+    );
+    if (result.rowCount !== 1) throw new Error("Outbox event was not owned for dead lettering.");
   }
 }
 

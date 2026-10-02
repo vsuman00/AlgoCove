@@ -11,6 +11,7 @@ import {
   type ProblemVersionId,
 } from "@algocove/domain";
 import { PostgresPracticeRepository } from "./practice-repository.ts";
+import { withTransaction } from "./transaction.ts";
 
 type HintRow = QueryResultRow & {
   problem_version_id: string;
@@ -137,26 +138,32 @@ export class PostgresHintRepository implements HintRepository {
   }
 
   async saveExposure(value: HintExposure): Promise<HintExposure | null> {
-    const result = await this.pool.query<ExposureRow>(
-      `INSERT INTO practice.hint_exposure
+    return withTransaction(this.pool, async (transaction) => {
+      await transaction.query(
+        "SELECT learner_id FROM platform.learner WHERE learner_id=$1 FOR NO KEY UPDATE",
+        [value.learnerId],
+      );
+      const result = await transaction.query<ExposureRow>(
+        `INSERT INTO practice.hint_exposure
         (exposure_id, learner_id, attempt_id, problem_version_id, hint_id, tier,
          idempotency_key, exposed_at)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
        ON CONFLICT (learner_id, idempotency_key) DO NOTHING
        RETURNING exposure_id, learner_id, attempt_id, problem_version_id, hint_id, tier,
                  idempotency_key, exposed_at`,
-      [
-        value.exposureId,
-        value.learnerId,
-        value.attemptId,
-        value.problemVersionId,
-        value.hintId,
-        value.tier,
-        value.idempotencyKey,
-        value.exposedAt,
-      ],
-    );
-    const row = result.rows[0];
-    return row === undefined ? null : exposure(row);
+        [
+          value.exposureId,
+          value.learnerId,
+          value.attemptId,
+          value.problemVersionId,
+          value.hintId,
+          value.tier,
+          value.idempotencyKey,
+          value.exposedAt,
+        ],
+      );
+      const row = result.rows[0];
+      return row === undefined ? null : exposure(row);
+    });
   }
 }

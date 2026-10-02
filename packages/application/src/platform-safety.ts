@@ -20,9 +20,10 @@ function sanitize(value: unknown, key: string | undefined, depth: number): unkno
     if (SENSITIVE_VALUE.test(value)) return "[redacted]";
     return value.length > MAX_STRING_LENGTH ? `${value.slice(0, MAX_STRING_LENGTH - 1)}…` : value;
   }
-  if (typeof value === "number" || typeof value === "boolean" || value === null) {
+  if (typeof value === "number") {
     return Number.isFinite(value) ? value : "[invalid-number]";
   }
+  if (typeof value === "boolean" || value === null) return value;
   if (Array.isArray(value)) {
     return value.slice(0, MAX_ITEMS).map((item) => sanitize(item, undefined, depth + 1));
   }

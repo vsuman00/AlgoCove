@@ -39,6 +39,10 @@ pnpm db:migrate
 
 `DATABASE_OPERATOR_URL` is used only by role bootstrap. `DATABASE_ADMIN_URL` is the migration/schema-owner connection. `DATABASE_URL` is the runtime connection and cannot create schema or modify migration bookkeeping.
 
+## Local mastery evidence (Phase 6)
+
+After updating an existing database, rerun `pnpm db:roles` before `pnpm db:migrate` to create the mastery schema and grants. `pnpm mastery:consume --limit=100` processes a bounded batch of persisted assessment events using `DATABASE_URL`. `pnpm mastery:rebuild <learnerId> <conceptId>` rebuilds the default projection using `DATABASE_ADMIN_URL`. The consumer is an explicit local command. The [Phase 6 evidence record](docs/architecture/phase6-evidence.md) describes current sources, pending projection responses and remaining work.
+
 ## Verification commands
 
 ```sh

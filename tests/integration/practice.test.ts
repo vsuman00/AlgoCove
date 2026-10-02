@@ -683,6 +683,8 @@ describe("PostgreSQL practice state", () => {
       resultId: result.resultId,
       terminalCategory: "pass",
       passed: true,
+      assistanceTier: null,
+      assistanceCapturedAt: null,
       observedAt: later.value,
     };
     const outbox = createOutboxEvent({
