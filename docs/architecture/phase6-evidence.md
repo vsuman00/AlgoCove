@@ -2,48 +2,70 @@
 
 **Date:** 2026-10-02
 
-**Scope:** Authorized localhost implementation; no hosted deployment or Linux VM.
+**Scope:** Authorized localhost implementation. No hosted deployment or Linux VM.
 
-**Status:** Task 30 submission evidence path implemented and tested. Task 30 remains PARTIAL for additional reviewed explanation/confidence/transfer sources; Tasks 31–33 and F6 remain open.
+**Status:** Tasks 30–33 and the three technical F6 checks are COMPLETE for the published local learning bundle. Ready for the owner's Phase 7 decision; Phase 7 implementation has not begun.
 
 ## Governing documents
 
-Implementation follows [Task 30](../../tasks/plan.md#task-30-implement-append-only-mastery-evidence-and-projection-v1), [ADR-0008](../adr/0008-evidence-ledger-for-mastery.md), the [evidence/transaction contracts](implementation-contracts.md), [data architecture](data-and-ai-architecture.md), [runtime flows](interfaces-and-runtime-flows.md), [security and privacy](security-reliability-operations.md), and [quality traceability](quality-and-traceability.md). Phase 6 authorization accepts the ledger architecture; it does not approve guessed numeric scoring thresholds or establish learning efficacy.
+Implementation follows [the Phase 6 plan](../../tasks/plan.md#phase-6-mastery-review-recommendation-and-progress), [ADR-0008](../adr/0008-evidence-ledger-for-mastery.md), [implementation contracts](implementation-contracts.md), [data architecture](data-and-ai-architecture.md), [runtime flows](interfaces-and-runtime-flows.md), [security and privacy](security-reliability-operations.md), and [quality traceability](quality-and-traceability.md). These descriptive policies are implementation rules, not calibrated learning scores or evidence of learning efficacy.
 
-## Implemented
+## Task 30: Immutable sources and reproducible mastery
 
-- `0018_problem_concept_mapping.sql` binds stable concepts to an exact problem version, with rationale and author. Published/retired mappings are immutable and mapping changes serialize with content publication. The local seed supplies the reviewed two-pointers mapping and is tested twice for idempotency.
-- `0019_assessment_assistance.sql` adds immutable assessment assistance snapshots. The submission transaction and persisted hint disclosure share a learner row lock that permits foreign-key reads. Assistance is cumulative across attempts and languages for the same problem version. Disclosures after a submission do not rewrite its observation. Legacy observations retain NULL assistance and cannot become independent evidence.
-- The practice-owned observation and version 2 outbox payload commit with the terminal result. Boolean and NULL values now survive payload sanitization; source text remains absent and only its digest is retained.
-- The mastery-owned consumer loads canonical committed practice facts by event ID, ignoring caller-supplied verdicts. The learning-owned mapping port only returns published/retired concept mappings.
-- `0020_mastery.sql` adds the mastery schema's append-only evidence ledger, immutable policy definitions, replaceable per-learner/concept/policy projections, and terminal outbox dead letters. Evidence deduplicates by observation/concept and source event/concept. Evidence insertion, projection updates and projection outbox events are atomic.
-- The deterministic rule projector sorts source observations by observed time and ID. Its watermark identifies the complete immutable source set; PostgreSQL compacts that token using SHA-256. Equal-count backfills cannot reuse a watermark simply because the latest observation is unchanged. Operator replay restores an empty read model, and a different policy can be compared without changing source facts or the learner's default policy.
-- The relay uses leased claims, bounded retry delays, a maximum attempt count and persisted dead letters. Lost acknowledgements may replay the handler without duplicating evidence or projection events.
-- Authenticated `GET /api/mastery/{conceptId}?afterObservation={observationId}` scopes ownership from authentication and returns `ready` or `projection_pending`, the policy version, watermark, descriptive band, reasons and language outcome counts. Another learner's observation returns 404. Responses use `Cache-Control: no-store`.
-- Completed submission run-status responses include an owned observation receipt and concept projection status. Run-only execution remains outside assessment credit. When no observation receipt is supplied to the mastery endpoint, it detects ledger/read-model mismatch but cannot promise that every queued source event has been consumed.
+- Migrations 0018–0020 retain exact problem/concept mappings, cumulative assistance snapshots, deduplicated evidence, immutable policies and replaceable projections. Migration 0021 adds canonical structured explanation/review observations with real source types and foreign keys. Non-code checks never fabricate code runs or language passes.
+- Code submission correctness and cumulative assistance are server-observed. Explanation correctness is graded from an immutable saved reasoning revision using private reviewed choice keys. Free-form prose remains advisory. Confidence is optional and explicitly learner-reported; it cannot independently certify mastery.
+- Review observations persist actual server timestamps, elapsed delay, reviewed rubric, exercise identity and transfer provenance. An unseen authored transfer scenario is a different task from the original problem. Reusing an exercise is recall, never a new independent transfer. Incorrect reviews remain evidence and schedule more practice.
+- Source observation, digest, activity and outbox writes commit atomically. Authenticated routes derive ownership from the session; retries with identical facts replay the receipt, while changed facts conflict. The consumer reloads canonical persisted sources. Ledger insertion, projection, review reconciliation and projection outbox updates are atomic.
+- Signed execution callbacks and learning-source endpoints attempt projection delivery after the source commit. A failed projection leaves a durable pending receipt; the leased CLI relay retries, deduplicates lost acknowledgements and records exhausted deliveries as dead letters.
+- SHA-256 watermarks identify the complete source set. Rebuild restores an empty model across code, explanation and review sources without altering facts or existing review identities. Comparison policies remain separate from the learner default.
+- `PUT /api/content/concept-mapping` requires author permission and an owned draft. Mapping changes invalidate prior technical/pedagogical reviews and validation. Published mappings remain immutable and serialize with publication. New content requires a reviewed successor version.
+- Review exercise publication requires four distinct author, technical reviewer, pedagogical reviewer and publisher identities with active grants, valid bounded private keys and rights metadata. Published keys are immutable; retirement removes new availability. Local seed actors are development fixtures, not evidence of a production human approval process.
 
-## Policy v1 and limits
+### Mastery policy v1
 
-These bands describe observed evidence, not a validated learning score:
-
-| Latest qualifying verified concept outcome | Band |
+| Latest qualifying checked concept outcome | Band |
 |---|---|
-| No verified concept outcome | `unassessed` |
+| No checked completion | `unassessed` |
 | Wrong answer, runtime failure or resource limit | `needs_practice` |
 | Pass with historical assistance unknown | `completion_unclassified` |
-| Pass with any persisted assistance | `assisted_completion` |
-| Pass without assistance, without verified delayed transfer | `independent_completion` |
-| Pass without assistance plus reviewed verified delayed-transfer facts | `independent_delayed_transfer` |
+| Pass with persisted assistance | `assisted_completion` |
+| Pass without assistance | `independent_completion` |
+| Pass without assistance on an unseen, delayed reviewed transfer task | `independent_delayed_transfer` |
 
-Compile/type errors affect only the language outcome overlay. Infrastructure faults and cancellation affect neither concept credit nor language proficiency. Model-advisory, self-reported and interaction-only correctness cannot become verified concept evidence. Full-solution disclosure is always assisted completion. Reason codes retain relevant history; they do not assert that immediate test success proves conceptual understanding or retention.
+An explanation alone cannot establish completion. Compile/type failures affect only the language overlay; infrastructure failures and cancellations earn neither concept credit nor study activity. Full-solution disclosure remains assisted. Historical reason codes explain prior evidence; immediate correctness does not prove retention. The same problem's prior disclosure remains cumulative across languages, while a new independent transfer exercise has its own unassisted source.
 
-The current persisted source adapter supplies correctness and assistance. Explanation, confidence, delay and transfer fields are explicitly NULL because no immutable reviewed source for those facts has been connected here. The pure policy handles reviewed explanation/transfer fixtures and compares an explanation-requiring policy, but those fixtures are not live learning evidence. Confidence is retained as a nullable source fact and does not independently certify mastery. Task 31 must establish review/transfer sources and scheduling; structured-check observations and confidence provenance still need a reviewed immutable ingestion path before Task 30 is marked complete.
+Evidence updates and direct ledger deletion are rejected. Source/learner privacy cascades invalidate projections for rebuild; the later account-deletion workflow remains Phase 9-owned.
 
-Evidence UPDATE and direct DELETE are rejected. Source/learner privacy cascades can remove evidence, and projections can be rebuilt afterward; this is not completion of the later account-deletion workflow. Rebuilding a comparison projection does not publish it as the learner policy. New content still needs reviewed problem/concept mapping authoring before publication. Progress and review interfaces are not implemented by this slice.
+## Task 31: Review scheduling and recovery
+
+Review policy v1 uses elapsed UTC days: 1 day after practice-needed/assisted/unclassified outcomes, 3 days after independent completion, and 7 days after independent delayed transfer. Each due window lasts 24 hours. These are declared scheduling defaults, not empirically optimized retention intervals.
+
+A learner/concept/watermark/policy has one schedule; one open item per learner/concept is enforced in PostgreSQL. Events retain scheduling, supersession, deferral, answer and completion history. Projection replay does not shift an existing origin's window. Timezone changes affect presentation without changing UTC obligations.
+
+`/review` and authenticated `GET/POST /api/review` show upcoming, due, overdue, deferred, completed and pending states. Learners can defer prospectively by one hour to thirty days; the page offers a 24-hour recovery action. Overdue items remain answerable and do not themselves change mastery or streaks. Retired/unavailable content stays recoverable as an unavailable queue item and cannot be graded or recommended. Public exercises omit private answer keys.
+
+## Task 32: Explainable next action
+
+`GET /api/learner-home` and the Home page present one action and up to two distinct alternatives. Deterministic ordering prioritizes due reviews, practice-needed concepts and less recently practiced eligible content, with stable identifiers resolving ties. Required prerequisites use current independent evidence, and pending sources cannot grant prerequisite credit. Preferred language is included in the action URL and honored by the workspace.
+
+Cold starts receive an authored introduction; missing profiles prompt setup. Goal text supplies explicit context, without inferred skills or promised outcomes. Every action has machine-readable reasons and learner-readable explanations. Only published, available content with valid rights, published manifests and an implemented workspace route can be recommended. An unavailable language or missing prerequisite produces a reasoned unavailable state.
+
+## Task 33: Separate progress and consistency
+
+`/progress` and authenticated `GET /api/progress` expose `asOf`, policy version and profile timezone, with separate sections for:
+
+- Internal concept mastery and code-language outcomes, including pending source/projection states.
+- Confidence calibration observations: self-reported confidence alongside checked outcomes, without an invented ability score.
+- Review health: due, overdue, deferred, completed and pending counts.
+- External journal: append-only learner-reported handoff/completion/correction, canonical reviewed outbound references, and command deduplication. No scraping, provider credentials or external completion verification. These reports never become internal mastery or verified study activity.
+- Plan adherence: explicit `no_accepted_plan`, with null adherence counts. Accepted plans belong to Phase 7; session completion is shown separately.
+- Consistency policy v1: one active day per captured learner-local date for a checked code assessment, checked saved explanation, or answered review, including incorrect answers. Review-only days count. There are zero grace days and no automatic rest days. Prospective pauses bridge gaps without adding active days, for at most 365 calendar days.
+
+Activity captures its timezone/date once. Profile changes apply to new activity; historical facts remain unchanged. Current streaks and active-day totals are scoped to the current captured timezone and labelled accordingly. Pause requests carry the displayed timezone and conflict if another tab changes the profile before submission. Backdated pauses and invalid calendar dates are rejected.
 
 ## Local operation
 
-For an existing database, rerun role/schema bootstrap with the operator connection before migrations so the mastery schema and runtime grants exist:
+Use the repository's pinned pnpm 12.4.2 and Node >=22.18:
 
 ```sh
 pnpm db:roles
@@ -53,18 +75,27 @@ pnpm mastery:consume --limit=100
 pnpm mastery:rebuild usr_eeeeeeeeeeeeeeee cpt_aaaaaaaaaaaaaaaa
 ```
 
-The bounded consumer uses `DATABASE_URL`; operator rebuild uses `DATABASE_ADMIN_URL`. This is an explicit local CLI, not an automatically deployed daemon. Dead letters retain event identifiers and a bounded reason; source data and credentials are not printed. Correct the source/dependency before an operator resets a dead letter for replay.
+Bootstrap grants before migrating an existing database. Consumer uses `DATABASE_URL`; operator rebuild uses `DATABASE_ADMIN_URL`. The local seed supplies original reviewed reasoning/transfer fixtures and remains idempotent. Browser learning sources update automatically when delivery succeeds; run the bounded consumer as a recovery/backlog operation. Diagnose and repair source/dependency failures before resetting a dead letter for replay. No new hosted daemon is deployed.
 
 ## Verification
 
-Verification uses Node.js 26.5.0, pinned pnpm 12.4.2 and a temporary native PostgreSQL 17.11/pgvector 0.8.6 server bound to loopback. This slice tests application/database behavior using trusted-result fixtures; it does not repeat unchanged Linux gVisor judging or claim new hostile-code execution evidence.
+Testing uses the existing Node toolchain, pinned pnpm 12.4.2 and temporary PostgreSQL 17.11/pgvector 0.8.6 bound to `127.0.0.1:54329`.
 
-- PostgreSQL: **27 passed, 2 opt-in execution-host tests skipped**, across **20 migrations**. Six mastery integration scenarios cover concurrent duplicate delivery, pending/owner checks, empty-model rebuild, side-by-side policy comparison, cumulative cross-language assistance, transactional rollback, append-only rejection/privacy cascade, lost acknowledgement and persistent dead letters. Both operator CLI paths execute against the isolated database.
-- `pnpm verify`: **193 unit/web/architecture tests pass**, along with formatting, lint, domain/application/web/worker type checks, generated tokens, documentation links and secret checks. Worker type checking is now included in the repository/CI verification command.
-- Production build: passes, including the new mastery route.
-- Browser: **16 Chromium accessibility checks and 1 offline/reconnect draft-recovery scenario pass** against the production build on localhost. These are unchanged UI regression checks, not a new review/progress interface.
-- Dependency audit: **no known vulnerabilities found** with the existing pinned dependency graph. The lockfile change only adds the worker application/domain workspace links; frozen installation passes.
+| Gate | Result |
+|---|---|
+| `pnpm verify` | 203 unit/web/architecture tests; formatting, lint, root/web/worker types, tokens, docs and secret checks pass |
+| `pnpm test:integration` | 35 pass across 21 migrations; 2 unchanged opt-in execution-host tests skipped |
+| `pnpm build` | Production build passes with all new pages and endpoints |
+| `pnpm test:a11y` | 23 Chromium checks pass against localhost production build |
+| `pnpm test:e2e` | Offline/reconnect draft recovery passes |
+| `pnpm security:audit` | No known vulnerabilities found |
 
-## Cleanup and host state
+Database tests cover real immutable structured sources, private-key grading, source/outbox/activity rollback, owner isolation, changed-fact conflicts, concurrent duplicate answers/delivery, delay and transfer provenance, overdue recovery, deferral, wrong/repeated reviews, deterministic scheduling/rebuild, CLI consumption, self-report separation/correction, timezone preservation, prospective pause fences, mapping review invalidation and published-key/duties constraints.
 
-The temporary PostgreSQL server is stopped and port 54329 is closed. All isolated test databases and roles were dropped, both task-generated PostgreSQL clusters and the cluster log were removed, and the temporary PostgreSQL 17, pgvector and krb5 packages were uninstalled. No Linux VM was created or left running. Earlier native test setup updated the existing Homebrew ca-certificates, OpenSSL 3 and xz packages; those shared library updates remain installed. Repository dependencies and build output remain available for local development.
+Browser checks exercise the rendered overdue review, answer/confidence receipt, deferral, populated progress, pause payload/timezone, keyboard recovery, narrow layouts, cold start, preferred language, due-review and language-unavailable recommendations. Authenticated browser data is supplied by explicit route fixtures; actual database behavior and route authentication/ownership are independently tested. This does not claim a new live Clerk-provider handshake or repeat unchanged Linux gVisor execution. The first problem remains the supported local bundle; broader curriculum and learning-outcome claims require later gates.
+
+## Cleanup and next phase
+
+All isolated test databases and roles are dropped. The temporary server is stopped, port 54329 is closed, generated PostgreSQL clusters/log removed, and temporary PostgreSQL 17, pgvector and krb5 formulas uninstalled. No VM was created. Previously existing shared CA/OpenSSL/xz updates remain installed; workspace dependencies and build output remain available.
+
+Next is the owner's F6 Phase 7 authorization, then Task 34's roadmap intent and immutable plan versions. This completion does not authorize production deployment or external publication.

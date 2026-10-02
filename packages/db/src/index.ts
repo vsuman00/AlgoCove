@@ -76,3 +76,8 @@ export { PostgresDraftRepository } from "./draft-repository.ts";
 export { PostgresPseudocodeRepository } from "./pseudocode-repository.ts";
 export { PostgresHintRepository } from "./hint-repository.ts";
 export { PostgresMasteryRepository, PostgresMasteryConceptSource } from "./mastery-repository.ts";
+
+export { PostgresReviewRepository } from "./review-repository.ts";
+export { PostgresProgressRepository } from "./progress-repository.ts";
+
+export * from "./concept-mapping-repository.ts";

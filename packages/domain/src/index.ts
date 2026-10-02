@@ -300,3 +300,7 @@ export type {
   MasteryProjection,
   MasteryFailure,
 } from "./mastery.ts";
+export * from "./review-schedule.ts";
+export * from "./consistency.ts";
+export * from "./recommendation.ts";
+export * from "./structured-learning.ts";

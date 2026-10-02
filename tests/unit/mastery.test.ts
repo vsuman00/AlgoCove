@@ -47,6 +47,33 @@ function projection(facts: readonly MasteryEvidence[]) {
 }
 
 describe("Task 30 deterministic evidence projection", () => {
+  it("keeps explanation-only evidence out of completion and language counts, and uses prior reviewed explanations under a requiring policy", () => {
+    const explanation = evidence(1, {
+      sourceKind: "structured_explanation",
+      exerciseId: "reasoning-v1",
+      provenance: "structured_check",
+      rubricVersion: "reasoning-v1/1",
+      explanationCorrect: true,
+      explanationProvenance: "structured_check",
+      confidence: "high",
+      confidenceProvenance: "learner_reported",
+    });
+    expect(projection([explanation])).toMatchObject({
+      band: "unassessed",
+      languageProficiency: {},
+    });
+    const code = evidence(2, { attemptId: explanation.attemptId });
+    expect(
+      must(
+        projectMastery({
+          learnerId,
+          conceptId,
+          evidence: [code, explanation],
+          policy: { version: 2, requireValidatedExplanation: true },
+        }),
+      ).band,
+    ).toBe("independent_completion");
+  });
   it("replays unordered and duplicated observations to the same watermark and reasons", () => {
     const a = evidence(1),
       b = evidence(2, { assistanceTier: 6 });

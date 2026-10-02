@@ -1,6 +1,6 @@
 # AlgoCove implementation task ledger
 
-**Status:** Phase 5 Tasks 25 through 29 and the technical F5 learning-kernel gates are COMPLETE on localhost for the first original problem in all six languages. The security owner approved gVisor `runsc` on 2026-09-26. Real signed execution, browser result/failure/resume, authored readiness checks, trace prediction/editing and persisted reference assistance pass. See [Phase 5 evidence](../docs/architecture/phase5-evidence.md). The owner authorized Phase 6 on 2026-10-02; Task 30 is in progress locally. No hosted deployment is authorized. Earlier dated partial-status entries below describe superseded slices.
+**Status:** Phase 5 Tasks 25 through 29 and the technical F5 learning-kernel gates are COMPLETE on localhost for the first original problem in all six languages. The security owner approved gVisor `runsc` on 2026-09-26. Real signed execution, browser result/failure/resume, authored readiness checks, trace prediction/editing and persisted reference assistance pass. See [Phase 5 evidence](../docs/architecture/phase5-evidence.md). The owner authorized Phase 6 on 2026-10-02; Tasks 30–33 and the technical F6 checks are COMPLETE on localhost; Phase 7 awaits the owner decision. No hosted deployment is authorized. Earlier dated partial-status entries below describe superseded slices.
 
 **Phase 6 entry (2026-10-02):** The owner directed Phase 6. Review of [the plan](plan.md), [architecture reading order](../docs/architecture/README.md), [system design](../docs/architecture/system-design.md), [data and AI contracts](../docs/architecture/data-and-ai-architecture.md), [runtime flows](../docs/architecture/interfaces-and-runtime-flows.md), [implementation contracts](../docs/architecture/implementation-contracts.md), [security and privacy rules](../docs/architecture/security-reliability-operations.md), [quality traceability](../docs/architecture/quality-and-traceability.md), [product closure matrix](../docs/architecture/product-plan-and-closure-matrix.md), and relevant ADRs found that the conceptual `PROBLEM_CONCEPT` relation was missing in the database. Migration `0018_problem_concept_mapping.sql` now binds concepts to exact problem versions and prevents changes once their content is published. The local practice seed adds the reviewed two-pointers mapping. This closes only the mapping-schema prerequisite; the content workflow still needs reviewed mapping authoring, and Task 30's evidence handler/projection were not yet complete in this initial slice; the subsequent submission slice is recorded below.
 
@@ -187,17 +187,19 @@
 
 **Task 30 submission validation (2026-10-02):** `pnpm verify` passes 193 unit/web/architecture tests and now includes worker type checking. PostgreSQL passes 27 tests across 20 migrations (2 opt-in execution-host tests skipped); both consumer/rebuild CLIs execute, and the production build, 16 accessibility checks, 1 offline/reconnect draft test and dependency audit pass. The temporary loopback PostgreSQL server, generated clusters and temporary packages were removed. No VM or deployment was used. See [Phase 6 evidence](../docs/architecture/phase6-evidence.md) for source limits and host cleanup details.
 
-- [ ] Task 30: Implement append-only mastery evidence and projection v1 — PARTIAL; submission correctness/assistance snapshots, deduplicated ledger/projection, deterministic replay and policy comparison, leased delivery/retry/dead letters and authenticated pending/receipt APIs are implemented. Reviewed immutable explanation/confidence/delay/transfer source ingestion remains open; those fields are NULL in submission evidence. See [Phase 6 evidence](../docs/architecture/phase6-evidence.md).
-- [ ] Task 31: Implement spaced review and transfer scheduling
-- [ ] Task 32: Implement explainable next-action recommendation
-- [ ] Task 33: Implement separate progress and consistency views
+**Phase 6 completion (2026-10-02):** Tasks 30–33 are implemented and tested. `pnpm verify` passes 203 tests and all quality gates; PostgreSQL passes 35 tests across 21 migrations (2 unchanged optional execution-host checks skipped); production build, 23 Chromium checks, offline recovery and dependency audit pass. Canonical reviewed explanation/confidence/review/transfer sources replace the prior slice's source gaps. All temporary database resources are removed. No VM or hosted deployment was used. See [Phase 6 evidence](../docs/architecture/phase6-evidence.md).
+
+- [x] Task 30: Implement append-only mastery evidence and projection v1 — COMPLETE; all source dimensions, provenance, replay/comparison, draft mapping authoring, durable delivery and owned pending/receipt APIs.
+- [x] Task 31: Implement spaced review and transfer scheduling — COMPLETE; UTC windows, timezone presentation, overdue recovery, deferral, immutable history and concurrent retry deduplication.
+- [x] Task 32: Implement explainable next-action recommendation — COMPLETE; cold intro, due reviews, prerequisites, uncertainty, goal context, preferred language, availability, diversity and alternatives.
+- [x] Task 33: Implement separate progress and consistency views — COMPLETE; independent dimensions, self-report corrections, declared calendar/pause policy, timezone capture, asOf and accessibility checks.
 
 ### Checkpoint F6: Evidence-driven learning
 
-- [ ] Mastery is reproducible from evidence — submission-source projection replay passes; F6 remains open for the remaining source and learning capabilities.
-- [ ] Reviews and recommendations are deterministic and explainable.
-- [ ] Progress does not confuse activity with mastery.
-- [ ] Human owner authorizes Phase 7.
+- [x] Mastery is reproducible from evidence.
+- [x] Reviews and recommendations are deterministic and explainable.
+- [x] Progress does not confuse activity with mastery.
+- [ ] Human owner authorizes Phase 7 — ready for this decision; no Phase 7 implementation has begun.
 
 ## Phase 7: Configurable roadmap planning
 

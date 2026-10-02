@@ -1,3 +1,4 @@
+import type { PoolClient } from "pg";
 /**
  * `pnpm db:seed:practice`
  *
@@ -5,6 +6,7 @@
  * command, not a migration: hosted environments must publish reviewed content
  * through the content workflow instead of receiving development fixtures.
  */
+import { isDeepStrictEqual } from "node:util";
 import { createPool, type DatabaseConnection } from "../connection.ts";
 import { loadLocalEnvFile, requireEnv } from "./cli-support.ts";
 
@@ -96,6 +98,86 @@ const hints = [
   ],
 ] as const;
 
+async function seedReviewExercises(client: PoolClient): Promise<void> {
+  const publisherId = "usr_ffffffffffffffff";
+  await client.query("INSERT INTO platform.learner(learner_id) VALUES($1) ON CONFLICT DO NOTHING", [
+    publisherId,
+  ]);
+  await client.query(
+    "INSERT INTO platform.role_grant(learner_id,role) VALUES($1,'publisher') ON CONFLICT DO NOTHING",
+    [publisherId],
+  );
+  const options = (values: readonly string[]) =>
+    values.map((value) => ({ value, label: value.replaceAll("_", " ") }));
+  const exercises = [
+    {
+      id: "container-reasoning-v1",
+      kind: "recall",
+      problem: problemVersionId,
+      title: "Explain the two-pointer invariant",
+      questions: [
+        {
+          id: "area",
+          prompt: "Which expression measures a container's area?",
+          options: options(["minimum_times_width", "maximum_times_width", "sum"]),
+          answer: "minimum_times_width",
+        },
+        {
+          id: "boundary",
+          prompt: "Which boundary can move while preserving a better candidate?",
+          options: options(["shorter", "taller", "both"]),
+          answer: "shorter",
+        },
+      ],
+    },
+    {
+      id: "boundary-transfer-v1",
+      kind: "transfer",
+      problem: null,
+      title: "Transfer the boundary strategy to shelter posts",
+      questions: [
+        {
+          id: "measure",
+          prompt:
+            "Shelter posts of heights 3 and 8 are 5 units apart. A cover is limited by the shorter post. Which covered area is possible?",
+          options: options(["15", "40"]),
+          answer: "15",
+        },
+        {
+          id: "move",
+          prompt:
+            "To search for a larger covered area without enumerating every pair, which post should be replaced by the next inner post?",
+          options: options(["shorter_post", "taller_post"]),
+          answer: "shorter_post",
+        },
+      ],
+    },
+  ];
+  for (const exercise of exercises) {
+    await client.query(
+      `INSERT INTO content.review_exercise(exercise_id,concept_id,kind,problem_version_id,title,questions,author_id,technical_reviewer_id,pedagogical_reviewer_id,publisher_id,status) VALUES($1,$2,$3,$4,$5,$6::jsonb,$7,$8,$9,$10,'published') ON CONFLICT DO NOTHING`,
+      [
+        exercise.id,
+        conceptId,
+        exercise.kind,
+        exercise.problem,
+        exercise.title,
+        JSON.stringify(exercise.questions),
+        authorId,
+        technicalReviewerId,
+        pedagogicalReviewerId,
+        publisherId,
+      ],
+    );
+    const stored = await client.query<{ questions: unknown }>(
+      "SELECT questions FROM content.review_exercise WHERE exercise_id=$1",
+      [exercise.id],
+    );
+    if (!isDeepStrictEqual(stored.rows[0]?.questions, exercise.questions))
+      throw new Error("Review exercise seed is unavailable.");
+  }
+}
+
 const baseOperatorUrl = requireEnv("DATABASE_ADMIN_URL");
 const connection: DatabaseConnection = {
   connectionString: baseOperatorUrl,
@@ -116,6 +198,7 @@ if (existingContent.rows[0]?.status === "published") {
       WHERE problem_version_id = $1 AND concept_id = $2`,
     [problemVersionId, conceptId],
   );
+  if (mappings.rowCount !== 0) await seedReviewExercises(client);
   client.release();
   await pool.end();
   if (mappings.rowCount === 0) {
@@ -275,6 +358,7 @@ try {
       WHERE curriculum_version_id = $1 AND status = 'draft'`,
     [curriculumVersionId],
   );
+  await seedReviewExercises(client);
   await client.query("COMMIT");
   console.log(`Seeded local Phase 5 practice bundle: ${problemVersionId}`);
 } catch (error) {

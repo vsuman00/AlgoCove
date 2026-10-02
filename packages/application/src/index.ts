@@ -181,3 +181,7 @@ export type {
   MasteryRepository,
   MasteryIngestionPorts,
 } from "./mastery-projection.ts";
+export * from "./learning-review-use-cases.ts";
+export * from "./progress-read-model.ts";
+
+export * from "./concept-mapping.ts";

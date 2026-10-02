@@ -1,5 +1,7 @@
 import type { Pool, QueryResultRow } from "pg";
 import { snapshotAssessmentOutbox } from "@algocove/application";
+import { recordStudyActivity } from "./study-activity.ts";
+import { parseMasteryEvidence, type MasteryEvidence } from "@algocove/domain";
 import type {
   AssessmentObservation,
   CodeRunCommit,
@@ -457,6 +459,14 @@ export class PostgresPracticeRepository {
     return oneCodeRunById(this.pool, runId);
   }
 
+  async getAssessmentEventId(observationId: OpaqueId<"event">): Promise<OpaqueId<"event"> | null> {
+    const rows = await this.pool.query<{ event_id: string }>(
+      "SELECT event_id FROM platform.outbox_event WHERE topic='practice.assessment.observed' AND payload->>'observationId'=$1",
+      [observationId],
+    );
+    return rows.rows[0] === undefined ? null : parseIdOrThrow("event", rows.rows[0].event_id);
+  }
+
   async getSubmissionObservation(
     runId: CodeRunRecord["runId"],
     learnerId: CodeRunRecord["learnerId"],
@@ -503,6 +513,17 @@ export class PostgresPracticeRepository {
   }
 
   /** Canonical, committed source facts for the mastery-owned consumer. */
+  async loadLearningObservation(eventId: OpaqueId<"event">): Promise<MasteryEvidence | null> {
+    const result = await this.pool.query<{ facts: unknown }>(
+      `SELECT o.facts FROM practice.learning_observation o JOIN platform.outbox_event e ON e.payload->>'observationId'=o.observation_id WHERE e.event_id=$1 AND e.topic='practice.assessment.observed' AND e.aggregate_id=o.attempt_id AND o.facts->>'sourceEventId'=e.event_id`,
+      [eventId],
+    );
+    if (result.rows[0] === undefined) return null;
+    const parsed = parseMasteryEvidence(result.rows[0].facts);
+    if (!parsed.ok) throw new Error(parsed.error.message);
+    return parsed.value;
+  }
+
   async loadAssessment(eventId: OpaqueId<"event">): Promise<{
     sourceEventId: OpaqueId<"event">;
     observation: AssessmentObservation;
@@ -699,6 +720,17 @@ export class PostgresPracticeRepository {
           assistanceCapturedAt: instant(snapshot.rows[0]!.captured_at),
         };
         await insertAssessmentObservation(transaction, observation, input.result);
+        if (
+          !["compile_error", "type_error", "infrastructure_error", "cancelled"].includes(
+            observation.terminalCategory,
+          )
+        )
+          await recordStudyActivity(transaction, {
+            learnerId: observation.learnerId,
+            observationId: observation.observationId,
+            occurredAt: observation.observedAt,
+            kind: "assessment",
+          });
       }
       if (input.outbox !== null) {
         if (observation === null) throw new Error("Assessment event requires an observation.");

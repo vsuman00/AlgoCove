@@ -1,6 +1,6 @@
 # AlgoCove phased implementation plan
 
-**Status:** Phase 5 technical implementation verified locally; all three Linux CI jobs pass after toolchain/sandbox repair. Phase 6 authorized by the owner on 2026-10-02; Task 30 has a locally tested submission ledger/projection path; additional reviewed source coverage remains open.
+**Status:** Phase 6 Tasks 30–33 and technical F6 checks are COMPLETE and verified on localhost. Phase 7 is ready for the human owner decision; no hosted deployment is authorized.
 **Prepared:** 2026-09-17  
 **Scope:** Phase 6 local implementation is authorized. This does not authorize hosted infrastructure, external publication, or production claims.
 **Task ledger:** `tasks/todo.md`
@@ -758,20 +758,20 @@ Review the evidence after every two or three task slices. Replan if assumptions 
 **Files likely touched:** `packages/domain/src/mastery.ts`, `packages/db/migrations/0018_problem_concept_mapping.sql`, `packages/db/migrations/0019_assessment_assistance.sql`, `packages/db/migrations/0020_mastery.sql`, `packages/application/src/mastery-projection.ts`, `tests/integration/mastery-replay.test.ts`
 **Estimated scope:** Medium
 
-**Implementation slices:** First add a rationale-bearing, immutable mapping from each problem version to its stable concepts; Task 14’s curriculum graph alone does not provide this link. Next snapshot the assistance and assessment facts into the practice outbox event, consume it idempotently, then add deterministic projection/replay. The mapping schema/seed, immutable cumulative assistance snapshots, deduplicated submission evidence, versioned descriptive policy, deterministic SHA-256 watermarks, replay/compare CLI, leased relay with retry/dead letters, and authenticated pending/receipt APIs are implemented. The live PostgreSQL suite passes 27 tests across 20 migrations; two opt-in execution-host tests are skipped. See [Phase 6 evidence](../docs/architecture/phase6-evidence.md). Task 30 remains PARTIAL: the current source supplies correctness/assistance, while explanation, confidence, delay and transfer are explicitly NULL pending reviewed immutable sources. Pure explanation/transfer tests are policy fixtures, not proof that those persisted sources are implemented. Reviewed mapping authoring for new published content also remains open.
+**Completion (2026-10-02):** All source dimensions now have canonical persisted paths: code correctness/cumulative assistance, reviewed saved explanation checks, learner-reported confidence, and delayed recall/independent transfer reviews. Migration 0021 retains real source types, immutable source facts, review/history, captured-timezone activity, prospective pauses and external self-report events. Draft mapping authoring requires authenticated author ownership and invalidates prior review/validation. Deterministic replay, policy comparison, atomic outbox delivery, pending states and all Phase 6 pages are verified. See [Phase 6 evidence](../docs/architecture/phase6-evidence.md) for policies, commands, results, fixture boundaries and cleanup.
 
 ### Task 31: Implement spaced review and transfer scheduling
 
 **Description:** Create due windows from qualifying evidence, delayed transfer tasks, UTC storage with learner-timezone presentation, overdue recovery, and idempotent rescheduling.
 
 **Acceptance criteria:**
-- [ ] DST/timezone changes do not duplicate or lose reviews.
-- [ ] Overdue items remain recoverable and do not reset mastery/streak automatically.
-- [ ] Same evidence watermark cannot create duplicate review items.
+- [x] DST/timezone changes do not duplicate or lose reviews.
+- [x] Overdue items remain recoverable and do not reset mastery/streak automatically.
+- [x] Same evidence watermark cannot create duplicate review items.
 
 **Verification:**
-- [ ] Run clock/property tests across DST and timezone fixtures.
-- [ ] Run retry/concurrency scheduling tests.
+- [x] Run clock/property tests across DST and timezone fixtures.
+- [x] Run retry/concurrency scheduling tests.
 
 **Dependencies:** Task 30  
 **Files likely touched:** `packages/domain/src/review-schedule.ts`, `packages/application/src/review-use-cases.ts`, `apps/web/app/review/page.tsx`, `tests/unit/review-schedule.test.ts`  
@@ -782,13 +782,13 @@ Review the evidence after every two or three task slices. Replan if assumptions 
 **Description:** Recommend one calm next action using prerequisites, due reviews, mastery uncertainty, learner goal, language availability, and diversity, with alternatives and reason codes.
 
 **Acceptance criteria:**
-- [ ] Every recommendation has machine-readable and learner-readable reasons.
-- [ ] Cold start uses diagnostic/intro content, never fabricated personalization.
-- [ ] Retired or unavailable content is never recommended.
+- [x] Every recommendation has machine-readable and learner-readable reasons.
+- [x] Cold start uses diagnostic/intro content, never fabricated personalization.
+- [x] Retired or unavailable content is never recommended.
 
 **Verification:**
-- [ ] Run deterministic scenario/property tests.
-- [ ] Manually inspect cold-start, overdue-review, and language-unavailable cases.
+- [x] Run deterministic scenario/property tests.
+- [x] Manually inspect cold-start, overdue-review, and language-unavailable cases.
 
 **Dependencies:** Tasks 14-17 and 30-31  
 **Files likely touched:** `packages/domain/src/recommendation.ts`, `packages/application/src/get-learner-home.ts`, `apps/web/app/home/page.tsx`, `tests/unit/recommendation.test.ts`  
@@ -799,13 +799,13 @@ Review the evidence after every two or three task slices. Replan if assumptions 
 **Description:** Show internal mastery, external-practice journal, plan adherence, review health, and consistency separately. Define learner-local streak semantics, pause/grace behavior, and no misleading blended mastery score.
 
 **Acceptance criteria:**
-- [ ] Self-reported and server-observed measures are visually distinct.
-- [ ] Streak calculation is versioned and timezone-safe.
-- [ ] Progress views expose `asOf` time and policy version.
+- [x] Self-reported and server-observed measures are visually distinct.
+- [x] Streak calculation is versioned and timezone-safe.
+- [x] Progress views expose `asOf` time and policy version.
 
 **Verification:**
-- [ ] Run streak/calendar and read-model tests.
-- [ ] Accessibility and misleading-label content review passes.
+- [x] Run streak/calendar and read-model tests.
+- [x] Accessibility and misleading-label content review passes.
 
 **Dependencies:** Tasks 11 and 30-32  
 **Files likely touched:** `packages/domain/src/consistency.ts`, `packages/application/src/progress-read-model.ts`, `apps/web/app/progress/page.tsx`, `tests/unit/consistency.test.ts`  
@@ -813,10 +813,10 @@ Review the evidence after every two or three task slices. Replan if assumptions 
 
 ### Checkpoint F6: Evidence-driven learning
 
-- [ ] Mastery is reproducible from evidence.
-- [ ] Reviews and recommendations are deterministic and explainable.
-- [ ] Progress does not confuse activity with mastery.
-- [ ] Human owner authorizes Phase 7.
+- [x] Mastery is reproducible from evidence.
+- [x] Reviews and recommendations are deterministic and explainable.
+- [x] Progress does not confuse activity with mastery.
+- [ ] Human owner authorizes Phase 7 — technical handoff ready; Phase 7 work has not started.
 
 ## Phase 7: Configurable roadmap planning
 

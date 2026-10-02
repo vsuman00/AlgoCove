@@ -7,6 +7,8 @@ import { isClerkConfigured } from "../auth/clerk-config";
 
 const navItems = [
   ["Home", "/", "home"],
+  ["Reviews", "/review", "book"],
+  ["Progress", "/progress", "progress"],
   ["Learner profile", "/onboarding", "target"],
   ["Content", "/admin/content", "book"],
   ["Runtimes", "/execution-readiness", "progress"],
@@ -72,7 +74,7 @@ export default function AlgoCoveShell({
           </a>
           <div className="ac-product-context" aria-label="Current product scope">
             <strong>AlgoCove</strong>
-            <span>Foundation and execution readiness</span>
+            <span>Guided practice and learning progress</span>
           </div>
           <div className="ac-utility-actions">
             {clerkConfigured ? <AuthControls /> : <AuthLinks />}

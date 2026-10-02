@@ -1,7 +1,9 @@
+import { getLearningRuntime } from "../../../../../src/mastery/learning-runtime";
 import { timingSafeEqual } from "node:crypto";
 import { NextResponse } from "next/server";
 import {
   authenticationRequired,
+  consumePracticeAssessment,
   createActor,
   dependencyUnavailableError,
   ingestTrustedPracticeResult,
@@ -89,6 +91,19 @@ export async function POST(request: Request): Promise<NextResponse> {
         completedAt: parsed.value.issuedAt,
       },
     });
+    if (receipt.observation !== null) {
+      // The source commit is durable before projection delivery. The leased relay retries failures.
+      try {
+        const learning = getLearningRuntime();
+        const eventId = await runtime.practice.getAssessmentEventId(
+          receipt.observation.observationId,
+        );
+        if (learning !== null && eventId !== null)
+          await consumePracticeAssessment(context, learning.ingestion, eventId);
+      } catch {
+        /* Durable outbox delivery remains pending. */
+      }
+    }
     return NextResponse.json(
       {
         disposition: receipt.disposition,

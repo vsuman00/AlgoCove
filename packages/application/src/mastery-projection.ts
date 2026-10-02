@@ -17,6 +17,7 @@ import { requireRole, type IdGenerator, type RequestContext } from "./request-co
 
 export const ASSESSMENT_TOPIC = "practice.assessment.observed";
 export type AssessmentEvidenceSource = {
+  loadLearningObservation?(eventId: OpaqueId<"event">): Promise<MasteryEvidence | null>;
   /** Read the persisted event and its immutable practice observation, not a caller's payload. */
   loadAssessment(eventId: OpaqueId<"event">): Promise<{
     readonly sourceEventId: OpaqueId<"event">;
@@ -66,7 +67,24 @@ export async function consumePracticeAssessment(
   eventId: OpaqueId<"event">,
 ): Promise<MasteryCommit> {
   const source = await ports.practice.loadAssessment(eventId);
-  if (source === null) throw validationError("Assessment source event is not available.");
+  if (source === null) {
+    const fact = await ports.practice.loadLearningObservation?.(eventId);
+    if (
+      fact === undefined ||
+      fact === null ||
+      fact.sourceKind === "code" ||
+      fact.sourceEventId !== eventId ||
+      fact.provenance !== "structured_check" ||
+      !(await ports.curriculum.getConcepts(fact.problemVersionId)).includes(fact.conceptId)
+    )
+      throw validationError("Learning observation source is not available.");
+    return ports.mastery.recordAndProject({
+      evidence: [fact],
+      policy: MASTERY_POLICY_V1,
+      ingestedAt: context.now,
+      updateEventIds: [context.ids.generate("event")],
+    });
+  }
   const concepts = [
     ...new Set(await ports.curriculum.getConcepts(source.observation.problemVersionId)),
   ].sort();

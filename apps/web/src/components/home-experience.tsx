@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, type ReactElement } from "react";
+import { NextLearningAction } from "./learning-views";
 import { Icon } from "./algocove-icons";
 
 type Profile = {
@@ -69,20 +70,15 @@ export default function HomeExperience(): ReactElement {
     <main className="ac-home-main" id="main-content" tabIndex={-1}>
       <section className="ac-home-hero ac-home-hero--truthful" aria-labelledby="home-title">
         <div>
-          <p className="ac-eyebrow">Implemented product surface</p>
-          <h1 id="home-title">Build the foundation. Prove each gate.</h1>
+          <p className="ac-eyebrow">Guided learning</p>
+          <h1 id="home-title">Build a pattern. Return to it.</h1>
           <p>
-            AlgoCove currently exposes account setup, governed DSA content, six-language execution
-            readiness, and the first Phase 5 learning kernel. Learner planning and problem solving
-            are not presented before their complete paths exist.
+            Practice with authored explanations, check your reasoning, and revisit patterns with a
+            clear record of your progress.
           </p>
         </div>
-        <div className="ac-phase-badge" aria-label="Current implementation phase">
-          <span>Current scope</span>
-          <strong>Phase 5 in progress</strong>
-          <small>Sessions and attempts are syncing behind the learner workspace</small>
-        </div>
       </section>
+      <NextLearningAction />
 
       <section className="ac-profile-strip" aria-labelledby="profile-status-title">
         <div className="ac-section-heading">
@@ -159,20 +155,6 @@ export default function HomeExperience(): ReactElement {
           ))}
         </div>
       </section>
-
-      <aside className="ac-gate-note" aria-labelledby="not-yet-title">
-        <Icon name="info" size={24} />
-        <div>
-          <p className="ac-eyebrow">Intentionally not shown</p>
-          <h2 id="not-yet-title">No pretend execution result</h2>
-          <p>
-            Problem search, notifications, roadmaps, mastery, and review queues are absent because
-            their end-to-end product routes are not implemented yet. The guided workspace is
-            available for authored learning and private drafts; real code execution awaits the
-            isolated host and relay. The header contains no location control or inactive icon.
-          </p>
-        </div>
-      </aside>
     </main>
   );
 }

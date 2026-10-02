@@ -2031,3 +2031,21 @@ button {
   outline: 2px solid var(--color-tide-700);
   outline-offset: 3px;
 }
+
+.ac-learning-option {
+  display: flex;
+  gap: 0.6rem;
+  align-items: baseline;
+  margin: 0.6rem 0;
+}
+.ac-profile-strip form label {
+  display: block;
+  margin: 0.6rem 0;
+}
+.ac-profile-strip input,
+.ac-profile-strip select {
+  margin-left: 0.6rem;
+}
+.ac-capability-card fieldset {
+  margin: 1rem 0;
+}

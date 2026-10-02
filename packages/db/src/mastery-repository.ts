@@ -22,6 +22,7 @@ import {
   type ProblemVersionId,
 } from "@algocove/domain";
 import { withTransaction, type Transaction } from "./transaction.ts";
+import { reconcileReview } from "./review-repository.ts";
 
 /** Learning-owned, version-pinned read port. Draft mappings cannot award credit. */
 export class PostgresMasteryConceptSource implements MasteryConceptSource {
@@ -82,8 +83,8 @@ export class PostgresMasteryRepository implements MasteryRepository {
         const e = input.evidence[i]!;
         const result = await tx.query(
           `INSERT INTO mastery.evidence
-          (observation_id,concept_id,learner_id,problem_version_id,source_event_id,evidence_policy_version,observed_at,ingested_at,facts)
-          VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9::jsonb) ON CONFLICT (observation_id,concept_id) DO NOTHING`,
+          (observation_id,concept_id,learner_id,problem_version_id,source_event_id,evidence_policy_version,observed_at,ingested_at,facts,source_kind,assessment_observation_id,learning_observation_id)
+          VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9::jsonb,$10,$11,$12) ON CONFLICT (observation_id,concept_id) DO NOTHING`,
           [
             e.observationId,
             e.conceptId,
@@ -94,6 +95,9 @@ export class PostgresMasteryRepository implements MasteryRepository {
             e.observedAt,
             input.ingestedAt,
             JSON.stringify(e),
+            e.sourceKind ?? "code",
+            (e.sourceKind ?? "code") === "code" ? e.observationId : null,
+            (e.sourceKind ?? "code") !== "code" ? e.observationId : null,
           ],
         );
         inserted += result.rowCount ?? 0;
@@ -114,6 +118,13 @@ export class PostgresMasteryRepository implements MasteryRepository {
         const projection = await rebuildScope(tx, e.learnerId, e.conceptId, input.policy);
         projections.push(projection);
         const changed = await saveProjection(tx, projection);
+        if (input.policy.version === 1)
+          await reconcileReview(tx, {
+            evidence: e,
+            projection,
+            eventId: input.updateEventIds[i]!,
+            now: input.ingestedAt,
+          });
         if (changed) {
           const event = createOutboxEvent({
             eventId: input.updateEventIds[i]!,
@@ -154,6 +165,21 @@ export class PostgresMasteryRepository implements MasteryRepository {
       await registerPolicy(tx, input.policy);
       const projection = await rebuildScope(tx, input.learnerId, input.conceptId, input.policy);
       await saveProjection(tx, projection);
+      if (input.policy.version === 1) {
+        const latest = await tx.query<{ facts: unknown }>(
+          "SELECT facts FROM mastery.evidence WHERE learner_id=$1 AND concept_id=$2 AND source_kind<>'structured_explanation' AND facts->>'outcome' NOT IN ('compile_error','type_error','infrastructure_error','cancelled') ORDER BY observed_at DESC,observation_id DESC LIMIT 1",
+          [input.learnerId, input.conceptId],
+        );
+        if (latest.rows[0] !== undefined) {
+          const fact = parseFact(latest.rows[0].facts);
+          await reconcileReview(tx, {
+            evidence: fact,
+            projection,
+            eventId: fact.sourceEventId,
+            now: fact.observedAt,
+          });
+        }
+      }
       return projection;
     });
   }
@@ -173,7 +199,7 @@ export class PostgresMasteryRepository implements MasteryRepository {
         if (concept.rowCount === 0) return null;
         if (input.afterObservationId !== undefined) {
           const owned = await tx.query(
-            `SELECT 1 FROM practice.assessment_observation o JOIN learning.problem_concept m USING(problem_version_id)
+            `SELECT 1 FROM (SELECT observation_id,learner_id,problem_version_id FROM practice.assessment_observation UNION ALL SELECT observation_id,learner_id,problem_version_id FROM practice.learning_observation) o JOIN learning.problem_concept m USING(problem_version_id)
           WHERE o.observation_id=$1 AND o.learner_id=$2 AND m.concept_id=$3`,
             [input.afterObservationId, input.learnerId, input.conceptId],
           );

@@ -34,6 +34,8 @@ export type MasteryOutcome = (typeof MASTERY_OUTCOMES)[number];
 
 /** Source facts remain unchanged when a projection policy changes. */
 export type MasteryEvidence = {
+  readonly sourceKind?: "code" | "structured_explanation" | "review";
+  readonly exerciseId?: string | null;
   readonly sourceEventId: OpaqueId<"event">;
   readonly observationId: OpaqueId<"event">;
   readonly learnerId: LearnerId;
@@ -105,6 +107,17 @@ export function parseMasteryEvidence(value: unknown): Result<MasteryEvidence, Ma
   if (typeof value !== "object" || value === null || Array.isArray(value)) return invalid();
   const v = value as Record<string, unknown>;
   if (
+    v.sourceKind !== undefined &&
+    !["code", "structured_explanation", "review"].includes(String(v.sourceKind))
+  )
+    return invalid();
+  if (
+    v.exerciseId !== undefined &&
+    v.exerciseId !== null &&
+    (typeof v.exerciseId !== "string" || !/^[a-z0-9._-]{1,128}$/.test(v.exerciseId))
+  )
+    return invalid();
+  if (
     !isId("event", v.sourceEventId) ||
     !isId("event", v.observationId) ||
     !isId("learner", v.learnerId) ||
@@ -166,6 +179,8 @@ export function parseMasteryEvidence(value: unknown): Result<MasteryEvidence, Ma
   )
     return invalid();
   return ok({
+    sourceKind: (v.sourceKind ?? "code") as NonNullable<MasteryEvidence["sourceKind"]>,
+    exerciseId: (v.exerciseId ?? null) as string | null,
     sourceEventId: v.sourceEventId as OpaqueId<"event">,
     observationId: v.observationId as OpaqueId<"event">,
     learnerId: v.learnerId as LearnerId,
@@ -259,6 +274,16 @@ export function projectMastery(input: {
       continue;
     }
     lastPracticed = e.observedAt;
+    if (e.sourceKind === "structured_explanation") {
+      if (
+        e.explanationCorrect === true &&
+        e.explanationProvenance !== null &&
+        VERIFIED.has(e.explanationProvenance)
+      )
+        reasons.add("validated_explanation_observed");
+      else reasons.add("structured_explanation_needs_practice");
+      continue;
+    }
     if (e.provenance === "server_observed_test") {
       const overlay = languageProficiency[e.language] ?? {
         observedPasses: 0,
@@ -281,9 +306,18 @@ export function projectMastery(input: {
       continue;
     }
     const explanation =
-      e.explanationCorrect === true &&
-      e.explanationProvenance !== null &&
-      VERIFIED.has(e.explanationProvenance);
+      (e.explanationCorrect === true &&
+        e.explanationProvenance !== null &&
+        VERIFIED.has(e.explanationProvenance)) ||
+      ordered.some(
+        (fact) =>
+          fact.sourceKind === "structured_explanation" &&
+          fact.attemptId === e.attemptId &&
+          fact.observedAt <= e.observedAt &&
+          fact.explanationCorrect === true &&
+          fact.explanationProvenance !== null &&
+          VERIFIED.has(fact.explanationProvenance),
+      );
     if (e.assistanceTier === null) {
       band = "completion_unclassified";
       reasons.add("assistance_unknown");
@@ -310,7 +344,11 @@ export function projectMastery(input: {
       reasons.add("verified_independent_delayed_transfer");
     } else {
       band = "independent_completion";
-      reasons.add("independent_immediate_completion");
+      reasons.add(
+        e.sourceKind === "review" && e.delayMs !== null
+          ? "independent_delayed_recall"
+          : "independent_immediate_completion",
+      );
     }
     if (explanation) reasons.add("validated_explanation_observed");
   }

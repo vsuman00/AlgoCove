@@ -98,13 +98,15 @@ const EMPTY_PSEUDOCODE: PseudocodeState = {
 export default function ProblemWorkspace({
   executionEnabled,
   problemId = "arrays-two-pointer",
+  initialLanguage = "python",
 }: {
   readonly executionEnabled: boolean;
   readonly problemId?: string;
+  readonly initialLanguage?: keyof typeof STARTERS;
 }): ReactElement {
   const [workspace, setWorkspace] = useState<WorkspaceState>({
-    language: "python",
-    source: STARTERS.python,
+    language: initialLanguage,
+    source: STARTERS[initialLanguage],
     pseudocode: EMPTY_PSEUDOCODE,
   });
   const [saveState, setSaveState] = useState<RecoveryState>("local");
@@ -112,6 +114,7 @@ export default function ProblemWorkspace({
   const [learnerId, setLearnerId] = useState<string | null>(null);
   const [hintState, setHintState] = useState("No hint revealed. Start with your invariant.");
   const [hintTier, setHintTier] = useState(1);
+  const [confidence, setConfidence] = useState("");
   const [revisionState, setRevisionState] = useState("No explicit reasoning revision saved.");
   const [submitted, setSubmitted] = useState(false);
   const [restart, setRestart] = useState(0);
@@ -531,6 +534,34 @@ export default function ProblemWorkspace({
                       pseudocodeVersion: body.artifact.version,
                     };
                     setRevisionState(`Reasoning revision ${body.artifact.savedRevision} saved.`);
+                    const checked = await fetch("/api/mastery/explanation", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        pseudocodeId: synced.pseudocodeId,
+                        revision: body.artifact.savedRevision,
+                        confidence: confidence || null,
+                      }),
+                    }).catch(() => null);
+                    if (checked === null || !checked.ok) {
+                      setRevisionState(
+                        `Revision ${body.artifact.savedRevision} saved. Structured check unavailable; save another revision to retry.`,
+                      );
+                      return;
+                    }
+                    const result = (await checked.json().catch(() => null)) as {
+                      correct: boolean;
+                      status: string;
+                    } | null;
+                    if (result === null) {
+                      setRevisionState(
+                        `Revision ${body.artifact.savedRevision} saved. Structured check receipt unavailable.`,
+                      );
+                      return;
+                    }
+                    setRevisionState(
+                      `Revision ${body.artifact.savedRevision} saved. ${result.correct ? "Reviewed structured checks passed." : "Review your structured answers."} ${result.status === "projection_pending" ? "Progress update pending." : "Check recorded."} Free-form reasoning remains advisory.`,
+                    );
                   } catch {
                     setRevisionState(
                       "Revision could not be saved. Your current draft is retained.",
@@ -539,8 +570,17 @@ export default function ProblemWorkspace({
                 });
             }}
           >
-            Save reasoning revision
+            Save and check reasoning revision
           </button>
+          <label>
+            Confidence before checking (optional, self-reported)
+            <select value={confidence} onChange={(event) => setConfidence(event.target.value)}>
+              <option value="">Prefer not to say</option>
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+            </select>
+          </label>
           <p role="status">{revisionState}</p>
           <button
             className="ac-small-button"
