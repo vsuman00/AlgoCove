@@ -33,29 +33,30 @@ export default function ExecutionReadinessPage(): ReactElement {
             <p className="ac-eyebrow">Execution boundary evidence</p>
             <h1>Six languages, one explicit execution contract.</h1>
             <p>
-              These values come from the domain language manifest. This page reports readiness; it
-              does not pretend that learner code execution is released.
+              These values come from the domain language manifest. This page summarizes recorded
+              local verification; it does not report whether the execution host is currently
+              available.
             </p>
           </div>
           <div className="ac-readiness-summary">
             <span>Supported contracts</span>
             <strong>{LANGUAGE_PROFILES.length}</strong>
-            <small>learner runtime remains gated</small>
+            <small>local evidence; hosted release remains gated</small>
           </div>
         </header>
 
         <section className="ac-security-gate" aria-labelledby="security-gate-title">
           <Icon name="info" size={24} />
           <div>
-            <p className="ac-eyebrow">Open release gate</p>
-            <h2 id="security-gate-title">Isolated execution setup is still required</h2>
+            <p className="ac-eyebrow">Local verification</p>
+            <h2 id="security-gate-title">Local execution verified; hosted release gated</h2>
             <p>
-              The security owner approved gVisor runsc for hostile learner code. Runnable content
-              remains unavailable until the isolated host, relay, and real local six-language checks
-              pass.
+              The security owner approved gVisor runsc for hostile learner code, and the local
+              six-language learning loop passed. The temporary test host was removed afterward.
+              Running code requires a configured isolated host; no hosted release is authorized.
             </p>
           </div>
-          <span>BLOCKED</span>
+          <span>LOCAL VERIFIED</span>
         </section>
 
         <section className="ac-runtime-section" aria-labelledby="runtime-title">

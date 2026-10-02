@@ -21,11 +21,11 @@ This checklist makes the three approved screen references traceable without pret
 | Reference | Phase 1 shell contract | Component/token checklist | Status |
 | --- | --- | --- | --- |
 | Learner Home | Quiet Home shell, light surface, canonical mark treatment, calm next action, semantic text hierarchy | `bg-cove-page`, `bg-cove-surface`, `bg-cove-action-primary`, `font-cove-display`, `text-cove-*`, focus ring, skip link | Implemented, visually reviewed, and browser-tested |
-| Guided Problem Workspace | Focused shell boundary, deep-ocean treatment, step rail, panes, editor/visualizer surfaces | Deep shell surface aliases, workspace action aliases, code/editor tokens, keyboard pane contract | Token-ready; screen deferred to Phase 5 |
-| DSA Roadmap | Deep Journey shell, prerequisite path, current-plan state, capacity and provenance labels | Deep shell surface aliases, current-plan semantic aliases, status labels/icons, responsive ordered path | Token-ready; screen deferred to Phase 7 |
+| Guided Problem Workspace | Focused shell boundary, deep-ocean treatment, step rail, panes, editor/visualizer surfaces | Deep shell surface aliases, workspace action aliases, code/editor tokens, keyboard pane contract | Functional Phase 5 workspace implemented and browser-tested; reference screenshot approval remains open |
+| DSA Roadmap | Deep Journey shell, prerequisite path, current-plan state, capacity and provenance labels | Deep shell surface aliases, current-plan semantic aliases, status labels/icons, responsive ordered path | Functional Phase 7 planner implemented and browser-tested; full Journey/reference fidelity remains unvalidated |
 
 ## Explicitly open assets and evidence
 
 - The logo, font specimens/licensing, Lucide comparison, and coastal illustrations remain open design prerequisites. The implementation uses the documented token and text fallbacks; it does not silently claim those production assets exist.
 - Desktop, 768px, 1024px, and 1440px visual comparison against the approved mockups remains a visual-review task. Automated Phase 1 coverage proves the Home shell at 320px, keyboard navigation, reduced motion, and axe-detectable violations only.
-- Workspace and Roadmap screenshot approval is intentionally deferred until their feature phases introduce real screens and data states.
+- Workspace and Roadmap now have functional screens and browser evidence. Reference screenshot comparison and approval remain open; passing interaction tests do not close those visual deliverables.

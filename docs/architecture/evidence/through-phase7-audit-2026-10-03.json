@@ -1,0 +1,287 @@
+{
+  "auditDate": "2026-10-03",
+  "implementationBaseline": "ecad9295c951f8790c8ba28a6d51e7a4767d4fed",
+  "linuxCi": {
+    "runId": 37051234150,
+    "attempt": 2,
+    "conclusion": "success"
+  },
+  "tests": {
+    "unit": 165,
+    "web": 63,
+    "architecture": 4,
+    "databasePassed": 55,
+    "databaseSkipped": 2,
+    "a11y": 25,
+    "e2e": 3,
+    "executionBrowser": 5
+  },
+  "importAudit": [
+    {
+      "area": "packages/domain/src",
+      "files": 23,
+      "imports": 72,
+      "violations": []
+    },
+    {
+      "area": "packages/application/src",
+      "files": 25,
+      "imports": 111,
+      "violations": []
+    }
+  ],
+  "viewportAudit": {
+    "checks": [
+      {
+        "width": 320,
+        "route": "/",
+        "status": 200,
+        "scroll": 320,
+        "client": 320,
+        "main": true,
+        "h1": 1,
+        "pass": true
+      },
+      {
+        "width": 320,
+        "route": "/plan",
+        "status": 200,
+        "scroll": 320,
+        "client": 320,
+        "main": true,
+        "h1": 1,
+        "pass": true
+      },
+      {
+        "width": 320,
+        "route": "/progress",
+        "status": 200,
+        "scroll": 320,
+        "client": 320,
+        "main": true,
+        "h1": 1,
+        "pass": true
+      },
+      {
+        "width": 320,
+        "route": "/review",
+        "status": 200,
+        "scroll": 320,
+        "client": 320,
+        "main": true,
+        "h1": 1,
+        "pass": true
+      },
+      {
+        "width": 320,
+        "route": "/onboarding",
+        "status": 200,
+        "scroll": 320,
+        "client": 320,
+        "main": true,
+        "h1": 1,
+        "pass": true
+      },
+      {
+        "width": 320,
+        "route": "/learn/arrays-two-pointer",
+        "status": 200,
+        "scroll": 320,
+        "client": 320,
+        "main": true,
+        "h1": 1,
+        "pass": true
+      },
+      {
+        "width": 768,
+        "route": "/",
+        "status": 200,
+        "scroll": 768,
+        "client": 768,
+        "main": true,
+        "h1": 1,
+        "pass": true
+      },
+      {
+        "width": 768,
+        "route": "/plan",
+        "status": 200,
+        "scroll": 768,
+        "client": 768,
+        "main": true,
+        "h1": 1,
+        "pass": true
+      },
+      {
+        "width": 768,
+        "route": "/progress",
+        "status": 200,
+        "scroll": 768,
+        "client": 768,
+        "main": true,
+        "h1": 1,
+        "pass": true
+      },
+      {
+        "width": 768,
+        "route": "/review",
+        "status": 200,
+        "scroll": 768,
+        "client": 768,
+        "main": true,
+        "h1": 1,
+        "pass": true
+      },
+      {
+        "width": 768,
+        "route": "/onboarding",
+        "status": 200,
+        "scroll": 768,
+        "client": 768,
+        "main": true,
+        "h1": 1,
+        "pass": true
+      },
+      {
+        "width": 768,
+        "route": "/learn/arrays-two-pointer",
+        "status": 200,
+        "scroll": 768,
+        "client": 768,
+        "main": true,
+        "h1": 1,
+        "pass": true
+      },
+      {
+        "width": 1024,
+        "route": "/",
+        "status": 200,
+        "scroll": 1024,
+        "client": 1024,
+        "main": true,
+        "h1": 1,
+        "pass": true
+      },
+      {
+        "width": 1024,
+        "route": "/plan",
+        "status": 200,
+        "scroll": 1024,
+        "client": 1024,
+        "main": true,
+        "h1": 1,
+        "pass": true
+      },
+      {
+        "width": 1024,
+        "route": "/progress",
+        "status": 200,
+        "scroll": 1024,
+        "client": 1024,
+        "main": true,
+        "h1": 1,
+        "pass": true
+      },
+      {
+        "width": 1024,
+        "route": "/review",
+        "status": 200,
+        "scroll": 1024,
+        "client": 1024,
+        "main": true,
+        "h1": 1,
+        "pass": true
+      },
+      {
+        "width": 1024,
+        "route": "/onboarding",
+        "status": 200,
+        "scroll": 1024,
+        "client": 1024,
+        "main": true,
+        "h1": 1,
+        "pass": true
+      },
+      {
+        "width": 1024,
+        "route": "/learn/arrays-two-pointer",
+        "status": 200,
+        "scroll": 1024,
+        "client": 1024,
+        "main": true,
+        "h1": 1,
+        "pass": true
+      },
+      {
+        "width": 1440,
+        "route": "/",
+        "status": 200,
+        "scroll": 1440,
+        "client": 1440,
+        "main": true,
+        "h1": 1,
+        "pass": true
+      },
+      {
+        "width": 1440,
+        "route": "/plan",
+        "status": 200,
+        "scroll": 1440,
+        "client": 1440,
+        "main": true,
+        "h1": 1,
+        "pass": true
+      },
+      {
+        "width": 1440,
+        "route": "/progress",
+        "status": 200,
+        "scroll": 1440,
+        "client": 1440,
+        "main": true,
+        "h1": 1,
+        "pass": true
+      },
+      {
+        "width": 1440,
+        "route": "/review",
+        "status": 200,
+        "scroll": 1440,
+        "client": 1440,
+        "main": true,
+        "h1": 1,
+        "pass": true
+      },
+      {
+        "width": 1440,
+        "route": "/onboarding",
+        "status": 200,
+        "scroll": 1440,
+        "client": 1440,
+        "main": true,
+        "h1": 1,
+        "pass": true
+      },
+      {
+        "width": 1440,
+        "route": "/learn/arrays-two-pointer",
+        "status": 200,
+        "scroll": 1440,
+        "client": 1440,
+        "main": true,
+        "h1": 1,
+        "pass": true
+      }
+    ],
+    "errors": []
+  },
+  "historicalRealHostDate": "2026-10-01",
+  "limitations": [
+    "Phase 0 approvals open",
+    "UI assets and fidelity/manual accessibility open",
+    "two current-head real-host tests skipped",
+    "no live Clerk/AI or deployed verification"
+  ],
+  "deployed": false,
+  "localVmCreated": false
+}

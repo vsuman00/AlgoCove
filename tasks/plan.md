@@ -1,5 +1,7 @@
 # AlgoCove phased implementation plan
 
+**Cumulative audit (2026-10-03):** [The through-Phase-7 audit](../docs/architecture/through-phase7-audit-2026-10-03.md) records fresh passing technical gates, every named test, Phase 0 approval gaps, unreconciled Phase 1–5 plan checkboxes, open UI fidelity/manual accessibility and the two current-head real-host skips. Technical phase closure must not be read as complete governance or full design validation.
+
 **Status:** Phase 7 Tasks 34–37 and 51 and the technical F7 gates are COMPLETE on localhost as of 2026-10-03. The reviewed pilot is explicit; insufficient breadth returns a reasoned rejection. Phase 8 awaits owner authorization. No hosted deployment is authorized.
 **Prepared:** 2026-09-17  
 **Scope:** Phase 7 local implementation, testing, commit and GitHub publication are authorized. Hosted infrastructure and live deployment remain excluded.
@@ -88,7 +90,7 @@ tests/sandbox-security
 tasks
 ```
 
-These commands do not exist yet and are not evidence of passing tests. Task 2 freezes the toolchain, and implementation adds each script before claiming its gate. The intended command surface is:
+The commands below are implemented in the root package manifest. Their existence alone is not passing-test evidence; dated phase records and the cumulative audit record their results. Phase 0's formal toolchain approval remains open in the ledger. The command surface is:
 
 ```text
 pnpm format:check

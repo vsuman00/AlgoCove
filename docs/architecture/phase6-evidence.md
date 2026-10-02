@@ -34,7 +34,7 @@ Implementation follows [the Phase 6 plan](../../tasks/plan.md#phase-6-mastery-re
 
 An explanation alone cannot establish completion. Compile/type failures affect only the language overlay; infrastructure failures and cancellations earn neither concept credit nor study activity. Full-solution disclosure remains assisted. Historical reason codes explain prior evidence; immediate correctness does not prove retention. The same problem's prior disclosure remains cumulative across languages, while a new independent transfer exercise has its own unassisted source.
 
-Evidence updates and direct ledger deletion are rejected. Source/learner privacy cascades invalidate projections for rebuild; the later account-deletion workflow remains Phase 9-owned.
+Evidence updates and direct ledger deletion are rejected. Source/learner privacy cascades invalidate projections for rebuild; the later account-deletion workflow belongs to Phase 11 Task 52.
 
 ## Task 31: Review scheduling and recovery
 

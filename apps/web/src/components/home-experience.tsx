@@ -19,7 +19,7 @@ const capabilities = [
     eyebrow: "Account foundation",
     title: "Learner profile",
     description:
-      "Save the goal, target role, schedule, accessibility preferences, and languages that later planning will use.",
+      "Save the goal, target role, schedule, accessibility preferences, and languages used for planning.",
     href: "/onboarding",
     action: "Open learner profile",
     icon: "target",
@@ -37,7 +37,7 @@ const capabilities = [
     eyebrow: "Execution boundary",
     title: "Execution readiness",
     description:
-      "Review the six code-backed language profiles and the local integration evidence still needed for learner execution.",
+      "Review the six supported language profiles and recorded local execution evidence.",
     href: "/execution-readiness",
     action: "Review runtime contracts",
     icon: "progress",

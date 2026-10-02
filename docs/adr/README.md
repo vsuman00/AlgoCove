@@ -16,7 +16,7 @@ Active records are `Proposed` unless individually accepted; ADR-0004 is supersed
 | [ADR-0010](0010-deployment-neutral-single-region-first.md) | Deployment-neutral design and single-region first hosted stage | Proposed |
 | [ADR-0011](0011-isolated-multilanguage-code-execution.md) | Isolated server-side execution for six first-class languages | Proposed |
 | [ADR-0012](0012-outbound-external-practice-handoff.md) | Outbound-only handoff to external practice providers | Proposed |
-| [ADR-0013](0013-configurable-timeboxed-roadmap-planning.md) | Configurable timeboxed plans with AI proposals and deterministic validation | Proposed |
+| [ADR-0013](0013-configurable-timeboxed-roadmap-planning.md) | Configurable timeboxed plans with AI proposals and deterministic validation | Accepted for local Phase 7 |
 | [ADR-0014](0014-validate-before-display-and-trust-evidence.md) | Validate tutor content before display; trusted judging and evidence provenance | Proposed |
 
 ## Lifecycle
