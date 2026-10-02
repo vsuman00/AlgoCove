@@ -187,3 +187,5 @@ export * from "./progress-read-model.ts";
 export * from "./concept-mapping.ts";
 
 export * from "./roadmap-intent-use-cases.ts";
+export * from "./roadmap-use-cases.ts";
+export * from "./plan-proposal-fixture.ts";

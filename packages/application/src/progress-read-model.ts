@@ -10,6 +10,7 @@ import {
   type StudyPause,
   type ProblemLanguage,
   type MasteryProjection,
+  type NextAction,
 } from "@algocove/domain";
 import type { RequestContext } from "./request-context.ts";
 import { validationError } from "./errors.ts";
@@ -43,9 +44,9 @@ export type ProgressSnapshot = {
     }[];
   };
   readonly planAdherence: {
-    readonly status: "no_accepted_plan";
-    readonly completedOnTime: null;
-    readonly totalDue: null;
+    readonly status: "no_accepted_plan" | "accepted_plan";
+    readonly completedOnTime: number | null;
+    readonly totalDue: number | null;
   };
   readonly reviewHealth: {
     readonly due: number;
@@ -61,6 +62,8 @@ export type LearnerHomeSource = {
   readonly candidates: readonly RecommendationCandidate[];
   readonly dueReview: boolean;
   readonly verifiedConcepts?: readonly ConceptId[];
+  readonly plannedAction?: NextAction;
+  readonly hasAcceptedPlan?: boolean;
 };
 export type LearningProgressRepository = {
   getProgress(input: { learnerId: LearnerId; now: Instant }): Promise<ProgressSnapshot>;
@@ -104,12 +107,30 @@ export async function getLearnerHome(
   context: RequestContext,
   repository: LearningProgressRepository,
 ): Promise<ReturnType<typeof recommendNext> & { asOf: Instant }> {
-  return {
-    ...recommendNext(
-      await repository.getHome({ learnerId: context.actor.userId, now: context.now }),
-    ),
-    asOf: context.now,
-  };
+  const source = await repository.getHome({ learnerId: context.actor.userId, now: context.now });
+  const recommendation = recommendNext(source);
+  if (source.plannedAction && !source.dueReview)
+    return {
+      ...recommendation,
+      action: source.plannedAction,
+      alternatives: recommendation.alternatives.map((a) => ({
+        ...a,
+        title: `Outside your plan: ${a.title}`,
+        reasonCodes: [...a.reasonCodes, "out_of_plan"],
+      })),
+      asOf: context.now,
+    };
+  if (source.hasAcceptedPlan && !source.dueReview)
+    return {
+      ...recommendation,
+      action: {
+        ...recommendation.action,
+        title: `Outside your plan: ${recommendation.action.title}`,
+        reasonCodes: [...recommendation.action.reasonCodes, "out_of_plan"],
+      },
+      asOf: context.now,
+    };
+  return { ...recommendation, asOf: context.now };
 }
 export async function pauseOwnedStudy(
   context: RequestContext,

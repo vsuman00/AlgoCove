@@ -2049,3 +2049,22 @@ button {
 .ac-capability-card fieldset {
   margin: 1rem 0;
 }
+
+.ac-roadmap {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.ac-roadmap fieldset {
+  min-inline-size: 0;
+}
+.ac-roadmap select,
+.ac-roadmap button {
+  max-width: 100%;
+  white-space: normal;
+}
+.ac-roadmap select {
+  width: 100%;
+}
+.ac-roadmap ul {
+  padding-inline-start: 1.5rem;
+}

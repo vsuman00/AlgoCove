@@ -306,3 +306,7 @@ export * from "./recommendation.ts";
 export * from "./structured-learning.ts";
 
 export * from "./roadmap.ts";
+export * from "./roadmap-scheduler.ts";
+export * from "./roadmap-validator.ts";
+export * from "./budget.ts";
+export * from "./plan-adherence.ts";

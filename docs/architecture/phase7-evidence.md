@@ -1,57 +1,96 @@
 # Phase 7 implementation evidence
 
-**Date:** 2026-10-02
+**Date:** 2026-10-03
 
-**Authorization:** The owner approved Phase 7 in this chat after Phase 6 was committed and pushed. Local testing and GitHub publication remain authorized. Live deployment remains excluded.
+**Authorization:** The owner approved Phase 7 on 2026-10-02 and explicitly required complete implementation and testing. Local testing, commits and GitHub publication remain authorized. Live deployment remains excluded.
 
-**Status:** Phase 7 IN PROGRESS. Task 34's private planning-input save/read path is implemented and verified. Accepted schedules and the remaining Phase 7 capabilities are not complete.
+**Status:** Tasks 34, 35, 36, 51 and 37 and technical F7 checks are COMPLETE on localhost. Phase 8 remains unstarted and requires owner authorization.
 
-## Contracts reviewed
+## Scope and contracts
 
-The slice follows [Task 34](../../tasks/plan.md#task-34-implement-roadmap-intent-and-immutable-plan-versions), [roadmap data/state and calendar contracts](implementation-contracts.md#2-roadmap-data-and-state), [data architecture](data-and-ai-architecture.md), [roadmap interfaces](interfaces-and-runtime-flows.md#roadmap-planning), and the [product closure matrix](product-plan-and-closure-matrix.md). Planning owns learner intent; practice retains learning outcomes. Preferences do not establish a validated or accepted schedule. Live AI activation remains Task 45a-owned.
+Implementation follows [the Phase 7 plan](../../tasks/plan.md#phase-7-configurable-roadmap-planning), [roadmap state/calendar contracts](implementation-contracts.md#2-roadmap-data-and-state), [ADR-0013](../adr/0013-configurable-timeboxed-roadmap-planning.md), [roadmap interfaces](interfaces-and-runtime-flows.md#roadmap-planning), [data ownership](data-and-ai-architecture.md) and the [product closure matrix](product-plan-and-closure-matrix.md).
 
-## Implemented slice: private planning inputs
+The reviewed two-pointer pilot currently contains one original exercise and its introduction, plus existing reviewed review obligations. Comprehensive DSA and complete named-sheet coverage require later content breadth. The learner selects the pilot explicitly; comprehensive requests receive a reasoned rejection and alternatives. Six months does not manufacture six months of repeated work.
 
-- `/plan` exposes goal, target role, 1/2/3/4/6 calendar-month horizon, start date, resolved target date, explicit timezone, daily capacity, study weekdays, implementation languages, and registered supporting collections.
-- Calendar-month addition clamps to the final valid day of the destination month, including leap years. An explicit API target date that conflicts with the preset is rejected. New writes cannot backdate the start in the selected timezone.
-- Capacity is bounded to 15–480 minutes per study day. Weekdays and languages must be nonempty distinct supported values; collection IDs must be distinct registered identities. Selecting a collection does not promise internal coverage, copied content or account synchronization.
-- Authenticated `GET/POST /api/planning/intent` derives ownership from the session, uses `Cache-Control: no-store`, rejects malformed inputs and reports unavailable persistence honestly. Browser-supplied learner IDs cannot choose the owner.
-- Migration `0022_roadmap_intents.sql` adds the planning schema's stable primary intent, immutable preference revisions, version-specific collection references and deduplicated command receipts. Bootstrap now grants the runtime role bounded access to the planning schema; existing databases must rerun role/schema bootstrap before migration.
-- Save commands serialize on the learner, enforce expected revision tokens, and commit the revision, current pointer, collections, receipt and outbox event atomically. Concurrent identical saves replay one receipt; changed facts using the same key conflict. Two competing edits cannot silently overwrite each other.
-- A lost-response retry retains the original receipt, including across a local-date boundary or after a newer revision exists. Old receipts never roll the current pointer back. A fresh backdated command remains invalid.
-- Immutable history and composite ownership foreign keys reject direct rewrites and cross-owner command references. Learner privacy cascades can remove inputs; this is not completion of the later account-deletion workflow.
-- The page preserves unsaved edits after a conflict, offers explicit reload, and labels saved preferences as planning inputs. It exposes no fake schedule, automatic acceptance or unimplemented AI action.
+The runtime composition is AI-off, with a complete deterministic path. The provider-neutral port is exercised with fixture adapters. Task 45a owns live activation and provider configuration/evaluation. Phase 8 owns external readiness/handoff; external-only collection entries remain coverage metadata.
+
+## Implementation and verification map
+
+| Task | Implementation | Evidence |
+|---|---|---|
+| 34 | Private previews and expiration/staleness; explicit acceptance with expected active token; immutable accepted snapshots/items; one primary owner-scoped state; pause/resume/completion/archive and supersession; append-only check-ins/corrections | Acceptance races, ownership, stale tokens, lifecycle, history, rollback and privacy tests |
+| 35 | Calendar horizons 1/2/3/4/6; study sessions; due reviews; prerequisites; required and optional work; configurable recovery reservation; indivisible-session rejection; sparse-content alternatives | Horizon/capacity/buffer/missed-day loops; representative snapshot; month-end/leap-year and beyond-end review fixtures |
+| 36 | Content/rights/language/link eligibility; occurrence uniqueness; collection deduplication; due windows/buffer/capacity; pinned history; moved/removed/added/retained/blocked preview; reacceptance | Invalid-plan fixtures; old/new version comparison; missed-session recovery, timezone/goal changes, language practice and cross-version corrections |
+| 51 | Atomic reservations; request/unit caps, rolling rate and pending concurrency; idempotent settlement; operation breakers/cooldown/probe; authorized reset/evaluation port; code-run integration | Concurrent admission, exhaustion, replay/conflict, rollback, finish deduplication, cooldown/reset and unchanged core writes under shedding |
+| 37 | Strict bounded fixture proposal port; validation and malformed/injected/over-capacity/failure/timeout/budget fallback; complete preferences/preview/accept/lifecycle/check-in/history/replan UI | Proposal/route tests; complete Chromium journey, infeasibility and accessibility/narrow-width tests |
+| F7 | Home uses eligible accepted work plus due reviews; outside-plan actions are labelled; Progress projects historical reported adherence separately from mastery | Read-model integration and adherence projection fixtures |
+
+### Source map
+
+- Domain: roadmap.ts, roadmap-scheduler.ts, roadmap-validator.ts, plan-adherence.ts, budget.ts.
+- Application: roadmap-intent-use-cases.ts, roadmap-use-cases.ts, plan-proposal-fixture.ts, progress-read-model.ts.
+- Persistence: migrations 0022–0024; roadmap intent/schedule/catalog/budget repositories; practice and progress repositories.
+- Web: authenticated /api/planning/intent and /api/planning/roadmap; planning-preferences.tsx and roadmap-workspace.tsx; Home/Progress projections.
+- Tests: roadmap intent/scheduler/proposal/adherence and route units, real PostgreSQL roadmap.test.ts, roadmap browser journeys, existing learning/execution regressions.
+
+## Policy choices
+
+### Calendar, coverage and capacity
+
+- Calendar-month addition clamps month ends, including leap years. Conflicting explicit targets are rejected.
+- Inputs declare IANA timezone, nonempty study weekdays/languages, registered collections, and 15–480 minutes per study day.
+- Recovery policy v1 reserves 15% of remaining capacity by default, rounded up; learners can configure 5–40%. Recovery capacity is reserved before required/optional content.
+- Authored pilot estimates are an introduction (20 minutes) and reasoning/trace/coding session (50 minutes). Oversized sessions are rejected, never divided into unreviewed pieces. Estimates are not guarantees.
+- Study dates are local calendar labels, avoiding elapsed-hour DST errors. Reviews retain Phase 6 elapsed-UTC windows resolved into local dates. Overdue reviews remain recoverable. Beyond-end reviews remain visible in the queue and completion summary.
+- Preferred languages are alternatives; an internal activity pins the first supported preference. Historical activities retain their original language. Switching after completion creates a new, reasoned language-practice occurrence without implying proficiency from concept evidence.
+- Collection coverage reports total, internally supported, external-only and unavailable entries. Overlapping memberships do not duplicate required work. No copied content, automatic ingestion or account synchronization is introduced.
+
+### Acceptance, lifecycle and history
+
+- Previews expire after 24 hours and become stale when intent or active tokens change. Publication rechecks eligibility and fixed history server-side.
+- Writes serialize on the learner. Retry receipts precede conflict checks; changed facts using one key conflict. Old receipts cannot roll back the database pointer.
+- Acceptance, snapshot/items, active pointer, lifecycle journal, receipt and outbox commit together. Deferred ownership foreign keys connect active tokens to actual journal events. Raw history mutation, illegal transitions and mismatched targets fail closed.
+- Pausing freezes prospective adherence obligations. Reviews remain independently visible. Resuming keeps the deadline. Changes to horizon/date/timezone/capacity/goal require preferences, a preview and explicit acceptance.
+- Past/completed activities remain fixed with original timezone/language. Future work moves off missed sessions. Past missed required work receives a new recovery occurrence and reason; the original outcome remains historical.
+- Check-ins are learner reported and create no attempt result, mastery or external verification. Corrections append reversals, including across earlier accepted versions. Schedules and original timestamps remain immutable.
+- Completion is a schedule state, not a mastery certificate. Required future work must be completed; historical missed work remains visible. Archived/completed plans cannot resume directly.
+
+### Optional-operation controls
+
+| Policy v1 | Planner proposals | Code execution |
+|---|---|---|
+| Daily requests | 20 | 120 |
+| Rolling-minute requests | 6 | 12 |
+| Pending concurrency | 1 | 3 |
+| Daily reserved units | 200 | 120 |
+| Units per request | 10 | 1 |
+| Breaker threshold / cooldown | 3 failures / 60 seconds | 3 failures / 60 seconds |
+
+These are server-owned local policies. Proposal units are conservative allowance units, not real token billing or provider prices. Live-provider costing and production deployment controls remain Tasks 45a and 53.
+
+Code-run reservation commits with run/attempt/outbox. Verified terminal delivery settles once. Learner wrong-answer/compile/runtime outcomes do not trip infrastructure breakers. Unresolved runs retain pending slots; elapsed time cannot admit overlapping replacement work. Execution-control fencing and admission limits remain in force.
+
+Optional provider failure, timeout, invalid output, denied admission or unavailable budgeting returns the baseline. Ambiguous reservation retries do not repeat provider calls. After cooldown a breaker admits one pending probe and closes on success; operator reset is authorized and audited. The evaluator/operator port returns aggregate reserved-unit/pending/failure evidence.
+
+Core authored content, drafts, attempts, planning inputs and deterministic AI-off planning remain independent of optional allowance availability.
 
 ## Verification
 
 | Gate | Result |
 |---|---|
-| `pnpm verify` | 211 unit/web/architecture tests and format/lint/root-web-worker types/tokens/docs/secrets gates pass |
-| `pnpm test:integration` | 42 tests pass across 22 migrations; 2 unchanged optional Linux execution-host tests skipped |
-| `pnpm build` | Production build passes with `/plan` and the planning-input endpoint |
-| `pnpm test:a11y` | 25 Chromium checks pass on the localhost production build |
-| `pnpm test:e2e` | Existing offline/reconnect recovery scenario passes |
-| `pnpm security:audit` | No known vulnerabilities found |
+| pnpm verify | 232 unit/web/architecture tests; formatting, lint, root/web/worker types, tokens, docs and secrets pass |
+| pnpm test:integration | 55 real PostgreSQL tests across 24 migrations pass; 2 unchanged optional Linux execution-host tests skipped locally |
+| pnpm build | Production build passes with both planning endpoints and /plan |
+| pnpm test:a11y | 25 Chromium checks pass on localhost |
+| pnpm test:e2e | 3 Chromium journeys pass: offline/reconnect, complete roadmap workflow and infeasible full-course recovery |
+| pnpm security:audit | No known vulnerabilities found |
 
-New pure tests cover supported horizons, month-end and leap-year clamping, timezone date boundaries, mismatched target dates and invalid preferences. Route tests cover authentication-before-persistence, owner derivation, normalized input, unavailable persistence and invalid save tokens.
+Authenticated browser journeys use explicit API fixtures. PostgreSQL persistence, API authentication/ownership, conflict/retry receipts, quotas and rollback are independently tested. Browser fixtures make no live Clerk, live AI, hosted infrastructure or new hostile-code runtime claim; execution gates retain separate evidence.
 
-Seven real PostgreSQL scenarios cover concurrent save deduplication, ownership, invalid collections, conflicting edits, immutable revision history, old receipts, midnight replay, outbox rollback, deferred pointer integrity, cross-owner foreign keys and learner privacy cascades. Every integration file owns and drops its isolated database and roles.
+The 320px overflow discovered in the workflow was repaired with bounded select/button/fieldset sizing and wrapping. The complete workflow passes at that width with no automated accessibility violations.
 
-Two new browser scenarios exercise preference save/reload, four-month clamping, collection selection, preserved input after conflict, signed-out recovery, keyboard navigation, 320px layouts and automated accessibility. Authenticated browser data uses explicit route fixtures; database persistence and API authentication/ownership are independently tested. No new live Clerk-provider, hosted infrastructure or hostile-code execution claim is made.
+## Handoff and cleanup
 
-## Remaining Task 34 and Phase 7 work
+No Phase 7 implementation item is postponed. F7 technical gates are checked. Owner authorization for Phase 8 is the next gate; no external readiness/handoff or live provider is activated.
 
-1. Candidate and immutable accepted schedule versions, explicit acceptance with an expected active-version token, and one active primary plan.
-2. Kind-specific plan item targets, pause/resume, completion, supersession, and preserved cross-plan outcomes/adherence.
-3. Task 35: deterministic scheduler, capacity/prerequisites, reserved reviews/buffers and truthful sparse-content infeasibility.
-4. Task 36: full plan validator and accepted replan previews that preserve completed/past work.
-5. Task 51: atomic budgets, quotas, rate limits and circuit breakers.
-6. Task 37: validated fixture-only AI proposal/fallback and schedule create/review/accept/pause/replan journeys.
-
-Task 34 and F7 remain unchecked for these requirements. The next slice continues Task 34's accepted-version and lifecycle contracts. No new phase approval is needed to continue the already authorized Phase 7 work.
-
-## Local operation and cleanup
-
-Use pinned pnpm 12.4.2. For an existing local database, run `pnpm db:roles` before `pnpm db:migrate`; authentication and a configured runtime database are required to save private preferences. No execution host or Linux VM is needed for this slice.
-
-Tests used a temporary native PostgreSQL 17.11/pgvector 0.8.6 cluster bound to loopback port 54329. All test databases/roles are dropped, the cluster is stopped and removed, generated default cluster and logs removed, and temporary PostgreSQL, pgvector and krb5 formulas uninstalled. No VM was created. Shared libraries, workspace dependencies and build output remain available.
+Tests use pinned pnpm 12.4.2 and a temporary native PostgreSQL 17.11/pgvector 0.8.6 cluster on loopback port 54329 with 64 MB shared buffers. Test files drop their isolated databases and roles. After verification the owned cluster, generated default cluster, log and temporary PostgreSQL/pgvector/krb5 formulas were removed. Filesystem and socket checks confirmed their absence and closed database/browser test listeners. No VM was created and no live deployment occurred. Shared libraries, dependencies and build output remain available.

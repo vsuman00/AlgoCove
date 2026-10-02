@@ -58,6 +58,9 @@ jobs:
       - name: Run browser accessibility tests
         run: pnpm test:a11y
 
+      - name: Run roadmap and offline recovery journeys
+        run: pnpm test:e2e
+
       - name: Audit dependencies
         run: pnpm security:audit
 

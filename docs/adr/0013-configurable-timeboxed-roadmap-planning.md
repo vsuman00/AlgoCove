@@ -1,6 +1,7 @@
 # ADR-0013: Use configurable timeboxed roadmap planning
 
-**Status:** Proposed  
+**Status:** Accepted for the approved local Phase 7 implementation
+
 **Date:** 2026-09-17
 
 ## Context
@@ -23,3 +24,8 @@ AI may propose sequencing, explanations, alternatives, and a draft daily/weekly 
 ## Consequences
 
 The home experience can show a daily plan without hard-coding a six-month product. Recommendations remain explainable and bounded. AI outages or unsafe proposals fall back to a deterministic template. Progress is reported separately for internal mastery, external handoffs, review health, and consistency.
+
+
+## Implementation evidence (2026-10-03)
+
+[Phase 7 evidence](../architecture/phase7-evidence.md) records immutable accepted schedules, atomic acceptance/lifecycle, deterministic validation and replan previews. Recovery reserves a versioned 15% default, configurable from 5–40%. The current pilot is deliberately scoped; comprehensive requests reject insufficient content. The runtime composition is AI-off; fixture-only proposals fall back on failure, invalid output or budget denial. Live AI and hosted deployment remain later gates.

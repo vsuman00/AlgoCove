@@ -54,8 +54,8 @@ test("planning preferences save, reload, clamp calendar months, and preserve edi
   await expect(page.getByText("2027-02-28", { exact: true })).toBeVisible();
   await page.getByLabel("Pattern practice", { exact: true }).check();
   await page.getByRole("button", { name: "Save planning preferences" }).click();
-  await expect(page.getByRole("status")).toHaveText(
-    "Planning preferences revision 1 saved. No schedule is active.",
+  await expect(page.getByRole("status").first()).toHaveText(
+    "Planning preferences revision 1 saved. Review a schedule preview before accepting changes.",
   );
   expect(submitted).toMatchObject({
     planId: null,
@@ -69,7 +69,7 @@ test("planning preferences save, reload, clamp calendar months, and preserve edi
   conflict = true;
   await page.getByLabel("Goal", { exact: true }).fill("My unsaved update");
   await page.getByRole("button", { name: "Save planning preferences" }).click();
-  await expect(page.getByRole("status")).toHaveText(
+  await expect(page.getByRole("status").first()).toHaveText(
     "Planning preferences changed in another tab. Refresh before editing.",
   );
   await expect(page.getByLabel("Goal", { exact: true })).toHaveValue("My unsaved update");
@@ -86,7 +86,7 @@ test("signed-out planning preferences provide accessible recovery without a fake
 }) => {
   await page.setViewportSize({ width: 320, height: 800 });
   await page.goto("/plan");
-  await expect(page.getByRole("status")).toHaveText(
+  await expect(page.getByRole("status").first()).toHaveText(
     "Sign in to save private planning preferences.",
   );
   await expect(page.getByRole("button", { name: "Save planning preferences" })).toHaveCount(0);

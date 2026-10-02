@@ -1,8 +1,8 @@
 # AlgoCove phased implementation plan
 
-**Status:** Phase 6 Tasks 30–33 and technical F6 checks are COMPLETE. The owner authorized Phase 7 on 2026-10-02; Task 34 planning-input implementation is underway on localhost. No hosted deployment is authorized.
+**Status:** Phase 7 Tasks 34–37 and 51 and the technical F7 gates are COMPLETE on localhost as of 2026-10-03. The reviewed pilot is explicit; insufficient breadth returns a reasoned rejection. Phase 8 awaits owner authorization. No hosted deployment is authorized.
 **Prepared:** 2026-09-17  
-**Scope:** Phase 7 local implementation is authorized. This does not authorize hosted infrastructure, external publication, or production claims.
+**Scope:** Phase 7 local implementation, testing, commit and GitHub publication are authorized. Hosted infrastructure and live deployment remain excluded.
 **Task ledger:** `tasks/todo.md`
 
 ## 1. Outcome
@@ -822,20 +822,22 @@ Review the evidence after every two or three task slices. Replan if assumptions 
 
 **Entry review (2026-10-02):** Task 34 begins from the accepted F6 handoff. Roadmap data/state, calendar and publication contracts, interfaces, data architecture and the product closure matrix were reviewed. Plan acceptance remains explicit and cannot trust a browser-supplied validation verdict. Live AI remains reserved for Task 45a.
 
+**Phase 7 closure (2026-10-03):** Tasks 34–37 and 51 are verified against the roadmap/data/calendar/interface/closure contracts. Work covers schedule persistence/lifecycle, scheduler/validator, missed-session and changed-goal/language previews, optional-operation budgets and fixture-only proposals, plus the complete learner UI. The [evidence record](../docs/architecture/phase7-evidence.md) maps files, tests, policy choices and operational limits. F7 technical gates pass; Phase 8 approval is the next human gate.
+
 ### Task 34: Implement roadmap intent and immutable plan versions
 
 **Description:** Add plan horizon, target, capacity, language, collection, status, item, pause, completion, and supersession state machines.
 
-**Task 34 progress:** Private planning inputs are implemented through `/plan` and authenticated `/api/planning/intent`, with resolved calendar-month dates, explicit timezone, capacity, study weekdays, languages and registered collections. Immutable input revisions, owner-scoped command deduplication, optimistic edit tokens and an atomic outbox are persisted in migration 0022. Input history is not an accepted schedule. Candidate/accepted schedule versions, active-version acceptance, item targets, pause/completion/supersession and their cross-plan history tests remain open. See [Phase 7 evidence](../docs/architecture/phase7-evidence.md).
+**Task 34 closure:** Private versioned intent, validated candidates, immutable accepted schedules, kind-specific targets, atomic expected-active-token acceptance, lifecycle and append-only adherence/corrections are implemented. Replans pin past/completed occurrences and their original timezone/language. See [Phase 7 evidence](../docs/architecture/phase7-evidence.md).
 
 **Acceptance criteria:**
 - [x] Supported horizons are 1, 2, 3, 4, and 6 months unless Gate P2 changes them.
-- [ ] Accepted plan versions are immutable. Explicit acceptance atomically checks the expected active-version token; only one primary plan is active.
-- [ ] Replanning preserves prior adherence and completed evidence. PlanItem kind determines its nullable target FK; buffer items require no problem.
+- [x] Accepted plan versions are immutable. Explicit acceptance atomically checks the expected active-version token; only one primary plan is active.
+- [x] Replanning preserves prior adherence and completed evidence. PlanItem kind determines its nullable target FK; buffer items require no problem.
 
 **Verification:**
-- [ ] Run state-machine and version-history tests.
-- [ ] Run ownership and cross-plan isolation tests.
+- [x] Run state-machine and version-history tests.
+- [x] Run ownership and cross-plan isolation tests.
 
 **Dependencies:** Tasks 11, 14, 17, and 31-33  
 **Files likely touched:** `packages/domain/src/roadmap.ts`, `packages/db/migrations/0012_roadmap.sql`, `packages/application/src/roadmap-use-cases.ts`, `tests/integration/roadmap.test.ts`  
@@ -846,13 +848,13 @@ Review the evidence after every two or three task slices. Replan if assumptions 
 **Description:** Produce daily/weekly schedules from capacity, prerequisite order, mastery, due reviews, buffers, required core, reinforcement, and optional extension items.
 
 **Acceptance criteria:**
-- [ ] Required workload never exceeds declared capacity.
-- [ ] Reviews and configurable buffer days are reserved before optional extensions.
-- [ ] Infeasible goals or insufficient reviewed curriculum return scoped alternatives, not padded repeated work or an impossible full-DSA promise.
+- [x] Required workload never exceeds declared capacity.
+- [x] Reviews and configurable buffer days are reserved before optional extensions.
+- [x] Infeasible goals or insufficient reviewed curriculum return scoped alternatives, not padded repeated work or an impossible full-DSA promise.
 
 **Verification:**
-- [ ] Run property tests over horizons, capacities, missed days, and sparse content.
-- [ ] Snapshot representative 1-, 2-, 3-, 4-, and 6-month plans; test month-end clamping, leap year, timezone changes, reviews after plan end and indivisible sessions per implementation contracts.
+- [x] Run property tests over horizons, capacities, missed days, and sparse content.
+- [x] Snapshot representative 1-, 2-, 3-, 4-, and 6-month plans; test month-end clamping, leap year, timezone changes, reviews after plan end and indivisible sessions per implementation contracts.
 
 **Dependencies:** Task 34  
 **Files likely touched:** `packages/domain/src/roadmap-scheduler.ts`, `packages/application/src/build-baseline-plan.ts`, `tests/unit/roadmap-scheduler.test.ts`, `tests/fixtures/roadmaps/`  
@@ -863,13 +865,13 @@ Review the evidence after every two or three task slices. Replan if assumptions 
 **Description:** Validate prerequisites, duplicates, language availability, rights, external link health, review spacing, dates, buffers, and AI proposal changes; implement missed-day and changed-goal replanning.
 
 **Acceptance criteria:**
-- [ ] Duplicate collection membership does not duplicate required work.
-- [ ] Invalid language/content/link items block publication with reason codes.
-- [ ] Replan previews moved/removed/added items and requires acceptance; completed/past items remain fixed. Pause and resume do not silently extend deadlines.
+- [x] Duplicate collection membership does not duplicate required work.
+- [x] Invalid language/content/link items block publication with reason codes.
+- [x] Replan previews moved/removed/added items and requires acceptance; completed/past items remain fixed. Pause and resume do not silently extend deadlines.
 
 **Verification:**
-- [ ] Run invalid-plan fixtures for every closure-matrix case.
-- [ ] Replay old versus new plans and compare preserved history.
+- [x] Run invalid-plan fixtures for every closure-matrix case.
+- [x] Replay old versus new plans and compare preserved history.
 
 **Dependencies:** Tasks 17, 34-35  
 **Files likely touched:** `packages/domain/src/roadmap-validator.ts`, `packages/application/src/replan-roadmap.ts`, `tests/unit/roadmap-validator.test.ts`, `tests/integration/replan.test.ts`  
@@ -880,13 +882,13 @@ Review the evidence after every two or three task slices. Replan if assumptions 
 **Description:** This prerequisite runs before live AI calls; Task 53 later verifies production behavior. Enforce atomic reservations and caps for AI and code execution; define evaluation hooks for Task 41; add per-operation circuit breakers and documented graceful degradation.
 
 **Acceptance criteria:**
-- [ ] Concurrent requests cannot exceed the configured bounded allowance.
-- [ ] Budget denial produces authored fallback or clear refusal, not a generic error.
-- [ ] Core content and attempt writes remain available when optional work is shed.
+- [x] Concurrent requests cannot exceed the configured bounded allowance.
+- [x] Budget denial produces authored fallback or clear refusal, not a generic error.
+- [x] Core content and attempt writes remain available when optional work is shed.
 
 **Verification:**
-- [ ] Run concurrency, exhaustion, retry, and load-shedding fixtures.
-- [ ] Verify recovery after breaker cooldown/administrative reset.
+- [x] Run concurrency, exhaustion, retry, and load-shedding fixtures.
+- [x] Verify recovery after breaker cooldown/administrative reset.
 
 **Dependencies:** Tasks 13, 21 and 36  
 **Files likely touched:** `packages/domain/src/budget.ts`, `packages/application/src/rate-limit.ts`, `packages/application/src/circuit-breaker.ts`, `tests/integration/budget.test.ts`  
@@ -897,13 +899,13 @@ Review the evidence after every two or three task slices. Replan if assumptions 
 **Description:** Put AI plan explanation/sequencing behind a provider-neutral port. Use fixture-only model adapters in this phase; live AI activation is Task 45a. Validate every proposal, fall back to the baseline, and provide create/review/accept/pause/replan UI.
 
 **Acceptance criteria:**
-- [ ] AI cannot publish a plan or introduce unapproved content/links.
-- [ ] Provider failure/budget denial returns the deterministic baseline.
-- [ ] Learner sees workload, assumptions, reasons, and editable preferences before acceptance.
+- [x] AI cannot publish a plan or introduce unapproved content/links.
+- [x] Provider failure/budget denial returns the deterministic baseline.
+- [x] Learner sees workload, assumptions, reasons, and editable preferences before acceptance.
 
 **Verification:**
-- [ ] Run malformed, injected, over-capacity, timeout, and budget fixtures.
-- [ ] Run E2E journeys for create, accept, miss, pause, and replan.
+- [x] Run malformed, injected, over-capacity, timeout, and budget fixtures.
+- [x] Run E2E journeys for create, accept, miss, pause, and replan.
 
 **Dependencies:** Tasks 35-36 and 51  
 **Files likely touched:** `packages/application/src/plan-proposal-port.ts`, `packages/tutor/src/plan-proposal-adapter.ts`, `apps/web/app/plan/page.tsx`, `tests/e2e/roadmap.spec.ts`  
@@ -911,9 +913,9 @@ Review the evidence after every two or three task slices. Replan if assumptions 
 
 ### Checkpoint F7: Adaptive roadmap
 
-- [ ] Every supported horizon produces a feasible, explainable plan or reasoned rejection.
-- [ ] AI-off mode remains complete.
-- [ ] Replanning preserves history and avoids catch-up overload.
+- [x] Every supported horizon produces a feasible, explainable plan or reasoned rejection.
+- [x] AI-off mode remains complete.
+- [x] Replanning preserves history and avoids catch-up overload.
 - [ ] Human owner authorizes Phase 8.
 
 ## Phase 8: Outbound LeetCode practice handoff

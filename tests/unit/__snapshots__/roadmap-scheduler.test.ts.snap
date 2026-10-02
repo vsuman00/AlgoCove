@@ -1,0 +1,66 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`calendar properties and configurable recovery > pins representative supported-horizon summaries 1`] = `
+[
+  {
+    "buffer": 297,
+    "end": "2026-11-02",
+    "horizon": 1,
+    "work": [
+      [
+        "2026-10-02",
+        "problem:one",
+        60,
+      ],
+    ],
+  },
+  {
+    "buffer": 594,
+    "end": "2026-12-02",
+    "horizon": 2,
+    "work": [
+      [
+        "2026-10-02",
+        "problem:one",
+        60,
+      ],
+    ],
+  },
+  {
+    "buffer": 891,
+    "end": "2027-01-02",
+    "horizon": 3,
+    "work": [
+      [
+        "2026-10-02",
+        "problem:one",
+        60,
+      ],
+    ],
+  },
+  {
+    "buffer": 1188,
+    "end": "2027-02-02",
+    "horizon": 4,
+    "work": [
+      [
+        "2026-10-02",
+        "problem:one",
+        60,
+      ],
+    ],
+  },
+  {
+    "buffer": 1769,
+    "end": "2027-04-02",
+    "horizon": 6,
+    "work": [
+      [
+        "2026-10-02",
+        "problem:one",
+        60,
+      ],
+    ],
+  },
+]
+`;

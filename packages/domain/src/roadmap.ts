@@ -11,6 +11,7 @@ export type RoadmapPreferences = {
   readonly endDay: string;
   readonly timezone: string;
   readonly dailyCapacityMinutes: number;
+  readonly bufferPercent?: number;
   readonly studyWeekdays: readonly number[];
   readonly preferredLanguages: readonly ProblemLanguage[];
   readonly collectionIds: readonly OpaqueId<"collection">[];
@@ -104,7 +105,15 @@ export function parseRoadmapPreferences(
     new Set(value.collectionIds).size !== value.collectionIds.length
   )
     throw Error("Choose at most sixteen distinct collection identifiers.");
+  if (
+    value.bufferPercent !== undefined &&
+    (!Number.isInteger(value.bufferPercent) ||
+      Number(value.bufferPercent) < 5 ||
+      Number(value.bufferPercent) > 40)
+  )
+    throw Error("Recovery buffer must reserve 5 to 40 percent of capacity.");
   return {
+    ...(value.bufferPercent === undefined ? {} : { bufferPercent: Number(value.bufferPercent) }),
     goal: value.goal.trim(),
     targetRole: value.targetRole.trim(),
     horizonMonths,

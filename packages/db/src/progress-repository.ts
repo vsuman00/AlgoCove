@@ -1,3 +1,5 @@
+import { readRoadmapView, effectivePlanOutcomes } from "./roadmap-repository.ts";
+import { loadPlanningCatalog } from "./planning-catalog.ts";
 import type { Pool } from "pg";
 import {
   createOutboxEvent,
@@ -12,6 +14,7 @@ import {
   localStudyDay,
   validStudyDay,
   reviewTiming,
+  projectPlanAdherence,
   type MasteryProjection,
   type StudyActivity,
   type ProblemLanguage,
@@ -158,7 +161,10 @@ export class PostgresProgressRepository implements LearningProgressRepository {
               url: r.canonical_url,
             })),
           },
-          planAdherence: { status: "no_accepted_plan", completedOnTime: null, totalDue: null },
+          planAdherence: projectPlanAdherence(
+            await readRoadmapView(tx, input.learnerId, input.now),
+            input.now,
+          ),
           reviewHealth: health,
         };
       },
@@ -195,7 +201,57 @@ export class PostgresProgressRepository implements LearningProgressRepository {
           "SELECT 1 FROM mastery.review_item r WHERE r.learner_id=$1 AND r.status IN ('due','deferred') AND r.due_start<=$2 AND EXISTS(SELECT 1 FROM content.review_exercise e WHERE e.concept_id=r.concept_id AND e.status='published' AND (e.rights_expires_at IS NULL OR e.rights_expires_at>$2)) LIMIT 1",
           [input.learnerId, input.now],
         );
+        const roadmap = await readRoadmapView(tx, input.learnerId, input.now),
+          state = roadmap.state;
+        const outcomes = effectivePlanOutcomes(roadmap.journal);
+        const catalog =
+          state?.status === "active"
+            ? await loadPlanningCatalog(tx, input.learnerId, state.schedule.preferences, input.now)
+            : null;
+        const planned =
+          state?.status === "active"
+            ? state.schedule.items.find(
+                (item) =>
+                  item.kind !== "buffer" &&
+                  item.day <= localStudyDay(input.now, item.timezone) &&
+                  !outcomes.some((e) => e.occurrenceId === item.occurrenceId) &&
+                  catalog?.units.some(
+                    (u) =>
+                      (u.key === item.key ||
+                        ((item.reasonCodes.includes("deliberate_missed_session_recovery") ||
+                          item.reasonCodes.includes("language_changed_practice")) &&
+                          u.targetId === item.targetId &&
+                          u.kind === item.kind)) &&
+                      u.available &&
+                      u.rightsValid &&
+                      u.linkHealthy &&
+                      (u.languages.length === 0 ||
+                        state.schedule.preferences.preferredLanguages.some((l) =>
+                          u.languages.includes(l),
+                        )) &&
+                      u.prerequisites.every(
+                        (key) =>
+                          outcomes.some((e) => e.kind === "done" && e.occurrenceId === key) ||
+                          catalog.masteredKeys.includes(key),
+                      ),
+                  ),
+              )
+            : undefined;
         return {
+          hasAcceptedPlan: state !== null,
+          ...(planned
+            ? {
+                plannedAction: {
+                  kind: "planned" as const,
+                  href: planned.href,
+                  title: `Scheduled: ${planned.title}`,
+                  reasonCodes: ["active_accepted_plan", ...planned.reasonCodes],
+                  reasons: [
+                    `Scheduled for ${planned.day} in ${planned.timezone}; estimated ${planned.minutes} minutes.`,
+                  ],
+                },
+              }
+            : {}),
           verifiedConcepts: verified.rows.map((r) => parsedId("concept", r.concept_id)),
           goal: profile.rows[0]?.goal ?? null,
           preferredLanguages: profile.rows[0]?.preferred_languages ?? [],

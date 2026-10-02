@@ -39,6 +39,12 @@ pnpm db:migrate
 
 `DATABASE_OPERATOR_URL` is used only by role bootstrap. `DATABASE_ADMIN_URL` is the migration/schema-owner connection. `DATABASE_URL` is the runtime connection and cannot create schema or modify migration bookkeeping.
 
+## Local roadmap planning (Phase 7)
+
+Save preferences and review a schedule at /plan. The reviewed two-pointer pilot supports all five calendar horizons or returns specific capacity/content reasons. Accepting a preview is explicit; pauses keep the deadline and replans preserve prior history. Home prioritizes eligible accepted work and due reviews; Progress keeps reported adherence separate from mastery.
+
+Run pnpm db:roles then pnpm db:migrate for the planning schema and optional-operation reservations. Phase 7 uses the deterministic scheduler with AI off; model adapters are test fixtures only. See [Phase 7 evidence](docs/architecture/phase7-evidence.md) for policies, localhost verification and cleanup. No live deployment is enabled.
+
 ## Local mastery evidence (Phase 6)
 
 After updating an existing database, rerun `pnpm db:roles` before `pnpm db:migrate` to create the mastery schema and grants. `pnpm mastery:consume --limit=100` processes a bounded batch of persisted assessment events using `DATABASE_URL`. `pnpm mastery:rebuild <learnerId> <conceptId>` rebuilds the default projection using `DATABASE_ADMIN_URL`. The consumer is an explicit local command. The [Phase 6 evidence record](docs/architecture/phase6-evidence.md) describes current sources, pending projection responses and remaining work.

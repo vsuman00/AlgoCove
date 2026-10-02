@@ -326,6 +326,7 @@ export function ProgressExperience(): ReactElement {
             </p>
             <a href="/review">Open reviews</a>
           </section>
+
           <section className="ac-profile-strip">
             <h2>Study consistency</h2>
             <p>
@@ -443,7 +444,12 @@ export function ProgressExperience(): ReactElement {
           </section>
           <section className="ac-profile-strip">
             <h2>Plan adherence</h2>
-            <p>No accepted plan is present. Completion and on-time adherence are not calculated.</p>
+            <p>
+              {data.planAdherence.status === "no_accepted_plan"
+                ? "No accepted plan is present. Completion and on-time adherence are not calculated."
+                : `${data.planAdherence.completedOnTime} on-time learner check-ins across ${data.planAdherence.totalDue} due activities. Historical versions and paused obligations are accounted for separately from mastery.`}
+            </p>
+            <a href="/plan">Review your roadmap</a>
             <p>
               {data.completedSessions} completed learning sessions, recorded separately from plan
               adherence.

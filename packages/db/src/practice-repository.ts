@@ -1,3 +1,6 @@
+import { reserveOptional, finishOptional } from "./budget-repository.ts";
+import { lockStudyOwner, sourceDigest } from "./learning-source-repository.ts";
+import { AppError } from "@algocove/application";
 import type { Pool, QueryResultRow } from "pg";
 import { snapshotAssessmentOutbox } from "@algocove/application";
 import { recordStudyActivity } from "./study-activity.ts";
@@ -401,6 +404,7 @@ export class PostgresPracticeRepository {
     readonly outbox: OutboxEvent;
   }): Promise<LearningAttempt | null> {
     return withTransaction(this.pool, async (transaction) => {
+      await lockStudyOwner(transaction, input.run.learnerId);
       const current = await oneAttempt(
         transaction,
         input.attempt.attemptId,
@@ -408,6 +412,20 @@ export class PostgresPracticeRepository {
         true,
       );
       if (current === null || current.version !== input.expectedAttemptVersion) return null;
+      const admission = await reserveOptional(transaction, {
+        learnerId: input.run.learnerId,
+        operation: "code_execution",
+        key: input.run.runId,
+        digest: sourceDigest(input.run),
+        now: input.run.requestedAt,
+      });
+      if (!admission.allowed)
+        throw new AppError("budget_exhausted", {
+          category: "budget_exhausted",
+          message:
+            "Code execution allowance is unavailable. Saved content and attempt drafts remain available; retry after the indicated delay.",
+          details: { reason: admission.reason, retry_after_seconds: admission.retryAfterSeconds },
+        });
       await updateAttempt(transaction, input.attempt);
       await insertAttemptEvent(transaction, input.event);
       await insertCodeRun(transaction, input.run);
@@ -663,6 +681,7 @@ export class PostgresPracticeRepository {
     readonly outbox: OutboxEvent | null;
   }): Promise<CodeRunCommit | null> {
     return withTransaction(this.pool, async (transaction) => {
+      await lockStudyOwner(transaction, input.run.learnerId);
       const currentRun = await oneCodeRun(transaction, input.run.runId, input.run.learnerId, true);
       if (currentRun === null) return null;
       if (currentRun.terminalResultId !== null) {
@@ -707,6 +726,13 @@ export class PostgresPracticeRepository {
         input.result.classification,
         input.result.completedAt,
       );
+      await finishOptional(transaction, {
+        learnerId: input.run.learnerId,
+        operation: "code_execution",
+        key: input.run.runId,
+        now: input.result.completedAt,
+        outcome: input.result.classification === "infrastructure_failure" ? "failure" : "success",
+      });
       let observation = input.observation;
       if (observation !== null) {
         const snapshot = await transaction.query<{ tier: number; captured_at: Date }>(

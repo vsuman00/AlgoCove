@@ -11,7 +11,7 @@ export type RecommendationCandidate = {
   readonly lastPracticed: Instant | null;
 };
 export type NextAction = {
-  readonly kind: "review" | "intro" | "practice" | "profile" | "unavailable";
+  readonly kind: "review" | "intro" | "practice" | "profile" | "unavailable" | "planned";
   readonly href: string;
   readonly title: string;
   readonly reasonCodes: readonly string[];

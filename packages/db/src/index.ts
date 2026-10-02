@@ -83,3 +83,5 @@ export { PostgresProgressRepository } from "./progress-repository.ts";
 export * from "./concept-mapping-repository.ts";
 
 export * from "./roadmap-intent-repository.ts";
+export * from "./roadmap-repository.ts";
+export * from "./budget-repository.ts";

@@ -1,4 +1,5 @@
 "use client";
+import RoadmapWorkspace from "./roadmap-workspace";
 import { useEffect, useRef, useState, type ReactElement } from "react";
 import {
   ROADMAP_HORIZONS,
@@ -16,6 +17,7 @@ type Form = {
   startDay: string;
   timezone: string;
   dailyCapacityMinutes: number;
+  bufferPercent?: number;
   studyWeekdays: number[];
   preferredLanguages: string[];
   collectionIds: string[];
@@ -140,7 +142,7 @@ export default function PlanningPreferences(): ReactElement {
       });
       setIntent(result.intent);
       setMessage(
-        `Planning preferences revision ${result.intent.version} saved. No schedule is active.`,
+        `Planning preferences revision ${result.intent.version} saved. Review a schedule preview before accepting changes.`,
       );
       command.current = null;
     } catch (error) {
@@ -240,6 +242,16 @@ export default function PlanningPreferences(): ReactElement {
                   onChange={(event) => update("dailyCapacityMinutes", Number(event.target.value))}
                 />
               </label>
+              <label>
+                Recovery buffer (% of capacity)
+                <input
+                  type="number"
+                  min={5}
+                  max={40}
+                  value={form.bufferPercent ?? 15}
+                  onChange={(event) => update("bufferPercent", Number(event.target.value))}
+                />
+              </label>
               <fieldset>
                 <legend>Study weekdays</legend>
                 {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map(
@@ -308,6 +320,7 @@ export default function PlanningPreferences(): ReactElement {
           )}
         </section>
       )}
+      {context !== null && <RoadmapWorkspace revision={intent?.version ?? 0} />}
     </main>
   );
 }
