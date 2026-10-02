@@ -75,6 +75,7 @@ export const ID_KINDS = {
   languageManifest: "man",
   externalReference: "ref",
   collection: "col",
+  roadmapPlan: "pln",
   codeRun: "run",
   tutorTurn: "trn",
   request: "req",

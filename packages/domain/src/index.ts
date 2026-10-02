@@ -304,3 +304,5 @@ export * from "./review-schedule.ts";
 export * from "./consistency.ts";
 export * from "./recommendation.ts";
 export * from "./structured-learning.ts";
+
+export * from "./roadmap.ts";

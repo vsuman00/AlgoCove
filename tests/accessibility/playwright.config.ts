@@ -3,7 +3,7 @@ import { defineConfig, devices } from "@playwright/test";
 export default defineConfig({
   testDir: ".",
   testMatch:
-    /(?:content-operations|design-shell|execution-readiness|guided-problem|onboarding|phase6-learning)\.spec\.ts$/,
+    /(?:content-operations|design-shell|execution-readiness|guided-problem|onboarding|phase6-learning|planning-preferences)\.spec\.ts$/,
   fullyParallel: true,
   forbidOnly: Boolean(process.env.CI),
   reporter: "line",

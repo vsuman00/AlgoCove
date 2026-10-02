@@ -4,7 +4,7 @@
 
 **Scope:** Authorized localhost implementation. No hosted deployment or Linux VM.
 
-**Status:** Tasks 30–33 and the three technical F6 checks are COMPLETE for the published local learning bundle. Ready for the owner's Phase 7 decision; Phase 7 implementation has not begun.
+**Status:** Tasks 30–33 and the three technical F6 checks are COMPLETE for the published local learning bundle. The owner subsequently approved Phase 7 on 2026-10-02; its implementation is tracked in [Phase 7 evidence](phase7-evidence.md).
 
 ## Governing documents
 
@@ -98,4 +98,4 @@ Browser checks exercise the rendered overdue review, answer/confidence receipt, 
 
 All isolated test databases and roles are dropped. The temporary server is stopped, port 54329 is closed, generated PostgreSQL clusters/log removed, and temporary PostgreSQL 17, pgvector and krb5 formulas uninstalled. No VM was created. Previously existing shared CA/OpenSSL/xz updates remain installed; workspace dependencies and build output remain available.
 
-Next is the owner's F6 Phase 7 authorization, then Task 34's roadmap intent and immutable plan versions. This completion does not authorize production deployment or external publication.
+The owner approved Phase 7 after this handoff and separately authorized GitHub publication. Task 34's roadmap intent and immutable plan versions are tracked in [Phase 7 evidence](phase7-evidence.md). Production deployment remains excluded.

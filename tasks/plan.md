@@ -1,8 +1,8 @@
 # AlgoCove phased implementation plan
 
-**Status:** Phase 6 Tasks 30–33 and technical F6 checks are COMPLETE and verified on localhost. Phase 7 is ready for the human owner decision; no hosted deployment is authorized.
+**Status:** Phase 6 Tasks 30–33 and technical F6 checks are COMPLETE. The owner authorized Phase 7 on 2026-10-02; Task 34 planning-input implementation is underway on localhost. No hosted deployment is authorized.
 **Prepared:** 2026-09-17  
-**Scope:** Phase 6 local implementation is authorized. This does not authorize hosted infrastructure, external publication, or production claims.
+**Scope:** Phase 7 local implementation is authorized. This does not authorize hosted infrastructure, external publication, or production claims.
 **Task ledger:** `tasks/todo.md`
 
 ## 1. Outcome
@@ -816,16 +816,20 @@ Review the evidence after every two or three task slices. Replan if assumptions 
 - [x] Mastery is reproducible from evidence.
 - [x] Reviews and recommendations are deterministic and explainable.
 - [x] Progress does not confuse activity with mastery.
-- [ ] Human owner authorizes Phase 7 — technical handoff ready; Phase 7 work has not started.
+- [x] Human owner authorizes Phase 7 — explicitly approved in this chat on 2026-10-02; local testing and GitHub publication are authorized, with no live deployment.
 
 ## Phase 7: Configurable roadmap planning
+
+**Entry review (2026-10-02):** Task 34 begins from the accepted F6 handoff. Roadmap data/state, calendar and publication contracts, interfaces, data architecture and the product closure matrix were reviewed. Plan acceptance remains explicit and cannot trust a browser-supplied validation verdict. Live AI remains reserved for Task 45a.
 
 ### Task 34: Implement roadmap intent and immutable plan versions
 
 **Description:** Add plan horizon, target, capacity, language, collection, status, item, pause, completion, and supersession state machines.
 
+**Task 34 progress:** Private planning inputs are implemented through `/plan` and authenticated `/api/planning/intent`, with resolved calendar-month dates, explicit timezone, capacity, study weekdays, languages and registered collections. Immutable input revisions, owner-scoped command deduplication, optimistic edit tokens and an atomic outbox are persisted in migration 0022. Input history is not an accepted schedule. Candidate/accepted schedule versions, active-version acceptance, item targets, pause/completion/supersession and their cross-plan history tests remain open. See [Phase 7 evidence](../docs/architecture/phase7-evidence.md).
+
 **Acceptance criteria:**
-- [ ] Supported horizons are 1, 2, 3, 4, and 6 months unless Gate P2 changes them.
+- [x] Supported horizons are 1, 2, 3, 4, and 6 months unless Gate P2 changes them.
 - [ ] Accepted plan versions are immutable. Explicit acceptance atomically checks the expected active-version token; only one primary plan is active.
 - [ ] Replanning preserves prior adherence and completed evidence. PlanItem kind determines its nullable target FK; buffer items require no problem.
 

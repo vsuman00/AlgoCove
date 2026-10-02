@@ -7,6 +7,7 @@ import { isClerkConfigured } from "../auth/clerk-config";
 
 const navItems = [
   ["Home", "/", "home"],
+  ["Planning", "/plan", "target"],
   ["Reviews", "/review", "book"],
   ["Progress", "/progress", "progress"],
   ["Learner profile", "/onboarding", "target"],

@@ -1,6 +1,6 @@
 # AlgoCove implementation task ledger
 
-**Status:** Phase 5 Tasks 25 through 29 and the technical F5 learning-kernel gates are COMPLETE on localhost for the first original problem in all six languages. The security owner approved gVisor `runsc` on 2026-09-26. Real signed execution, browser result/failure/resume, authored readiness checks, trace prediction/editing and persisted reference assistance pass. See [Phase 5 evidence](../docs/architecture/phase5-evidence.md). The owner authorized Phase 6 on 2026-10-02; Tasks 30–33 and the technical F6 checks are COMPLETE on localhost; Phase 7 awaits the owner decision. No hosted deployment is authorized. Earlier dated partial-status entries below describe superseded slices.
+**Status:** Phase 5 Tasks 25 through 29 and the technical F5 learning-kernel gates are COMPLETE on localhost for the first original problem in all six languages. The security owner approved gVisor `runsc` on 2026-09-26. Real signed execution, browser result/failure/resume, authored readiness checks, trace prediction/editing and persisted reference assistance pass. See [Phase 5 evidence](../docs/architecture/phase5-evidence.md). The owner authorized Phase 6 on 2026-10-02; Tasks 30–33 and the technical F6 checks are COMPLETE on localhost; Phase 7 was explicitly approved on 2026-10-02 and Task 34 implementation has started. No hosted deployment is authorized. Earlier dated partial-status entries below describe superseded slices.
 
 **Phase 6 entry (2026-10-02):** The owner directed Phase 6. Review of [the plan](plan.md), [architecture reading order](../docs/architecture/README.md), [system design](../docs/architecture/system-design.md), [data and AI contracts](../docs/architecture/data-and-ai-architecture.md), [runtime flows](../docs/architecture/interfaces-and-runtime-flows.md), [implementation contracts](../docs/architecture/implementation-contracts.md), [security and privacy rules](../docs/architecture/security-reliability-operations.md), [quality traceability](../docs/architecture/quality-and-traceability.md), [product closure matrix](../docs/architecture/product-plan-and-closure-matrix.md), and relevant ADRs found that the conceptual `PROBLEM_CONCEPT` relation was missing in the database. Migration `0018_problem_concept_mapping.sql` now binds concepts to exact problem versions and prevents changes once their content is published. The local practice seed adds the reviewed two-pointers mapping. This closes only the mapping-schema prerequisite; the content workflow still needs reviewed mapping authoring, and Task 30's evidence handler/projection were not yet complete in this initial slice; the subsequent submission slice is recorded below.
 
@@ -199,11 +199,13 @@
 - [x] Mastery is reproducible from evidence.
 - [x] Reviews and recommendations are deterministic and explainable.
 - [x] Progress does not confuse activity with mastery.
-- [ ] Human owner authorizes Phase 7 — ready for this decision; no Phase 7 implementation has begun.
+- [x] Human owner authorizes Phase 7 — explicitly approved in this chat on 2026-10-02, for local implementation/testing and GitHub publication.
 
 ## Phase 7: Configurable roadmap planning
 
-- [ ] Task 34: Implement roadmap intent and immutable plan versions
+**Phase 7 entry (2026-10-02):** Owner approval is recorded. The first complete vertical slice saves and reads private planning preferences at `/plan`, with calendar-month horizons, immutable input revisions, explicit optimistic tokens and idempotent saves. Verification passes 211 unit/web/architecture tests, 42 database tests across 22 migrations, the production build, 25 Chromium checks, offline recovery and dependency audit. The temporary native database resources are removed after testing. Accepted schedule versions, scheduling, validation/replanning, budgets and proposal UI remain Phase 7 work; see [Phase 7 evidence](../docs/architecture/phase7-evidence.md).
+
+- [ ] Task 34: Implement roadmap intent and immutable plan versions — IN PROGRESS; complete private planning-input save/read path with calendar horizons, version history, ownership, optimistic conflicts and retry deduplication. Accepted schedule versions and lifecycle remain open; see [Phase 7 evidence](../docs/architecture/phase7-evidence.md).
 - [ ] Task 35: Implement deterministic baseline scheduler
 - [ ] Task 36: Implement plan validator and replan policy
 - [ ] Task 51: Implement budgets, quotas, rate limits, and circuit breakers

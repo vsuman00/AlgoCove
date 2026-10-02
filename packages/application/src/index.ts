@@ -185,3 +185,5 @@ export * from "./learning-review-use-cases.ts";
 export * from "./progress-read-model.ts";
 
 export * from "./concept-mapping.ts";
+
+export * from "./roadmap-intent-use-cases.ts";
