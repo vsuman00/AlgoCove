@@ -123,7 +123,7 @@ try {
   }
   await runNode(
     [
-      require.resolve("vitest/vitest.mjs"),
+      resolve(require.resolve("vitest/package.json"), "..", "vitest.mjs"),
       "run",
       "--project",
       "integration",

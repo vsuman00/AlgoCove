@@ -47,20 +47,28 @@ test.describe("Learner Home shell", () => {
     await expect(page.getByRole("link", { name: "Settings" })).toHaveCount(0);
   });
 
-  test("shows staff destinations only for server-owned staff roles", async ({ page }) => {
-    await page.route("**/api/auth/session", (route) =>
-      route.fulfill({ json: { authenticated: true, user: { roles: ["author"] } } }),
-    );
+  test("shows staff destinations only for server-owned staff roles with one session read", async ({
+    page,
+  }) => {
+    let sessionReads = 0;
+    await page.route("**/api/auth/session", (route) => {
+      sessionReads += 1;
+      return route.fulfill({ json: { authenticated: true, user: { roles: ["author"] } } });
+    });
     await page.goto("/");
     const staff = page.getByRole("navigation", { name: "Staff navigation" });
     await expect(staff.getByRole("link", { name: "Content", exact: true })).toBeVisible();
     await expect(staff.getByRole("link", { name: "Runtimes", exact: true })).toHaveCount(0);
+    expect(sessionReads).toBe(1);
     await page.unroute("**/api/auth/session");
-    await page.route("**/api/auth/session", (route) =>
-      route.fulfill({ json: { authenticated: true, user: { roles: ["learner"] } } }),
-    );
+    sessionReads = 0;
+    await page.route("**/api/auth/session", (route) => {
+      sessionReads += 1;
+      return route.fulfill({ json: { authenticated: true, user: { roles: ["learner"] } } });
+    });
     await page.reload();
     await expect(page.getByRole("navigation", { name: "Staff navigation" })).toHaveCount(0);
+    expect(sessionReads).toBe(1);
   });
 
   test("shows real authentication entry points without a placeholder identity", async ({

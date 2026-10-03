@@ -361,3 +361,258 @@
     margin-block: 0;
   }
 }
+
+/* Page-level presentation for learning routes and their signed-out/empty states. */
+.ac-home-main:has(> h1) {
+  padding-top: clamp(32px, 4vw, 56px);
+}
+.ac-home-main > h1 {
+  margin: 0 0 12px;
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: clamp(30px, 3.5vw, 46px);
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  line-height: 1.12;
+}
+.ac-home-main > h1 + p {
+  max-width: 76ch;
+  margin: 0 0 24px;
+  color: var(--text-secondary);
+  font-size: 16px;
+  line-height: 1.65;
+}
+.ac-home-main > p[role="status"],
+.ac-home-main > div > p[role="status"] {
+  max-width: 780px;
+  margin-block: 20px;
+  border: 1px solid var(--border-default);
+  border-left: 3px solid var(--action-primary);
+  border-radius: 10px;
+  padding: 16px 18px;
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  line-height: 1.55;
+}
+.ac-home-main > a[href="/"] {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  margin-bottom: 18px;
+  color: var(--text-link);
+  font-weight: 600;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+.ac-home-main > .ac-small-button {
+  margin-block: 4px 20px;
+}
+.ac-profile-strip:has(> form) {
+  display: block;
+  margin-top: 24px;
+  padding: clamp(20px, 3vw, 32px);
+  border-radius: 16px;
+  box-shadow: var(--shadow-card);
+}
+.ac-profile-strip > form {
+  display: grid;
+  gap: 20px;
+}
+.ac-profile-strip > form > fieldset:first-child {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px 20px;
+  border: 0;
+  padding: 0;
+}
+.ac-profile-strip > form > fieldset:first-child > legend {
+  grid-column: 1 / -1;
+  margin-bottom: 4px;
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: 24px;
+}
+.ac-profile-strip form label:not(.ac-learning-option) {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 600;
+}
+.ac-profile-strip form input:not([type="checkbox"]):not([type="radio"]),
+.ac-profile-strip form select,
+.ac-profile-strip form textarea {
+  min-width: 0;
+  min-height: 44px;
+  margin: 0;
+  border: 1px solid var(--border-strong);
+  border-radius: 9px;
+  padding: 10px 12px;
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font: inherit;
+}
+.ac-profile-strip form fieldset fieldset {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  grid-column: 1 / -1;
+  border: 1px solid var(--border-default);
+  border-radius: 12px;
+  padding: 14px;
+}
+.ac-profile-strip form fieldset fieldset > legend {
+  padding-inline: 6px;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+.ac-profile-strip .ac-learning-option {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  border: 1px solid var(--border-default);
+  border-radius: 999px;
+  padding: 6px 12px;
+  background: var(--bg-page);
+  font-weight: 500;
+}
+.ac-profile-strip .ac-learning-option input {
+  width: 16px;
+  height: 16px;
+  min-height: 0;
+  accent-color: var(--action-primary);
+}
+.ac-roadmap {
+  margin-top: 28px;
+  border: 1px solid var(--border-default);
+  border-radius: 16px;
+  padding: clamp(18px, 3vw, 28px);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-card);
+}
+.ac-roadmap > h2 {
+  margin: 0 0 12px;
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: clamp(24px, 2.5vw, 32px);
+  line-height: 1.2;
+}
+.ac-roadmap > p:not([role="status"]) {
+  max-width: 76ch;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+.ac-roadmap > p[role="status"] {
+  border-left: 3px solid var(--action-primary);
+  padding: 10px 14px;
+  background: var(--bg-page);
+  color: var(--text-primary);
+}
+.ac-roadmap > fieldset {
+  display: grid;
+  gap: 14px;
+  margin-block: 20px;
+  border: 1px solid var(--border-default);
+  border-radius: 12px;
+  padding: 18px;
+}
+.ac-roadmap > fieldset > label {
+  display: grid;
+  gap: 8px;
+  font-weight: 600;
+}
+.ac-roadmap > fieldset select {
+  min-height: 44px;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  padding: 8px 12px;
+  background: var(--bg-surface);
+  font: inherit;
+}
+.ac-home-main > .ac-profile-strip {
+  display: block;
+  margin-block: 20px;
+  border-radius: 14px;
+  box-shadow: var(--shadow-card);
+}
+.ac-home-main > .ac-profile-strip > h2,
+.ac-home-main > .ac-profile-strip > h3 {
+  margin-block: 0 12px;
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: 24px;
+  line-height: 1.25;
+}
+.ac-home-main > .ac-profile-strip article {
+  margin-block: 12px;
+  border-top: 1px solid var(--border-default);
+  padding-top: 16px;
+}
+.ac-home-main > .ac-profile-strip article h3 {
+  font-size: 19px;
+}
+.ac-home-main > .ac-profile-strip form {
+  margin-top: 18px;
+  border-top: 1px solid var(--border-default);
+  padding-top: 18px;
+}
+.ac-home-main > .ac-capability-card {
+  margin-block: 20px;
+  border-radius: 14px;
+  box-shadow: var(--shadow-card);
+}
+@media (max-width: 620px) {
+  .ac-home-main:has(> h1) {
+    padding-top: 24px;
+  }
+  .ac-profile-strip > form > fieldset:first-child {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.ac-content-operations > header {
+  margin-bottom: 26px;
+}
+.ac-content-operations > header > a {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  margin-bottom: 16px;
+  color: var(--text-link);
+  font-weight: 600;
+  text-underline-offset: 3px;
+}
+.ac-content-operations > header > h1 {
+  margin: 8px 0 12px;
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: clamp(30px, 3.5vw, 46px);
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  line-height: 1.12;
+}
+.ac-content-operations > header > p:not(.ac-eyebrow) {
+  max-width: 76ch;
+  color: var(--text-secondary);
+  font-size: 16px;
+  line-height: 1.65;
+}
+.ac-content-operations > .ac-profile-strip {
+  display: block;
+  border-radius: 14px;
+  padding: clamp(20px, 3vw, 32px);
+}
+.ac-content-operations > .ac-profile-strip[role="status"] {
+  border-left: 3px solid var(--action-primary);
+  box-shadow: var(--shadow-card);
+}
+.ac-content-operations > .ac-profile-strip h2 {
+  margin: 0 0 10px;
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: 24px;
+  line-height: 1.25;
+}

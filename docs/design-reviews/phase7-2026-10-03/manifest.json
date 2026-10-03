@@ -1,342 +1,399 @@
 {
-  "date": "2026-10-02T20:37:32.767Z",
+  "date": "2026-10-03",
   "approval": "engineering inspection only; not an owner-approved visual baseline",
+  "server": "local Next.js production build; no deployment",
   "samples": [
     {
       "route": "/",
       "viewport": {
         "width": 320,
-        "height": 1000
+        "height": 900
       },
       "width": 320,
       "scrollWidth": 320,
-      "fonts": true,
+      "fontLoaded": true,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "heading": "Build a pattern. Return to it.",
       "pageErrors": 0,
-      "authentication": "signed out; actual application routes"
+      "authentication": "signed out; actual production application routes"
     },
     {
       "route": "/plan",
       "viewport": {
         "width": 320,
-        "height": 1000
+        "height": 900
       },
       "width": 320,
       "scrollWidth": 320,
-      "fonts": true,
+      "fontLoaded": true,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "heading": "Planning preferences",
       "pageErrors": 0,
-      "authentication": "signed out; actual application routes"
+      "authentication": "signed out; actual production application routes"
     },
     {
       "route": "/review",
       "viewport": {
         "width": 320,
-        "height": 1000
+        "height": 900
       },
       "width": 320,
       "scrollWidth": 320,
-      "fonts": true,
+      "fontLoaded": true,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "heading": "Your reviews",
       "pageErrors": 0,
-      "authentication": "signed out; actual application routes"
+      "authentication": "signed out; actual production application routes"
     },
     {
       "route": "/progress",
       "viewport": {
         "width": 320,
-        "height": 1000
+        "height": 900
       },
       "width": 320,
       "scrollWidth": 320,
-      "fonts": true,
+      "fontLoaded": true,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "heading": "Your progress",
       "pageErrors": 0,
-      "authentication": "signed out; actual application routes"
+      "authentication": "signed out; actual production application routes"
     },
     {
       "route": "/onboarding",
       "viewport": {
         "width": 320,
-        "height": 1000
+        "height": 900
       },
       "width": 320,
       "scrollWidth": 320,
-      "fonts": true,
+      "fontLoaded": true,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "heading": "Shape the learning loop around your week.",
       "pageErrors": 0,
-      "authentication": "signed out; actual application routes"
+      "authentication": "signed out; actual production application routes"
     },
     {
       "route": "/admin/content",
       "viewport": {
         "width": 320,
-        "height": 1000
+        "height": 900
       },
       "width": 320,
       "scrollWidth": 320,
-      "fonts": true,
+      "fontLoaded": true,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "heading": "Governed content",
       "pageErrors": 0,
-      "authentication": "signed out; actual application routes"
+      "authentication": "signed out; actual production application routes"
     },
     {
       "route": "/learn/arrays-two-pointer",
       "viewport": {
         "width": 320,
-        "height": 1000
+        "height": 900
       },
       "width": 320,
       "scrollWidth": 320,
-      "fonts": true,
+      "fontLoaded": true,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "heading": "Container with most water",
       "pageErrors": 0,
-      "authentication": "signed out; actual application routes"
+      "authentication": "signed out; actual production application routes"
     },
     {
       "route": "/",
       "viewport": {
         "width": 768,
-        "height": 1000
+        "height": 900
       },
       "width": 768,
       "scrollWidth": 768,
-      "fonts": true,
+      "fontLoaded": true,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "heading": "Build a pattern. Return to it.",
       "pageErrors": 0,
-      "authentication": "signed out; actual application routes"
+      "authentication": "signed out; actual production application routes"
     },
     {
       "route": "/plan",
       "viewport": {
         "width": 768,
-        "height": 1000
+        "height": 900
       },
       "width": 768,
       "scrollWidth": 768,
-      "fonts": true,
+      "fontLoaded": true,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "heading": "Planning preferences",
       "pageErrors": 0,
-      "authentication": "signed out; actual application routes"
+      "authentication": "signed out; actual production application routes"
     },
     {
       "route": "/review",
       "viewport": {
         "width": 768,
-        "height": 1000
+        "height": 900
       },
       "width": 768,
       "scrollWidth": 768,
-      "fonts": true,
+      "fontLoaded": true,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "heading": "Your reviews",
       "pageErrors": 0,
-      "authentication": "signed out; actual application routes"
+      "authentication": "signed out; actual production application routes"
     },
     {
       "route": "/progress",
       "viewport": {
         "width": 768,
-        "height": 1000
+        "height": 900
       },
       "width": 768,
       "scrollWidth": 768,
-      "fonts": true,
+      "fontLoaded": true,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "heading": "Your progress",
       "pageErrors": 0,
-      "authentication": "signed out; actual application routes"
+      "authentication": "signed out; actual production application routes"
     },
     {
       "route": "/onboarding",
       "viewport": {
         "width": 768,
-        "height": 1000
+        "height": 900
       },
       "width": 768,
       "scrollWidth": 768,
-      "fonts": true,
+      "fontLoaded": true,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "heading": "Shape the learning loop around your week.",
       "pageErrors": 0,
-      "authentication": "signed out; actual application routes"
+      "authentication": "signed out; actual production application routes"
     },
     {
       "route": "/admin/content",
       "viewport": {
         "width": 768,
-        "height": 1000
+        "height": 900
       },
       "width": 768,
       "scrollWidth": 768,
-      "fonts": true,
+      "fontLoaded": true,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "heading": "Governed content",
       "pageErrors": 0,
-      "authentication": "signed out; actual application routes"
+      "authentication": "signed out; actual production application routes"
     },
     {
       "route": "/learn/arrays-two-pointer",
       "viewport": {
         "width": 768,
-        "height": 1000
+        "height": 900
       },
       "width": 768,
       "scrollWidth": 768,
-      "fonts": true,
+      "fontLoaded": true,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "heading": "Container with most water",
       "pageErrors": 0,
-      "authentication": "signed out; actual application routes"
+      "authentication": "signed out; actual production application routes"
     },
     {
       "route": "/",
       "viewport": {
         "width": 1024,
-        "height": 1000
+        "height": 900
       },
       "width": 1024,
       "scrollWidth": 1024,
-      "fonts": true,
+      "fontLoaded": true,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "heading": "Build a pattern. Return to it.",
       "pageErrors": 0,
-      "authentication": "signed out; actual application routes"
+      "authentication": "signed out; actual production application routes"
     },
     {
       "route": "/plan",
       "viewport": {
         "width": 1024,
-        "height": 1000
+        "height": 900
       },
       "width": 1024,
       "scrollWidth": 1024,
-      "fonts": true,
+      "fontLoaded": true,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "heading": "Planning preferences",
       "pageErrors": 0,
-      "authentication": "signed out; actual application routes"
+      "authentication": "signed out; actual production application routes"
     },
     {
       "route": "/review",
       "viewport": {
         "width": 1024,
-        "height": 1000
+        "height": 900
       },
       "width": 1024,
       "scrollWidth": 1024,
-      "fonts": true,
+      "fontLoaded": true,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "heading": "Your reviews",
       "pageErrors": 0,
-      "authentication": "signed out; actual application routes"
+      "authentication": "signed out; actual production application routes"
     },
     {
       "route": "/progress",
       "viewport": {
         "width": 1024,
-        "height": 1000
+        "height": 900
       },
       "width": 1024,
       "scrollWidth": 1024,
-      "fonts": true,
+      "fontLoaded": true,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "heading": "Your progress",
       "pageErrors": 0,
-      "authentication": "signed out; actual application routes"
+      "authentication": "signed out; actual production application routes"
     },
     {
       "route": "/onboarding",
       "viewport": {
         "width": 1024,
-        "height": 1000
+        "height": 900
       },
       "width": 1024,
       "scrollWidth": 1024,
-      "fonts": true,
+      "fontLoaded": true,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "heading": "Shape the learning loop around your week.",
       "pageErrors": 0,
-      "authentication": "signed out; actual application routes"
+      "authentication": "signed out; actual production application routes"
     },
     {
       "route": "/admin/content",
       "viewport": {
         "width": 1024,
-        "height": 1000
+        "height": 900
       },
       "width": 1024,
       "scrollWidth": 1024,
-      "fonts": true,
+      "fontLoaded": true,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "heading": "Governed content",
       "pageErrors": 0,
-      "authentication": "signed out; actual application routes"
+      "authentication": "signed out; actual production application routes"
     },
     {
       "route": "/learn/arrays-two-pointer",
       "viewport": {
         "width": 1024,
-        "height": 1000
+        "height": 900
       },
       "width": 1024,
       "scrollWidth": 1024,
-      "fonts": true,
+      "fontLoaded": true,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "heading": "Container with most water",
       "pageErrors": 0,
-      "authentication": "signed out; actual application routes"
+      "authentication": "signed out; actual production application routes"
     },
     {
       "route": "/",
       "viewport": {
         "width": 1440,
-        "height": 1000
+        "height": 900
       },
       "width": 1440,
       "scrollWidth": 1440,
-      "fonts": true,
+      "fontLoaded": true,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "heading": "Build a pattern. Return to it.",
       "pageErrors": 0,
-      "authentication": "signed out; actual application routes"
+      "authentication": "signed out; actual production application routes"
     },
     {
       "route": "/plan",
       "viewport": {
         "width": 1440,
-        "height": 1000
+        "height": 900
       },
       "width": 1440,
       "scrollWidth": 1440,
-      "fonts": true,
+      "fontLoaded": true,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "heading": "Planning preferences",
       "pageErrors": 0,
-      "authentication": "signed out; actual application routes"
+      "authentication": "signed out; actual production application routes"
     },
     {
       "route": "/review",
       "viewport": {
         "width": 1440,
-        "height": 1000
+        "height": 900
       },
       "width": 1440,
       "scrollWidth": 1440,
-      "fonts": true,
+      "fontLoaded": true,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "heading": "Your reviews",
       "pageErrors": 0,
-      "authentication": "signed out; actual application routes"
+      "authentication": "signed out; actual production application routes"
     },
     {
       "route": "/progress",
       "viewport": {
         "width": 1440,
-        "height": 1000
+        "height": 900
       },
       "width": 1440,
       "scrollWidth": 1440,
-      "fonts": true,
+      "fontLoaded": true,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "heading": "Your progress",
       "pageErrors": 0,
-      "authentication": "signed out; actual application routes"
+      "authentication": "signed out; actual production application routes"
     },
     {
       "route": "/onboarding",
       "viewport": {
         "width": 1440,
-        "height": 1000
+        "height": 900
       },
       "width": 1440,
       "scrollWidth": 1440,
-      "fonts": true,
+      "fontLoaded": true,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "heading": "Shape the learning loop around your week.",
       "pageErrors": 0,
-      "authentication": "signed out; actual application routes"
+      "authentication": "signed out; actual production application routes"
     },
     {
       "route": "/admin/content",
       "viewport": {
         "width": 1440,
-        "height": 1000
+        "height": 900
       },
       "width": 1440,
       "scrollWidth": 1440,
-      "fonts": true,
+      "fontLoaded": true,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "heading": "Governed content",
       "pageErrors": 0,
-      "authentication": "signed out; actual application routes"
+      "authentication": "signed out; actual production application routes"
     },
     {
       "route": "/learn/arrays-two-pointer",
       "viewport": {
         "width": 1440,
-        "height": 1000
+        "height": 900
       },
       "width": 1440,
       "scrollWidth": 1440,
-      "fonts": true,
+      "fontLoaded": true,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "heading": "Container with most water",
       "pageErrors": 0,
-      "authentication": "signed out; actual application routes"
+      "authentication": "signed out; actual production application routes"
     }
   ]
 }

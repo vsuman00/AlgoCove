@@ -24,7 +24,8 @@
 | Roadmap/offline E2E | PASS: 3 journeys |
 | Execution browser categories | PASS: 5 route-response fixtures, distinct from actual sandbox execution |
 | Responsive engineering inspection | Seven routes at 320, 768, 1024 and 1440 pixels (28 samples), self-hosted font loaded, no page overflow/browser errors. [Screenshot manifest](../design-reviews/phase7-2026-10-03/manifest.json) |
-| Dependency audit | No known vulnerabilities in the local audit; final Linux gate also audits dependencies |
+| Production dependency audit | PASS with `pnpm audit --prod --audit-level high` |
+| Full development dependency audit | One high advisory: [CVE-2026-93687 / GHSA-vfj7-8cjw-p6xm](https://github.com/advisories/ghsa-vfj7-8cjw-p6xm) affects `braces@3.0.3` via `eslint-config-next` → `@next/eslint-plugin-next` → `fast-glob` → `micromatch`. The advisory lists no patched version; this dev-only package is not used by the application runtime. The finding remains open and is not waived. |
 | Six-language real execution | Mandatory disposable Linux CI harness added; fresh run outcome recorded after GitHub execution |
 
 Content tests include forged roles, author/reviewer separation, optimistic conflicts, malformed/oversized input, idempotency and receipt privacy, missing languages, approval invalidation, publication immutability and terminal rights retirement. Existing Phase 1–7 tests cover ownership, hint ceilings, readiness, signed results/replay, no infrastructure-failure credit, planning capacity/prerequisites, immutable accepted plans and adherence corrections.
@@ -35,8 +36,10 @@ The Linux harness builds immutable six-language execution images, seeds reviewed
 
 The reviewed content currently includes the bounded arrays/two-pointer bundle. A full DSA catalog is not claimed. This change implements production application paths rather than synthetic learner/content data; deployment configuration and release approval remain separate.
 
+Development server follow-up: allow the common `127.0.0.1` loopback origin for Next.js dev resources so HMR and CSS load when local tooling opens the site through that alias. The seven actual production routes return 200 and pass 28 viewport checks at widths 320, 768, 1024 and 1440 with no page exceptions or horizontal overflow; signed-out API access provides the genuine sign-in recovery state. The project specifies Node 22 in `.nvmrc`.
+
 Screenshots are engineering review evidence, not an invented owner-approved reference baseline. Comprehensive manual assistive-technology review, the remaining coastal illustration and later-page reference assets are not certified by automated browser gates. Historical reports preserve their original evidence; this record updates the current implementation without rewriting their past results.
 
 ## Final run and resource cleanup
 
-Pending completion of final browser gates and fresh GitHub CI. The temporary local PostgreSQL cluster and test-only installations will be removed after testing. No VM or live deployment was created for this change.
+Local final gates passed: 238 unit/component/architecture tests, 62 PostgreSQL integration tests, 30 accessibility checks, 3 roadmap/offline journeys, 5 execution-category browser checks and production build. The owned local PostgreSQL cluster and unused cluster created by its test installation were stopped/removed. Test-only postgresql@17, pgvector and krb5 installations were uninstalled, and the temporary inspection script was deleted. No test database listener remains on port 54329. No VM or live deployment was created for this change. Fresh GitHub execution evidence is pending.

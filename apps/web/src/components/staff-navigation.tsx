@@ -1,9 +1,18 @@
 "use client";
 
-import { useEffect, useState, type ReactElement } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type ReactElement,
+  type ReactNode,
+} from "react";
 
-/** Visibility follows server-owned roles. Commands still authorize on the server. */
-export default function StaffNavigation({ active }: { active: string }): ReactElement | null {
+const StaffRoles = createContext<readonly string[]>([]);
+
+/** Load server-owned roles once and share them across the desktop and mobile menus. */
+export function StaffNavigationProvider({ children }: { children: ReactNode }): ReactElement {
   const [roles, setRoles] = useState<readonly string[]>([]);
   useEffect(() => {
     const controller = new AbortController();
@@ -27,6 +36,12 @@ export default function StaffNavigation({ active }: { active: string }): ReactEl
       });
     return () => controller.abort();
   }, []);
+  return <StaffRoles.Provider value={roles}>{children}</StaffRoles.Provider>;
+}
+
+/** Visibility follows server-owned roles. Commands still authorize on the server. */
+export default function StaffNavigation({ active }: { active: string }): ReactElement | null {
+  const roles = useContext(StaffRoles);
   const content = roles.some((role) =>
     ["author", "technical_reviewer", "pedagogical_reviewer", "publisher", "evaluator"].includes(
       role,

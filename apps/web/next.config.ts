@@ -11,6 +11,9 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   agentRules: false,
+  // Local reverse proxies and browser checks commonly expose localhost as 127.0.0.1.
+  // Permit that loopback origin for Next.js development resources (HMR/CSS).
+  allowedDevOrigins: ["127.0.0.1"],
   poweredByHeader: false,
   transpilePackages: [
     "@algocove/application",
