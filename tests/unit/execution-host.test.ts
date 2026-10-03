@@ -72,6 +72,32 @@ describe("local isolated source host", () => {
     ).toMatchObject({ category: "limits", teardownConfirmed: true });
     expect(inspections).toBe(2);
   });
+  it("applies one shared runtime deadline across all judged fixtures", async () => {
+    const timeouts: number[] = [];
+    let fixtureIndex = 0;
+    const command: DockerCommand = async (args, options) => {
+      if (args[0] === "exec" && args.includes("/work/fixture.py") && !args.includes("py_compile")) {
+        timeouts.push(options?.timeoutMs ?? -1);
+        await new Promise((resolve) => setTimeout(resolve, 20));
+        return { code: 0, stdout: ["0", "49", "8"][fixtureIndex++] ?? "", stderr: "" };
+      }
+      return { code: 0, stdout: "", stderr: "" };
+    };
+    const descriptor = message().descriptor.payload;
+    const verdict = await createGvisorRunner(images, command)(
+      descriptor,
+      source,
+      new AbortController().signal,
+    );
+
+    expect(verdict).toMatchObject({ category: "pass", teardownConfirmed: true });
+    expect(timeouts).toHaveLength(3);
+    expect(
+      timeouts.every((timeout) => timeout > 0 && timeout <= descriptor.limits.runTimeoutMs),
+    ).toBe(true);
+    expect(timeouts[1]).toBeLessThan(timeouts[0]!);
+    expect(timeouts[2]).toBeLessThan(timeouts[1]!);
+  });
   it("verifies a freshly signed descriptor after its issue time", () => {
     let time = Date.now();
     const now = () => new Date(time++).toISOString();

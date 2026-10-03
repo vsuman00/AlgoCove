@@ -35,7 +35,7 @@
     "tokens:check": "node apps/web/src/styles/generate-tokens.ts --check",
     "docs:check": "node scripts/docs-check.mjs",
     "security:secrets": "node scripts/check-secrets.mjs",
-    "security:audit": "pnpm audit --audit-level high",
+    "security:audit": "node scripts/security-audit.mjs",
     "db:start": "docker compose up -d --wait db",
     "db:stop": "docker compose down",
     "db:roles": "node packages/db/src/cli/bootstrap-roles.ts",

@@ -61,7 +61,10 @@ jobs:
       - name: Run roadmap and offline recovery journeys
         run: pnpm test:e2e
 
-      - name: Audit dependencies
+      - name: Audit production dependencies
+        run: pnpm audit --prod --audit-level high
+
+      - name: Audit full dependency tree
         run: pnpm security:audit
 
   execution-gates:

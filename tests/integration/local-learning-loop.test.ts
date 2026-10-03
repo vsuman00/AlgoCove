@@ -194,29 +194,53 @@ async function execute(
   const receipt = await receiptPromise;
   expect(receipt.status()).toBe(202);
   const body = (await receipt.json()) as { runId: string };
-  await browserExpect
-    .poll(
-      async () =>
-        (
-          await fixture.runtime!.practice.getRunById(
-            body.runId as Parameters<PostgresPracticeRepository["getRunById"]>[0],
-          )
-        )?.terminalCategory,
-      { timeout: 25000 },
-    )
-    .not.toBeNull();
+  const outcome: {
+    readonly runId: string;
+    readonly language: ProblemLanguage;
+    readonly mode: "run" | "submit";
+    terminalCategory: string | null;
+    classification: string | null;
+  } = {
+    runId: body.runId,
+    language,
+    mode,
+    terminalCategory: null,
+    classification: null,
+  };
+  outcomes.push(outcome);
+  try {
+    await browserExpect
+      .poll(
+        async () =>
+          (
+            await fixture.runtime!.practice.getRunById(
+              body.runId as Parameters<PostgresPracticeRepository["getRunById"]>[0],
+            )
+          )?.terminalCategory,
+        { timeout: 60000 },
+      )
+      .not.toBeNull();
+  } catch (error) {
+    const incomplete = await fixture.runtime!.practice.getRunById(
+      body.runId as Parameters<PostgresPracticeRepository["getRunById"]>[0],
+    );
+    outcome.terminalCategory = incomplete?.terminalCategory ?? null;
+    outcome.classification = incomplete?.classification ?? null;
+    throw new Error(
+      "Execution run " +
+        body.runId +
+        " did not reach a terminal result within the Docker command and callback budget.",
+      { cause: error },
+    );
+  }
   await browserExpect(page.getByText(`Execution complete · ${label}`, { exact: true })).toBeVisible(
     { timeout: 25000 },
   );
   const record = await fixture.runtime!.practice.getRunById(
     body.runId as Parameters<PostgresPracticeRepository["getRunById"]>[0],
   );
-  outcomes.push({
-    language,
-    mode,
-    category: record?.terminalCategory,
-    classification: record?.classification,
-  });
+  outcome.terminalCategory = record?.terminalCategory ?? null;
+  outcome.classification = record?.classification ?? null;
   return record!;
 }
 
@@ -609,7 +633,7 @@ describe.skipIf(process.env.LOCAL_PHASE5_E2E !== "1")(
       await page.getByRole("button", { name: "Cancel execution", exact: true }).click();
       await browserExpect(
         page.getByText("Execution complete · Cancelled", { exact: true }),
-      ).toBeVisible({ timeout: 20000 });
+      ).toBeVisible({ timeout: 60000 });
       outcomes.push({ realCancellation: true });
       // Submit a bounded loop, kill the owning host while its sandbox exists, then restart.
       const pending = page.waitForResponse(

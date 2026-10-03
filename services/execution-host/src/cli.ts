@@ -90,7 +90,25 @@ const host = await createLocalSourceHost({
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${callbackToken}` },
       body: JSON.stringify({ result }),
     });
-    if (!response.ok) throw new Error("Local result callback unavailable.");
+    if (!response.ok) {
+      let code = "unknown";
+      try {
+        const body: unknown = await response.json();
+        if (
+          typeof body === "object" &&
+          body !== null &&
+          "error" in body &&
+          typeof body.error === "object" &&
+          body.error !== null &&
+          "code" in body.error &&
+          typeof body.error.code === "string"
+        )
+          code = body.error.code;
+      } catch {
+        /* Status and a generic code are sufficient for safe operational diagnosis. */
+      }
+      throw new Error("Local result callback failed: HTTP " + response.status + ", code=" + code);
+    }
   },
 });
 const relay = createWebsiteExecutionRelay({

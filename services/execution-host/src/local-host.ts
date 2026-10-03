@@ -25,6 +25,10 @@ type Options = {
   runner?: ReturnType<typeof createGvisorRunner>;
 };
 
+function logHostEvent(event: string, details: Readonly<Record<string, string | number | boolean>>) {
+  process.stdout.write("[execution-host] " + event + " " + JSON.stringify(details) + "\n");
+}
+
 export async function createLocalSourceHost(options: Options): Promise<
   IsolatedSourceHost & {
     readonly control: ExecutionControl;
@@ -79,7 +83,11 @@ export async function createLocalSourceHost(options: Options): Promise<
         metadata
           .prepare("INSERT OR IGNORE INTO host_delivery VALUES (?)")
           .run(result.payload.runId);
-      } catch {
+        logHostEvent("result_delivered", { runId: result.payload.runId });
+      } catch (error) {
+        const reason =
+          error instanceof Error ? error.message.replace(/[\r\n]/g, " ").slice(0, 160) : "unknown";
+        logHostEvent("result_delivery_pending", { runId: result.payload.runId, reason });
         /* Durable terminal remains pending for retry. */
       }
     }
@@ -102,6 +110,7 @@ export async function createLocalSourceHost(options: Options): Promise<
       const descriptor = lease.descriptor.payload;
       const source = sources.get(descriptor.runId);
       sources.delete(descriptor.runId);
+      logHostEvent("run_started", { runId: descriptor.runId, language: descriptor.language });
       const abort = new AbortController();
       active.set(descriptor.runId, abort);
       if (
@@ -126,6 +135,12 @@ export async function createLocalSourceHost(options: Options): Promise<
       } catch {
         verdict = { category: "infrastructure_error", phase: "run", teardownConfirmed: false };
       }
+      logHostEvent("run_finished", {
+        runId: descriptor.runId,
+        category: abort.signal.aborted ? "cancelled" : verdict.category,
+        phase: verdict.phase,
+        teardownConfirmed: verdict.teardownConfirmed,
+      });
       active.delete(descriptor.runId);
       const issuedAt = now();
       const result = must(
@@ -161,7 +176,10 @@ export async function createLocalSourceHost(options: Options): Promise<
       pumping = undefined;
     });
     // Keep failure observable through drain; avoid an unhandled rejection in the background.
-    void pumping.catch(() => {
+    void pumping.catch((error: unknown) => {
+      const reason =
+        error instanceof Error ? error.message.replace(/[\r\n]/g, " ").slice(0, 160) : "unknown";
+      logHostEvent("worker_pump_stopped", { reason });
       stopped = true;
     });
   };
