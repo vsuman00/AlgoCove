@@ -31,11 +31,13 @@ export const dynamic = "force-dynamic";
  * owner-scoped application result boundary before changing learner state.
  */
 export async function POST(request: Request): Promise<NextResponse> {
+  let currentStage = "authenticate_callback";
   try {
     const callbackToken = loadCallbackToken();
     if (!matchesBearer(request.headers.get("authorization"), callbackToken)) {
       throw authenticationRequired("Execution result callback authentication failed.");
     }
+    currentStage = "parse_signed_result";
     const input = await request.json();
     const signed = signedResultFrom(input);
     const parsed = parseExecutionResult(signed.payload);
@@ -43,10 +45,13 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     const runId = parseId("codeRun", parsed.value.runId);
     if (!runId.ok) throw validationError("Execution run identifier is invalid.");
+    currentStage = "load_practice_runtime";
     const runtime = getPracticeRuntime();
     if (runtime === null) throw dependencyUnavailableError("Practice persistence is unavailable.");
+    currentStage = "load_committed_run";
     const run = await runtime.practice.getRunById(runId.value);
     if (run === null) throw validationError("Execution run is not available.", { field: "run" });
+    currentStage = "verify_committed_result";
     try {
       const dispatch = await runtime.practice.getRunDispatch(runId.value);
       verifyCommittedExecutionResult(
@@ -61,6 +66,7 @@ export async function POST(request: Request): Promise<NextResponse> {
         field: "result",
       });
     }
+    currentStage = "load_attempt";
     const attempt = await runtime.practice.getAttempt(run.attemptId, run.learnerId);
     if (attempt === null) {
       throw validationError("Execution attempt is not available.", { field: "attempt" });
@@ -74,6 +80,7 @@ export async function POST(request: Request): Promise<NextResponse> {
       }),
       request.headers.get("x-trace-id") ?? undefined,
     );
+    currentStage = "persist_trusted_result";
     const receipt = await ingestTrustedPracticeResult(context, runtime.practice, {
       result: {
         resultId: parsed.value.resultId,
@@ -94,6 +101,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     if (receipt.observation !== null) {
       // The source commit is durable before projection delivery. The leased relay retries failures.
       try {
+        currentStage = "project_assessment";
         const learning = getLearningRuntime();
         const eventId = await runtime.practice.getAssessmentEventId(
           receipt.observation.observationId,
@@ -113,8 +121,28 @@ export async function POST(request: Request): Promise<NextResponse> {
       { status: 200, headers: { "Cache-Control": "no-store" } },
     );
   } catch (error) {
+    if (toHttpStatus(error) >= 500) logCallbackFailure(request, currentStage, error);
     return errorResponse(request, error);
   }
+}
+
+function logCallbackFailure(request: Request, currentStage: string, error: unknown): void {
+  const errorName =
+    error instanceof Error ? error.name.replace(/[^A-Za-z0-9_.-]/g, "").slice(0, 80) : "unknown";
+  const errorCode =
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    typeof error.code === "string" &&
+    /^[A-Za-z0-9_.-]{1,40}$/.test(error.code)
+      ? error.code
+      : "unknown";
+  const traceId = request.headers.get("x-trace-id") ?? "req_0000000000000000";
+  process.stderr.write(
+    "[api] execution_result_callback_failed " +
+      JSON.stringify({ traceId, stage: currentStage, errorName, errorCode }) +
+      "\n",
+  );
 }
 
 function loadCallbackToken(): string {

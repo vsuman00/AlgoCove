@@ -57,6 +57,7 @@ export async function createLocalSourceHost(options: Options): Promise<
       .map((record) => record.descriptor.payload.runId),
   );
   const active = new Map<string, AbortController>();
+  const deliveryAttempts = new Map<string, number>();
   const workerId = "local-gvisor-host";
   let stopped = false;
   let pumping: Promise<void> | undefined;
@@ -83,11 +84,20 @@ export async function createLocalSourceHost(options: Options): Promise<
         metadata
           .prepare("INSERT OR IGNORE INTO host_delivery VALUES (?)")
           .run(result.payload.runId);
-        logHostEvent("result_delivered", { runId: result.payload.runId });
+        const attempts = deliveryAttempts.get(result.payload.runId) ?? 0;
+        deliveryAttempts.delete(result.payload.runId);
+        logHostEvent("result_delivered", { runId: result.payload.runId, attempts: attempts + 1 });
       } catch (error) {
+        const attempts = (deliveryAttempts.get(result.payload.runId) ?? 0) + 1;
+        deliveryAttempts.set(result.payload.runId, attempts);
         const reason =
           error instanceof Error ? error.message.replace(/[\r\n]/g, " ").slice(0, 160) : "unknown";
-        logHostEvent("result_delivery_pending", { runId: result.payload.runId, reason });
+        if (attempts === 1 || attempts % 10 === 0)
+          logHostEvent("result_delivery_pending", {
+            runId: result.payload.runId,
+            attempts,
+            reason,
+          });
         /* Durable terminal remains pending for retry. */
       }
     }
