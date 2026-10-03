@@ -1,3 +1,4 @@
+import { webTraceId } from "../../../src/auth/request-context";
 import { NextResponse } from "next/server";
 import {
   getLearnerProfile,
@@ -14,8 +15,8 @@ async function contextFor(request: Request) {
   return authenticatedWebRequestContext(request);
 }
 
-function errorResponse(error: unknown): NextResponse {
-  const traceId = "req_0000000000000000";
+function errorResponse(request: Request, error: unknown): NextResponse {
+  const traceId = webTraceId(request);
   const status =
     error instanceof Error && "code" in error && error.code === "unauthenticated"
       ? 401
@@ -32,7 +33,7 @@ export async function GET(request: Request): Promise<NextResponse> {
     const profile = await getLearnerProfile(context, getClerkIdentityStore());
     return NextResponse.json({ profile }, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
-    return errorResponse(error);
+    return errorResponse(request, error);
   }
 }
 
@@ -46,6 +47,6 @@ export async function PUT(request: Request): Promise<NextResponse> {
       { status: 200, headers: { "Cache-Control": "no-store" } },
     );
   } catch (error) {
-    return errorResponse(error);
+    return errorResponse(request, error);
   }
 }

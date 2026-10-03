@@ -67,6 +67,10 @@ jobs:
       - name: Audit full dependency tree
         run: pnpm security:audit
 
+      - name: Stop test PostgreSQL
+        if: always()
+        run: docker compose down -v
+
   execution-gates:
     name: Execution contract and sandbox gates
     runs-on: ubuntu-latest
@@ -178,14 +182,17 @@ jobs:
         run: docker compose down -v
 
       - name: Run the candidate-runtime sandbox spike
+        id: runtime-spike
         env:
           ALGO_COVE_DOCKER_RUNTIME: runsc
+          ALGO_COVE_SANDBOX_REPORT: .tmp/task-19-gvisor-current.md
         run: pnpm test:sandbox:spike
 
       - name: Upload Task 19 runtime evidence
-        if: always()
+        if: always() && steps.runtime-spike.outcome != 'skipped'
         uses: actions/upload-artifact@v7.0.1
         with:
           name: task-19-gvisor-evidence
-          path: spikes/execution-sandbox/reports/task-19-2026-09-17.md
-          if-no-files-found: error
+          path: .tmp/task-19-gvisor-current.md
+          include-hidden-files: true
+          if-no-files-found: warn

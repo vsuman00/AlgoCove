@@ -2,6 +2,7 @@
 import { useEffect, useState, type ReactElement } from "react";
 import type { ReviewQueueItem, ProgressSnapshot } from "@algocove/application";
 import type { NextAction, projectConsistency } from "@algocove/domain";
+import { useAppSession } from "./staff-navigation";
 
 async function read<T>(url: string, body?: unknown): Promise<T> {
   const response = await fetch(url, {
@@ -19,40 +20,56 @@ async function read<T>(url: string, body?: unknown): Promise<T> {
       response.status === 401
         ? "Sign in to view your private learning record."
         : "Learning service unavailable. Refresh to retry.",
+      { cause: response.status },
     );
   return response.json() as Promise<T>;
 }
 function useLearning<T>(url: string) {
+  const session = useAppSession();
+  const sessionOwner = session?.userId;
+  const [unauthenticated, setUnauthenticated] = useState(false);
   const [data, setData] = useState<T | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [refresh, setRefresh] = useState(0);
   useEffect(() => {
     let active = true;
+    if (sessionOwner === null) return;
     void read<T>(url)
       .then((value) => {
         if (active) {
           setData(value);
           setError(null);
+          setUnauthenticated(false);
         }
       })
       .catch((e: Error) => {
-        if (active) setError(e.message);
+        if (active) {
+          setError(e.message);
+          setUnauthenticated(e.cause === 401);
+        }
       });
     return () => {
       active = false;
     };
-  }, [url, refresh]);
+  }, [url, refresh, sessionOwner]);
   return {
-    data,
-    error,
+    data: session !== null && session.status !== "ready" ? null : data,
+    error:
+      session?.status === "signed-out"
+        ? "Sign in to view your private learning record."
+        : session?.status === "unavailable"
+          ? "Account service unavailable. Retry your connection."
+          : error,
+    signedOut: session?.status === "signed-out" || unauthenticated,
     reload: () => {
       setError(null);
+      if (session?.status === "unavailable") session.reload();
       setRefresh((n) => n + 1);
     },
   };
 }
 export function NextLearningAction(): ReactElement {
-  const { data, error, reload } = useLearning<{
+  const { data, error, reload, signedOut } = useLearning<{
     action: NextAction;
     alternatives: NextAction[];
     asOf: string;
@@ -64,9 +81,15 @@ export function NextLearningAction(): ReactElement {
       {error ? (
         <div>
           <p role="status">{error}</p>
-          <button className="ac-small-button" type="button" onClick={reload}>
-            Try again
-          </button>
+          {signedOut ? (
+            <a className="ac-button ac-button--primary" href="/sign-in">
+              Sign in to continue
+            </a>
+          ) : (
+            <button className="ac-small-button" type="button" onClick={reload}>
+              Try again
+            </button>
+          )}
         </div>
       ) : data === null ? (
         <p role="status">Finding your next step…</p>
@@ -217,7 +240,7 @@ function ReviewCard({ item, reload }: { item: ReviewQueueItem; reload: () => voi
   );
 }
 export function ReviewExperience(): ReactElement {
-  const { data, error, reload } = useLearning<{
+  const { data, error, reload, signedOut } = useLearning<{
     reviews: ReviewQueueItem[];
     asOf: string;
     policyVersion: number;
@@ -232,9 +255,15 @@ export function ReviewExperience(): ReactElement {
       {error ? (
         <div>
           <p role="status">{error}</p>
-          <button className="ac-small-button" type="button" onClick={reload}>
-            Try again
-          </button>
+          {signedOut ? (
+            <a className="ac-button ac-button--primary" href="/sign-in">
+              Sign in to continue
+            </a>
+          ) : (
+            <button className="ac-small-button" type="button" onClick={reload}>
+              Try again
+            </button>
+          )}
         </div>
       ) : data === null ? (
         <p role="status">Loading reviews…</p>
@@ -257,7 +286,7 @@ export function ReviewExperience(): ReactElement {
 }
 type Progress = ProgressSnapshot & { consistency: ReturnType<typeof projectConsistency> };
 export function HomeLearningSummary(): ReactElement {
-  const { data, error, reload } = useLearning<Progress>("/api/progress");
+  const { data, error, reload, signedOut } = useLearning<Progress>("/api/progress");
   return (
     <section className="ac-learning-summary" aria-labelledby="learning-summary-title">
       <header>
@@ -268,9 +297,15 @@ export function HomeLearningSummary(): ReactElement {
       {error ? (
         <div className="ac-profile-strip">
           <p role="status">{error}</p>
-          <button type="button" className="ac-small-button" onClick={reload}>
-            Retry learning record
-          </button>
+          {signedOut ? (
+            <a className="ac-button ac-button--primary" href="/sign-in">
+              Sign in to continue
+            </a>
+          ) : (
+            <button type="button" className="ac-small-button" onClick={reload}>
+              Retry learning record
+            </button>
+          )}
         </div>
       ) : data === null ? (
         <p role="status">Loading your learning record…</p>
@@ -342,7 +377,7 @@ export function HomeLearningSummary(): ReactElement {
   );
 }
 export function ProgressExperience(): ReactElement {
-  const { data, error, reload } = useLearning<Progress>("/api/progress");
+  const { data, error, reload, signedOut } = useLearning<Progress>("/api/progress");
   const [message, setMessage] = useState("");
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
@@ -366,9 +401,15 @@ export function ProgressExperience(): ReactElement {
       {error ? (
         <div>
           <p role="status">{error}</p>
-          <button className="ac-small-button" type="button" onClick={reload}>
-            Try again
-          </button>
+          {signedOut ? (
+            <a className="ac-button ac-button--primary" href="/sign-in">
+              Sign in to continue
+            </a>
+          ) : (
+            <button className="ac-small-button" type="button" onClick={reload}>
+              Try again
+            </button>
+          )}
         </div>
       ) : data === null ? (
         <p role="status">Loading progress…</p>

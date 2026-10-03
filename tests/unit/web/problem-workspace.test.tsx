@@ -8,6 +8,37 @@ afterEach(() => {
 });
 
 describe("Task 29 guided problem workspace", () => {
+  it("preserves a requested language and exposes initial server failure with a retry", async () => {
+    window.localStorage.setItem(
+      "algocove:workspace-recovery:arrays-two-pointer:usr_recovery_check:python",
+      JSON.stringify({ source: "python recovery", pseudocode: {} }),
+    );
+    const requests: string[] = [];
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockImplementation(async (input: RequestInfo | URL, init?: RequestInit) => {
+        if (String(input).endsWith("/api/auth/session")) {
+          return Response.json({ authenticated: true, user: { id: "usr_recovery_check" } });
+        }
+        if (String(input).endsWith("/api/practice/workspace")) {
+          requests.push(JSON.parse(String(init?.body)).language);
+        }
+        return Response.json({ error: { code: "dependency_unavailable" } }, { status: 503 });
+      }),
+    );
+    render(<ProblemWorkspace executionEnabled initialLanguage="typescript" />);
+    await waitFor(() =>
+      expect(screen.getByRole("button", { name: "Retry workspace connection" })).toBeVisible(),
+    );
+    expect(screen.getByRole("combobox", { name: "Implementation language" })).toHaveValue(
+      "typescript",
+    );
+    expect(requests).toEqual(["typescript"]);
+    expect(screen.getByRole("button", { name: "Run checks" })).toBeDisabled();
+    fireEvent.click(screen.getByRole("button", { name: "Retry workspace connection" }));
+    await waitFor(() => expect(requests).toEqual(["typescript", "typescript"]));
+  });
+
   it("keeps the critical path visible and fails closed when execution is unavailable", async () => {
     vi.stubGlobal(
       "fetch",
@@ -196,7 +227,8 @@ describe("Task 29 guided problem workspace", () => {
     );
   });
 
-  it("sends Run through the authenticated execution boundary and shows queued state", async () => {
+  it("sends Run through the authenticated execution boundary and retries an interrupted status read without creating another run", async () => {
+    let statusReads = 0;
     const fetchMock = vi.fn().mockImplementation(async (input: RequestInfo | URL) => {
       const url = String(input);
       if (url.endsWith("/api/auth/session")) {
@@ -233,6 +265,7 @@ describe("Task 29 guided problem workspace", () => {
         });
       }
       if (url.endsWith("/api/practice/runs/run_execution_fixture")) {
+        if (statusReads++ === 0) return new Response("", { status: 503 });
         return new Response(
           JSON.stringify({
             status: "completed",
@@ -273,7 +306,15 @@ describe("Task 29 guided problem workspace", () => {
       mode: "run",
       source: "remote source",
     });
+    await waitFor(() =>
+      expect(screen.getByRole("button", { name: "Retry result status" })).toBeVisible(),
+    );
+    expect(screen.getByRole("button", { name: "Run checks" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Cancel execution" })).toBeVisible();
+    fireEvent.click(screen.getByRole("button", { name: "Retry result status" }));
     await waitFor(() => expect(screen.getByText(/Execution complete · Passed/)).toBeVisible());
+    expect(fetchMock.mock.calls.filter((call) => call[0] === "/api/practice/runs")).toHaveLength(1);
+    expect(statusReads).toBe(2);
   });
 
   it("restores a committed terminal result from workspace bootstrap", async () => {

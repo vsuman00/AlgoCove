@@ -10,6 +10,11 @@ const profile = {
 test("planning preferences save, reload, clamp calendar months, and preserve edits after a conflict", async ({
   page,
 }) => {
+  await page.route("**/api/auth/session", (route) =>
+    route.fulfill({
+      json: { authenticated: true, user: { id: "usr_browser_fixture", roles: ["learner"] } },
+    }),
+  );
   let intent: unknown = null,
     submitted: Record<string, unknown> | null = null,
     conflict = false;

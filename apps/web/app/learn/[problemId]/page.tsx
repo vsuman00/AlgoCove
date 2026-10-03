@@ -1,4 +1,5 @@
 import type { ReactElement } from "react";
+import { notFound } from "next/navigation";
 import AlgoCoveShell from "../../../src/components/algocove-shell";
 import ProblemWorkspace from "../../../src/components/problem-workspace";
 
@@ -19,16 +20,8 @@ export default async function ProblemWorkspacePage({
     language === "c"
       ? language
       : "python";
-  if (problemId !== "arrays-two-pointer") {
-    return (
-      <AlgoCoveShell active="Home" focused>
-        <main className="ac-home-main" id="main-content">
-          <h1>Problem workspace unavailable</h1>
-          <p>This problem is not currently available. Choose another activity from Home.</p>
-        </main>
-      </AlgoCoveShell>
-    );
-  }
+  if (problemId !== "arrays-two-pointer") notFound();
+
   return (
     <AlgoCoveShell active="Home" focused>
       <ProblemWorkspace

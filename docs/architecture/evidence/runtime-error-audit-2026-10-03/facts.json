@@ -1,0 +1,264 @@
+{
+  "auditTimeUtc": "2026-10-03T05:19:07.818852+00:00",
+  "baselineCommit": "2b49b624bb63a2ddee87ec91a06672a0c89ac53a",
+  "ciRun": 37098737102,
+  "ciJobs": {
+    "quality": 111133895312,
+    "executionContracts": 111133895469,
+    "realLearningLoop": 111133895379
+  },
+  "callbackFailureCount": 184,
+  "callbackStage": "authenticate_callback",
+  "callbackErrorName": "ConfigError",
+  "reproductions": {
+    "emptyAdminUrl": {
+      "ok": false,
+      "errorName": "ConfigError",
+      "issueKeys": [
+        "DATABASE_ADMIN_URL"
+      ]
+    },
+    "omittedAdminUrl": {
+      "ok": true
+    },
+    "environmentExample": {
+      "ok": false,
+      "errorName": "ConfigError",
+      "issueKeys": [
+        "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY",
+        "CLERK_SECRET_KEY"
+      ]
+    },
+    "databaseConnect": {
+      "ok": false,
+      "code": "ECONNREFUSED",
+      "addresses": [
+        "::1",
+        "127.0.0.1"
+      ],
+      "port": 54329
+    }
+  },
+  "toolchain": {
+    "localNode": "26.5.0",
+    "globalPnpm": "9.15.9",
+    "pinnedPnpm": "12.4.2",
+    "ciNode": "22"
+  },
+  "routeInventory": [
+    {
+      "path": "apps/web/app/api/admin/content/route.ts",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "authBoundary": true,
+      "jsonBody": false
+    },
+    {
+      "path": "apps/web/app/api/auth/session/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "authBoundary": true,
+      "jsonBody": false
+    },
+    {
+      "path": "apps/web/app/api/content/concept-mapping/route.ts",
+      "methods": [
+        "PUT"
+      ],
+      "authBoundary": true,
+      "jsonBody": true
+    },
+    {
+      "path": "apps/web/app/api/health/route.ts",
+      "methods": [],
+      "authBoundary": false,
+      "jsonBody": false
+    },
+    {
+      "path": "apps/web/app/api/internal/practice/results/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "authBoundary": true,
+      "jsonBody": true
+    },
+    {
+      "path": "apps/web/app/api/learner-home/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "authBoundary": true,
+      "jsonBody": false
+    },
+    {
+      "path": "apps/web/app/api/mastery/[conceptId]/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "authBoundary": true,
+      "jsonBody": false
+    },
+    {
+      "path": "apps/web/app/api/mastery/explanation/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "authBoundary": true,
+      "jsonBody": true
+    },
+    {
+      "path": "apps/web/app/api/onboarding/route.ts",
+      "methods": [
+        "GET",
+        "PUT"
+      ],
+      "authBoundary": true,
+      "jsonBody": true
+    },
+    {
+      "path": "apps/web/app/api/planning/intent/route.ts",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "authBoundary": true,
+      "jsonBody": true
+    },
+    {
+      "path": "apps/web/app/api/planning/roadmap/route.ts",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "authBoundary": true,
+      "jsonBody": true
+    },
+    {
+      "path": "apps/web/app/api/practice/drafts/[draftId]/route.ts",
+      "methods": [
+        "GET",
+        "PUT"
+      ],
+      "authBoundary": true,
+      "jsonBody": true
+    },
+    {
+      "path": "apps/web/app/api/practice/drafts/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "authBoundary": true,
+      "jsonBody": true
+    },
+    {
+      "path": "apps/web/app/api/practice/hints/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "authBoundary": true,
+      "jsonBody": true
+    },
+    {
+      "path": "apps/web/app/api/practice/pseudocode/[pseudocodeId]/route.ts",
+      "methods": [
+        "GET",
+        "PUT"
+      ],
+      "authBoundary": true,
+      "jsonBody": true
+    },
+    {
+      "path": "apps/web/app/api/practice/pseudocode/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "authBoundary": true,
+      "jsonBody": true
+    },
+    {
+      "path": "apps/web/app/api/practice/runs/[runId]/cancel/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "authBoundary": true,
+      "jsonBody": false
+    },
+    {
+      "path": "apps/web/app/api/practice/runs/[runId]/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "authBoundary": true,
+      "jsonBody": false
+    },
+    {
+      "path": "apps/web/app/api/practice/runs/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "authBoundary": true,
+      "jsonBody": true
+    },
+    {
+      "path": "apps/web/app/api/practice/trace/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "authBoundary": true,
+      "jsonBody": true
+    },
+    {
+      "path": "apps/web/app/api/practice/workspace/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "authBoundary": true,
+      "jsonBody": true
+    },
+    {
+      "path": "apps/web/app/api/progress/external/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "authBoundary": true,
+      "jsonBody": true
+    },
+    {
+      "path": "apps/web/app/api/progress/pause/route.ts",
+      "methods": [
+        "POST"
+      ],
+      "authBoundary": true,
+      "jsonBody": true
+    },
+    {
+      "path": "apps/web/app/api/progress/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "authBoundary": true,
+      "jsonBody": false
+    },
+    {
+      "path": "apps/web/app/api/readiness/route.ts",
+      "methods": [
+        "GET"
+      ],
+      "authBoundary": false,
+      "jsonBody": false
+    },
+    {
+      "path": "apps/web/app/api/review/route.ts",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "authBoundary": true,
+      "jsonBody": true
+    }
+  ],
+  "secrets": "No credentials, cookies or learner submissions included."
+}

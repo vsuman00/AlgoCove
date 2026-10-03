@@ -3,6 +3,7 @@
 import { useEffect, useState, type ReactElement } from "react";
 import { HomeLearningSummary, NextLearningAction } from "./learning-views";
 import { Icon } from "./algocove-icons";
+import { useAppSession } from "./staff-navigation";
 
 type Profile = {
   goal: string;
@@ -15,12 +16,15 @@ type Profile = {
 type LoadState = "loading" | "signed-out" | "empty" | "ready" | "error";
 
 export default function HomeExperience(): ReactElement {
+  const session = useAppSession();
+  const sessionOwner = session?.userId;
   const [state, setState] = useState<LoadState>("loading");
   const [refresh, setRefresh] = useState(0);
   const [profile, setProfile] = useState<Profile | null>(null);
 
   useEffect(() => {
     const controller = new AbortController();
+    if (sessionOwner === null) return;
     void fetch("/api/onboarding", { cache: "no-store", signal: controller.signal })
       .then(async (response) => {
         if (response.status === 401 || response.status === 403) {
@@ -39,7 +43,15 @@ export default function HomeExperience(): ReactElement {
         if (!controller.signal.aborted) setState("error");
       });
     return () => controller.abort();
-  }, [refresh]);
+  }, [refresh, sessionOwner]);
+  const visibleState =
+    session?.status === "signed-out"
+      ? "signed-out"
+      : session?.status === "unavailable"
+        ? "error"
+        : session?.status === "loading"
+          ? "loading"
+          : state;
 
   return (
     <main className="ac-home-main" id="main-content" tabIndex={-1}>
@@ -53,7 +65,7 @@ export default function HomeExperience(): ReactElement {
           </p>
         </div>
       </section>
-      {(state === "ready" || state === "empty") && <NextLearningAction />}
+      {(visibleState === "ready" || visibleState === "empty") && <NextLearningAction />}
 
       <section className="ac-profile-strip" aria-labelledby="profile-status-title">
         <div className="ac-section-heading">
@@ -61,19 +73,19 @@ export default function HomeExperience(): ReactElement {
           <div>
             <p className="ac-eyebrow">Your account</p>
             <h2 id="profile-status-title">
-              {state === "ready"
+              {visibleState === "ready"
                 ? "Learner profile saved"
-                : state === "signed-out"
+                : visibleState === "signed-out"
                   ? "Sign in to use a private learner profile"
-                  : state === "error"
+                  : visibleState === "error"
                     ? "Profile service unavailable"
-                    : state === "loading"
+                    : visibleState === "loading"
                       ? "Checking learner profile"
                       : "Learner profile not set up"}
             </h2>
           </div>
         </div>
-        {state === "ready" && profile !== null ? (
+        {visibleState === "ready" && profile !== null ? (
           <div className="ac-profile-facts">
             <span>
               <b>Goal</b> {profile.goal}
@@ -90,29 +102,30 @@ export default function HomeExperience(): ReactElement {
           </div>
         ) : (
           <p className="ac-profile-message">
-            {state === "error"
+            {visibleState === "error"
               ? "Your profile could not be loaded. Try again when your connection is available."
               : "Choose a goal and a comfortable daily schedule to personalize your next steps."}
           </p>
         )}
         <a
           className="ac-button ac-button--primary"
-          href={state === "signed-out" ? "/sign-in" : "/onboarding"}
+          href={visibleState === "signed-out" ? "/sign-in" : "/onboarding"}
         >
-          {state === "signed-out"
+          {visibleState === "signed-out"
             ? "Sign in"
-            : state === "ready"
+            : visibleState === "ready"
               ? "Edit profile"
               : "Set up profile"}
           <Icon name="arrow" size={19} />
         </a>
       </section>
 
-      {state === "error" && (
+      {visibleState === "error" && (
         <button
           className="ac-small-button"
           onClick={() => {
             setState("loading");
+            if (session?.status === "unavailable") session.reload();
             setRefresh((n) => n + 1);
           }}
           type="button"
@@ -120,8 +133,8 @@ export default function HomeExperience(): ReactElement {
           Retry profile
         </button>
       )}
-      {(state === "ready" || state === "empty") && <HomeLearningSummary />}
-      {state === "signed-out" && (
+      {(visibleState === "ready" || visibleState === "empty") && <HomeLearningSummary />}
+      {visibleState === "signed-out" && (
         <section className="ac-profile-strip">
           <p className="ac-eyebrow">Explore a learning session</p>
           <h2>See the two-pointer pattern in motion.</h2>

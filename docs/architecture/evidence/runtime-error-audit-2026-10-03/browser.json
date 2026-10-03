@@ -1,0 +1,1006 @@
+{
+  "commit": "2b49b62",
+  "environment": "actual-local-next-dev-configured-Clerk-no-database",
+  "samples": [
+    {
+      "path": "/",
+      "width": 1440,
+      "status": 200,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "headings": [
+        "Build a pattern. Return to it.",
+        "Sign in to use a private learner profile",
+        "See the two-pointer pattern in motion."
+      ],
+      "text": "Skip to content\nAlgoCove\nDeeper Understanding\nFurther Futures\nHome\nPlanning\nReviews\nProgress\nLearner profile\n\u25d2\nCalmer minds\nStronger problem solvers\nAlgoCove\nGuided practice and learning progress\nSign in\nCreate account\nSystem status\n\nGUIDED LEARNING\n\nBuild a pattern. Return to it.\n\nPractice with authored explanations, check your reasoning, and revisit patterns with a clear record of your progress.\n\nYOUR ACCOUNT\n\nSign in to use a private learner profile\n\nChoose a goal and a comfortable daily schedule to personalize your next steps.\n\nSign in\n\nEXPLORE A LEARNING SESSION\n\nSee the two-pointer pattern in motion.\n\nRead the authored problem, build your reasoning and explore its interactive trace.\n\nExplore guided practice",
+      "overflow": false,
+      "fonts": "loaded",
+      "stylesheets": 2,
+      "errors": [],
+      "consoleErrors": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+        },
+        {
+          "type": "warning",
+          "text": "Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview"
+        }
+      ],
+      "network": [
+        {
+          "url": "http://127.0.0.1:3000/api/auth/session",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/onboarding",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/auth/session",
+          "status": 401
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/onboarding",
+          "status": 401
+        }
+      ],
+      "screenshot": "home-1440.png"
+    },
+    {
+      "path": "/plan",
+      "width": 1440,
+      "status": 200,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "headings": [
+        "Planning preferences"
+      ],
+      "text": "Skip to content\nAlgoCove\nDeeper Understanding\nFurther Futures\nHome\nPlanning\nReviews\nProgress\nLearner profile\n\u25d2\nCalmer minds\nStronger problem solvers\nAlgoCove\nGuided practice and learning progress\nSign in\nCreate account\nSystem status\nPlanning preferences\n\nChoose your goal, calendar horizon and available study time. Saved preferences are inputs for a schedule; a schedule must be built, validated and reviewed before you accept it.\n\nSign in to save private planning preferences.\n\nReload saved preferences",
+      "overflow": false,
+      "fonts": "loaded",
+      "stylesheets": 2,
+      "errors": [],
+      "consoleErrors": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+        },
+        {
+          "type": "warning",
+          "text": "Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview"
+        }
+      ],
+      "network": [
+        {
+          "url": "http://127.0.0.1:3000/api/auth/session",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/auth/session",
+          "status": 401
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/planning/intent",
+          "status": 401
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/planning/intent",
+          "status": 401
+        }
+      ],
+      "screenshot": "_plan-1440.png"
+    },
+    {
+      "path": "/review",
+      "width": 1440,
+      "status": 200,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "headings": [
+        "Your reviews"
+      ],
+      "text": "Skip to content\nAlgoCove\nDeeper Understanding\nFurther Futures\nHome\nPlanning\nReviews\nProgress\nLearner profile\n\u25d2\nCalmer minds\nStronger problem solvers\nAlgoCove\nGuided practice and learning progress\nSign in\nCreate account\nSystem status\nYour reviews\n\nReview windows use elapsed UTC days and appear in your profile timezone. Overdue items remain available; catching up preserves your history.\n\nSign in to view your private learning record.\n\nTry again",
+      "overflow": false,
+      "fonts": "loaded",
+      "stylesheets": 2,
+      "errors": [],
+      "consoleErrors": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+        },
+        {
+          "type": "warning",
+          "text": "Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview"
+        }
+      ],
+      "network": [
+        {
+          "url": "http://127.0.0.1:3000/api/auth/session",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/auth/session",
+          "status": 401
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/review",
+          "status": 401
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/review",
+          "status": 401
+        }
+      ],
+      "screenshot": "_review-1440.png"
+    },
+    {
+      "path": "/progress",
+      "width": 1440,
+      "status": 200,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "headings": [
+        "Your progress"
+      ],
+      "text": "Skip to content\nAlgoCove\nDeeper Understanding\nFurther Futures\nHome\nPlanning\nReviews\nProgress\nLearner profile\n\u25d2\nCalmer minds\nStronger problem solvers\nAlgoCove\nGuided practice and learning progress\nSign in\nCreate account\nSystem status\nYour progress\n\nChecked learning, your own reports, and study habits each have their own record.\n\nSign in to view your private learning record.\n\nTry again",
+      "overflow": false,
+      "fonts": "loaded",
+      "stylesheets": 2,
+      "errors": [],
+      "consoleErrors": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+        },
+        {
+          "type": "warning",
+          "text": "Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview"
+        }
+      ],
+      "network": [
+        {
+          "url": "http://127.0.0.1:3000/api/auth/session",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/auth/session",
+          "status": 401
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/progress",
+          "status": 401
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/progress",
+          "status": 401
+        }
+      ],
+      "screenshot": "_progress-1440.png"
+    },
+    {
+      "path": "/onboarding",
+      "width": 1440,
+      "status": 200,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "headings": [
+        "Shape the learning loop around your week."
+      ],
+      "text": "Skip to content\nAlgoCove\nDeeper Understanding\nFurther Futures\nHome\nPlanning\nReviews\nProgress\nLearner profile\n\u25d2\nCalmer minds\nStronger problem solvers\nAlgoCove\nGuided practice and learning progress\nSign in\nCreate account\nSystem status\nBack to home\n\nLEARNER SETUP\n\nShape the learning loop around your week.\n\nThese settings are private to your AlgoCove learner profile and can be changed later.\n\nSign in with Clerk to set your learning profile.\nSign in with Clerk",
+      "overflow": false,
+      "fonts": "loaded",
+      "stylesheets": 2,
+      "errors": [],
+      "consoleErrors": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+        },
+        {
+          "type": "warning",
+          "text": "Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview"
+        }
+      ],
+      "network": [
+        {
+          "url": "http://127.0.0.1:3000/api/auth/session",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/onboarding",
+          "status": 401
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/auth/session",
+          "status": 401
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/onboarding",
+          "status": 401
+        }
+      ],
+      "screenshot": "_onboarding-1440.png"
+    },
+    {
+      "path": "/admin/content",
+      "width": 1440,
+      "status": 200,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "headings": [
+        "Governed content"
+      ],
+      "text": "Skip to content\nAlgoCove\nDeeper Understanding\nFurther Futures\nHome\nPlanning\nReviews\nProgress\nLearner profile\n\u25d2\nCalmer minds\nStronger problem solvers\nAlgoCove\nGuided practice and learning progress\nSign in\nCreate account\nSystem status\nBack to home\n\nCONTENT OPERATIONS\n\nGoverned content\n\nAuthor, review and maintain versioned learning material.\n\nSign in to open content operations.\n\nSign in",
+      "overflow": false,
+      "fonts": "loaded",
+      "stylesheets": 2,
+      "errors": [],
+      "consoleErrors": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+        },
+        {
+          "type": "warning",
+          "text": "Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview"
+        }
+      ],
+      "network": [
+        {
+          "url": "http://127.0.0.1:3000/api/auth/session",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/admin/content",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/auth/session",
+          "status": 401
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/admin/content",
+          "status": 401
+        }
+      ],
+      "screenshot": "_admin_content-1440.png"
+    },
+    {
+      "path": "/learn/arrays-two-pointer",
+      "width": 1440,
+      "status": 200,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "headings": [
+        "Container with most water",
+        "Choose two lines that hold the most water.",
+        "Pseudocode checkpoint",
+        "Step through the reviewed trace",
+        "Array trace",
+        "Write your solution",
+        "Need a nudge?"
+      ],
+      "text": "Skip to content\nAlgoCove\nSign in\nCreate account\nSystem status\n\nGUIDED PRACTICE \u00b7 ARRAYS AND POINTERS\n\nContainer with most water\n\nBuild the invariant first, inspect the reviewed trace, then validate your own solution with checked execution results.\n\nPractice attempt\nPrivate recovery \u00b7 Sign in for private recovery\nRun or submit your code to see checked results.\n1\nUnderstand\n2\nPseudocode\n3\nTrace\n4\nImplement\n5\nValidate\n\nPROBLEM\n\nChoose two lines that hold the most water.\n\nGiven an array of heights, return the maximum area formed by two vertical lines and the x-axis. The container must keep its sides in the original order.\n\nINPUT\nPositive integer heights\nOUTPUT\nMaximum contained area\nTARGET\nO(n) time \u00b7 O(1) space\n\nSTRUCTURED REASONING\n\nPseudocode checkpoint\nDraft\nSave and check reasoning revision\nConfidence before checking (optional, self-reported)\nPrefer not to say\nLow\nMedium\nHigh\n\nNo explicit reasoning revision saved.\n\nCheck reasoning readiness\n\nYour reasoning is saved privately as you work. Save a revision when you are ready to check your answers.\n\nArea checkpoint\nChoose an answer\nSmaller height \u00d7 distance\nLarger height \u00d7 distance\nSum of the two heights\nBoundary checkpoint\nChoose an answer\nMove the shorter boundary\nMove the taller boundary\nAlways move both boundaries\nInputs\nState\nInitialization\nInvariant\nLoop\nTermination\nOutput\nComplexity\n\nVISUAL REASONING\n\nStep through the reviewed trace\n\nLearner trace edits stay in this tab. Schema validity does not prove algorithm correctness.\n\nPredict the next boundary\nChoose a prediction\nLeft\nRight\nRecord trace prediction\nEdit your bounded trace\nReveal reviewed trace\n\nLEARNER DRAFT TRACE\n\nArray trace\n\nUse Left and Right Arrow to move one step. Home and End jump to the beginning or end.\n\nStep 0 of 1. Pointers at 0 and 8; status ready.\nUse flat view\nRotate\nTilt\nReset view\n1\n0\nL\n8\n1\n6\n2\n2\n3\n5\n4\n4\n5\n8\n6\n3\n7\n7\n8\nR\nPrevious step\nNext step\nRestart trace\nComplete trace\nStep 0: pointers at 0 and 8.\n\nIMPLEMENTATION\n\nWrite your solution\nLanguage\nPython\nJavaScript\nTypeScript\nJava\nC++\nC\nRun checks\nSubmit attempt\n\nExecution is temporarily unavailable. Your work remains saved; try again later.\n\nGUIDANCE\n\nNeed a nudge?\n\nNo hint revealed. Start with your invariant.\n\nRequest clarification hint\n\nHints reveal progressively more guidance. Each hint is recorded with your attempt so your progress reflects the help you used.",
+      "overflow": false,
+      "fonts": "loaded",
+      "stylesheets": 2,
+      "errors": [],
+      "consoleErrors": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+        },
+        {
+          "type": "warning",
+          "text": "Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview"
+        }
+      ],
+      "network": [
+        {
+          "url": "http://127.0.0.1:3000/api/auth/session",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/auth/session",
+          "status": 401
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/auth/session",
+          "status": 401
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/auth/session",
+          "status": 401
+        }
+      ],
+      "screenshot": "_learn_arrays-two-pointer-1440.png"
+    },
+    {
+      "path": "/sign-in",
+      "width": 1440,
+      "status": 200,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "headings": [
+        "Sign in to AlgoCove"
+      ],
+      "text": "AlgoCove\nDeeper Understanding\nFurther Futures\nClerk authentication connected\nThis local environment is connected to Clerk for sign-up, sign-in, and session handling.\nSign in to AlgoCove\n\nWelcome back! Please sign in to continue\n\nGitHub\nGoogle\n\nor\n\nEmail address or username\nPassword\nContinue\nDon\u2019t have an account?\nSign up\n\nSecured by\n\nDevelopment mode",
+      "overflow": false,
+      "fonts": "loaded",
+      "stylesheets": 3,
+      "errors": [],
+      "consoleErrors": [
+        {
+          "type": "warning",
+          "text": "Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview"
+        }
+      ],
+      "network": [],
+      "screenshot": "_sign-in-1440.png"
+    },
+    {
+      "path": "/sign-up",
+      "width": 1440,
+      "status": 200,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "headings": [
+        "Create your account"
+      ],
+      "text": "AlgoCove\nDeeper Understanding\nFurther Futures\nClerk authentication connected\nThis local environment is connected to Clerk for sign-up, sign-in, and session handling.\nCreate your account\n\nWelcome! Please fill in the details to get started.\n\nGitHub\nGoogle\n\nor\n\nUsername\nEmail address\nPassword\nContinue\nAlready have an account?\nSign in\n\nSecured by\n\nDevelopment mode",
+      "overflow": false,
+      "fonts": "loaded",
+      "stylesheets": 3,
+      "errors": [],
+      "consoleErrors": [
+        {
+          "type": "warning",
+          "text": "Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview"
+        }
+      ],
+      "network": [],
+      "screenshot": "_sign-up-1440.png"
+    },
+    {
+      "path": "/learn/unknown",
+      "width": 1440,
+      "status": 200,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "headings": [
+        "Problem workspace unavailable"
+      ],
+      "text": "Skip to content\nAlgoCove\nSign in\nCreate account\nSystem status\nProblem workspace unavailable\n\nThis problem is not currently available. Choose another activity from Home.",
+      "overflow": false,
+      "fonts": "loaded",
+      "stylesheets": 2,
+      "errors": [],
+      "consoleErrors": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+        },
+        {
+          "type": "warning",
+          "text": "Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview"
+        }
+      ],
+      "network": [
+        {
+          "url": "http://127.0.0.1:3000/api/auth/session",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/auth/session",
+          "status": 401
+        }
+      ],
+      "screenshot": "_learn_unknown-1440.png"
+    },
+    {
+      "path": "/execution-readiness",
+      "width": 1440,
+      "status": 200,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "headings": [
+        "Six languages, one explicit execution contract.",
+        "Local execution verified; hosted release gated",
+        "Language profiles",
+        "What can be verified now"
+      ],
+      "text": "Skip to content\nAlgoCove\nDeeper Understanding\nFurther Futures\nHome\nPlanning\nReviews\nProgress\nLearner profile\n\u25d2\nCalmer minds\nStronger problem solvers\nAlgoCove\nGuided practice and learning progress\nSign in\nCreate account\nSystem status\n\nEXECUTION BOUNDARY EVIDENCE\n\nSix languages, one explicit execution contract.\n\nThese values come from the domain language manifest. This page summarizes recorded local verification; it does not report whether the execution host is currently available.\n\nSupported contracts\n6\nlocal evidence; hosted release remains gated\n\nLOCAL VERIFICATION\n\nLocal execution verified; hosted release gated\n\nThe security owner approved gVisor runsc for hostile learner code, and the local six-language learning loop passed. The temporary test host was removed afterward. Running code requires a configured isolated host; no hosted release is authorized.\n\nLOCAL VERIFIED\n\nDOMAIN SOURCE OF TRUTH\n\nLanguage profiles\n\nAdapter, entry point, timeout, and memory values are not UI placeholders.\n\nPython\npython\nAdapter\nharness.python\nEntry signature\nsolve(input)\nCompile limit\n5s\nRun limit\n2s\nMemory\n256 MB\nJavaScript\njavascript\nAdapter\nharness.javascript\nEntry signature\nfunction solve(input)\nCompile limit\n5s\nRun limit\n2s\nMemory\n256 MB\nTypeScript\njavascript\nAdapter\nharness.typescript\nEntry signature\nfunction solve(input): Output\nCompile limit\n8s\nRun limit\n2s\nMemory\n256 MB\nJava\njvm\nAdapter\nharness.java\nEntry signature\nstatic Output solve(Input input)\nCompile limit\n10s\nRun limit\n3s\nMemory\n384 MB\nC++\nnative-cpp\nAdapter\nharness.cpp\nEntry signature\nOutput solve(Input input)\nCompile limit\n8s\nRun limit\n2s\nMemory\n256 MB\nC\nnative-c\nAdapter\nharness.c\nEntry signature\nOutput solve(Input input)\nCompile limit\n8s\nRun limit\n2s\nMemory\n256 MB\n\nREPOSITORY EVIDENCE\n\nWhat can be verified now\nLanguage conformance\nImplemented\n\nThe shared semantic manifest is exercised across every declared adapter.\n\npnpm test:conformance\nRuntime images\nImplemented\n\nPinned runtime profiles and deterministic image checks are present in the repository.\n\npnpm images:test\nSandbox abuse suite\nTechnical evidence\n\nHostile-code abuse fixtures and the selected sandbox spike have recorded evidence.\n\npnpm test:sandbox",
+      "overflow": false,
+      "fonts": "loaded",
+      "stylesheets": 2,
+      "errors": [],
+      "consoleErrors": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+        },
+        {
+          "type": "warning",
+          "text": "Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview"
+        }
+      ],
+      "network": [
+        {
+          "url": "http://127.0.0.1:3000/api/auth/session",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/auth/session",
+          "status": 401
+        }
+      ],
+      "screenshot": "_execution-readiness-1440.png"
+    },
+    {
+      "path": "/",
+      "width": 320,
+      "status": 200,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "headings": [
+        "Build a pattern. Return to it.",
+        "Sign in to use a private learner profile",
+        "See the two-pointer pattern in motion."
+      ],
+      "text": "Skip to content\nAlgoCove\nSign in\nSystem status\nHome\nPlanning\nReviews\nProgress\nLearner profile\n\nGUIDED LEARNING\n\nBuild a pattern. Return to it.\n\nPractice with authored explanations, check your reasoning, and revisit patterns with a clear record of your progress.\n\nYOUR ACCOUNT\n\nSign in to use a private learner profile\n\nChoose a goal and a comfortable daily schedule to personalize your next steps.\n\nSign in\n\nEXPLORE A LEARNING SESSION\n\nSee the two-pointer pattern in motion.\n\nRead the authored problem, build your reasoning and explore its interactive trace.\n\nExplore guided practice",
+      "overflow": false,
+      "fonts": "loaded",
+      "stylesheets": 2,
+      "errors": [],
+      "consoleErrors": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+        },
+        {
+          "type": "warning",
+          "text": "Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview"
+        }
+      ],
+      "network": [
+        {
+          "url": "http://127.0.0.1:3000/api/auth/session",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/onboarding",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/onboarding",
+          "status": 401
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/auth/session",
+          "status": 401
+        }
+      ],
+      "screenshot": "home-320.png"
+    },
+    {
+      "path": "/plan",
+      "width": 320,
+      "status": 200,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "headings": [
+        "Planning preferences"
+      ],
+      "text": "Skip to content\nAlgoCove\nSign in\nSystem status\nHome\nPlanning\nReviews\nProgress\nLearner profile\nPlanning preferences\n\nChoose your goal, calendar horizon and available study time. Saved preferences are inputs for a schedule; a schedule must be built, validated and reviewed before you accept it.\n\nSign in to save private planning preferences.\n\nReload saved preferences",
+      "overflow": false,
+      "fonts": "loaded",
+      "stylesheets": 2,
+      "errors": [],
+      "consoleErrors": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+        },
+        {
+          "type": "warning",
+          "text": "Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview"
+        }
+      ],
+      "network": [
+        {
+          "url": "http://127.0.0.1:3000/api/auth/session",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/planning/intent",
+          "status": 401
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/planning/intent",
+          "status": 401
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/auth/session",
+          "status": 401
+        }
+      ],
+      "screenshot": "_plan-320.png"
+    },
+    {
+      "path": "/review",
+      "width": 320,
+      "status": 200,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "headings": [
+        "Your reviews"
+      ],
+      "text": "Skip to content\nAlgoCove\nSign in\nSystem status\nHome\nPlanning\nReviews\nProgress\nLearner profile\nYour reviews\n\nReview windows use elapsed UTC days and appear in your profile timezone. Overdue items remain available; catching up preserves your history.\n\nSign in to view your private learning record.\n\nTry again",
+      "overflow": false,
+      "fonts": "loaded",
+      "stylesheets": 2,
+      "errors": [],
+      "consoleErrors": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+        },
+        {
+          "type": "warning",
+          "text": "Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview"
+        }
+      ],
+      "network": [
+        {
+          "url": "http://127.0.0.1:3000/api/auth/session",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/review",
+          "status": 401
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/review",
+          "status": 401
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/auth/session",
+          "status": 401
+        }
+      ],
+      "screenshot": "_review-320.png"
+    },
+    {
+      "path": "/progress",
+      "width": 320,
+      "status": 200,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "headings": [
+        "Your progress"
+      ],
+      "text": "Skip to content\nAlgoCove\nSign in\nSystem status\nHome\nPlanning\nReviews\nProgress\nLearner profile\nYour progress\n\nChecked learning, your own reports, and study habits each have their own record.\n\nSign in to view your private learning record.\n\nTry again",
+      "overflow": false,
+      "fonts": "loaded",
+      "stylesheets": 2,
+      "errors": [],
+      "consoleErrors": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+        },
+        {
+          "type": "warning",
+          "text": "Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview"
+        }
+      ],
+      "network": [
+        {
+          "url": "http://127.0.0.1:3000/api/auth/session",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/progress",
+          "status": 401
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/progress",
+          "status": 401
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/auth/session",
+          "status": 401
+        }
+      ],
+      "screenshot": "_progress-320.png"
+    },
+    {
+      "path": "/onboarding",
+      "width": 320,
+      "status": 200,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "headings": [
+        "Shape the learning loop around your week."
+      ],
+      "text": "Skip to content\nAlgoCove\nSign in\nSystem status\nHome\nPlanning\nReviews\nProgress\nLearner profile\nBack to home\n\nLEARNER SETUP\n\nShape the learning loop around your week.\n\nThese settings are private to your AlgoCove learner profile and can be changed later.\n\nSign in with Clerk to set your learning profile.\nSign in with Clerk",
+      "overflow": false,
+      "fonts": "loaded",
+      "stylesheets": 2,
+      "errors": [],
+      "consoleErrors": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+        },
+        {
+          "type": "warning",
+          "text": "Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview"
+        }
+      ],
+      "network": [
+        {
+          "url": "http://127.0.0.1:3000/api/auth/session",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/onboarding",
+          "status": 401
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/auth/session",
+          "status": 401
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/onboarding",
+          "status": 401
+        }
+      ],
+      "screenshot": "_onboarding-320.png"
+    },
+    {
+      "path": "/admin/content",
+      "width": 320,
+      "status": 200,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "headings": [
+        "Governed content"
+      ],
+      "text": "Skip to content\nAlgoCove\nSign in\nSystem status\nHome\nPlanning\nReviews\nProgress\nLearner profile\nBack to home\n\nCONTENT OPERATIONS\n\nGoverned content\n\nAuthor, review and maintain versioned learning material.\n\nSign in to open content operations.\n\nSign in",
+      "overflow": false,
+      "fonts": "loaded",
+      "stylesheets": 2,
+      "errors": [],
+      "consoleErrors": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+        },
+        {
+          "type": "warning",
+          "text": "Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview"
+        }
+      ],
+      "network": [
+        {
+          "url": "http://127.0.0.1:3000/api/auth/session",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/admin/content",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/admin/content",
+          "status": 401
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/auth/session",
+          "status": 401
+        }
+      ],
+      "screenshot": "_admin_content-320.png"
+    },
+    {
+      "path": "/learn/arrays-two-pointer",
+      "width": 320,
+      "status": 200,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "headings": [
+        "Container with most water",
+        "Choose two lines that hold the most water.",
+        "Pseudocode checkpoint",
+        "Step through the reviewed trace",
+        "Array trace",
+        "Write your solution",
+        "Need a nudge?"
+      ],
+      "text": "Skip to content\nSign in\nSystem status\n\nGUIDED PRACTICE \u00b7 ARRAYS AND POINTERS\n\nContainer with most water\n\nBuild the invariant first, inspect the reviewed trace, then validate your own solution with checked execution results.\n\nPractice attempt\nPrivate recovery \u00b7 Sign in for private recovery\nRun or submit your code to see checked results.\n1\nUnderstand\n2\nPseudocode\n3\nTrace\n4\nImplement\n5\nValidate\n\nPROBLEM\n\nChoose two lines that hold the most water.\n\nGiven an array of heights, return the maximum area formed by two vertical lines and the x-axis. The container must keep its sides in the original order.\n\nINPUT\nPositive integer heights\nOUTPUT\nMaximum contained area\nTARGET\nO(n) time \u00b7 O(1) space\n\nSTRUCTURED REASONING\n\nPseudocode checkpoint\nDraft\nSave and check reasoning revision\nConfidence before checking (optional, self-reported)\nPrefer not to say\nLow\nMedium\nHigh\n\nNo explicit reasoning revision saved.\n\nCheck reasoning readiness\n\nYour reasoning is saved privately as you work. Save a revision when you are ready to check your answers.\n\nArea checkpoint\nChoose an answer\nSmaller height \u00d7 distance\nLarger height \u00d7 distance\nSum of the two heights\nBoundary checkpoint\nChoose an answer\nMove the shorter boundary\nMove the taller boundary\nAlways move both boundaries\nInputs\nState\nInitialization\nInvariant\nLoop\nTermination\nOutput\nComplexity\n\nVISUAL REASONING\n\nStep through the reviewed trace\n\nLearner trace edits stay in this tab. Schema validity does not prove algorithm correctness.\n\nPredict the next boundary\nChoose a prediction\nLeft\nRight\nRecord trace prediction\nEdit your bounded trace\nReveal reviewed trace\n\nLEARNER DRAFT TRACE\n\nArray trace\n\nUse Left and Right Arrow to move one step. Home and End jump to the beginning or end.\n\nStep 0 of 1. Pointers at 0 and 8; status ready.\nUse flat view\nRotate\nTilt\nReset view\n1\n0\nL\n8\n1\n6\n2\n2\n3\n5\n4\n4\n5\n8\n6\n3\n7\n7\n8\nR\nPrevious step\nNext step\nRestart trace\nComplete trace\nStep 0: pointers at 0 and 8.\n\nIMPLEMENTATION\n\nWrite your solution\nLanguage\nPython\nJavaScript\nTypeScript\nJava\nC++\nC\nRun checks\nSubmit attempt\n\nExecution is temporarily unavailable. Your work remains saved; try again later.\n\nGUIDANCE\n\nNeed a nudge?\n\nNo hint revealed. Start with your invariant.\n\nRequest clarification hint\n\nHints reveal progressively more guidance. Each hint is recorded with your attempt so your progress reflects the help you used.",
+      "overflow": false,
+      "fonts": "loaded",
+      "stylesheets": 2,
+      "errors": [],
+      "consoleErrors": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+        },
+        {
+          "type": "warning",
+          "text": "Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview"
+        }
+      ],
+      "network": [
+        {
+          "url": "http://127.0.0.1:3000/api/auth/session",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/auth/session",
+          "status": 401
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/auth/session",
+          "status": 401
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/auth/session",
+          "status": 401
+        }
+      ],
+      "screenshot": "_learn_arrays-two-pointer-320.png"
+    },
+    {
+      "path": "/sign-in",
+      "width": 320,
+      "status": 200,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "headings": [
+        "Sign in to AlgoCove"
+      ],
+      "text": "Clerk authentication connected\nThis local environment is connected to Clerk for sign-up, sign-in, and session handling.\nSign in to AlgoCove\n\nWelcome back! Please sign in to continue\n\nGitHub\nGoogle\n\nor\n\nEmail address or username\nPassword\nContinue\nDon\u2019t have an account?\nSign up\n\nSecured by\n\nDevelopment mode",
+      "overflow": false,
+      "fonts": "loaded",
+      "stylesheets": 3,
+      "errors": [],
+      "consoleErrors": [
+        {
+          "type": "warning",
+          "text": "Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview"
+        }
+      ],
+      "network": [],
+      "screenshot": "_sign-in-320.png"
+    },
+    {
+      "path": "/sign-up",
+      "width": 320,
+      "status": 200,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "headings": [
+        "Create your account"
+      ],
+      "text": "Clerk authentication connected\nThis local environment is connected to Clerk for sign-up, sign-in, and session handling.\nCreate your account\n\nWelcome! Please fill in the details to get started.\n\nGitHub\nGoogle\n\nor\n\nUsername\nEmail address\nPassword\nContinue\nAlready have an account?\nSign in\n\nSecured by\n\nDevelopment mode",
+      "overflow": false,
+      "fonts": "loaded",
+      "stylesheets": 3,
+      "errors": [],
+      "consoleErrors": [
+        {
+          "type": "warning",
+          "text": "Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview"
+        }
+      ],
+      "network": [],
+      "screenshot": "_sign-up-320.png"
+    },
+    {
+      "path": "/learn/unknown",
+      "width": 320,
+      "status": 200,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "headings": [
+        "Problem workspace unavailable"
+      ],
+      "text": "Skip to content\nSign in\nSystem status\nProblem workspace unavailable\n\nThis problem is not currently available. Choose another activity from Home.",
+      "overflow": false,
+      "fonts": "loaded",
+      "stylesheets": 2,
+      "errors": [],
+      "consoleErrors": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+        },
+        {
+          "type": "warning",
+          "text": "Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview"
+        }
+      ],
+      "network": [
+        {
+          "url": "http://127.0.0.1:3000/api/auth/session",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/auth/session",
+          "status": 401
+        }
+      ],
+      "screenshot": "_learn_unknown-320.png"
+    },
+    {
+      "path": "/execution-readiness",
+      "width": 320,
+      "status": 200,
+      "title": "AlgoCove | Deliberate DSA practice",
+      "headings": [
+        "Six languages, one explicit execution contract.",
+        "Local execution verified; hosted release gated",
+        "Language profiles",
+        "What can be verified now"
+      ],
+      "text": "Skip to content\nAlgoCove\nSign in\nSystem status\nHome\nPlanning\nReviews\nProgress\nLearner profile\n\nEXECUTION BOUNDARY EVIDENCE\n\nSix languages, one explicit execution contract.\n\nThese values come from the domain language manifest. This page summarizes recorded local verification; it does not report whether the execution host is currently available.\n\nSupported contracts\n6\nlocal evidence; hosted release remains gated\n\nLOCAL VERIFICATION\n\nLocal execution verified; hosted release gated\n\nThe security owner approved gVisor runsc for hostile learner code, and the local six-language learning loop passed. The temporary test host was removed afterward. Running code requires a configured isolated host; no hosted release is authorized.\n\nLOCAL VERIFIED\n\nDOMAIN SOURCE OF TRUTH\n\nLanguage profiles\n\nAdapter, entry point, timeout, and memory values are not UI placeholders.\n\nPython\npython\nAdapter\nharness.python\nEntry signature\nsolve(input)\nCompile limit\n5s\nRun limit\n2s\nMemory\n256 MB\nJavaScript\njavascript\nAdapter\nharness.javascript\nEntry signature\nfunction solve(input)\nCompile limit\n5s\nRun limit\n2s\nMemory\n256 MB\nTypeScript\njavascript\nAdapter\nharness.typescript\nEntry signature\nfunction solve(input): Output\nCompile limit\n8s\nRun limit\n2s\nMemory\n256 MB\nJava\njvm\nAdapter\nharness.java\nEntry signature\nstatic Output solve(Input input)\nCompile limit\n10s\nRun limit\n3s\nMemory\n384 MB\nC++\nnative-cpp\nAdapter\nharness.cpp\nEntry signature\nOutput solve(Input input)\nCompile limit\n8s\nRun limit\n2s\nMemory\n256 MB\nC\nnative-c\nAdapter\nharness.c\nEntry signature\nOutput solve(Input input)\nCompile limit\n8s\nRun limit\n2s\nMemory\n256 MB\n\nREPOSITORY EVIDENCE\n\nWhat can be verified now\nLanguage conformance\nImplemented\n\nThe shared semantic manifest is exercised across every declared adapter.\n\npnpm test:conformance\nRuntime images\nImplemented\n\nPinned runtime profiles and deterministic image checks are present in the repository.\n\npnpm images:test\nSandbox abuse suite\nTechnical evidence\n\nHostile-code abuse fixtures and the selected sandbox spike have recorded evidence.\n\npnpm test:sandbox",
+      "overflow": false,
+      "fonts": "loaded",
+      "stylesheets": 2,
+      "errors": [],
+      "consoleErrors": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+        },
+        {
+          "type": "warning",
+          "text": "Clerk: Clerk has been loaded with development keys. Development instances have strict usage limits and should not be used when deploying your application to production. Learn more: https://clerk.com/docs/deployments/overview"
+        }
+      ],
+      "network": [
+        {
+          "url": "http://127.0.0.1:3000/api/auth/session",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://127.0.0.1:3000/api/auth/session",
+          "status": 401
+        }
+      ],
+      "screenshot": "_execution-readiness-320.png"
+    }
+  ],
+  "api": [
+    {
+      "path": "/api/health",
+      "status": 200,
+      "body": "{\"ok\":true,\"status\":\"live\",\"service\":\"algocove-web\"}"
+    },
+    {
+      "path": "/api/readiness",
+      "status": 503,
+      "body": "{\"ok\":false,\"status\":\"not_ready\",\"checks\":{\"configuration\":\"ok\",\"database\":\"unreachable\"}}"
+    },
+    {
+      "path": "/api/auth/session",
+      "status": 401,
+      "body": "{\"authenticated\":false,\"error\":{\"code\":\"unauthenticated\"}}"
+    },
+    {
+      "path": "/api/onboarding",
+      "status": 401,
+      "body": "{\"error\":{\"code\":\"unauthenticated\",\"category\":\"authorization\",\"message\":\"Authentication is required.\",\"traceId\":\"req_0000000000000000\",\"retryable\":false}}"
+    },
+    {
+      "path": "/api/learner-home",
+      "status": 401,
+      "body": "{\"error\":{\"code\":\"unauthenticated\",\"category\":\"authorization\",\"message\":\"Authentication is required.\",\"traceId\":\"req_0000000000000000\",\"retryable\":false}}"
+    },
+    {
+      "path": "/api/progress",
+      "status": 401,
+      "body": "{\"error\":{\"code\":\"unauthenticated\",\"category\":\"authorization\",\"message\":\"Authentication is required.\",\"traceId\":\"req_0000000000000000\",\"retryable\":false}}"
+    },
+    {
+      "path": "/api/review",
+      "status": 401,
+      "body": "{\"error\":{\"code\":\"unauthenticated\",\"category\":\"authorization\",\"message\":\"Authentication is required.\",\"traceId\":\"req_0000000000000000\",\"retryable\":false}}"
+    },
+    {
+      "path": "/api/planning/intent",
+      "status": 401,
+      "body": "{\"error\":{\"code\":\"unauthenticated\",\"category\":\"authorization\",\"message\":\"Authentication is required.\",\"traceId\":\"req_0000000000000000\",\"retryable\":false}}"
+    },
+    {
+      "path": "/api/planning/roadmap",
+      "status": 401,
+      "body": "{\"error\":{\"code\":\"unauthenticated\",\"category\":\"authorization\",\"message\":\"Authentication is required.\",\"traceId\":\"req_0000000000000000\",\"retryable\":false}}"
+    },
+    {
+      "path": "/api/admin/content",
+      "status": 401,
+      "body": "{\"error\":{\"code\":\"unauthenticated\",\"category\":\"authorization\",\"message\":\"Authentication is required.\",\"traceId\":\"req_0000000000000000\",\"retryable\":false}}"
+    }
+  ]
+}

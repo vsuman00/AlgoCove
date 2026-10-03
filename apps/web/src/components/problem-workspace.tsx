@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState, type ReactElement } from "react";
 import type { ProblemLanguage, PseudocodeFields } from "@algocove/domain";
 import TraceWorkspace from "./trace-workspace";
+import { useAppSession } from "./staff-navigation";
 
 const LANGUAGES: readonly { readonly value: ProblemLanguage; readonly label: string }[] = [
   { value: "python", label: "Python" },
@@ -74,6 +75,7 @@ type ExecutionState =
   | { readonly kind: "requesting" }
   | { readonly kind: "queued"; readonly runId: string; readonly sourceAtRun: string | null }
   | { readonly kind: "cancelling"; readonly runId: string }
+  | { readonly kind: "suspended"; readonly runId: string; readonly sourceAtRun: string | null }
   | {
       readonly kind: "completed";
       readonly runId: string;
@@ -104,6 +106,7 @@ export default function ProblemWorkspace({
   readonly problemId?: string;
   readonly initialLanguage?: keyof typeof STARTERS;
 }): ReactElement {
+  const appSession = useAppSession();
   const [workspace, setWorkspace] = useState<WorkspaceState>({
     language: initialLanguage,
     source: STARTERS[initialLanguage],
@@ -112,6 +115,9 @@ export default function ProblemWorkspace({
   const [saveState, setSaveState] = useState<RecoveryState>("local");
   const [sessionRefresh, setSessionRefresh] = useState(0);
   const [sessionState, setSessionState] = useState<SessionState>("checking");
+  const [workspaceStatus, setWorkspaceStatus] = useState<"loading" | "ready" | "unavailable">(
+    "loading",
+  );
   const [learnerId, setLearnerId] = useState<string | null>(null);
   const [hintState, setHintState] = useState("No hint revealed. Start with your invariant.");
   const [hintTier, setHintTier] = useState(1);
@@ -124,11 +130,31 @@ export default function ProblemWorkspace({
   const syncQueue = useRef<Promise<void>>(Promise.resolve());
   const latestSync = useRef(0);
   const pendingRestart = useRef(false);
+  const recoveredLearner = useRef<string | null>(null);
   const { language, source, pseudocode } = workspace;
 
   useEffect(() => {
     let cancelled = false;
-    void fetch("/api/auth/session", { cache: "no-store" })
+    const sessionRead =
+      appSession === null
+        ? fetch("/api/auth/session", { cache: "no-store", signal: AbortSignal.timeout(10_000) })
+        : appSession.status === "loading"
+          ? null
+          : Promise.resolve(
+              Response.json(
+                { authenticated: appSession.status === "ready", user: { id: appSession.userId } },
+                {
+                  status:
+                    appSession.status === "unavailable"
+                      ? 503
+                      : appSession.status === "signed-out"
+                        ? 401
+                        : 200,
+                },
+              ),
+            );
+    if (sessionRead === null) return;
+    void sessionRead
       .then(async (response) => {
         if (!response.ok) {
           if (!cancelled) {
@@ -151,8 +177,13 @@ export default function ProblemWorkspace({
         const nextLearnerId = body.user.id;
         setLearnerId(nextLearnerId);
         setSessionState("authenticated");
-        const recovery = readRecovery(nextLearnerId, "python");
-        if (recovery !== null) setWorkspace({ language: "python", ...recovery });
+        if (recoveredLearner.current !== nextLearnerId) {
+          recoveredLearner.current = nextLearnerId;
+          setWorkspace((current) => {
+            const recovery = readRecovery(nextLearnerId, current.language);
+            return recovery === null ? current : { language: current.language, ...recovery };
+          });
+        }
       })
       .catch(() => {
         if (!cancelled) {
@@ -163,11 +194,12 @@ export default function ProblemWorkspace({
     return () => {
       cancelled = true;
     };
-  }, [sessionRefresh]);
+  }, [sessionRefresh, appSession]);
 
   useEffect(() => {
     if (sessionState !== "authenticated" || learnerId === null) return;
     let cancelled = false;
+    remoteWorkspace.current = null;
     void fetch("/api/practice/workspace", {
       method: "POST",
       credentials: "include",
@@ -256,11 +288,13 @@ export default function ProblemWorkspace({
         const recoveredExecution = executionStateFromRemote(body.activeRun, serverWorkspace.source);
         setExecutionState(recoveredExecution ?? { kind: "idle" });
         setSaveState(hasUnsyncedRecovery ? "saving" : "saved");
+        setWorkspaceStatus("ready");
       })
       .catch(() => {
-        if (!cancelled && remoteWorkspace.current?.language === language) {
+        if (!cancelled) {
           remoteWorkspace.current = null;
-          setSaveState("server_pending");
+          // ponytail: only the recovery writer may claim that a local edit was saved.
+          setWorkspaceStatus("unavailable");
         }
       });
     return () => {
@@ -294,7 +328,7 @@ export default function ProblemWorkspace({
       );
       const remote = remoteWorkspace.current;
       if (remote === null || remote.language !== language) {
-        setSaveState("saved");
+        setSaveState("server_pending");
         return;
       }
 
@@ -335,12 +369,14 @@ export default function ProblemWorkspace({
     if (queuedRunId === null) return;
     let cancelled = false;
     let timer: number | undefined;
+    const startedAt = Date.now();
 
     const poll = async (): Promise<void> => {
       try {
         const response = await fetch(`/api/practice/runs/${encodeURIComponent(queuedRunId)}`, {
           credentials: "include",
           cache: "no-store",
+          signal: AbortSignal.timeout(10_000),
         });
         if (!response.ok) throw new Error("execution_status_failed");
         const body = (await response.json()) as {
@@ -353,7 +389,16 @@ export default function ProblemWorkspace({
           } | null;
         };
         if (body.status === "queued") {
-          if (!cancelled) timer = window.setTimeout(() => void poll(), 500);
+          if (!cancelled) {
+            const elapsed = Date.now() - startedAt;
+            if (elapsed >= 120_000) {
+              setExecutionState({
+                kind: "suspended",
+                runId: queuedRunId,
+                sourceAtRun: queuedSource,
+              });
+            } else timer = window.setTimeout(() => void poll(), elapsed < 10_000 ? 500 : 5_000);
+          }
           return;
         }
         if (body.status !== "completed" || !isExecutionResult(body.result)) {
@@ -370,7 +415,8 @@ export default function ProblemWorkspace({
           });
         }
       } catch {
-        if (!cancelled) setExecutionState({ kind: "unavailable" });
+        if (!cancelled)
+          setExecutionState({ kind: "suspended", runId: queuedRunId, sourceAtRun: queuedSource });
       }
     };
 
@@ -407,9 +453,11 @@ export default function ProblemWorkspace({
           ? "Cancellation requested · awaiting trusted result"
           : executionState.kind === "completed"
             ? `Execution complete · ${executionState.sourceAtRun === source ? "" : "Previous source · "}${executionCategoryLabel(executionState.terminalCategory)}`
-            : executionState.kind === "unavailable"
-              ? "Execution unavailable · please try again"
-              : null;
+            : executionState.kind === "suspended"
+              ? "Result status unavailable. Your run is preserved; retry its status or cancel it."
+              : executionState.kind === "unavailable"
+                ? "Execution unavailable · please try again"
+                : null;
 
   const updatePseudocode = (field: keyof PseudocodeState, value: string): void => {
     setSaveState("saving");
@@ -426,6 +474,7 @@ export default function ProblemWorkspace({
   };
 
   const changeLanguage = (nextLanguage: ProblemLanguage): void => {
+    setWorkspaceStatus("loading");
     setSaveState(sessionState === "authenticated" ? "saving" : "sign_in");
     setExecutionState({ kind: "idle" });
     setWorkspace({
@@ -457,11 +506,30 @@ export default function ProblemWorkspace({
               className="ac-small-button"
               onClick={() => {
                 setSessionState("checking");
-                setSessionRefresh((value) => value + 1);
+                if (appSession !== null) appSession.reload();
+                else setSessionRefresh((value) => value + 1);
               }}
             >
               Retry account connection
             </button>
+          )}
+          {sessionState === "authenticated" && workspaceStatus === "loading" && (
+            <span role="status">Connecting your private workspace…</span>
+          )}
+          {sessionState === "authenticated" && workspaceStatus === "unavailable" && (
+            <>
+              <span role="status">Workspace connection unavailable. Local edits are retained.</span>
+              <button
+                className="ac-small-button"
+                type="button"
+                onClick={() => {
+                  setWorkspaceStatus("loading");
+                  setRestart((value) => value + 1);
+                }}
+              >
+                Retry workspace connection
+              </button>
+            </>
           )}
           {executionLabel !== null ? <span role="status">{executionLabel}</span> : null}
         </aside>
@@ -748,9 +816,11 @@ export default function ProblemWorkspace({
               disabled={
                 !executionEnabled ||
                 sessionState !== "authenticated" ||
+                workspaceStatus !== "ready" ||
                 submitted ||
                 executionState.kind === "requesting" ||
                 executionState.kind === "queued" ||
+                executionState.kind === "suspended" ||
                 executionState.kind === "cancelling"
               }
               onClick={() => void executeWorkspace("run")}
@@ -763,9 +833,11 @@ export default function ProblemWorkspace({
               disabled={
                 !executionEnabled ||
                 sessionState !== "authenticated" ||
+                workspaceStatus !== "ready" ||
                 submitted ||
                 executionState.kind === "requesting" ||
                 executionState.kind === "queued" ||
+                executionState.kind === "suspended" ||
                 executionState.kind === "cancelling"
               }
               onClick={() => void executeWorkspace("submit")}
@@ -780,6 +852,7 @@ export default function ProblemWorkspace({
               type="button"
               disabled={
                 executionState.kind === "queued" ||
+                executionState.kind === "suspended" ||
                 executionState.kind === "requesting" ||
                 executionState.kind === "cancelling"
               }
@@ -788,13 +861,31 @@ export default function ProblemWorkspace({
                 setExecutionState({ kind: "idle" });
                 remoteWorkspace.current = null;
                 pendingRestart.current = true;
+                setWorkspaceStatus("loading");
                 setRestart((value) => value + 1);
               }}
             >
               Start a new attempt
             </button>
           ) : null}
-          {executionState.kind === "queued" || executionState.kind === "cancelling" ? (
+          {executionState.kind === "suspended" ? (
+            <button
+              className="ac-small-button"
+              type="button"
+              onClick={() =>
+                setExecutionState({
+                  kind: "queued",
+                  runId: executionState.runId,
+                  sourceAtRun: executionState.sourceAtRun,
+                })
+              }
+            >
+              Retry result status
+            </button>
+          ) : null}
+          {executionState.kind === "queued" ||
+          executionState.kind === "suspended" ||
+          executionState.kind === "cancelling" ? (
             <button
               className="ac-small-button"
               disabled={executionState.kind === "cancelling"}
@@ -803,7 +894,7 @@ export default function ProblemWorkspace({
                   executionState.runId,
                   sessionState,
                   setExecutionState,
-                  queuedSource,
+                  executionState.kind === "suspended" ? executionState.sourceAtRun : queuedSource,
                 )
               }
               type="button"
@@ -960,7 +1051,7 @@ async function requestExecutionCancellation(
   sourceAtRun: string | null,
 ): Promise<void> {
   if (sessionState !== "authenticated") {
-    setExecutionState({ kind: "unavailable" });
+    setExecutionState({ kind: "suspended", runId, sourceAtRun });
     return;
   }
   setExecutionState({ kind: "cancelling", runId });
@@ -977,7 +1068,7 @@ async function requestExecutionCancellation(
     }
     setExecutionState({ kind: "queued", runId, sourceAtRun });
   } catch {
-    setExecutionState({ kind: "unavailable" });
+    setExecutionState({ kind: "suspended", runId, sourceAtRun });
   }
 }
 

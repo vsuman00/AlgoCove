@@ -84,6 +84,11 @@ const report = {
 test("overdue review supports keyboard answers, receipt and deferral with accessible states", async ({
   page,
 }) => {
+  await page.route("**/api/auth/session", (route) =>
+    route.fulfill({
+      json: { authenticated: true, user: { id: "usr_browser_fixture", roles: ["learner"] } },
+    }),
+  );
   let submitted: unknown;
   await page.route("**/api/review", async (route) => {
     if (route.request().method() === "POST") {
@@ -110,7 +115,17 @@ test("overdue review supports keyboard answers, receipt and deferral with access
 test("progress keeps self-reports separate and records a timezone-fenced prospective pause", async ({
   page,
 }) => {
+  await page.route("**/api/auth/session", (route) =>
+    route.fulfill({
+      json: { authenticated: true, user: { id: "usr_browser_fixture", roles: ["learner"] } },
+    }),
+  );
   let submitted: unknown;
+  await page.route("**/api/auth/session", (route) =>
+    route.fulfill({
+      json: { authenticated: true, user: { id: "usr_browser_fixture", roles: ["learner"] } },
+    }),
+  );
   await page.route("**/api/progress", (route) => route.fulfill({ json: report }));
   await page.route("**/api/progress/pause", async (route) => {
     submitted = route.request().postDataJSON();
@@ -142,6 +157,11 @@ test("progress keeps self-reports separate and records a timezone-fenced prospec
 test("home shows one reasoned action with alternatives and honors recommended language", async ({
   page,
 }) => {
+  await page.route("**/api/auth/session", (route) =>
+    route.fulfill({
+      json: { authenticated: true, user: { id: "usr_browser_fixture", roles: ["learner"] } },
+    }),
+  );
   await page.route("**/api/onboarding", (route) => route.fulfill({ json: { profile: null } }));
   await page.route("**/api/learner-home", (route) =>
     route.fulfill({
@@ -165,6 +185,11 @@ test("home shows one reasoned action with alternatives and honors recommended la
   await expect(page.getByRole("combobox", { name: "Implementation language" })).toHaveValue("c");
 });
 test("home uses actual learning signals without engineering showcase cards", async ({ page }) => {
+  await page.route("**/api/auth/session", (route) =>
+    route.fulfill({
+      json: { authenticated: true, user: { id: "usr_browser_fixture", roles: ["learner"] } },
+    }),
+  );
   await page.route("**/api/onboarding", (route) => route.fulfill({ json: { profile: null } }));
   await page.route("**/api/progress", (route) => route.fulfill({ json: report }));
   await page.goto("/");
@@ -196,6 +221,11 @@ for (const path of ["/review", "/progress"])
   });
 
 test("home explains overdue and unavailable scenarios", async ({ page }) => {
+  await page.route("**/api/auth/session", (route) =>
+    route.fulfill({
+      json: { authenticated: true, user: { id: "usr_browser_fixture", roles: ["learner"] } },
+    }),
+  );
   await page.route("**/api/onboarding", (route) => route.fulfill({ json: { profile: null } }));
   for (const action of [
     {

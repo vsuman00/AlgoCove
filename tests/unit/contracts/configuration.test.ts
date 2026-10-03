@@ -17,6 +17,25 @@ beforeEach(() => {
 });
 
 describe("validated configuration", () => {
+  it("treats blank optional environment settings as absent without weakening production rules", () => {
+    const blank = {
+      ...baseEnvironment,
+      DATABASE_ADMIN_URL: "",
+      DATABASE_URL: " ",
+      NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: "",
+      CLERK_SECRET_KEY: "",
+      EXECUTION_RELAY_URL: "",
+      EXECUTION_RELAY_TOKEN: "",
+    };
+    expect(loadConfig(blank).database).toMatchObject({ adminUrl: null, runtimeUrl: null });
+    expect(loadConfig(blank).clerk).toEqual({ publishableKey: null, secretKey: null });
+    expect(() => loadConfig({ ...blank, DATABASE_URL: "invalid" })).toThrow(ConfigError);
+    expect(() => loadConfig({ ...blank, NODE_ENV: "production" })).toThrow(ConfigError);
+    expect(() => loadConfig({ ...blank, CLERK_SECRET_KEY: "sk_test_one_half" })).toThrow(
+      /must be provided together/,
+    );
+  });
+
   it("applies safe development defaults", () => {
     const config = loadConfig(baseEnvironment);
 

@@ -37,6 +37,7 @@ export {
   createActor,
   createFixedClock,
   createRequestContext,
+  TRACE_ID_PATTERN,
   createSequenceIdGenerator,
   createSystemClock,
   hasRole,

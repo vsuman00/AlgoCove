@@ -1,5 +1,7 @@
 # AlgoCove implementation task ledger
 
+**Latest owner direction and audit (2026-10-03):** Diagnosis/report before further fixes. [Current error report](../docs/architecture/runtime-error-audit-2026-10-03.md) records E1–E18 and their verification requirements. Mandatory current-head real learning-loop CI fails; workspace recovery repairs and U6/U8 remain open. Existing dated phase evidence is historical, not proof that the current local app works end to end.
+
 **Current implementation evidence:** [Real product and 3D UI record](../docs/architecture/phase7-production-ui-evidence-2026-10-03.md) supplements the historical audit with persisted content administration, release identity persistence and the new mandatory Linux guided-loop gate. Final CI status is recorded there.
 
 **Current work (owner clarification, 2026-10-03):** Complete real implementation through Phase 7 and the clean production 3D UI. [UI completion work](phase7-production-ui.md) tracks the scope. No deployment, age/country restrictions, privacy-policy implementation, or later phases are included. Existing security and ownership controls remain required.

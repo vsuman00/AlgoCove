@@ -1,3 +1,4 @@
+import { webTraceId } from "../../../../../src/auth/request-context";
 import { getLearningRuntime } from "../../../../../src/mastery/learning-runtime";
 import { timingSafeEqual } from "node:crypto";
 import { NextResponse } from "next/server";
@@ -137,7 +138,7 @@ function logCallbackFailure(request: Request, currentStage: string, error: unkno
     /^[A-Za-z0-9_.-]{1,40}$/.test(error.code)
       ? error.code
       : "unknown";
-  const traceId = request.headers.get("x-trace-id") ?? "req_0000000000000000";
+  const traceId = webTraceId(request);
   process.stderr.write(
     "[api] execution_result_callback_failed " +
       JSON.stringify({ traceId, stage: currentStage, errorName, errorCode }) +
@@ -191,7 +192,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function errorResponse(request: Request, error: unknown): NextResponse {
-  const traceId = request.headers.get("x-trace-id") ?? "req_0000000000000000";
+  const traceId = webTraceId(request);
   return NextResponse.json(toErrorEnvelope(error, traceId), {
     status:
       error instanceof Error && "code" in error && error.code === "unauthenticated"

@@ -1,0 +1,25 @@
+2026-10-03T05:09:30.9288879Z [execution-host] run_started {"runId":"run_ca27c8ae609d84d217941830b7e9cb6fc87a13ed","language":"python"}
+2026-10-03T05:10:32.5947945Z [execution-host] run_started {"runId":"run_19409238d841f6033beb0d9c4273c28432c43664","language":"python"}
+2026-10-03T05:09:32.0023892Z [execution-host] run_finished {"runId":"run_ca27c8ae609d84d217941830b7e9cb6fc87a13ed","category":"wrong_answer","phase":"run","teardownConfirmed":true}
+2026-10-03T05:10:33.0458485Z [execution-host] run_finished {"runId":"run_19409238d841f6033beb0d9c4273c28432c43664","category":"cancelled","phase":"run","teardownConfirmed":true}
+2026-10-03T05:09:32.0183988Z [api] execution_result_callback_failed {"traceId":"req_0000000000000000","stage":"authenticate_callback","errorName":"ConfigError","errorCode":"unknown"}
+2026-10-03T05:09:32.7900850Z [api] execution_result_callback_failed {"traceId":"req_0000000000000000","stage":"authenticate_callback","errorName":"ConfigError","errorCode":"unknown"}
+2026-10-03T05:09:33.7947514Z [api] execution_result_callback_failed {"traceId":"req_0000000000000000","stage":"authenticate_callback","errorName":"ConfigError","errorCode":"unknown"}
+Additional matching lines omitted: 181
+2026-10-03T05:09:32.0221582Z [execution-host] result_delivery_pending {"runId":"run_ca27c8ae609d84d217941830b7e9cb6fc87a13ed","attempts":1,"reason":"Local result callback failed: HTTP 500, code=internal_error"}
+2026-10-03T05:09:40.7948403Z [execution-host] result_delivery_pending {"runId":"run_ca27c8ae609d84d217941830b7e9cb6fc87a13ed","attempts":10,"reason":"Local result callback failed: HTTP 500, code=internal_error"}
+2026-10-03T05:09:50.8004233Z [execution-host] result_delivery_pending {"runId":"run_ca27c8ae609d84d217941830b7e9cb6fc87a13ed","attempts":20,"reason":"Local result callback failed: HTTP 500, code=internal_error"}
+Additional matching lines omitted: 17
+2026-10-03T05:11:32.9060755Z  FAIL   integration  tests/integration/local-learning-loop.test.ts > real local guided loop with fixture authentication > completes reasoning, trace, hints, Run/Submit and submitted-state resume in all six languages
+2026-10-03T05:11:32.9171400Z  FAIL   integration  tests/integration/local-learning-loop.test.ts > real local guided loop with fixture authentication > cancels real execution, recovers a killed host without credit, and rejects missing images in every language
+2026-10-03T05:11:32.9058078Z ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+2026-10-03T05:11:32.9058078Z ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+2026-10-03T05:11:32.9194497Z       Tests  2 failed (2)
+2026-10-03T05:11:32.9193685Z  Test Files  1 failed (1)
+2026-10-03T05:11:34.4527123Z  Container algocove-db  Removed
+2026-10-03T05:11:34.5140022Z  Network algocove_default  Removed
+2026-10-03T05:11:34.7171563Z  Volume algocove_algocove-db-data  Removed
+2026-10-03T05:08:25.2188952Z #8 33.65 ModuleNotFoundError: No module named 'encodings'
+2026-10-03T05:08:25.2192896Z #8 33.65 ModuleNotFoundError: No module named 'encodings'
+2026-10-03T05:08:25.2196828Z #8 33.66 ModuleNotFoundError: No module named 'encodings'
+Additional matching lines omitted: 3

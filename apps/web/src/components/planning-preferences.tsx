@@ -1,5 +1,6 @@
 "use client";
 import RoadmapWorkspace from "./roadmap-workspace";
+import { useAppSession } from "./staff-navigation";
 import { useEffect, useRef, useState, type ReactElement } from "react";
 import {
   ROADMAP_HORIZONS,
@@ -57,6 +58,8 @@ async function read<T>(body?: unknown): Promise<T> {
   return response.json() as Promise<T>;
 }
 export default function PlanningPreferences(): ReactElement {
+  const session = useAppSession();
+  const sessionOwner = session?.userId;
   const [context, setContext] = useState<PlanningContext | null>(null),
     [form, setForm] = useState<Form>(empty),
     [intent, setIntent] = useState<RoadmapIntentVersion | null>(null),
@@ -66,6 +69,7 @@ export default function PlanningPreferences(): ReactElement {
   const command = useRef<{ fingerprint: string; key: string } | null>(null);
   useEffect(() => {
     let current = true;
+    if (sessionOwner === null) return;
     void read<PlanningContext & { asOf: RoadmapIntentVersion["savedAt"] }>()
       .then((body) => {
         if (!current) return;
@@ -106,7 +110,7 @@ export default function PlanningPreferences(): ReactElement {
     return () => {
       current = false;
     };
-  }, [reload]);
+  }, [reload, sessionOwner]);
   function update<K extends keyof Form>(key: K, value: Form[K]) {
     setForm((current) => ({ ...current, [key]: value }));
   }
@@ -158,14 +162,29 @@ export default function PlanningPreferences(): ReactElement {
         Choose your goal, calendar horizon and available study time. Saved preferences are inputs
         for a schedule; a schedule must be built, validated and reviewed before you accept it.
       </p>
-      <p role="status">{message}</p>
-      <button
-        className="ac-small-button"
-        disabled={busy}
-        onClick={() => setReload((value) => value + 1)}
-      >
-        Reload saved preferences
-      </button>
+      <p role="status">
+        {session?.status === "signed-out"
+          ? "Sign in to save private planning preferences."
+          : session?.status === "unavailable"
+            ? "Account service unavailable. Retry your connection."
+            : message}
+      </p>
+      {session?.status === "signed-out" || message.startsWith("Sign in") ? (
+        <a className="ac-button ac-button--primary" href="/sign-in?redirect_url=%2Fplan">
+          Sign in to plan
+        </a>
+      ) : (
+        <button
+          className="ac-small-button"
+          disabled={busy}
+          onClick={() => {
+            if (session?.status === "unavailable") session.reload();
+            setReload((value) => value + 1);
+          }}
+        >
+          Reload saved preferences
+        </button>
+      )}
       {context !== null && (
         <section className="ac-profile-strip">
           <form

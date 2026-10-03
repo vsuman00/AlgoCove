@@ -53,7 +53,9 @@ test.describe("Learner Home shell", () => {
     let sessionReads = 0;
     await page.route("**/api/auth/session", (route) => {
       sessionReads += 1;
-      return route.fulfill({ json: { authenticated: true, user: { roles: ["author"] } } });
+      return route.fulfill({
+        json: { authenticated: true, user: { id: "usr_browser_fixture", roles: ["author"] } },
+      });
     });
     await page.goto("/");
     const staff = page.getByRole("navigation", { name: "Staff navigation" });
@@ -64,7 +66,9 @@ test.describe("Learner Home shell", () => {
     sessionReads = 0;
     await page.route("**/api/auth/session", (route) => {
       sessionReads += 1;
-      return route.fulfill({ json: { authenticated: true, user: { roles: ["learner"] } } });
+      return route.fulfill({
+        json: { authenticated: true, user: { id: "usr_browser_fixture", roles: ["learner"] } },
+      });
     });
     await page.reload();
     await expect(page.getByRole("navigation", { name: "Staff navigation" })).toHaveCount(0);

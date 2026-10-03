@@ -5,6 +5,7 @@ import { spawn, execFileSync, type ChildProcess } from "node:child_process";
 import { resolve } from "node:path";
 import { createRequire } from "node:module";
 import { bootstrapDatabase, createPool, migrate } from "../packages/db/src/index.ts";
+import { loadConfig } from "../packages/config/src/index.ts";
 
 if (process.platform !== "linux" || process.env.ALGO_COVE_REAL_LOOP_CI !== "1")
   throw Error("Explicit disposable Linux test opt-in required");
@@ -121,6 +122,21 @@ try {
     if (Date.now() > deadline || web.exitCode !== null) throw Error("Test website did not start");
     await new Promise((resolveWait) => setTimeout(resolveWait, 250));
   }
+  const testEnvironment: NodeJS.ProcessEnv = {
+    ...process.env,
+    NODE_ENV: "test",
+    SERVICE_NAME: "algocove-web",
+    APP_ORIGIN: "http://127.0.0.1:3300",
+    LOCAL_PHASE5_E2E: "1",
+    LOCAL_PHASE5_NATIVE_HOST: "1",
+    LOCAL_EXECUTION_STATE_DIR: `${directory}/host`,
+    LOCAL_EXECUTION_IMAGES_FILE: imageFile,
+    LOCAL_PHASE5_REPORT_FILE: report,
+    DATABASE_URL: runtimeUrl.toString(),
+    DATABASE_ADMIN_URL: undefined,
+    DATABASE_OPERATOR_URL: undefined,
+  };
+  loadConfig(testEnvironment);
   await runNode(
     [
       resolve(require.resolve("vitest/package.json"), "..", "vitest.mjs"),
@@ -129,16 +145,7 @@ try {
       "integration",
       "tests/integration/local-learning-loop.test.ts",
     ],
-    {
-      ...process.env,
-      LOCAL_PHASE5_E2E: "1",
-      LOCAL_PHASE5_NATIVE_HOST: "1",
-      LOCAL_EXECUTION_STATE_DIR: `${directory}/host`,
-      LOCAL_EXECUTION_IMAGES_FILE: imageFile,
-      LOCAL_PHASE5_REPORT_FILE: report,
-      DATABASE_URL: runtimeUrl.toString(),
-      DATABASE_ADMIN_URL: "",
-    },
+    testEnvironment,
   );
 } finally {
   stop(web);

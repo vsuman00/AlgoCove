@@ -1,3 +1,4 @@
+import { webTraceId } from "../../../../src/auth/request-context";
 import { NextResponse } from "next/server";
 import {
   dependencyUnavailableError,
@@ -36,15 +37,12 @@ export async function POST(request: Request): Promise<NextResponse> {
       { headers: { "Cache-Control": "no-store" } },
     );
   } catch (error) {
-    return NextResponse.json(
-      toErrorEnvelope(error, request.headers.get("x-trace-id") ?? "req_0000000000000000"),
-      {
-        status:
-          error instanceof Error && "code" in error && error.code === "unauthenticated"
-            ? 401
-            : toHttpStatus(error),
-        headers: { "Cache-Control": "no-store" },
-      },
-    );
+    return NextResponse.json(toErrorEnvelope(error, webTraceId(request)), {
+      status:
+        error instanceof Error && "code" in error && error.code === "unauthenticated"
+          ? 401
+          : toHttpStatus(error),
+      headers: { "Cache-Control": "no-store" },
+    });
   }
 }

@@ -2,46 +2,83 @@
 
 import {
   createContext,
+  useCallback,
+  Fragment,
   useContext,
   useEffect,
   useState,
+  useRef,
   type ReactElement,
   type ReactNode,
 } from "react";
 
-const StaffRoles = createContext<readonly string[]>([]);
+type SessionSnapshot = {
+  readonly status: "loading" | "signed-out" | "ready" | "unavailable";
+  readonly userId: string | null;
+  readonly roles: readonly string[];
+};
+const AppSession = createContext<(SessionSnapshot & { reload: () => void }) | null>(null);
+export function useAppSession(): (SessionSnapshot & { reload: () => void }) | null {
+  return useContext(AppSession);
+}
 
-/** Load server-owned roles once and share them across the desktop and mobile menus. */
+/** Share the server-owned session across page data and both navigation menus. */
 export function StaffNavigationProvider({ children }: { children: ReactNode }): ReactElement {
-  const [roles, setRoles] = useState<readonly string[]>([]);
+  const [session, setSession] = useState<SessionSnapshot>({
+    status: "loading",
+    userId: null,
+    roles: [],
+  });
+  const [revision, setRevision] = useState(0);
+  const request = useRef<Promise<SessionSnapshot> | null>(null);
   useEffect(() => {
-    const controller = new AbortController();
-    void fetch("/api/auth/session", { cache: "no-store", signal: controller.signal })
-      .then(async (response) => {
-        if (!response.ok) return;
-        const session = (await response.json()) as {
+    let active = true;
+    // ponytail: reuse this read during Strict Mode effect replay; never cache it across accounts.
+    request.current ??= fetch("/api/auth/session", {
+      cache: "no-store",
+      signal: AbortSignal.timeout(10_000),
+    })
+      .then(async (response): Promise<SessionSnapshot> => {
+        if (response.status === 401) return { status: "signed-out", userId: null, roles: [] };
+        if (!response.ok) throw new Error("session_unavailable");
+        const body = (await response.json()) as {
           authenticated?: boolean;
-          user?: { roles?: unknown };
+          user?: { id?: unknown; roles?: unknown };
         };
-        if (
-          !controller.signal.aborted &&
-          session.authenticated &&
-          Array.isArray(session.user?.roles)
-        ) {
-          setRoles(session.user.roles.filter((role): role is string => typeof role === "string"));
-        }
+        if (!body.authenticated) return { status: "signed-out", userId: null, roles: [] };
+        if (typeof body.user?.id !== "string") throw new Error("session_invalid");
+        return {
+          status: "ready",
+          userId: body.user.id,
+          roles: Array.isArray(body.user.roles)
+            ? body.user.roles.filter((role): role is string => typeof role === "string")
+            : [],
+        };
       })
-      .catch(() => {
-        /* An unavailable identity service cannot reveal staff navigation. */
-      });
-    return () => controller.abort();
+      .catch(() => ({ status: "unavailable", userId: null, roles: [] }));
+    void request.current.then((value) => {
+      if (active) setSession(value);
+    });
+    return () => {
+      active = false;
+    };
+  }, [revision]);
+  const reload = useCallback(() => {
+    request.current = null;
+    setSession((current) => ({ status: "loading", userId: current.userId, roles: [] }));
+    setRevision((value) => value + 1);
   }, []);
-  return <StaffRoles.Provider value={roles}>{children}</StaffRoles.Provider>;
+  return (
+    <AppSession.Provider value={{ ...session, reload }}>
+      {/* Private component state belongs to one account, including after an account switch. */}
+      <Fragment key={session.userId ?? "anonymous"}>{children}</Fragment>
+    </AppSession.Provider>
+  );
 }
 
 /** Visibility follows server-owned roles. Commands still authorize on the server. */
 export default function StaffNavigation({ active }: { active: string }): ReactElement | null {
-  const roles = useContext(StaffRoles);
+  const roles = useAppSession()?.roles ?? [];
   const content = roles.some((role) =>
     ["author", "technical_reviewer", "pedagogical_reviewer", "publisher", "evaluator"].includes(
       role,

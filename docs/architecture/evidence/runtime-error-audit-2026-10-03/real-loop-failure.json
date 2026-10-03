@@ -1,0 +1,13 @@
+{
+  "date": "2026-10-03T05:11:32.882Z",
+  "authentication": "fixture actor only; real application routes, PostgreSQL, gVisor and signed callback",
+  "outcomes": [
+    {
+      "runId": "run_ca27c8ae609d84d217941830b7e9cb6fc87a13ed",
+      "language": "python",
+      "mode": "run",
+      "terminalCategory": null,
+      "classification": null
+    }
+  ]
+}

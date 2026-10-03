@@ -11,6 +11,13 @@ import type {
   RoadmapView,
   PlanCandidate,
 } from "../../packages/application/src/roadmap-use-cases.ts";
+test.beforeEach(async ({ page }) => {
+  await page.route("**/api/auth/session", (route) =>
+    route.fulfill({
+      json: { authenticated: true, user: { id: "usr_browser_fixture", roles: ["learner"] } },
+    }),
+  );
+});
 /** Browser API fixtures exercise UI commands; PostgreSQL ownership/atomicity is verified by roadmap.test.ts. */
 test("complete AI-off create, review, accept, miss, pause, resume, replan and history journey", async ({
   page,
@@ -194,6 +201,7 @@ test("complete AI-off create, review, accept, miss, pause, resume, replan and hi
   await page.goto("/plan");
   await page.getByLabel("Study minutes per available day").fill("90");
   await page.getByLabel("Start day", { exact: true }).fill("2026-10-05");
+  await expect(page.getByText("2026-11-05", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Save planning preferences" }).click();
   await page.getByRole("button", { name: "Build schedule preview" }).click();
   await expect(page.getByRole("heading", { name: "Schedule preview" })).toBeVisible();

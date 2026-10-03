@@ -12,6 +12,10 @@ pnpm dev
 
 Use Node.js 22 (see `.nvmrc`) and the exact pnpm version in `package.json` for installs and lockfile updates. If your global pnpm is older, use `npx --yes pnpm@12.4.2 <command>`. pnpm 12 records its package-manager dependencies in a separate lockfile document; older pnpm versions can remove that document and break frozen CI installs. CI reads the version from `package.json` and checks that installation leaves the lockfile unchanged.
 
+For working learner persistence, run the database setup below and `pnpm db:seed:practice` before using the learning pages. Public pages can start without those services, but that is not a complete learning environment.
+
+Development loads root `.env.local` before root `.env` as fallbacks after Next has loaded `apps/web` settings. Exported values and app-local values take precedence. Operator credentials from the root files are not copied into the web runtime. Database commands use root `.env.local` before `.env`. Production reads only its supplied runtime environment.
+
 The web shell runs at `http://localhost:3000`. Liveness is available at `/api/health`; readiness remains unavailable until the local database has been bootstrapped and migrated.
 
 ### Clerk development setup

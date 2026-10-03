@@ -1,12 +1,14 @@
 # AlgoCove phased implementation plan
 
+**Latest owner direction and audit (2026-10-03):** Pause further implementation and diagnose first. [GUI/backend/frontend/CI error report](../docs/architecture/runtime-error-audit-2026-10-03.md) records the current callback configuration failure, offline local database, reproduced workspace defects and repair/verification order. Current CI run 37098737102 fails the mandatory real learning loop; complete end-to-end Phase 1–7 readiness is not established. Resume fixes from those findings after the report has been reviewed.
+
 **Current implementation evidence:** [Real product and 3D UI record](../docs/architecture/phase7-production-ui-evidence-2026-10-03.md) supplements the historical audit with persisted content administration, release identity persistence and the new mandatory Linux guided-loop gate. Final CI status is recorded there.
 
 **Current work (owner clarification, 2026-10-03):** Complete real implementation through Phase 7 and the clean production 3D UI. [UI completion work](phase7-production-ui.md) tracks the scope. No deployment, age/country restrictions, privacy-policy implementation, or later phases are included. Existing security and ownership controls remain required.
 
 **Cumulative audit (2026-10-03):** [The through-Phase-7 audit](../docs/architecture/through-phase7-audit-2026-10-03.md) records fresh passing technical gates, every named test, Phase 0 approval gaps, unreconciled Phase 1–5 plan checkboxes, open UI fidelity/manual accessibility and the two current-head real-host skips. Technical phase closure must not be read as complete governance or full design validation.
 
-**Status:** Phase 7 Tasks 34–37 and 51 and the technical F7 gates are COMPLETE on localhost as of 2026-10-03. The reviewed pilot is explicit; insufficient breadth returns a reasoned rejection. Phase 8 awaits owner authorization. No hosted deployment is authorized.
+**Status:** Phase 7 Tasks 34–37 and 51 have recorded local technical implementation evidence as of 2026-10-03. The current GUI completion and actual execution integration work remain open as detailed in the latest error audit; historical F7 checks do not establish current end-to-end readiness. The reviewed pilot is explicit; insufficient breadth returns a reasoned rejection. Phase 8 awaits owner authorization. No hosted deployment is authorized.
 **Prepared:** 2026-09-17  
 **Scope:** Phase 7 local implementation, testing, commit and GitHub publication are authorized. Hosted infrastructure and live deployment remain excluded.
 **Task ledger:** `tasks/todo.md`

@@ -1,11 +1,11 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { spawn, spawnSync } from "node:child_process";
 import { performance } from "node:perf_hooks";
-import { fileURLToPath } from "node:url";
 import path from "node:path";
 
-const root = path.dirname(fileURLToPath(import.meta.url));
-const reportPath = path.join(root, "reports", "task-19-2026-09-17.md");
+const reportPath = path.resolve(
+  process.env.ALGO_COVE_SANDBOX_REPORT ?? ".tmp/task-19-sandbox.local.md",
+);
 const requestedRuntime = process.env.ALGO_COVE_DOCKER_RUNTIME?.trim() || null;
 const runtimeArgs = requestedRuntime ? [`--runtime=${requestedRuntime}`] : [];
 // Candidate-runtime evidence must not drift when a mutable upstream tag is
@@ -388,6 +388,8 @@ const report = [
   "# Task 19 sandbox-selection spike",
   "",
   `Date: ${new Date().toISOString()}`,
+  `Commit: ${spawnSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).stdout.trim()}`,
+  `CI run: ${process.env.GITHUB_RUN_ID ?? "local"}`,
   "",
   "## Decision",
   "",

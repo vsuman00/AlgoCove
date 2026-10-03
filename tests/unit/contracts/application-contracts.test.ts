@@ -7,6 +7,7 @@ import {
   requireOwnership,
   requireRole,
   toErrorEnvelope,
+  toHttpStatus,
   type Actor,
 } from "@algocove/application";
 import { formatId, parseInstant, ROLES } from "@algocove/domain";
@@ -70,6 +71,20 @@ describe("request context", () => {
 });
 
 describe("error contract", () => {
+  it("returns retryable service outages without exposing driver details or hiding programming errors", () => {
+    for (const code of ["ECONNREFUSED", "ETIMEDOUT", "08006", "57P01", "53300"]) {
+      const failure = Object.assign(new Error("private database connection details"), { code });
+      expect(toHttpStatus(failure)).toBe(503);
+      expect(toErrorEnvelope(failure, "trace-test").error).toMatchObject({
+        category: "dependency_unavailable",
+        retryable: true,
+      });
+      expect(JSON.stringify(toErrorEnvelope(failure, "trace-test"))).not.toContain("private");
+    }
+    expect(toHttpStatus(Object.assign(new Error("SQL bug"), { code: "42703" }))).toBe(500);
+    expect(toHttpStatus(new TypeError("programming bug"))).toBe(500);
+  });
+
   it("removes secret-shaped details and unknown causes from public envelopes", () => {
     const envelope = toErrorEnvelope(
       new Error("postgres://admin:password@db.internal/algocove"),

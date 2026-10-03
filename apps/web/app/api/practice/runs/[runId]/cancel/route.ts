@@ -1,3 +1,4 @@
+import { webTraceId } from "../../../../../../src/auth/request-context";
 import { NextResponse } from "next/server";
 import {
   cancelPracticeCodeRun,
@@ -35,7 +36,7 @@ export async function POST(
       { status: 202, headers: { "Cache-Control": "no-store" } },
     );
   } catch (error) {
-    const traceId = request.headers.get("x-trace-id") ?? "req_0000000000000000";
+    const traceId = webTraceId(request);
     return NextResponse.json(toErrorEnvelope(error, traceId), {
       status:
         error instanceof Error && "code" in error && error.code === "unauthenticated"

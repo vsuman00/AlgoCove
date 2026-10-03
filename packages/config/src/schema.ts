@@ -20,6 +20,14 @@ const serviceNameSchema = z
 
 const portSchema = z.coerce.number().int().min(1).max(65535);
 
+/** Blank optional environment settings mean absent; nonblank values remain validated. */
+function optionalSetting<T extends z.ZodType>(schema: T) {
+  return z.preprocess(
+    (value) => (typeof value === "string" && value.trim() === "" ? undefined : value),
+    schema.optional(),
+  );
+}
+
 /** Postgres connection string. Passwords stay inside `SecretString` in the result. */
 const connectionStringSchema = z
   .string()
@@ -40,25 +48,26 @@ export const rawConfigSchema = z.object({
   LOG_LEVEL: logLevelSchema.default("info"),
   APP_ORIGIN: z.string().url(),
   PORT: portSchema.default(3000),
-  DATABASE_ADMIN_URL: connectionStringSchema.optional(),
-  DATABASE_URL: connectionStringSchema.optional(),
+  DATABASE_ADMIN_URL: optionalSetting(connectionStringSchema),
+  DATABASE_URL: optionalSetting(connectionStringSchema),
   DATABASE_POOL_MAX: z.coerce.number().int().min(1).max(64).default(10),
   DATABASE_STATEMENT_TIMEOUT_MS: z.coerce.number().int().min(100).max(60_000).default(5_000),
   TUTOR_ENABLED: booleanFromEnv.default(false),
   EXECUTION_ENABLED: booleanFromEnv.default(false),
-  EXECUTION_RELAY_URL: z
-    .string()
-    .url()
-    .refine(
-      (value) => value.startsWith("http://") || value.startsWith("https://"),
-      "must use http or https",
-    )
-    .optional(),
-  EXECUTION_RELAY_TOKEN: z.string().min(16).optional(),
-  EXECUTION_RESULT_CALLBACK_TOKEN: z.string().min(16).optional(),
-  EXECUTION_VERIFICATION_KEYS_JSON: z.string().min(2).max(16384).optional(),
-  NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string().min(1).optional(),
-  CLERK_SECRET_KEY: z.string().min(1).optional(),
+  EXECUTION_RELAY_URL: optionalSetting(
+    z
+      .string()
+      .url()
+      .refine(
+        (value) => value.startsWith("http://") || value.startsWith("https://"),
+        "must use http or https",
+      ),
+  ),
+  EXECUTION_RELAY_TOKEN: optionalSetting(z.string().min(16)),
+  EXECUTION_RESULT_CALLBACK_TOKEN: optionalSetting(z.string().min(16)),
+  EXECUTION_VERIFICATION_KEYS_JSON: optionalSetting(z.string().min(2).max(16384)),
+  NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: optionalSetting(z.string().min(1)),
+  CLERK_SECRET_KEY: optionalSetting(z.string().min(1)),
 });
 
 export type RawConfig = z.infer<typeof rawConfigSchema>;

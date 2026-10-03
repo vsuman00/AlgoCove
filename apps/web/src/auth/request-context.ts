@@ -1,6 +1,7 @@
 import { randomBytes } from "node:crypto";
 import {
   createRequestContext,
+  TRACE_ID_PATTERN,
   createSystemClock,
   type Actor,
   type IdGenerator,
@@ -18,6 +19,18 @@ const randomIds: IdGenerator = {
     return result.value;
   },
 };
+
+const requestTraces = new WeakMap<Request, string>();
+/** Reuse correlation across safe logs and responses, including failures before authentication. */
+export function webTraceId(request: Request): string {
+  const existing = requestTraces.get(request);
+  if (existing !== undefined) return existing;
+  const supplied = request.headers.get("x-trace-id");
+  const trace =
+    supplied !== null && TRACE_ID_PATTERN.test(supplied) ? supplied : randomIds.generate("request");
+  requestTraces.set(request, trace);
+  return trace;
+}
 
 export function createWebRequestContext(actor: Actor, traceId?: string): RequestContext {
   return createRequestContext({
@@ -38,5 +51,5 @@ export async function authenticatedWebRequestContext(request: Request): Promise<
     userId: clerkAuth.userId,
     sessionId: clerkAuth.sessionId,
   });
-  return createWebRequestContext(actor, request.headers.get("x-trace-id") ?? undefined);
+  return createWebRequestContext(actor, webTraceId(request));
 }

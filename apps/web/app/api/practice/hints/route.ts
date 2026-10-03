@@ -1,3 +1,4 @@
+import { webTraceId } from "../../../../src/auth/request-context";
 import { NextResponse } from "next/server";
 import {
   dependencyUnavailableError,
@@ -63,7 +64,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function errorResponse(request: Request, error: unknown): NextResponse {
-  const traceId = request.headers.get("x-trace-id") ?? "req_0000000000000000";
+  const traceId = webTraceId(request);
   return NextResponse.json(toErrorEnvelope(error, traceId), {
     status:
       error instanceof Error && "code" in error && error.code === "unauthenticated"

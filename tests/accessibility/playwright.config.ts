@@ -2,6 +2,7 @@ import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
   testDir: ".",
+  outputDir: "../../test-results/accessibility",
   testMatch:
     /(?:content-operations|design-shell|execution-readiness|guided-problem|onboarding|phase6-learning|planning-preferences)\.spec\.ts$/,
   fullyParallel: true,

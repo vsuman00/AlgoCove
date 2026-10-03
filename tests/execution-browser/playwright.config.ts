@@ -2,6 +2,7 @@ import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
   testDir: ".",
+  outputDir: "../../test-results/execution-browser",
   testMatch: /guided-results\.spec\.ts$/,
   fullyParallel: true,
   forbidOnly: Boolean(process.env.CI),

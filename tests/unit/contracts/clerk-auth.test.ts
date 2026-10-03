@@ -1,3 +1,4 @@
+import { webTraceId } from "../../../apps/web/src/auth/request-context";
 import { describe, expect, it, vi } from "vitest";
 import {
   createClerkIdentityAdapter,
@@ -76,5 +77,20 @@ describe("Clerk identity boundary", () => {
     } finally {
       vi.unstubAllEnvs();
     }
+  });
+});
+
+describe("web request correlation", () => {
+  it("shares a safe trace across request logs and responses and regenerates missing or unsafe values", () => {
+    const request = new Request("http://localhost/api/auth/session");
+    expect(webTraceId(request)).toMatch(/^req_[a-z0-9]{16,52}$/);
+    expect(webTraceId(request)).toBe(webTraceId(request));
+    expect(webTraceId(new Request(request))).not.toBe(webTraceId(request));
+    expect(webTraceId(new Request(request, { headers: { "x-trace-id": "safe-trace-123" } }))).toBe(
+      "safe-trace-123",
+    );
+    expect(webTraceId(new Request(request, { headers: { "x-trace-id": "unsafe trace" } }))).toMatch(
+      /^req_/,
+    );
   });
 });

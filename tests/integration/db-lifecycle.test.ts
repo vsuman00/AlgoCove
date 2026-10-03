@@ -194,6 +194,11 @@ describe("PostgreSQL and pgvector lifecycle", () => {
     expect(state[0]?.checksum).toMatch(/^sha256:[0-9a-f]{64}$/);
   });
 
+  it("distinguishes an unmigrated database from an unreachable server", async () => {
+    const readiness = await probeDatabase(profile(operatorUrl, "algocove-unmigrated-probe", 1));
+    expect(readiness).toMatchObject({ ok: false, reason: "schema_missing" });
+  });
+
   it("lets the runtime role read bounded readiness data", async () => {
     const readiness = await probeDatabase(profile(runtimeUrl, "algocove-integration-probe", 1));
 

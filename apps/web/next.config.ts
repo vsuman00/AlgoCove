@@ -1,4 +1,31 @@
 import type { NextConfig } from "next";
+import { readFileSync } from "node:fs";
+import { parseEnv } from "node:util";
+import { rawConfigSchema } from "../../packages/config/src/schema.ts";
+
+// ponytail: Next already loaded app-local settings; root files are development fallbacks only.
+// Copy known runtime settings only, never operator credentials, into the web process.
+if (process.env.NODE_ENV === "development") {
+  for (const filename of ["../../.env.local", "../../.env"]) {
+    let values: ReturnType<typeof parseEnv>;
+    try {
+      values = parseEnv(readFileSync(new URL(filename, import.meta.url), "utf8"));
+    } catch (error) {
+      if (typeof error === "object" && error !== null && "code" in error && error.code === "ENOENT")
+        continue;
+      throw error;
+    }
+    for (const key of Object.keys(rawConfigSchema.shape)) {
+      if (
+        key !== "DATABASE_ADMIN_URL" &&
+        process.env[key] === undefined &&
+        values[key] !== undefined
+      ) {
+        process.env[key] = values[key];
+      }
+    }
+  }
+}
 
 /**
  * Web application configuration.

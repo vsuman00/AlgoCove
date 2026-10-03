@@ -1,0 +1,24 @@
+[
+  {
+    "requestedLanguage": "typescript",
+    "pythonRecoveryPresent": false,
+    "selectedLanguage": "typescript",
+    "requestedWorkspaceLanguages": [
+      "typescript"
+    ],
+    "source": "function maxArea(heights: number[]): number {\n  let left = 0;\n  let right = heights.length - 1;\n  let best = 0;\n  return best;\n}",
+    "workspaceStatus": "Practice attempt\nPrivate recovery · Local recovery saved\nRun or submit your code to see checked results.",
+    "seams": "fixture session; deliberate unavailable workspace; actual UI and localStorage"
+  },
+  {
+    "requestedLanguage": "typescript",
+    "pythonRecoveryPresent": true,
+    "selectedLanguage": "python",
+    "requestedWorkspaceLanguages": [
+      "python"
+    ],
+    "source": "PYTHON_RECOVERY_AUDIT",
+    "workspaceStatus": "Practice attempt\nPrivate recovery · Local recovery saved\nRun or submit your code to see checked results.",
+    "seams": "fixture session; deliberate unavailable workspace; actual UI and localStorage"
+  }
+]

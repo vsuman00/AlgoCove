@@ -45,6 +45,7 @@ export function createPool(connection: DatabaseConnection): Pool {
     statement_timeout: connection.statementTimeoutMs,
     idle_in_transaction_session_timeout: connection.statementTimeoutMs * 4,
     query_timeout: connection.statementTimeoutMs,
+    connectionTimeoutMillis: connection.statementTimeoutMs,
     allowExitOnIdle: false,
   });
   return pool;
@@ -88,7 +89,14 @@ export async function probeDatabase(connection: DatabaseConnection): Promise<Pro
       appliedMigrations: row.applied_migrations,
     };
   } catch (error) {
-    return { ok: false, reason: "unreachable", detail: describeDatabaseError(error) };
+    const state = sqlStateOf(error);
+    return {
+      ok: false,
+      reason: [SQLSTATE.undefinedTable, SQLSTATE.undefinedFunction, "3F000"].includes(state ?? "")
+        ? "schema_missing"
+        : "unreachable",
+      detail: describeDatabaseError(error),
+    };
   } finally {
     await pool.end();
   }

@@ -7,10 +7,26 @@
  */
 export function loadLocalEnvFile(filename = ".env"): boolean {
   try {
+    // Operator overrides match the local runtime file priority; exported variables still win.
+    if (filename === ".env") {
+      try {
+        process.loadEnvFile(".env.local");
+      } catch (error) {
+        if (!(
+          typeof error === "object" &&
+          error !== null &&
+          "code" in error &&
+          error.code === "ENOENT"
+        ))
+          throw error;
+      }
+    }
     process.loadEnvFile(filename);
     return true;
-  } catch {
-    return false;
+  } catch (error) {
+    if (typeof error === "object" && error !== null && "code" in error && error.code === "ENOENT")
+      return false;
+    throw error;
   }
 }
 

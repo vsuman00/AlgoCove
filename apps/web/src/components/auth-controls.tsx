@@ -1,7 +1,8 @@
 "use client";
 
-import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
-import type { ReactElement } from "react";
+import { Show, SignInButton, SignUpButton, UserButton, useUser } from "@clerk/nextjs";
+import { useEffect, useRef, type ReactElement } from "react";
+import { useAppSession } from "./staff-navigation";
 
 const focusRing =
   "focus-visible:outline-[var(--focus-ring)] focus-visible:outline-offset-[var(--focus-ring-offset)]";
@@ -10,6 +11,15 @@ const primaryControl = `inline-flex min-h-10 items-center justify-center rounded
 
 /** Clerk's interactive account controls for a configured application. */
 export default function AuthControls(): ReactElement {
+  const { isLoaded, user } = useUser();
+  const reload = useAppSession()?.reload;
+  const previousIdentity = useRef<string | null | undefined>(undefined);
+  const identity = user?.id ?? null;
+  useEffect(() => {
+    if (!isLoaded || previousIdentity.current === identity) return;
+    previousIdentity.current = identity;
+    reload?.();
+  }, [isLoaded, identity, reload]);
   return (
     <div className="flex items-center gap-2 border-l border-cove-default pl-3 sm:gap-3 sm:pl-4">
       <Show when="signed-out">

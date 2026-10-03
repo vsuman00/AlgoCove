@@ -131,7 +131,32 @@ export function sanitizeDetails(details: ErrorDetails | undefined): ErrorDetails
  * caller learns that the request failed, and the trace identifier is the only
  * route to more detail.
  */
+/** Recognized transport outages are retryable; unknown bugs remain internal failures. */
+function normalizeFailure(cause: unknown): unknown {
+  if (cause instanceof AppError || typeof cause !== "object" || cause === null) return cause;
+  const code = "code" in cause ? cause.code : undefined;
+  if (
+    typeof code === "string" &&
+    ([
+      "ECONNREFUSED",
+      "ECONNRESET",
+      "ETIMEDOUT",
+      "EHOSTUNREACH",
+      "ENETUNREACH",
+      "57P01",
+      "57P02",
+      "57P03",
+      "53300",
+    ].includes(code) ||
+      /^08[0-9A-Z]{3}$/.test(code))
+  ) {
+    return dependencyUnavailableError("A required service is temporarily unavailable.");
+  }
+  return cause;
+}
+
 export function toErrorEnvelope(cause: unknown, traceId: string): ErrorEnvelope {
+  cause = normalizeFailure(cause);
   if (cause instanceof AppError) {
     const disclosable = DISCLOSABLE_CATEGORIES.has(cause.category);
     const details = disclosable ? sanitizeDetails(cause.details) : undefined;
@@ -158,6 +183,7 @@ export function toErrorEnvelope(cause: unknown, traceId: string): ErrorEnvelope 
 }
 /** HTTP status for any thrown value, without leaking category details. */
 export function toHttpStatus(cause: unknown): number {
+  cause = normalizeFailure(cause);
   if (cause instanceof AppError) {
     return cause.status;
   }

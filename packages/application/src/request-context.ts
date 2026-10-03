@@ -136,7 +136,7 @@ export type CreateRequestContextInput = {
   readonly traceId?: string;
 };
 
-const TRACE_ID_PATTERN = /^[A-Za-z0-9._-]{8,64}$/;
+export const TRACE_ID_PATTERN = /^[A-Za-z0-9._-]{8,64}$/;
 
 export function createRequestContext(input: CreateRequestContextInput): RequestContext {
   const requestId = input.ids.generate("request");
