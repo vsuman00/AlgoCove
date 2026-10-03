@@ -2,7 +2,7 @@
 
 AlgoCove is a guided Data Structures and Algorithms mastery platform for students and job seekers learning through Python, JavaScript, TypeScript, Java, C++, or C. Its architectural purpose is to support a measurable learning loop: recommend the next useful activity, let the learner struggle productively, provide the smallest safe intervention, collect mastery evidence, and schedule a later retrieval check.
 
-This is an architecture-only baseline. It is intentionally not an implementation plan and does not authorize product code.
+This document began as an architecture-only baseline. The owner subsequently authorized implementation through Phase 7. Current implemented behavior and validation are recorded in the [task ledger](tasks/todo.md) and [runtime repair evidence](docs/architecture/runtime-repair-evidence-2026-10-03.md); proposed architecture decisions remain distinct from implemented code.
 
 ## Architecture set
 
@@ -21,10 +21,10 @@ This is an architecture-only baseline. It is intentionally not an implementation
 | [Architecture review](docs/architecture/review-findings.md) | Findings, corrections, requirement coverage and remaining validation gates |
 | [Approved UI design](DESIGN.md) | Existing visual direction, tokens and screen references |
 
-## Current architecture gate
+## Original architecture gate and current status
 
 `GATE A0 — PROPOSED, AWAITING HUMAN APPROVAL`
 
-No choice in these documents is considered accepted until the owner reviews the open decisions in the architecture index. No implementation, cloud deployment, production-readiness claim, or measured performance claim exists yet.
+The gate above records the original proposal. Later phase authorization and the explicit gVisor security-owner approval do not automatically accept every earlier proposed decision. Implementation and measured test evidence now exist; cloud deployment and an unqualified production-readiness claim are not authorized.
 
-The implementation plan is ready for review but does not authorize Phase 1. Phase 0 decisions and checkpoint G0 must be approved first.
+Historical Phase 0 decisions and checkpoint G0 still need consolidated reconciliation against recorded owner decisions. See the current plan for implemented phases and separate open approvals.

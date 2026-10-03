@@ -1,5 +1,7 @@
 # AlgoCove audit through Phase 7
 
+**Current-status supersession:** This dated record preserves its original baseline and test counts. [Runtime repair evidence](runtime-repair-evidence-2026-10-03.md) records subsequent authorized repairs, actual localhost authentication/persistence, fresh Linux results and retained local resources. Historical failure, skip, cleanup and advisory statements below must be read at their recorded time.
+
 **Subsequent implementation update (2026-10-03):** The [real product and 3D UI evidence](phase7-production-ui-evidence-2026-10-03.md) records the replacement of fixture content administration, production identity persistence and fresh UI/execution gates. The results below describe their original audit baseline.
 
 **Audit date:** 2026-10-03, Asia/Kolkata.

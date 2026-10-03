@@ -1,5 +1,7 @@
 # Phase 1–7 real product and spatial UI evidence
 
+**Current-status supersession:** This dated record preserves its original baseline and test counts. [Runtime repair evidence](runtime-repair-evidence-2026-10-03.md) records subsequent authorized repairs, actual localhost authentication/persistence, fresh Linux results and retained local resources. Historical failure, skip, cleanup and advisory statements below must be read at their recorded time.
+
 **Date:** 2026-10-03. **Scope:** Owner-authorized local implementation through Phase 7, production-quality learner interface, real persisted content operations, commit and GitHub push. No live deployment. Age/country gating, privacy-policy implementation, later phases and full-course authoring are outside this change.
 
 ## Implemented

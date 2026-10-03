@@ -1,0 +1,338 @@
+{
+  "date": "2026-10-03T06:50:33.601Z",
+  "authentication": "fixture actor only; real application routes, PostgreSQL, gVisor and signed callback",
+  "outcomes": [
+    {
+      "runId": "run_2994a1eea92defc1795411e5d2971507a17dd3bf",
+      "language": "python",
+      "mode": "run",
+      "terminalCategory": "wrong_answer",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_384a8a12b2829ed22f49b9c6c93f11b2679d58a6",
+      "language": "python",
+      "mode": "run",
+      "terminalCategory": "compile_error",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_97b38e6afc3b412974bd772aee30b28f69edfa89",
+      "language": "python",
+      "mode": "run",
+      "terminalCategory": "limits",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_98eb820b40f48fdd3e4fde864506bd054e4291ac",
+      "language": "python",
+      "mode": "run",
+      "terminalCategory": "pass",
+      "classification": "success"
+    },
+    {
+      "runId": "run_f317e61b228fae4b538d8738c2e3c6bb254d1f40",
+      "language": "python",
+      "mode": "submit",
+      "terminalCategory": "pass",
+      "classification": "success"
+    },
+    {
+      "language": "python",
+      "resumeSameAttempt": true,
+      "reasoningRevision": true,
+      "trace": true,
+      "tracePrediction": true,
+      "invalidTraceRejected": true,
+      "referenceAssistancePersisted": true,
+      "authoredChecks": true,
+      "readiness": true
+    },
+    {
+      "editedSourceDoesNotInheritPass": true,
+      "reloadDoesNotInheritPass": true
+    },
+    {
+      "runId": "run_72c732fcd14853e68f2f7db7e096b3eee3dbad2a",
+      "language": "javascript",
+      "mode": "run",
+      "terminalCategory": "wrong_answer",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_d35ff979230043d201bfc8726bf9db9933ad3f88",
+      "language": "javascript",
+      "mode": "run",
+      "terminalCategory": "compile_error",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_92c84e216c3e6d5ef13ab7e7f2be1f05a2482bc7",
+      "language": "javascript",
+      "mode": "run",
+      "terminalCategory": "limits",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_d1e095c58cbdf6cf81dcf6d180c1da94ac84ec6f",
+      "language": "javascript",
+      "mode": "run",
+      "terminalCategory": "pass",
+      "classification": "success"
+    },
+    {
+      "runId": "run_5309c42bca33d09d44629733e62c055406c1fa58",
+      "language": "javascript",
+      "mode": "submit",
+      "terminalCategory": "pass",
+      "classification": "success"
+    },
+    {
+      "language": "javascript",
+      "resumeSameAttempt": true,
+      "reasoningRevision": true,
+      "trace": true,
+      "tracePrediction": true,
+      "invalidTraceRejected": true,
+      "referenceAssistancePersisted": true,
+      "authoredChecks": true,
+      "readiness": true
+    },
+    {
+      "runId": "run_226545b85d9f0fe64d639b81e55a2c80810d942f",
+      "language": "typescript",
+      "mode": "run",
+      "terminalCategory": "wrong_answer",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_f3b23ae8fe3c9cbbd5ba41e092254936a7390776",
+      "language": "typescript",
+      "mode": "run",
+      "terminalCategory": "type_error",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_bff5de9ead049b4bc980f0510ed8e1e58e561238",
+      "language": "typescript",
+      "mode": "run",
+      "terminalCategory": "limits",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_b485d6156810d00856f192cf7cbc193b0fdd6044",
+      "language": "typescript",
+      "mode": "run",
+      "terminalCategory": "pass",
+      "classification": "success"
+    },
+    {
+      "runId": "run_853e5117c024d62abed635b643ec7d1a9317590a",
+      "language": "typescript",
+      "mode": "submit",
+      "terminalCategory": "pass",
+      "classification": "success"
+    },
+    {
+      "language": "typescript",
+      "resumeSameAttempt": true,
+      "reasoningRevision": true,
+      "trace": true,
+      "tracePrediction": true,
+      "invalidTraceRejected": true,
+      "referenceAssistancePersisted": true,
+      "authoredChecks": true,
+      "readiness": true
+    },
+    {
+      "runId": "run_a16c7193af13813c017b11125bcc594520d62814",
+      "language": "java",
+      "mode": "run",
+      "terminalCategory": "wrong_answer",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_13eee28a8417eedc0d81cc576e50e5dcc581f0c7",
+      "language": "java",
+      "mode": "run",
+      "terminalCategory": "compile_error",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_1dc8e6179445e9f406513769e765f02d1081b7d5",
+      "language": "java",
+      "mode": "run",
+      "terminalCategory": "limits",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_62130d995579330d356bf1760d469da4b64dc2f4",
+      "language": "java",
+      "mode": "run",
+      "terminalCategory": "pass",
+      "classification": "success"
+    },
+    {
+      "runId": "run_e203f994304a76ee5cc9984d3c8726ca039ccdce",
+      "language": "java",
+      "mode": "submit",
+      "terminalCategory": "pass",
+      "classification": "success"
+    },
+    {
+      "language": "java",
+      "resumeSameAttempt": true,
+      "reasoningRevision": true,
+      "trace": true,
+      "tracePrediction": true,
+      "invalidTraceRejected": true,
+      "referenceAssistancePersisted": true,
+      "authoredChecks": true,
+      "readiness": true
+    },
+    {
+      "runId": "run_36e701eecec4c2a63b13b47e42a0aae8f5b8234b",
+      "language": "cpp",
+      "mode": "run",
+      "terminalCategory": "wrong_answer",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_fecf73ead3850e22d95378a11dd6977ad1dc14b2",
+      "language": "cpp",
+      "mode": "run",
+      "terminalCategory": "compile_error",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_aa2e72ae31adac08aad6b88f51b950d71146b061",
+      "language": "cpp",
+      "mode": "run",
+      "terminalCategory": "limits",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_be149934cfe6d667fefd2dfb15d88b98f0c22aa2",
+      "language": "cpp",
+      "mode": "run",
+      "terminalCategory": "pass",
+      "classification": "success"
+    },
+    {
+      "runId": "run_e7d3c96a077e59e9f09665edc77240dce1971900",
+      "language": "cpp",
+      "mode": "submit",
+      "terminalCategory": "pass",
+      "classification": "success"
+    },
+    {
+      "language": "cpp",
+      "resumeSameAttempt": true,
+      "reasoningRevision": true,
+      "trace": true,
+      "tracePrediction": true,
+      "invalidTraceRejected": true,
+      "referenceAssistancePersisted": true,
+      "authoredChecks": true,
+      "readiness": true
+    },
+    {
+      "runId": "run_67d7643391f813681dd79c517a7f4e8c51056a7a",
+      "language": "c",
+      "mode": "run",
+      "terminalCategory": "wrong_answer",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_f4987ec623ea78b3f1581c84fc72505bcf769a05",
+      "language": "c",
+      "mode": "run",
+      "terminalCategory": "compile_error",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_57277f75a331e97c76788c9d99f892e2d3be611c",
+      "language": "c",
+      "mode": "run",
+      "terminalCategory": "limits",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_015b97f18ddad5c61ae0b83dac71e0e9330ff87f",
+      "language": "c",
+      "mode": "run",
+      "terminalCategory": "pass",
+      "classification": "success"
+    },
+    {
+      "runId": "run_38024a10f986657455e626e4b40e4bd3e91202b0",
+      "language": "c",
+      "mode": "submit",
+      "terminalCategory": "pass",
+      "classification": "success"
+    },
+    {
+      "language": "c",
+      "resumeSameAttempt": true,
+      "reasoningRevision": true,
+      "trace": true,
+      "tracePrediction": true,
+      "invalidTraceRejected": true,
+      "referenceAssistancePersisted": true,
+      "authoredChecks": true,
+      "readiness": true
+    },
+    {
+      "realCancellation": true
+    },
+    {
+      "hostCrashReconciled": true,
+      "noCredit": true,
+      "noReplacement": true
+    },
+    {
+      "runId": "run_e688eb78a541e723d403418e3498ed1dab1891d5",
+      "language": "python",
+      "mode": "submit",
+      "terminalCategory": "infrastructure_error",
+      "classification": "infrastructure_failure"
+    },
+    {
+      "runId": "run_5421bd67a8dbd3f938a4a83b147aaf622abab31a",
+      "language": "javascript",
+      "mode": "submit",
+      "terminalCategory": "infrastructure_error",
+      "classification": "infrastructure_failure"
+    },
+    {
+      "runId": "run_96be9da77848217c2559ec04b8c6b339642ef93f",
+      "language": "typescript",
+      "mode": "submit",
+      "terminalCategory": "infrastructure_error",
+      "classification": "infrastructure_failure"
+    },
+    {
+      "runId": "run_71b097c0458de45c7aed26623269e597a69bd4e0",
+      "language": "java",
+      "mode": "submit",
+      "terminalCategory": "infrastructure_error",
+      "classification": "infrastructure_failure"
+    },
+    {
+      "runId": "run_8bcd81c314b46dc88f742c26af2ee0b9fc6d4ff0",
+      "language": "cpp",
+      "mode": "submit",
+      "terminalCategory": "infrastructure_error",
+      "classification": "infrastructure_failure"
+    },
+    {
+      "runId": "run_0a9fd2559c48013988d4c8bbd63be1eb97867ee5",
+      "language": "c",
+      "mode": "submit",
+      "terminalCategory": "infrastructure_error",
+      "classification": "infrastructure_failure"
+    }
+  ],
+  "sourceCommit": "0f8b7a5ce003c4c451c16ed966006f4cd601cacc",
+  "ciRun": "37104114731"
+}
