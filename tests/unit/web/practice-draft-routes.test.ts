@@ -216,6 +216,24 @@ describe("authenticated practice draft routes", () => {
     await expect(response.json()).resolves.toMatchObject({ error: { code: "not_found" } });
   });
 
+  it("rejects prototype-derived workspace paths before accessing persistence", async () => {
+    authMock.mockResolvedValue({
+      isAuthenticated: true,
+      userId: "user_path_boundary",
+      sessionId: "sess_path_boundary",
+    });
+    for (const problemId of ["constructor", "toString", "__proto__"]) {
+      const response = await startWorkspace(
+        new Request("http://localhost/api/practice/workspace", {
+          method: "POST",
+          body: JSON.stringify({ problemId, language: "python" }),
+        }),
+      );
+      expect(response.status).toBe(400);
+    }
+    expect(runtimeMock.getPracticeRuntime).not.toHaveBeenCalled();
+  });
+
   it("reports unavailable practice persistence without fabricating workspace state", async () => {
     authMock.mockResolvedValue({
       isAuthenticated: true,

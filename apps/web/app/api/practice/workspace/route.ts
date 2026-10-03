@@ -1,4 +1,5 @@
-import { webTraceId } from "../../../../src/auth/request-context";
+import { learningError as errorResponse } from "../../../../src/mastery/learning-http";
+import { problemVersionFrom } from "../../../../src/practice/problem-catalog";
 import { NextResponse } from "next/server";
 import {
   dependencyUnavailableError,
@@ -6,8 +7,6 @@ import {
   startPracticeAttempt,
   startPracticeDraft,
   startPracticeSession,
-  toErrorEnvelope,
-  toHttpStatus,
   validationError,
 } from "@algocove/application";
 import { parseId, PROBLEM_LANGUAGES, type ProblemLanguage } from "@algocove/domain";
@@ -16,10 +15,6 @@ import { authenticatedWebRequestContext } from "../../../../src/auth/request-con
 import { getPracticeRuntime, type PracticeRuntime } from "../../../../src/practice/runtime";
 
 export const dynamic = "force-dynamic";
-
-const PROBLEM_VERSION_BY_SLUG = {
-  "arrays-two-pointer": "prb_dddddddddddddddd",
-} as const;
 
 export async function POST(request: Request): Promise<NextResponse> {
   try {
@@ -170,6 +165,7 @@ export async function POST(request: Request): Promise<NextResponse> {
         pseudocode,
         activeRun: runView,
         starterTemplate: manifest.starterTemplate,
+        problem: { title: manifest.title, statement: manifest.statement },
         firstHintId: "hint-arrays-1",
         highestHintTier: await runtime.hints.getHighestExposedTier({
           learnerId: context.actor.userId,
@@ -188,8 +184,13 @@ async function manifestFor(
   problemVersionId: string,
   language: ProblemLanguage,
 ) {
-  const result = await pool.query<{ manifest_id: string; starter_template: string }>(
-    `SELECT manifest.manifest_id, manifest.starter_template
+  const result = await pool.query<{
+    manifest_id: string;
+    starter_template: string;
+    title: string;
+    statement: string;
+  }>(
+    `SELECT manifest.manifest_id, manifest.starter_template, version.title, problem.statement
        FROM content.problem_language_manifest AS manifest
        JOIN content.problem_version AS problem
          ON problem.problem_version_id = manifest.problem_version_id
@@ -199,24 +200,20 @@ async function manifestFor(
         AND manifest.language = $2
         AND manifest.status = 'published'
         AND version.status = 'published'
-        AND version.payload_status = 'available'`,
+        AND version.payload_status = 'available'
+        AND (version.rights_expires_at IS NULL OR version.rights_expires_at > now())`,
     [problemVersionId, language],
   );
   const row = result.rows[0];
   if (row === undefined) return null;
   const manifestId = parseId("languageManifest", row.manifest_id);
   if (!manifestId.ok) throw new Error("Published manifest identifier is invalid.");
-  return { manifestId: manifestId.value, starterTemplate: row.starter_template };
-}
-
-function problemVersionFrom(value: unknown) {
-  if (typeof value !== "string" || !(value in PROBLEM_VERSION_BY_SLUG)) {
-    throw validationError("Problem workspace is not available.", { field: "problem_id" });
-  }
-  const raw = PROBLEM_VERSION_BY_SLUG[value as keyof typeof PROBLEM_VERSION_BY_SLUG];
-  const problemVersionId = parseId("problemVersion", raw);
-  if (!problemVersionId.ok) throw new Error("Practice catalog identifier is invalid.");
-  return problemVersionId.value;
+  return {
+    manifestId: manifestId.value,
+    starterTemplate: row.starter_template,
+    title: row.title,
+    statement: row.statement,
+  };
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -230,15 +227,4 @@ function isUniqueViolation(error: unknown): boolean {
     "code" in error &&
     (error as { readonly code?: unknown }).code === "23505"
   );
-}
-
-function errorResponse(request: Request, error: unknown): NextResponse {
-  const traceId = webTraceId(request);
-  return NextResponse.json(toErrorEnvelope(error, traceId), {
-    status:
-      error instanceof Error && "code" in error && error.code === "unauthenticated"
-        ? 401
-        : toHttpStatus(error),
-    headers: { "Cache-Control": "no-store" },
-  });
 }

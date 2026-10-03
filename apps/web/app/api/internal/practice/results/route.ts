@@ -1,3 +1,4 @@
+import { learningError as errorResponse } from "../../../../../src/mastery/learning-http";
 import { webTraceId } from "../../../../../src/auth/request-context";
 import { getLearningRuntime } from "../../../../../src/mastery/learning-runtime";
 import { timingSafeEqual } from "node:crypto";
@@ -8,7 +9,6 @@ import {
   createActor,
   dependencyUnavailableError,
   ingestTrustedPracticeResult,
-  toErrorEnvelope,
   toHttpStatus,
   validationError,
 } from "@algocove/application";
@@ -189,15 +189,4 @@ function signedResultFrom(input: unknown): SignedExecutionResult {
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
-}
-
-function errorResponse(request: Request, error: unknown): NextResponse {
-  const traceId = webTraceId(request);
-  return NextResponse.json(toErrorEnvelope(error, traceId), {
-    status:
-      error instanceof Error && "code" in error && error.code === "unauthenticated"
-        ? 401
-        : toHttpStatus(error),
-    headers: { "Cache-Control": "no-store" },
-  });
 }

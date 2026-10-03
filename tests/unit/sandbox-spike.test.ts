@@ -11,7 +11,8 @@ describe("sandbox-selection spike runtime contract", () => {
     expect(spike).toContain("ALGO_COVE_DOCKER_RUNTIME");
     expect(spike).toContain("--runtime=${requestedRuntime}");
     expect(spike).toContain("Requested Docker runtime");
-    expect(spike).toContain("security-owner approval is still required");
+    expect(spike).toContain("security-owner decision is recorded separately");
+    expect(spike).toContain("they do not grant security-owner approval or production promotion");
     expect(spike).toContain("if (!normalPassed || !hostilePassed || !concurrencyPassed)");
   });
 });

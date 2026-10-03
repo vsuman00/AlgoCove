@@ -2,13 +2,25 @@ import { webTraceId } from "../auth/request-context";
 import { NextResponse } from "next/server";
 import { toErrorEnvelope, toHttpStatus, validationError } from "@algocove/application";
 export function learningError(request: Request, error: unknown): NextResponse {
-  return NextResponse.json(toErrorEnvelope(error, webTraceId(request)), {
-    status:
-      error instanceof Error && "code" in error && error.code === "unauthenticated"
-        ? 401
-        : toHttpStatus(error),
-    headers: { "Cache-Control": "no-store" },
-  });
+  const status =
+    error instanceof Error && "code" in error && error.code === "unauthenticated"
+      ? 401
+      : toHttpStatus(error);
+  const envelope = toErrorEnvelope(error, webTraceId(request));
+  if (status >= 500)
+    process.stderr.write(
+      "[api] " +
+        JSON.stringify({
+          event: "request_failed",
+          status,
+          traceId: envelope.error.traceId,
+          category: envelope.error.category,
+          code: envelope.error.code,
+          retryable: envelope.error.retryable,
+        }) +
+        "\n",
+    );
+  return NextResponse.json(envelope, { status, headers: { "Cache-Control": "no-store" } });
 }
 export function learningResponse(body: unknown): NextResponse {
   return NextResponse.json(body, { headers: { "Cache-Control": "no-store" } });

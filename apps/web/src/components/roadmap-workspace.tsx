@@ -140,7 +140,7 @@ export default function RoadmapWorkspace({ revision }: { revision: number }): Re
         <label>
           Coverage scope
           <select value={scope} onChange={(e) => setScope(e.target.value as typeof scope)}>
-            <option value="reviewed_pilot">Reviewed two-pointer pilot</option>
+            <option value="reviewed_pilot">Two-pointer learning path</option>
             <option value="full_dsa">Comprehensive DSA (requires reviewed breadth)</option>
           </select>
         </label>

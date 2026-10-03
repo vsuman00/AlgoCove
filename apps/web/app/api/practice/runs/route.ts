@@ -1,10 +1,8 @@
-import { webTraceId } from "../../../../src/auth/request-context";
+import { learningError as errorResponse } from "../../../../src/mastery/learning-http";
 import { NextResponse } from "next/server";
 import {
   dependencyUnavailableError,
   requestPracticeCodeRun,
-  toErrorEnvelope,
-  toHttpStatus,
   validationError,
 } from "@algocove/application";
 import { parseId } from "@algocove/domain";
@@ -45,14 +43,7 @@ export async function POST(request: Request): Promise<NextResponse> {
       { status: 202, headers: { "Cache-Control": "no-store" } },
     );
   } catch (error) {
-    const traceId = webTraceId(request);
-    return NextResponse.json(toErrorEnvelope(error, traceId), {
-      status:
-        error instanceof Error && "code" in error && error.code === "unauthenticated"
-          ? 401
-          : toHttpStatus(error),
-      headers: { "Cache-Control": "no-store" },
-    });
+    return errorResponse(request, error);
   }
 }
 

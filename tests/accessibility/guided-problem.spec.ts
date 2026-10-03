@@ -2,6 +2,39 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
 test.describe("Guided problem workspace", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.route("**/api/practice/problems/arrays-two-pointer", (route) =>
+      route.fulfill({
+        json: {
+          problem: {
+            title: "Container with most water",
+            statement:
+              "Given an array of heights, return the maximum area formed by two vertical lines and the x-axis.",
+          },
+        },
+      }),
+    );
+  });
+  test("withdrawn public content is hidden and unknown problem paths return a real accessible 404", async ({
+    page,
+  }) => {
+    await page.unroute("**/api/practice/problems/arrays-two-pointer");
+    await page.route("**/api/practice/problems/arrays-two-pointer", (route) =>
+      route.fulfill({ status: 404, json: { error: { code: "not_found" } } }),
+    );
+    await page.goto("/learn/arrays-two-pointer");
+    await expect(
+      page.getByRole("heading", { name: "This problem is no longer available." }),
+    ).toBeVisible();
+    await expect(page.getByRole("textbox", { name: "Python source" })).toHaveCount(0);
+    await expect(page.getByRole("heading", { name: "Container with most water" })).toHaveCount(0);
+    expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+    const response = await page.goto("/learn/unknown-problem");
+    expect(response?.status()).toBe(404);
+    await expect(page.getByRole("heading", { name: "This page is not available." })).toBeVisible();
+    expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+  });
+
   test("retries an unavailable account service without substituting a learner identity", async ({
     page,
   }) => {

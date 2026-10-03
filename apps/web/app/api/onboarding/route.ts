@@ -1,11 +1,6 @@
-import { webTraceId } from "../../../src/auth/request-context";
+import { learningError as errorResponse } from "../../../src/mastery/learning-http";
 import { NextResponse } from "next/server";
-import {
-  getLearnerProfile,
-  saveLearnerProfile,
-  toErrorEnvelope,
-  toHttpStatus,
-} from "@algocove/application";
+import { getLearnerProfile, saveLearnerProfile } from "@algocove/application";
 import { getClerkIdentityStore } from "../../../src/auth/clerk-adapter";
 import { authenticatedWebRequestContext } from "../../../src/auth/request-context";
 
@@ -13,18 +8,6 @@ export const dynamic = "force-dynamic";
 
 async function contextFor(request: Request) {
   return authenticatedWebRequestContext(request);
-}
-
-function errorResponse(request: Request, error: unknown): NextResponse {
-  const traceId = webTraceId(request);
-  const status =
-    error instanceof Error && "code" in error && error.code === "unauthenticated"
-      ? 401
-      : toHttpStatus(error);
-  return NextResponse.json(toErrorEnvelope(error, traceId), {
-    status,
-    headers: { "Cache-Control": "no-store" },
-  });
 }
 
 export async function GET(request: Request): Promise<NextResponse> {

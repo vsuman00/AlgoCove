@@ -312,6 +312,22 @@ export type PracticeAttemptReset = {
 
 /** PostgreSQL adapter for the owner-scoped Task 25 practice state. */
 export class PostgresPracticeRepository {
+  /** Public payloads are visible only while the reviewed version and its rights are active. */
+  async getPublishedProblem(
+    problemVersionId: string,
+  ): Promise<{ title: string; statement: string } | null> {
+    const result = await this.pool.query<{ title: string; statement: string }>(
+      `SELECT version.title, problem.statement
+         FROM content.problem_version AS problem
+         JOIN content.content_version AS version ON version.content_version_id = problem.content_version_id
+        WHERE problem.problem_version_id = $1 AND version.status = 'published'
+          AND version.payload_status = 'available' AND problem.statement IS NOT NULL
+          AND (version.rights_expires_at IS NULL OR version.rights_expires_at > now())`,
+      [problemVersionId],
+    );
+    return result.rows[0] ?? null;
+  }
+
   private readonly pool: Pool;
 
   constructor(pool: Pool) {

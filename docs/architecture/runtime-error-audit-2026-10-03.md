@@ -237,3 +237,8 @@ The owner subsequently authorized repairs using Ponytail. The diagnosis above re
 Verified interim results: 246 repository tests; 63 PostgreSQL tests with two Linux-only scenarios explicitly skipped locally; production build; 30 accessibility browser checks; three roadmap/offline journeys; five execution-category browser checks. Subsequent source changes require fresh gates. The same-account Clerk refresh also exposed a preferences overwrite: fresh reads reset an unsaved start date. Reads now follow account ownership rather than transient refresh status, and the full roadmap journey plus three targeted repetitions pass without changing deadline assertions. Authenticated review and progress reads were observed through actual Next/Clerk/PostgreSQL on localhost. The owner chose to sign in personally instead of authorizing a disposable Clerk account; no Clerk account was created or deleted.
 
 The repaired current-head mandatory Linux learning loop, current spike, image changes, final regression counts, cleanup and publication remain pending. Phase 7 is not marked complete.
+
+
+## Subsequent repair status
+
+The owner authorized implementation after this diagnosis. See [runtime repair evidence](runtime-repair-evidence-2026-10-03.md) for current corrections, actual authenticated localhost persistence, green Linux execution evidence and remaining limits. The preceding sections describe the audit baseline, not the current repaired runtime.

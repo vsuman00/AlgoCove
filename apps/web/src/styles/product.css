@@ -394,7 +394,7 @@
   color: var(--text-primary);
   line-height: 1.55;
 }
-.ac-home-main > a[href="/"] {
+.ac-home-main > a[href="/"]:not(.ac-button) {
   display: inline-flex;
   min-height: 40px;
   align-items: center;

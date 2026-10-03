@@ -1,10 +1,8 @@
-import { webTraceId } from "../../../../src/auth/request-context";
+import { learningError as errorResponse } from "../../../../src/mastery/learning-http";
 import { NextResponse } from "next/server";
 import {
   dependencyUnavailableError,
   startPracticeDraft,
-  toErrorEnvelope,
-  toHttpStatus,
   validationError,
 } from "@algocove/application";
 import { DRAFT_KINDS, parseId, type DraftKind } from "@algocove/domain";
@@ -50,15 +48,4 @@ function invalidRequest(message: string): ReturnType<typeof validationError> {
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
-}
-
-function errorResponse(request: Request, error: unknown): NextResponse {
-  const traceId = webTraceId(request);
-  return NextResponse.json(toErrorEnvelope(error, traceId), {
-    status:
-      error instanceof Error && "code" in error && error.code === "unauthenticated"
-        ? 401
-        : toHttpStatus(error),
-    headers: { "Cache-Control": "no-store" },
-  });
 }

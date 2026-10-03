@@ -1,6 +1,6 @@
 # AlgoCove implementation task ledger
 
-**Latest owner direction and audit (2026-10-03):** Diagnosis/report before further fixes. [Current error report](../docs/architecture/runtime-error-audit-2026-10-03.md) records E1–E18 and their verification requirements. Mandatory current-head real learning-loop CI fails; workspace recovery repairs and U6/U8 remain open. Existing dated phase evidence is historical, not proof that the current local app works end to end.
+**Latest authorized repair (2026-10-03):** The owner reviewed the diagnosis and authorized Ponytail repairs. [Runtime repair evidence](../docs/architecture/runtime-repair-evidence-2026-10-03.md) records configuration, authenticated session recovery, workspace synchronization, published-content withdrawal, diagnostics and CI corrections. Repair commit `2803c23` passed all three CI jobs including both mandatory actual Linux learning-loop scenarios. Subsequent repairs have local gates and await their final CI run; no deployment is authorized.
 
 **Current implementation evidence:** [Real product and 3D UI record](../docs/architecture/phase7-production-ui-evidence-2026-10-03.md) supplements the historical audit with persisted content administration, release identity persistence and the new mandatory Linux guided-loop gate. Final CI status is recorded there.
 

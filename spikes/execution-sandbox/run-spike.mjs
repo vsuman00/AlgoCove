@@ -376,7 +376,7 @@ const concurrencyPassed =
   concurrency.results.length === languages.length &&
   concurrency.results.every((result) => result.exitCode === 0);
 const decision = requestedRuntime
-  ? `Candidate runtime ${requestedRuntime} executed; security-owner approval is still required.`
+  ? `Candidate runtime ${requestedRuntime} executed. This report records technical evidence; the security-owner decision is recorded separately in tasks/todo.md.`
   : runsc || firecracker
     ? "REJECTED for production: a stronger runtime was available but not selected; rerun with ALGO_COVE_DOCKER_RUNTIME set to the approved candidate."
     : "REJECTED for production: only default runc was available; repeat with a gVisor-class or microVM-class candidate.";
@@ -451,7 +451,7 @@ const report = [
   "## Required follow-up",
   "",
   "1. If this was the control baseline, run the same fixture matrix with an installed gVisor runsc runtime or Firecracker-class runner using ALGO_COVE_DOCKER_RUNTIME.",
-  "2. Record security-owner approval, rejection, or a narrowed decision with threat-model evidence.",
+  "2. Use the recorded security-owner decision in tasks/todo.md. A technical rerun does not reset an existing approval or authorize a different runtime.",
   "3. Keep Docker runc as a local developer probe only; never enable learner execution from this result.",
   "",
   "## Sources",

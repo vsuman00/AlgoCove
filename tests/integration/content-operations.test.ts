@@ -6,7 +6,7 @@ import {
   createRequestContext,
   type RequestContext,
 } from "@algocove/application";
-import { bootstrapDatabase, createPool, migrate } from "@algocove/db";
+import { bootstrapDatabase, createPool, migrate, PostgresPracticeRepository } from "@algocove/db";
 import {
   formatId,
   parseInstant,
@@ -249,6 +249,11 @@ describe("persisted governed content operations", () => {
     await send(3, id, "validate");
     await send(4, id, "publish");
     expect((await readContent(ctx(4), id)).records[0]?.content.status).toBe("published");
+    const publicPractice = new PostgresPracticeRepository(pool);
+    expect(await publicPractice.getPublishedProblem(record.content.problemVersionId)).toEqual({
+      title: record.content.title,
+      statement: record.content.statement,
+    });
     await expect(
       pool.query(
         "UPDATE content.content_version SET title='tampered' WHERE content_version_id=$1",
@@ -263,6 +268,7 @@ describe("persisted governed content operations", () => {
     ).rejects.toMatchObject({ code: "55006" });
     const result = await send(4, id, "retire", { reason: "rights_withdrawn" });
     expect(JSON.stringify(result)).not.toContain(record.content.statement);
+    expect(await publicPractice.getPublishedProblem(record.content.problemVersionId)).toBeNull();
     const retired = (await readContent(ctx(4), id)).records[0]!.content;
     expect(retired).toMatchObject({
       status: "retired",

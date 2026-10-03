@@ -107,12 +107,54 @@ export default function ProblemWorkspace({
   readonly initialLanguage?: keyof typeof STARTERS;
 }): ReactElement {
   const appSession = useAppSession();
+  const [publishedProblem, setPublishedProblem] = useState<{
+    title: string;
+    statement: string;
+  } | null>(null);
+  const [publicationStatus, setPublicationStatus] = useState<
+    "loading" | "available" | "unavailable" | "withdrawn"
+  >("loading");
+  const [publicationRefresh, setPublicationRefresh] = useState(0);
+  useEffect(() => {
+    const controller = new AbortController();
+    void fetch(`/api/practice/problems/${encodeURIComponent(problemId)}`, {
+      cache: "no-store",
+      signal: AbortSignal.any([controller.signal, AbortSignal.timeout(10_000)]),
+    })
+      .then(async (response) => {
+        if (response.status === 404) {
+          if (!controller.signal.aborted) {
+            setPublishedProblem(null);
+            setPublicationStatus("withdrawn");
+          }
+          return;
+        }
+        if (!response.ok) throw new Error("published_problem_unavailable");
+        const body = (await response.json()) as {
+          problem?: { title?: unknown; statement?: unknown };
+        };
+        if (typeof body.problem?.title !== "string" || typeof body.problem.statement !== "string")
+          throw new Error("published_problem_invalid");
+        if (!controller.signal.aborted) {
+          setPublishedProblem({ title: body.problem.title, statement: body.problem.statement });
+          setPublicationStatus("available");
+        }
+      })
+      .catch(() => {
+        if (!controller.signal.aborted) {
+          setPublishedProblem(null);
+          setPublicationStatus("unavailable");
+        }
+      });
+    return () => controller.abort();
+  }, [problemId, publicationRefresh]);
   const [workspace, setWorkspace] = useState<WorkspaceState>({
     language: initialLanguage,
     source: STARTERS[initialLanguage],
     pseudocode: EMPTY_PSEUDOCODE,
   });
   const [saveState, setSaveState] = useState<RecoveryState>("local");
+  const [localRecoveryAvailable, setLocalRecoveryAvailable] = useState(true);
   const [sessionRefresh, setSessionRefresh] = useState(0);
   const [sessionState, setSessionState] = useState<SessionState>("checking");
   const [workspaceStatus, setWorkspaceStatus] = useState<"loading" | "ready" | "unavailable">(
@@ -210,6 +252,7 @@ export default function ProblemWorkspace({
         if (!response.ok) throw new Error("workspace_sync_unavailable");
         pendingRestart.current = false;
         const body = (await response.json()) as {
+          readonly problem?: { readonly title?: unknown; readonly statement?: unknown };
           readonly sourceDraft?: {
             readonly draftId?: string;
             readonly version?: number;
@@ -255,6 +298,10 @@ export default function ProblemWorkspace({
           throw new Error("workspace_sync_contract_invalid");
         }
         if (cancelled) return;
+        if (typeof body.problem?.title === "string" && typeof body.problem.statement === "string") {
+          setPublishedProblem({ title: body.problem.title, statement: body.problem.statement });
+          setPublicationStatus("available");
+        }
         remoteWorkspace.current = {
           language,
           attemptId: body.attempt.attemptId,
@@ -322,10 +369,16 @@ export default function ProblemWorkspace({
   useEffect(() => {
     if (sessionState !== "authenticated" || learnerId === null) return;
     const timer = window.setTimeout(() => {
-      window.localStorage.setItem(
-        recoveryKey(learnerId, language),
-        JSON.stringify({ source, pseudocode }),
-      );
+      try {
+        window.localStorage.setItem(
+          recoveryKey(learnerId, language),
+          JSON.stringify({ source, pseudocode }),
+        );
+        setLocalRecoveryAvailable(true);
+      } catch {
+        // Browser storage may be full or disabled; server persistence must still proceed.
+        setLocalRecoveryAvailable(false);
+      }
       const remote = remoteWorkspace.current;
       if (remote === null || remote.language !== language) {
         setSaveState("server_pending");
@@ -429,20 +482,24 @@ export default function ProblemWorkspace({
 
   const saveLabel = useMemo(
     () =>
-      sessionState === "unavailable"
-        ? "Account service unavailable. Retry to recover your private workspace."
-        : saveState === "saving"
-          ? "Saving local recovery…"
-          : saveState === "saved"
-            ? "Local recovery saved"
-            : saveState === "server_pending"
-              ? "Local recovery saved · server sync pending"
-              : saveState === "sign_in"
-                ? "Sign in for private recovery"
-                : sessionState === "checking"
-                  ? "Checking private recovery…"
-                  : "Local recovery ready",
-    [saveState, sessionState],
+      !localRecoveryAvailable
+        ? saveState === "saved"
+          ? "Saved to your account · local recovery unavailable"
+          : "Local recovery unavailable · server sync pending. Keep this page open."
+        : sessionState === "unavailable"
+          ? "Account service unavailable. Retry to recover your private workspace."
+          : saveState === "saving"
+            ? "Saving local recovery…"
+            : saveState === "saved"
+              ? "Local recovery saved"
+              : saveState === "server_pending"
+                ? "Local recovery saved · server sync pending"
+                : saveState === "sign_in"
+                  ? "Sign in for private recovery"
+                  : sessionState === "checking"
+                    ? "Checking private recovery…"
+                    : "Local recovery ready",
+    [saveState, sessionState, localRecoveryAvailable],
   );
   const executionLabel =
     executionState.kind === "requesting"
@@ -485,12 +542,23 @@ export default function ProblemWorkspace({
     });
   };
 
+  if (publicationStatus === "withdrawn")
+    return (
+      <main className="ac-workspace" id="main-content" tabIndex={-1}>
+        <h1>This problem is no longer available.</h1>
+        <p>Choose another learning activity from Home.</p>
+        <a className="ac-button ac-button--primary" href="/">
+          Go to Home
+        </a>
+      </main>
+    );
+
   return (
     <main className="ac-workspace" id="main-content" tabIndex={-1}>
       <header className="ac-workspace__hero">
         <div>
           <p className="ac-eyebrow">Guided practice · arrays and pointers</p>
-          <h1>Container with most water</h1>
+          <h1>{publishedProblem?.title ?? "Guided practice"}</h1>
           <p>
             Build the invariant first, inspect the reviewed trace, then validate your own solution
             with checked execution results.
@@ -553,25 +621,43 @@ export default function ProblemWorkspace({
       <div className="ac-workspace__grid">
         <section className="ac-panel ac-workspace__panel" aria-labelledby="prompt-title">
           <p className="ac-eyebrow">Problem</p>
-          <h2 id="prompt-title">Choose two lines that hold the most water.</h2>
-          <p>
-            Given an array of heights, return the maximum area formed by two vertical lines and the
-            x-axis. The container must keep its sides in the original order.
-          </p>
-          <dl className="ac-workspace__facts">
-            <div>
-              <dt>Input</dt>
-              <dd>Positive integer heights</dd>
-            </div>
-            <div>
-              <dt>Output</dt>
-              <dd>Maximum contained area</dd>
-            </div>
-            <div>
-              <dt>Target</dt>
-              <dd>O(n) time · O(1) space</dd>
-            </div>
-          </dl>
+          <h2 id="prompt-title">Problem statement</h2>
+          {publishedProblem === null ? (
+            <>
+              <p role="status">
+                {publicationStatus === "loading"
+                  ? "Loading the published problem…"
+                  : "Practice content is temporarily unavailable."}
+              </p>
+              {publicationStatus === "unavailable" && (
+                <button
+                  className="ac-small-button"
+                  type="button"
+                  onClick={() => setPublicationRefresh((value) => value + 1)}
+                >
+                  Retry practice content
+                </button>
+              )}
+            </>
+          ) : (
+            <p>{publishedProblem.statement}</p>
+          )}
+          {publishedProblem !== null && (
+            <dl className="ac-workspace__facts">
+              <div>
+                <dt>Input</dt>
+                <dd>Positive integer heights</dd>
+              </div>
+              <div>
+                <dt>Output</dt>
+                <dd>Maximum contained area</dd>
+              </div>
+              <div>
+                <dt>Target</dt>
+                <dd>O(n) time · O(1) space</dd>
+              </div>
+            </dl>
+          )}
         </section>
 
         <section className="ac-panel ac-workspace__panel" aria-labelledby="pseudocode-title">
@@ -772,13 +858,17 @@ export default function ProblemWorkspace({
         >
           <p className="ac-eyebrow">Visual reasoning</p>
           <h2 id="trace-workspace-title">Step through the reviewed trace</h2>
-          <TraceWorkspace
-            key={language}
-            getAttemptId={() => remoteWorkspace.current?.attemptId}
-            onExposure={(tier) =>
-              setHintTier((current) => Math.max(current, Math.min(5, tier + 1)))
-            }
-          />
+          {publishedProblem !== null ? (
+            <TraceWorkspace
+              key={language}
+              getAttemptId={() => remoteWorkspace.current?.attemptId}
+              onExposure={(tier) =>
+                setHintTier((current) => Math.max(current, Math.min(5, tier + 1)))
+              }
+            />
+          ) : (
+            <p>The reviewed trace will be available when the published problem loads.</p>
+          )}
         </section>
 
         <section className="ac-panel ac-workspace__panel" aria-labelledby="editor-title">

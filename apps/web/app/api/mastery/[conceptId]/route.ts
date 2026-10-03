@@ -1,10 +1,8 @@
-import { webTraceId } from "../../../../src/auth/request-context";
+import { learningError } from "../../../../src/mastery/learning-http";
 import { NextResponse } from "next/server";
 import {
   dependencyUnavailableError,
   getOwnedMasteryView,
-  toErrorEnvelope,
-  toHttpStatus,
   validationError,
 } from "@algocove/application";
 import { parseId } from "@algocove/domain";
@@ -32,12 +30,6 @@ export async function GET(
     });
     return NextResponse.json(view, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
-    return NextResponse.json(toErrorEnvelope(error, webTraceId(request)), {
-      status:
-        error instanceof Error && "code" in error && error.code === "unauthenticated"
-          ? 401
-          : toHttpStatus(error),
-      headers: { "Cache-Control": "no-store" },
-    });
+    return learningError(request, error);
   }
 }

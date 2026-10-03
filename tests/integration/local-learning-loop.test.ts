@@ -46,6 +46,7 @@ vi.mock("../../apps/web/src/auth/request-context", async (original) => {
 
 const routes = {
   explanation: await import("../../apps/web/app/api/mastery/explanation/route"),
+  publishedProblem: await import("../../apps/web/app/api/practice/problems/[problemId]/route"),
   workspace: await import("../../apps/web/app/api/practice/workspace/route"),
   draft: await import("../../apps/web/app/api/practice/drafts/[draftId]/route"),
   pseudocode: await import("../../apps/web/app/api/practice/pseudocode/[pseudocodeId]/route"),
@@ -310,6 +311,12 @@ describe.skipIf(process.env.LOCAL_PHASE5_E2E !== "1")(
             response = Response.json({ authenticated: true, user: { id: fixture.actor!.userId } });
           else if (path === "/api/mastery/explanation")
             response = await routes.explanation.POST(request);
+          else if (path.startsWith("/api/practice/problems/") && request.method === "GET")
+            response = await routes.publishedProblem.GET(request, {
+              params: Promise.resolve({
+                problemId: decodeURIComponent(path.slice("/api/practice/problems/".length)),
+              }),
+            });
           else if (path === "/api/practice/workspace")
             response = await routes.workspace.POST(request);
           else if (path === "/api/practice/runs") response = await routes.run.POST(request);

@@ -3,11 +3,58 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import ProblemWorkspace from "../../../apps/web/src/components/problem-workspace";
 
 afterEach(() => {
+  vi.restoreAllMocks();
   vi.unstubAllGlobals();
   window.localStorage.clear();
 });
 
 describe("Task 29 guided problem workspace", () => {
+  it("withholds the statement, trace and editor when publication has been withdrawn", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (input: RequestInfo | URL) =>
+        String(input).includes("/api/practice/problems/")
+          ? Response.json({ error: { code: "not_found" } }, { status: 404 })
+          : Response.json({ authenticated: false }, { status: 401 }),
+      ),
+    );
+    render(<ProblemWorkspace executionEnabled />);
+    await waitFor(() =>
+      expect(
+        screen.getByRole("heading", { name: "This problem is no longer available." }),
+      ).toBeVisible(),
+    );
+    expect(screen.queryByRole("textbox", { name: "Python source" })).toBeNull();
+    expect(screen.queryByText("Container with most water")).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Step through the reviewed trace" })).toBeNull();
+  });
+
+  it("handles browser storage quota failure without claiming an edit has been saved", async () => {
+    vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+      throw new DOMException("Storage full", "QuotaExceededError");
+    });
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (input: RequestInfo | URL) =>
+        String(input).endsWith("/api/auth/session")
+          ? Response.json({ authenticated: true, user: { id: "usr_storage_failure" } })
+          : Response.json({ error: { code: "dependency_unavailable" } }, { status: 503 }),
+      ),
+    );
+    render(<ProblemWorkspace executionEnabled />);
+    await waitFor(() =>
+      expect(screen.getByRole("button", { name: "Retry workspace connection" })).toBeVisible(),
+    );
+    fireEvent.change(screen.getByRole("textbox", { name: "Python source" }), {
+      target: { value: "my unsaved edit" },
+    });
+    await waitFor(() =>
+      expect(screen.getByText(/Local recovery unavailable · server sync pending/)).toBeVisible(),
+    );
+    expect(screen.getByRole("textbox", { name: "Python source" })).toHaveValue("my unsaved edit");
+    expect(screen.getByRole("button", { name: "Run checks" })).toBeDisabled();
+  });
+
   it("preserves a requested language and exposes initial server failure with a retry", async () => {
     window.localStorage.setItem(
       "algocove:workspace-recovery:arrays-two-pointer:usr_recovery_check:python",
@@ -42,13 +89,19 @@ describe("Task 29 guided problem workspace", () => {
   it("keeps the critical path visible and fails closed when execution is unavailable", async () => {
     vi.stubGlobal(
       "fetch",
-      vi
-        .fn()
-        .mockResolvedValue(new Response(JSON.stringify({ authenticated: false }), { status: 401 })),
+      vi.fn(async (input: RequestInfo | URL) =>
+        String(input).includes("/api/practice/problems/")
+          ? Response.json({
+              problem: { title: "Container with most water", statement: "Published statement" },
+            })
+          : Response.json({ authenticated: false }, { status: 401 }),
+      ),
     );
     render(<ProblemWorkspace executionEnabled={false} />);
 
-    expect(screen.getByRole("heading", { name: "Container with most water" })).toBeVisible();
+    await waitFor(() =>
+      expect(screen.getByRole("heading", { name: "Container with most water" })).toBeVisible(),
+    );
     expect(screen.getByRole("heading", { name: "Pseudocode checkpoint" })).toBeVisible();
     expect(screen.getByRole("heading", { name: "Step through the reviewed trace" })).toBeVisible();
     expect(screen.getByRole("button", { name: "Run checks" })).toBeDisabled();
