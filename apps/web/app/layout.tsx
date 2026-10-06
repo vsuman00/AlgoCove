@@ -19,7 +19,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
       <ClerkProvider publishableKey={publishableKey}>{children}</ClerkProvider>
     );
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <link
           rel="preload"
@@ -29,7 +29,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
           crossOrigin="anonymous"
         />
       </head>
-      <body>{content}</body>
+      <body suppressHydrationWarning>{content}</body>
     </html>
   );
 }

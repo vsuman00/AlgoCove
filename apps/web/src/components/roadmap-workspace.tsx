@@ -47,7 +47,8 @@ export default function RoadmapWorkspace({ revision }: { revision: number }): Re
     [candidate, setCandidate] = useState<PlanCandidate | null>(null),
     [scope, setScope] = useState<"reviewed_pilot" | "full_dsa">("reviewed_pilot"),
     [message, setMessage] = useState("Loading schedule…"),
-    [busy, setBusy] = useState(false);
+    [busy, setBusy] = useState(false),
+    [useProposal, setUseProposal] = useState(false);
   const command = useRef<{ fingerprint: string; key: string } | null>(null);
   useEffect(() => {
     let current = true;
@@ -144,9 +145,21 @@ export default function RoadmapWorkspace({ revision }: { revision: number }): Re
             <option value="full_dsa">Comprehensive DSA (requires reviewed breadth)</option>
           </select>
         </label>
+        <label>
+          <input
+            type="checkbox"
+            checked={useProposal}
+            onChange={(e) => setUseProposal(e.target.checked)}
+          />
+          Use optional AI sequencing
+        </label>
+        <p>
+          Only schedule constraints are shared. Your goals, role, code and study history are
+          excluded. If AI is unavailable, you receive the standard preview.
+        </p>
         <button
           className="ac-button ac-button--primary"
-          onClick={() => void send("build", { scope })}
+          onClick={() => void send("build", { scope, useProposal })}
         >
           {state ? "Preview replan" : "Build schedule preview"}
         </button>

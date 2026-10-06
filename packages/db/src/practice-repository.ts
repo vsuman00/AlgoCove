@@ -753,7 +753,7 @@ export class PostgresPracticeRepository {
       if (observation !== null) {
         const snapshot = await transaction.query<{ tier: number; captured_at: Date }>(
           `SELECT COALESCE(MAX(tier), 0)::integer AS tier, clock_timestamp() AS captured_at
-             FROM practice.hint_exposure WHERE learner_id=$1 AND problem_version_id=$2`,
+             FROM (SELECT tier FROM practice.hint_exposure WHERE learner_id=$1 AND problem_version_id=$2 UNION ALL SELECT tier FROM tutor.assistance WHERE learner_id=$1 AND problem_version_id=$2) exposure`,
           [observation.learnerId, observation.problemVersionId],
         );
         observation = {

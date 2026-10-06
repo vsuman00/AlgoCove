@@ -86,6 +86,7 @@ export type RoadmapRepository = {
   }): Promise<RoadmapView>;
 };
 export type PlanProposalPort = {
+  readonly lineage?: string;
   propose(input: { schedule: PlanSchedule; signal: AbortSignal }): Promise<unknown>;
 };
 export type PlanningBudgetPort = {
@@ -114,7 +115,7 @@ export async function getOwnedRoadmap(
   requireRole(context, "learner");
   return repository.view(context.actor.userId, context.now);
 }
-/** Optional fixture adapter only. The port cannot persist, activate, or alter learner evidence. */
+/** Optional proposal adapter. It cannot activate a plan or alter learner evidence. */
 export async function proposeValidatedPlan(input: {
   baseline: PlanSchedule;
   catalog: PlanningCatalog;
@@ -179,7 +180,7 @@ export async function proposeValidatedPlan(input: {
     const schedule = { ...input.baseline, items: items as PlanItem[] };
     if (validateRoadmap(schedule, input.catalog, { today: input.today, fixed: input.fixed }).length)
       throw Error("invalid");
-    return { schedule, lineage: "fixture_validated", success: true };
+    return { schedule, lineage: input.provider.lineage ?? "fixture_validated", success: true };
   } catch {
     return { schedule: input.baseline, lineage: "baseline_provider_fallback", success: false };
   } finally {

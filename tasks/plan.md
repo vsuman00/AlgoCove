@@ -8,7 +8,7 @@
 
 **Cumulative audit (2026-10-03):** [The through-Phase-7 audit](../docs/architecture/through-phase7-audit-2026-10-03.md) records fresh passing technical gates, every named test, Phase 0 approval gaps, unreconciled Phase 1–5 plan checkboxes, open UI fidelity/manual accessibility and the two current-head real-host skips. Technical phase closure must not be read as complete governance or full design validation.
 
-**Status:** Phase 7 Tasks 34–37 and 51 have recorded local technical implementation evidence as of 2026-10-03. The current GUI completion and actual execution integration work remain open as detailed in the latest error audit; historical F7 checks do not establish current end-to-end readiness. The reviewed pilot is explicit; insufficient breadth returns a reasoned rejection. Phase 8 awaits owner authorization. No hosted deployment is authorized.
+**Status:** Phase 7 Tasks 34–37 and 51 have recorded local technical implementation evidence as of 2026-10-03. The subsequent authorized GUI/execution repairs are complete for their recorded scope; see the runtime repair evidence. Historical manual/design approvals remain separate. The reviewed pilot is explicit; insufficient breadth returns a reasoned rejection. The owner authorized Phase 8 implementation on 2026-10-06; Tasks 38–40 are complete locally with connected review-scheduling, bypass, telemetry and visual real-link evidence; Phase 9 was authorized on 2026-10-06; Tasks 41–45 are complete locally for worker infrastructure, governed index candidates, hybrid retrieval/evidence, validated tutor delivery with authored fallback and versioned evaluation/promotion gates; Task 45a now has locally implemented and synthetic-verified gateway composition, opt-in, promotion/budget gates and preserved baseline/acceptance; live activation remains pending the named provider/data-policy decision. No hosted deployment is authorized.
 **Prepared:** 2026-09-17  
 **Scope:** Phase 7 local implementation, testing, commit and GitHub publication are authorized. Hosted infrastructure and live deployment remain excluded.
 **Task ledger:** `tasks/todo.md`
@@ -830,7 +830,7 @@ Review the evidence after every two or three task slices. Replan if assumptions 
 
 **Entry review (2026-10-02):** Task 34 begins from the accepted F6 handoff. Roadmap data/state, calendar and publication contracts, interfaces, data architecture and the product closure matrix were reviewed. Plan acceptance remains explicit and cannot trust a browser-supplied validation verdict. Live AI remains reserved for Task 45a.
 
-**Phase 7 closure (2026-10-03):** Tasks 34–37 and 51 are verified against the roadmap/data/calendar/interface/closure contracts. Work covers schedule persistence/lifecycle, scheduler/validator, missed-session and changed-goal/language previews, optional-operation budgets and fixture-only proposals, plus the complete learner UI. The [evidence record](../docs/architecture/phase7-evidence.md) maps files, tests, policy choices and operational limits. F7 technical gates pass; Phase 8 approval is the next human gate.
+**Phase 7 closure (2026-10-03):** Tasks 34–37 and 51 are verified against the roadmap/data/calendar/interface/closure contracts. Work covers schedule persistence/lifecycle, scheduler/validator, missed-session and changed-goal/language previews, optional-operation budgets and fixture-only proposals, plus the complete learner UI. The [evidence record](../docs/architecture/phase7-evidence.md) maps files, tests, policy choices and operational limits. F7 technical gates pass; the owner authorized Phase 8 implementation on 2026-10-06.
 
 ### Task 34: Implement roadmap intent and immutable plan versions
 
@@ -924,22 +924,24 @@ Review the evidence after every two or three task slices. Replan if assumptions 
 - [x] Every supported horizon produces a feasible, explainable plan or reasoned rejection.
 - [x] AI-off mode remains complete.
 - [x] Replanning preserves history and avoids catch-up overload.
-- [ ] Human owner authorizes Phase 8.
+- [x] Human owner authorizes Phase 8 (2026-10-06).
 
 ## Phase 8: Outbound LeetCode practice handoff
+
+**Phase 8 implementation closure (2026-10-06):** Tasks 38–40 are complete locally. Governed readiness policies, server grading, safe outbound admission, and reversible learner-confirmed journals are connected through PostgreSQL and the learner/staff UI. All automated checks pass; see [Phase 8 evidence](../docs/architecture/phase8-evidence.md). No production rubric has been published or user database migrated. Task 40 now records connected review-scheduling evidence, browser bypass rejection, runtime telemetry inspection and a visual real-link check in native Safari; The owner authorized Phase 9 on 2026-10-06.
 
 ### Task 38: Implement readiness gate and explicit practice bypass
 
 **Description:** Evaluate the configured internal readiness categories and expose the outbound action only when ready, with bypass disabled by default unless Task 1 explicitly approves it. If approved, the learner must explicitly select practice-mode bypass.
 
 **Acceptance criteria:**
-- [ ] Confidence alone cannot satisfy the gate.
-- [ ] Any approved bypass is explicit, audited, and creates no mastery evidence; the default honors learn-first.
-- [ ] Gate reasons are understandable and versioned.
+- [x] Confidence alone cannot satisfy the gate.
+- [x] Bypass remains disabled because no product approval exists; bypass requests fail closed and create no mastery evidence.
+- [x] Gate reasons are understandable and versioned.
 
 **Verification:**
-- [ ] Run readiness decision-table tests.
-- [ ] Test bypass, missing evidence, and stale content versions.
+- [x] Run readiness decision-table tests.
+- [x] Test bypass, missing evidence, and stale content versions.
 
 **Dependencies:** Tasks 26-33 and 37  
 **Files likely touched:** `packages/domain/src/readiness-gate.ts`, `packages/application/src/evaluate-readiness.ts`, `apps/web/src/components/external-readiness.tsx`, `tests/unit/readiness-gate.test.ts`  
@@ -950,16 +952,16 @@ Review the evidence after every two or three task slices. Replan if assumptions 
 **Description:** Open the reviewed canonical provider URL in a safe new context, record an idempotent navigation request, not proof the external page opened, and optionally append a clearly self-reported external completion.
 
 **Acceptance criteria:**
-- [ ] No provider credential, cookie, submission, or profile data is accessed.
-- [ ] Navigation uses allowlisted HTTPS URLs and safe referrer/opener controls.
-- [ ] Confirmation is labelled learner-confirmed everywhere; corrections append journal reversals. Popup or journal failure preserves a safe normal-link action.
+- [x] No provider credential, cookie, submission, or profile data is accessed.
+- [x] Navigation uses allowlisted HTTPS URLs and safe referrer/opener controls.
+- [x] Confirmation is labelled learner-confirmed everywhere; corrections append journal reversals. Popup or journal failure preserves a safe normal-link action.
 
 **Verification:**
-- [ ] Run URL, idempotency, authorization, and rendering-security tests.
-- [ ] Browser test verifies actual navigation target without automation on LeetCode.
+- [x] Run URL, idempotency, authorization, and rendering-security tests.
+- [x] Browser test verifies actual navigation target without automation on LeetCode.
 
 **Dependencies:** Tasks 17, 33, and 38  
-**Files likely touched:** `packages/application/src/external-handoff.ts`, `packages/db/migrations/0013_external_handoff.sql`, `apps/web/src/components/open-external.tsx`, `tests/e2e/external-handoff.spec.ts`  
+**Files likely touched:** `packages/application/src/external-companion.ts`, `packages/db/src/external-companion-repository.ts`, `packages/db/migrations/0027_external_companion.sql`, `apps/web/src/components/external-readiness.tsx`, `tests/e2e/companion-journey.spec.ts`
 **Estimated scope:** Medium
 
 ### Task 40: Prove the companion journey end to end
@@ -967,13 +969,14 @@ Review the evidence after every two or three task slices. Replan if assumptions 
 **Description:** Demonstrate plan item -> internal learning -> readiness -> source link -> learner return/confirmation -> review scheduling, including broken-link and bypass variants.
 
 **Acceptance criteria:**
-- [ ] No copied external problem content appears in the internal experience.
-- [ ] Broken/quarantined links never open silently.
-- [ ] External confirmation affects follow-through metrics, not server-observed mastery.
+- [x] No copied external problem content appears in the internal experience.
+- [x] Broken/quarantined links never open silently.
+- [x] External confirmation affects follow-through metrics, not server-observed mastery.
 
 **Verification:**
-- [ ] Run complete companion E2E suite with provider-link stubs and one manual real-link check.
-- [ ] Review telemetry to confirm no URL query leaks private learner data.
+- [x] Run companion E2E with provider-link stubs, browser bypass rejection and scheduled-review rendering. The PostgreSQL companion journey consumes its actual trusted assessment into review scheduling and renders that same SQL-backed queue after external confirmation/correction.
+- [x] Complete a visual real-link check in native Safari: canonical HTTPS URL loads the expected problem title and redirects to its HTTPS description page. Agent-operated read-only check; no login, run or submission.
+- [x] Inspect captured browser request URLs/referrer headers and actual runtime error-log writes: provider/API URLs carry no learner query data, provider navigation carries no referrer, and private source/reasoning markers do not enter logs.
 
 **Dependencies:** Tasks 37-39  
 **Files likely touched:** `tests/e2e/companion-journey.spec.ts`, `tests/fixtures/external-links/`, `packages/application/src/progress-read-model.ts`  
@@ -981,25 +984,29 @@ Review the evidence after every two or three task slices. Replan if assumptions 
 
 ### Checkpoint F8: Adaptive practice companion milestone M3
 
-- [ ] Timeboxed plan to independent external practice works.
-- [ ] No synchronization, scraping, automation, or verification claim exists.
-- [ ] Broken-link, bypass, and self-report semantics are explicit.
-- [ ] Human owner authorizes Phase 9.
+- [x] Timeboxed plan to independent external practice works.
+- [x] No synchronization, scraping, automation, or verification claim exists.
+- [x] Broken-link, bypass, and self-report semantics are explicit.
+- [x] Human owner authorizes Phase 9 (2026-10-06).
 
 ## Phase 9: Grounded retrieval and tutor
+
+**Phase 9 entry (2026-10-06):** The owner approved proceeding after Task 40 closure. Task 41 worker infrastructure is complete locally: bounded leased delivery, immutable effect receipts, fenced retries and audited replay, canonical job adapters, reconciliation, opt-in existing draft expiry, scoped credentials and worker-stopped learning evidence. Task 42 now adds canonical pedagogical chunks, lexical documents, immutable versioned embeddings, atomic publication admission and quarantine under scoped worker credentials. Task 43 now adds permission-first PostgreSQL/exact-vector retrieval, immutable evidence receipts and a declared local pilot benchmark. Task 44 now adds provider-neutral validated tutor delivery, private-code consent, durable pending/cancel/retry, conservative assistance and authored fallback. Task 45 now adds immutable synthetic evaluation, independent human-review gates and reversible fixture configuration promotion. Live adapters remain absent and production remains authored/off; Task 45a now adds locally verified gateway/runtime/UI composition and synthetic primary/fallback/outage evidence. Actual provider activation still requires the named live-provider/data-policy decision. See [Phase 9 evidence](../docs/architecture/phase9-evidence.md) and [worker operations](../docs/architecture/worker-operations.md).
 
 ### Task 41: Extend the existing relay for content and AI jobs
 
 **Description:** Extend the relay introduced in Task 21 with Node worker handlers for content derivation, embeddings, evaluation, retention, and reconciliation with at-least-once delivery and idempotent consumers.
 
+**Implementation boundary:** Concrete maintenance handlers and typed content/embedding/evaluation adapters are complete. Tasks 42–45 implement and enable their owning module consumers; absent consumers leave jobs pending.
+
 **Acceptance criteria:**
-- [ ] Interactive requests do not run unbounded worker jobs.
-- [ ] Poison events dead-letter with operator-visible reason and safe replay.
-- [ ] Outbox lag and incomplete derived state are reconciled.
+- [x] Interactive requests do not run unbounded worker jobs.
+- [x] Poison events dead-letter with operator-visible reason and safe replay.
+- [x] Outbox lag and incomplete derived state are reconciled.
 
 **Verification:**
-- [ ] Run crash/retry/duplicate/dead-letter integration tests.
-- [ ] Verify web learning remains usable while worker is stopped.
+- [x] Run crash/retry/duplicate/dead-letter integration tests.
+- [x] Verify web learning remains usable while worker is stopped.
 
 **Dependencies:** Tasks 13, 21 and 51; Checkpoint F8  
 **Files likely touched:** `apps/worker/src/main.ts`, `apps/worker/src/outbox-relay.ts`, `apps/worker/src/job-registry.ts`, `tests/integration/worker.test.ts`  
@@ -1009,14 +1016,16 @@ Review the evidence after every two or three task slices. Replan if assumptions 
 
 **Description:** Derive typed chunks, lexical documents, and embeddings from published content using checksums, lineage, injection scan status, and quarantine on failure.
 
+**Implementation boundary:** Complete for governed original problem statements and authored hint tiers. Local embedding fixtures validate the provider-neutral pipeline; candidates are not promoted for learner retrieval. Evaluated readiness and approved live providers remain later gates. See [Phase 9 evidence](../docs/architecture/phase9-evidence.md).
+
 **Acceptance criteria:**
-- [ ] Draft/retired/disallowed content never becomes retrieval eligible.
-- [ ] Re-running unchanged content is idempotent.
-- [ ] Index readiness is separate from publication.
+- [x] Draft/retired/disallowed content never becomes retrieval eligible.
+- [x] Re-running unchanged content is idempotent.
+- [x] Index readiness is separate from publication.
 
 **Verification:**
-- [ ] Run derivation, retirement, duplicate, malformed, and quarantine fixtures.
-- [ ] Verify exact content/version/checksum lineage.
+- [x] Run derivation, retirement, duplicate, malformed, and quarantine fixtures.
+- [x] Verify exact content/version/checksum lineage.
 
 **Dependencies:** Tasks 15 and 41  
 **Files likely touched:** `packages/content/src/derive-chunks.ts`, `packages/retrieval/src/index-content.ts`, `packages/db/migrations/0014_search.sql`, `tests/integration/content-indexing.test.ts`  
@@ -1027,13 +1036,13 @@ Review the evidence after every two or three task slices. Replan if assumptions 
 **Description:** Add mandatory filters, PostgreSQL full-text candidates, exact pgvector candidates, versioned reciprocal-rank fusion, deduplication, contradiction flags, and immutable evidence packages.
 
 **Acceptance criteria:**
-- [ ] Permission, publication, language, curriculum, and hint-tier filters apply before scoring and packaging.
-- [ ] Retrieval is reproducible from stored versions and checksums.
-- [ ] PostgreSQL ranking is not mislabeled BM25.
+- [x] Permission, publication, language, curriculum, and hint-tier filters apply before scoring and packaging.
+- [x] Retrieval is reproducible from stored versions and checksums.
+- [x] PostgreSQL ranking is not mislabeled BM25.
 
 **Verification:**
-- [ ] Run retrieval correctness, permission-leak, and reproducibility tests.
-- [ ] Benchmark recall/latency against the declared pilot corpus.
+- [x] Run retrieval correctness, permission-leak, and reproducibility tests.
+- [x] Benchmark recall/latency against the declared pilot corpus.
 
 **Dependencies:** Tasks 9 and 42  
 **Files likely touched:** `packages/retrieval/src/hybrid-search.ts`, `packages/retrieval/src/evidence-package.ts`, `packages/db/src/retrieval-queries.ts`, `tests/retrieval-eval/baseline.test.ts`  
@@ -1044,13 +1053,13 @@ Review the evidence after every two or three task slices. Replan if assumptions 
 **Description:** Calculate allowed action before retrieval, invoke a fixture then approved provider adapter, buffer the entire candidate server-side, validate schema/citations/tier/current rights, persist response and assistance, then display. Restricted hint tiers stay authored; semantic leakage checks are defense in depth, not a guarantee.
 
 **Acceptance criteria:**
-- [ ] Provider/model output cannot call application tools or mutate progress.
-- [ ] No partial/unvalidated candidate text reaches the UI; pending status only.
-- [ ] Private code is sent only for an explicit permitted debug operation.
+- [x] Provider/model output cannot call application tools or mutate progress.
+- [x] No partial/unvalidated candidate text reaches the UI; pending status only.
+- [x] Private code is sent only for an explicit permitted debug operation.
 
 **Verification:**
-- [ ] Run timeout, malformed, injected, citation-mismatch, tier-bypass, and budget fixtures.
-- [ ] Browser-network test proves rejected text and locked solutions never reach client payloads; covers pending/cancelled/fallback and persisted-answer retry.
+- [x] Run timeout, malformed, injected, citation-mismatch, tier-bypass, and budget fixtures.
+- [x] Browser-network test proves rejected text and locked solutions never reach client payloads; covers pending/cancelled/fallback and persisted-answer retry.
 
 **Dependencies:** Tasks 13a, 28, 41, 43 and 51  
 **Files likely touched:** `packages/tutor/src/policy.ts`, `packages/tutor/src/provider-gateway.ts`, `apps/web/app/api/tutor/route.ts`, `apps/web/src/components/tutor-panel.tsx`, `tests/integration/tutor.test.ts`  
@@ -1061,13 +1070,13 @@ Review the evidence after every two or three task slices. Replan if assumptions 
 **Description:** Add versioned retrieval, generation, policy, cost, latency, and human-review suites with zero-tolerance critical leakage/privacy cases and reversible configuration promotion.
 
 **Acceptance criteria:**
-- [ ] Candidate configuration cannot promote without declared suite/version and rollback target.
-- [ ] Critical policy/privacy regressions block promotion.
-- [ ] Evaluation data excludes private learner payload by default.
+- [x] Candidate configuration cannot promote without declared suite/version and rollback target.
+- [x] Critical policy/privacy regressions block promotion.
+- [x] Evaluation data excludes private learner payload by default.
 
 **Verification:**
-- [ ] Run `pnpm test:retrieval-eval` and adversarial tutor suite.
-- [ ] Demonstrate promote, reject, and rollback using fixture configurations.
+- [x] Run `pnpm test:retrieval-eval` and adversarial tutor suite.
+- [x] Demonstrate promote, reject, and rollback using fixture configurations.
 
 **Dependencies:** Tasks 43-44  
 **Files likely touched:** `packages/tutor/src/evaluation.ts`, `packages/retrieval/src/evaluation.ts`, `tests/retrieval-eval/`, `tests/adversarial/tutor-policy.test.ts`  
@@ -1075,15 +1084,19 @@ Review the evidence after every two or three task slices. Replan if assumptions 
 
 ### Task 45a: Activate and evaluate the live roadmap proposal adapter
 
+**Status:** LOCAL IMPLEMENTATION AND SYNTHETIC VERIFICATION COMPLETE; LIVE ACTIVATION PENDING. The owner accepted the recommended local-completion/AI-off path on 2026-10-06. [Roadmap AI operations](../docs/architecture/roadmap-ai-operations.md) records the remaining named provider/region/context/budget/evaluation decisions.
+
 **Description:** Connect Task 37's fixture-tested proposal port to the approved gateway only after budgets, redaction and evaluation exist.
 
 **Acceptance criteria:**
-- [ ] Primary/fallback provider and AI-off paths produce only validator-approved candidates; learner acceptance remains required.
-- [ ] Learning plans use only reviewed catalog IDs and availability; provider outage never discards the active plan.
+- [x] Primary/fallback provider and AI-off paths produce only validator-approved candidates; learner acceptance remains required.
+- [x] Learning plans use only reviewed catalog IDs and availability; provider outage never discards the active plan.
+
+The acceptance checks above have local fixture/gateway evidence. They do not assert live vendor quality or owner approval.
 
 **Verification:**
-- [ ] Evaluate realistic and adversarial proposals across all horizons, insufficient coverage, changed capacity, outages and budget exhaustion.
-- [ ] Record model/config/version/cost/latency evidence using synthetic data before live learner input.
+- [x] Evaluate realistic and adversarial proposals across all horizons, insufficient coverage, changed capacity, outages and budget exhaustion.
+- [x] Record model/config/version/cost/latency evidence using synthetic data before live learner input (original injected gateway fixtures; billed-token/currency and actual vendor evaluation remain pending).
 
 **Dependencies:** Tasks 37, 44, 45 and 51  
 **Files likely touched:** `packages/tutor/src/plan-proposal-adapter.ts`, `tests/adversarial/roadmap-ai.test.ts`, `tests/e2e/roadmap-provider.spec.ts`  
@@ -1091,9 +1104,9 @@ Review the evidence after every two or three task slices. Replan if assumptions 
 
 ### Checkpoint F9: Grounded tutor
 
-- [ ] Authored lessons/hints still work with worker and provider disabled; new code runs show queued/unavailable status without false success.
-- [ ] Retrieval permission and citation tests pass.
-- [ ] Critical hint-leak and prompt-injection cases have zero bypasses.
+- [x] Authored lessons/hints still work with worker and provider disabled; new code runs show queued/unavailable status without false success.
+- [x] Retrieval permission and citation tests pass.
+- [x] Critical hint-leak and prompt-injection cases have zero bypasses in the declared synthetic suites; production semantic quality remains unapproved.
 - [ ] Human owner authorizes Phase 10.
 
 ## Phase 10: Build the pilot curriculum and accessibility evidence

@@ -2,8 +2,8 @@ import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
   testDir: ".",
-  outputDir: "../../test-results/e2e",
-  testMatch: /(?:draft-sync|roadmap)\.spec\.ts$/,
+  testMatch:
+    /(?:draft-sync|roadmap|roadmap-provider|companion-journey|worker-offline|comprehensive-ui|all-pages-browser-audit)\.spec\.ts$/,
   fullyParallel: true,
   forbidOnly: Boolean(process.env.CI),
   reporter: "line",

@@ -4,6 +4,7 @@ import { useEffect, useState, type ReactElement } from "react";
 import { HomeLearningSummary, NextLearningAction } from "./learning-views";
 import { Icon } from "./algocove-icons";
 import { useAppSession } from "./staff-navigation";
+import HomePreviewStage from "./home-preview-stage";
 
 type Profile = {
   goal: string;
@@ -134,16 +135,7 @@ export default function HomeExperience(): ReactElement {
         </button>
       )}
       {(visibleState === "ready" || visibleState === "empty") && <HomeLearningSummary />}
-      {visibleState === "signed-out" && (
-        <section className="ac-profile-strip">
-          <p className="ac-eyebrow">Explore a learning session</p>
-          <h2>See the two-pointer pattern in motion.</h2>
-          <p>Read the authored problem, build your reasoning and explore its interactive trace.</p>
-          <a className="ac-button ac-button--primary" href="/learn/arrays-two-pointer">
-            Explore guided practice
-          </a>
-        </section>
-      )}
+      {visibleState === "signed-out" && <HomePreviewStage />}
     </main>
   );
 }

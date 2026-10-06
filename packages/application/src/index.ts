@@ -187,3 +187,15 @@ export * from "./concept-mapping.ts";
 export * from "./roadmap-intent-use-cases.ts";
 export * from "./roadmap-use-cases.ts";
 export * from "./plan-proposal-fixture.ts";
+export * from "./evaluate-readiness.ts";
+export * from "./external-companion.ts";
+export * from "./worker-jobs.ts";
+export type {
+  TutorModelConfiguration,
+  TutorInput,
+  AllowedTutorAction,
+  TutorResponse,
+  TutorView,
+  TutorWork,
+  TutorRepository,
+} from "./tutor-contracts.ts";

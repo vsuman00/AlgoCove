@@ -16,6 +16,7 @@ import {
 } from "@algocove/application";
 import {
   PostgresContentRepository,
+  enqueuePublishedContentDerivation,
   PostgresPlatformRepository,
   withTransaction,
 } from "@algocove/db";
@@ -275,6 +276,12 @@ export async function commandContent(
         });
       }
     }
+    if (command === "publish")
+      await enqueuePublishedContentDerivation(tx, {
+        contentVersionId: content.contentVersionId,
+        sourceChecksum: content.checksum,
+        now: ctx.now,
+      });
     const event = {
       actorId: ctx.actor.userId,
       action: `content.${command}`,

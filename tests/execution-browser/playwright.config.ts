@@ -1,9 +1,9 @@
 import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
-  testDir: ".",
+  testDir: "..",
   outputDir: "../../test-results/execution-browser",
-  testMatch: /guided-results\.spec\.ts$/,
+  testMatch: /(?:guided-results|worker-offline)\.spec\.ts$/,
   fullyParallel: true,
   forbidOnly: Boolean(process.env.CI),
   reporter: "line",

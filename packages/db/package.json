@@ -10,7 +10,10 @@
   "dependencies": {
     "@algocove/application": "workspace:*",
     "@algocove/domain": "workspace:*",
-    "pg": "8.23.0"
+    "pg": "8.23.0",
+    "@algocove/content": "workspace:*",
+    "@algocove/retrieval": "workspace:*",
+    "@algocove/tutor": "workspace:*"
   },
   "scripts": {
     "typecheck": "tsc --noEmit -p tsconfig.json"

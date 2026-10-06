@@ -17,7 +17,7 @@
     "format:check": "prettier --check .",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit -p tsconfig.json && pnpm --filter @algocove/web run typecheck && pnpm --filter @algocove/worker run typecheck",
-    "test": "vitest run --project unit --project web --project architecture",
+    "test": "vitest run --project unit --project web --project architecture --project retrieval-eval --project adversarial",
     "test:architecture": "vitest run --project architecture",
     "test:web": "vitest run --project web",
     "test:integration": "vitest run --project integration",
@@ -44,7 +44,11 @@
     "mastery:consume": "node apps/worker/src/mastery-cli.ts consume",
     "mastery:rebuild": "node apps/worker/src/mastery-cli.ts rebuild",
     "verify": "pnpm run format:check && pnpm run lint && pnpm run typecheck && pnpm run tokens:check && pnpm run test && pnpm run docs:check && pnpm run security:secrets",
-    "test:real-learning-loop": "node scripts/test-real-learning-loop.ts"
+    "test:real-learning-loop": "node scripts/test-real-learning-loop.ts",
+    "worker": "node apps/worker/src/main.ts",
+    "db:worker-role": "node packages/db/src/cli/bootstrap-worker.ts",
+    "test:retrieval-eval": "vitest run --project retrieval-eval",
+    "test:adversarial": "vitest run --project adversarial"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.13.0",

@@ -23,6 +23,14 @@ export async function reserveOptional(
   policy: BudgetPolicy = BUDGET_POLICIES[input.operation],
 ): Promise<BudgetAdmission> {
   await lockStudyOwner(tx, input.learnerId);
+  if (input.operation === "plan_proposal") {
+    const expired = await tx.query<{ reservation_key: string }>(
+      "SELECT reservation_key FROM platform.optional_reservation WHERE learner_id=$1 AND operation='plan_proposal' AND finished_at IS NULL AND created_at<=$2::timestamptz-interval '30 seconds' ORDER BY created_at,reservation_key LIMIT 20 FOR UPDATE",
+      [input.learnerId, input.now],
+    );
+    for (const row of expired.rows)
+      await finishOptional(tx, { ...input, key: row.reservation_key, outcome: "failure" }, policy);
+  }
   const old = await tx.query<{ digest: string }>(
     "SELECT digest FROM platform.optional_reservation WHERE learner_id=$1 AND operation=$2 AND reservation_key=$3",
     [input.learnerId, input.operation, input.key],

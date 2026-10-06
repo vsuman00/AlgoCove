@@ -21,6 +21,9 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
+      "@algocove/tutor": path.join(root, "packages/tutor/src/index.ts"),
+      "@algocove/content": path.join(root, "packages/content/src/index.ts"),
+      "@algocove/retrieval": path.join(root, "packages/retrieval/src/index.ts"),
       "@algocove/application": path.join(root, "packages/application/src/index.ts"),
       "@algocove/config": path.join(root, "packages/config/src/index.ts"),
       "@algocove/db": path.join(root, "packages/db/src/index.ts"),
@@ -33,6 +36,20 @@ export default defineConfig({
   },
   test: {
     projects: [
+      {
+        test: {
+          name: "retrieval-eval",
+          environment: "node",
+          include: ["tests/retrieval-eval/**/*.test.ts"],
+        },
+      },
+      {
+        test: {
+          name: "adversarial",
+          environment: "node",
+          include: ["tests/adversarial/**/*.test.ts"],
+        },
+      },
       {
         test: {
           name: "unit",

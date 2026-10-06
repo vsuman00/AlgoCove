@@ -13,3 +13,7 @@ minimumReleaseAge: 0
 # only dependency that must run its postinstall step for the Next/Vite toolchain.
 allowBuilds:
   unrs-resolver: true
+
+# GHSA-68fv-2mgg-jv7q: keep all transitive source-map consumers on the patched release.
+overrides:
+  source-map-js: 1.2.2

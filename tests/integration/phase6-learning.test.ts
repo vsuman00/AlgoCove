@@ -1,8 +1,11 @@
 import { randomUUID } from "node:crypto";
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawn } from "node:child_process";
+import { resolve } from "node:path";
+import { chromium, expect as browserExpect } from "@playwright/test";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import {
   consumePracticeAssessment,
+  evaluateOwnedExternalReadiness,
   getOwnedProgress,
   getLearnerHome,
   createActor,
@@ -28,12 +31,18 @@ import {
   PostgresMasteryConceptSource,
   PostgresMasteryRepository,
   PostgresPracticeRepository,
+  PostgresExternalReadinessRepository,
+  PostgresExternalCompanionRepository,
+  PostgresReadinessContentRepository,
 } from "@algocove/db";
 import {
   formatId,
   MASTERY_POLICY_V1,
   parseId,
   parseInstant,
+  READINESS_CATEGORIES,
+  CONTAINER_EXTERNAL_QUESTIONS,
+  evaluateExternalReadiness,
   type ProblemLanguage,
   type Result,
 } from "@algocove/domain";
@@ -505,6 +514,13 @@ describe("Phase 6 learning sources, reviews and progress", () => {
       idempotencyKey: "phase6-journal-1",
       eventId: ids.generate("event"),
     };
+    await expect(progress.recordExternal(command)).rejects.toMatchObject({
+      code: "invalid_request",
+    });
+    await runtime.query(
+      "INSERT INTO practice.external_practice_event(event_id,learner_id,reference_id,kind,idempotency_key,occurred_at,attempt_id) VALUES($1,$2,$3,'handoff_requested','phase6-gated-fixture',$4,$5)",
+      [ids.generate("event"), learnerId, ref, context().now, first.observation.attemptId],
+    );
     await progress.recordExternal(command);
     await progress.recordExternal({ ...command, eventId: ids.generate("event") });
     const after = await getOwnedProgress(context(), progress);
@@ -668,5 +684,479 @@ describe("Phase 6 learning sources, reviews and progress", () => {
       }),
     ).rejects.toMatchObject({ code: "not_found" });
     expect((await getLearnerHome(context(), progress)).action.kind).not.toBe("review");
+  });
+  it("loads a consistent owner-scoped external readiness snapshot and fences changed work", async () => {
+    const repo = new PostgresExternalReadinessRepository(runtime);
+    const prepSession = await startPracticeSession(context(), practice, "learn");
+    const attempt = await startPracticeAttempt(context(), practice, {
+      sessionId: prepSession.sessionId,
+      problemVersionId,
+      manifestId: must(formatId("languageManifest", "aaaaaaaaaaaaaaaa")),
+      language: "python",
+    });
+    expect(
+      await repo.loadOwnedReadiness(
+        attempt.attemptId,
+        must(formatId("learner", "9999999999999999")),
+      ),
+    ).toBeNull();
+    const unconfigured = await repo.loadOwnedReadiness(attempt.attemptId, learnerId);
+    expect(unconfigured?.rubric).toBeNull();
+    const requirements = READINESS_CATEGORIES.map((category) => ({
+      category,
+      checkIds: [category],
+    }));
+    const policy = `INSERT INTO content.external_readiness_rubric(rubric_id,version,problem_version_id,mode,requirements,maximum_assistance_tier,author_id,technical_reviewer_id,pedagogical_reviewer_id,publisher_id,status)
+      VALUES('integration.external',1,$1,'learn',$2::jsonb,4,'usr_aaaaaaaaaaaaaaaa','usr_bbbbbbbbbbbbbbbb','usr_cccccccccccccccc','usr_ffffffffffffffff','published')`;
+    await expect(
+      runtime.query(policy, [
+        problemVersionId,
+        JSON.stringify(requirements.map((r) => ({ ...r, checkIds: [] }))),
+      ]),
+    ).rejects.toMatchObject({ code: "23514" });
+    await runtime.query(policy, [problemVersionId, JSON.stringify(requirements)]);
+    await expect(
+      runtime.query(
+        "UPDATE content.external_readiness_rubric SET maximum_assistance_tier=6 WHERE rubric_id='integration.external'",
+      ),
+    ).rejects.toMatchObject({ code: "55006" });
+    const fields = Object.fromEntries(
+      [
+        "inputs",
+        "state",
+        "initialization",
+        "invariant",
+        "loop",
+        "termination",
+        "output",
+        "complexity",
+      ].map((f) => [f, "fixture"]),
+    );
+    const source = "readiness fixture source";
+    await runtime.query(
+      `INSERT INTO practice.draft(draft_id,attempt_id,learner_id,problem_version_id,manifest_id,language,kind,current_text,updated_at,expires_at)
+      VALUES($1,$2,$3,$4,$5,'python','source',$6,now(),now()+interval '1 day')`,
+      [
+        ids.generate("draft"),
+        attempt.attemptId,
+        learnerId,
+        problemVersionId,
+        attempt.manifestId,
+        source,
+      ],
+    );
+    await runtime.query(
+      `INSERT INTO practice.pseudocode_artifact(pseudocode_id,attempt_id,learner_id,problem_version_id,manifest_id,language,current_fields,current_revision,saved_revision,updated_at)
+      VALUES($1,$2,$3,$4,$5,'python',$6::jsonb,1,1,now())`,
+      [
+        ids.generate("pseudocode"),
+        attempt.attemptId,
+        learnerId,
+        problemVersionId,
+        attempt.manifestId,
+        JSON.stringify(fields),
+      ],
+    );
+    await runtime.query(
+      `INSERT INTO practice.pseudocode_revision(pseudocode_id,learner_id,attempt_id,problem_version_id,manifest_id,language,revision,fields,saved_at)
+      SELECT pseudocode_id,learner_id,attempt_id,problem_version_id,manifest_id,language,1,current_fields,now() FROM practice.pseudocode_artifact WHERE attempt_id=$1`,
+      [attempt.attemptId],
+    );
+    for (const category of READINESS_CATEGORIES)
+      await runtime.query(
+        `INSERT INTO practice.external_readiness_evidence(evidence_id,learner_id,attempt_id,problem_version_id,manifest_id,mode,source_checksum,reasoning_revision,rubric_id,rubric_version,category,check_id,provenance,correct,observed_at)
+      VALUES($1,$2,$3,$4,$5,'learn',$6,1,'integration.external',1,$7,$7,$8,true,now())`,
+        [
+          ids.generate("event"),
+          learnerId,
+          attempt.attemptId,
+          problemVersionId,
+          attempt.manifestId,
+          sha256Digest(source),
+          category,
+          category === "execution" ? "server_observed_test" : "structured_check",
+        ],
+      );
+    const snapshot = await repo.loadOwnedReadiness(attempt.attemptId, learnerId);
+    expect(snapshot?.binding.sourceChecksum).toBe(sha256Digest(source));
+    expect(evaluateExternalReadiness(snapshot!).status).toBe("ready");
+    await expect(
+      runtime.query(
+        "UPDATE practice.external_readiness_evidence SET correct=false WHERE attempt_id=$1",
+        [attempt.attemptId],
+      ),
+    ).rejects.toMatchObject({ code: "55006" });
+    await runtime.query("UPDATE practice.draft SET current_text='changed' WHERE attempt_id=$1", [
+      attempt.attemptId,
+    ]);
+    expect(
+      evaluateExternalReadiness((await repo.loadOwnedReadiness(attempt.attemptId, learnerId))!)
+        .status,
+    ).toBe("not_ready");
+    await runtime.query("UPDATE practice.draft SET current_text=$2 WHERE attempt_id=$1", [
+      attempt.attemptId,
+      source,
+    ]);
+    await runtime.query(
+      "UPDATE practice.pseudocode_artifact SET current_revision=2 WHERE attempt_id=$1",
+      [attempt.attemptId],
+    );
+    expect(
+      (await repo.loadOwnedReadiness(attempt.attemptId, learnerId))?.binding.reasoningRevision,
+    ).toBe(0);
+    await runtime.query(
+      "UPDATE content.external_readiness_rubric SET status='retired' WHERE rubric_id='integration.external'",
+    );
+    expect((await repo.loadOwnedReadiness(attempt.attemptId, learnerId))?.rubric).toBeNull();
+  });
+  it("completes reviewed preparation, trusted execution, gated handoff and reversible self-report without mastery credit", async () => {
+    const content = new PostgresReadinessContentRepository(runtime),
+      companion = new PostgresExternalCompanionRepository(runtime);
+    function staff(
+      userId: string,
+      role: "author" | "technical_reviewer" | "pedagogical_reviewer" | "publisher",
+    ) {
+      const base = context();
+      return {
+        ...base,
+        actor: createActor({
+          userId,
+          sessionId: must(formatId("session", "aaaaaaaaaaaaaaaa")),
+          roles: [role],
+        }),
+      };
+    }
+    const author = staff("usr_aaaaaaaaaaaaaaaa", "author"),
+      technical = staff("usr_bbbbbbbbbbbbbbbb", "technical_reviewer"),
+      pedagogical = staff("usr_cccccccccccccccc", "pedagogical_reviewer"),
+      publisher = staff("usr_ffffffffffffffff", "publisher");
+    await expect(content.list(context())).rejects.toMatchObject({ code: "forbidden" });
+    await content.command(author, {
+      action: "create_reference",
+      provider: "top_interview_150",
+      externalKey: "container-independent",
+      title: "Independent two-pointer practice",
+      canonicalUrl: "https://leetcode.com/problems/container-with-most-water/",
+      attribution: "LeetCode",
+    });
+    const ref = (
+      await runtime.query<{ external_reference_id: string }>(
+        "SELECT external_reference_id FROM content.external_reference WHERE external_key='container-independent'",
+      )
+    ).rows[0]!.external_reference_id;
+    await expect(
+      content.command(staff(author.actor.userId, "technical_reviewer"), {
+        action: "review_reference",
+        referenceId: ref,
+        status: "reviewed",
+      }),
+    ).rejects.toMatchObject({ code: "forbidden" });
+    await content.command(technical, {
+      action: "review_reference",
+      referenceId: ref,
+      status: "reviewed",
+    });
+    const identity = { rubricId: "companion.real-flow", version: 1 };
+    await content.command(author, {
+      ...identity,
+      action: "create",
+      problemVersionId,
+      mode: "learn",
+      maximumAssistanceTier: 4,
+      referenceId: ref,
+      relation: "same_pattern",
+      rationale: "Original internal preparation followed by an independent provider solve.",
+      questions: CONTAINER_EXTERNAL_QUESTIONS,
+    });
+    await expect(
+      content.command(publisher, { ...identity, action: "publish" }),
+    ).rejects.toMatchObject({ code: "23514" });
+    await content.command(technical, { ...identity, action: "technical_review" });
+    await content.command(pedagogical, { ...identity, action: "pedagogical_review" });
+    await content.command(publisher, { ...identity, action: "publish" });
+    const attempt = (
+      await runtime.query<{ attempt_id: string; manifest_id: string }>(
+        "SELECT attempt_id,manifest_id FROM practice.attempt WHERE learner_id=$1 AND mode='learn' AND status='active'",
+        [learnerId],
+      )
+    ).rows[0]!;
+    const attemptId = must(parseId("attempt", attempt.attempt_id));
+    const source = "readiness fixture source";
+    await runtime.query("UPDATE practice.draft SET current_text=$2 WHERE attempt_id=$1", [
+      attemptId,
+      source,
+    ]);
+    await runtime.query(
+      "UPDATE practice.pseudocode_artifact SET saved_revision=current_revision WHERE attempt_id=$1",
+      [attemptId],
+    );
+    await runtime.query(
+      `INSERT INTO practice.pseudocode_revision(pseudocode_id,learner_id,attempt_id,problem_version_id,manifest_id,language,revision,fields,saved_at) SELECT pseudocode_id,learner_id,attempt_id,problem_version_id,manifest_id,language,current_revision,current_fields,now() FROM practice.pseudocode_artifact WHERE attempt_id=$1 ON CONFLICT DO NOTHING`,
+      [attemptId],
+    );
+    const publicView = await companion.view(attemptId, learnerId);
+    expect(publicView.questions).toHaveLength(5);
+    expect(JSON.stringify(publicView.questions)).not.toContain('"answer":');
+    expect(publicView.reference?.url).toBeNull();
+    const selections = Object.fromEntries(
+      CONTAINER_EXTERNAL_QUESTIONS.map((q) => [q.id, q.answer]),
+    );
+    const grade = () =>
+      companion.grade({
+        attemptId,
+        learnerId,
+        answers: selections,
+        now: context().now,
+        nextId: () => ids.generate("event"),
+      });
+    expect((await grade()).decision.status).toBe("not_ready");
+    const assessedAt = must(parseInstant("2026-11-01T10:00:00.000Z"));
+    const assessmentContext = { ...context(), now: assessedAt };
+    const requested = await requestPracticeCodeRun(assessmentContext, practice, relay, {
+      attemptId,
+      mode: "submit",
+      source,
+      sourceChecksum: sha256Digest(source),
+      sourceLength: Buffer.byteLength(source),
+    });
+    const receipt = await ingestTrustedPracticeResult(assessmentContext, practice, {
+      result: {
+        resultId: `result-${requested.run.runId}`,
+        runId: requested.run.runId,
+        attemptId,
+        problemVersionId,
+        manifestId: requested.run.manifestId,
+        language: "python",
+        sourceChecksum: requested.run.sourceChecksum,
+        terminalCategory: "pass",
+        classification: "success",
+        descriptorDigest: sha256Digest("descriptor"),
+        replayId: requested.run.runId,
+        leaseEpoch: 1,
+        completedAt: assessedAt,
+      },
+    });
+    expect((await grade()).decision.status).toBe("ready");
+    const bypass = await evaluateOwnedExternalReadiness(
+      context(),
+      new PostgresExternalReadinessRepository(runtime),
+      { attemptId, bypassRequested: true },
+    );
+    expect(bypass.status).toBe("not_ready");
+    expect(bypass.bypassAvailable).toBe(false);
+    expect(bypass.reasons).toContainEqual({
+      code: "bypass_disabled",
+      message: "Complete internal preparation before external practice.",
+    });
+    // Restore available review content using a new test-only published revision;
+    // earlier withdrawal tests intentionally retired the original exercises.
+    await runtime.query(
+      `INSERT INTO content.review_exercise(exercise_id,concept_id,kind,problem_version_id,title,questions,author_id,technical_reviewer_id,pedagogical_reviewer_id,publisher_id,status)
+       SELECT 'companion-reasoning-v1',concept_id,kind,problem_version_id,'Companion delayed reasoning',questions,author_id,technical_reviewer_id,pedagogical_reviewer_id,publisher_id,'published'
+       FROM content.review_exercise WHERE exercise_id='container-reasoning-v1'`,
+    );
+    if (!receipt.observation) throw Error("Companion assessment observation missing");
+    const sourceEvent = await runtime.query<{ event_id: string }>(
+      "SELECT event_id FROM platform.outbox_event WHERE topic='practice.assessment.observed' AND payload->>'observationId'=$1",
+      [receipt.observation.observationId],
+    );
+    await consumePracticeAssessment(
+      { now: assessedAt, ids },
+      ports,
+      must(parseId("event", sourceEvent.rows[0]?.event_id)),
+    );
+    const reviewAt = must(parseInstant("2026-11-15T10:00:00.000Z"));
+    const scheduled = (await reviews.listReviews({ learnerId, now: reviewAt })).find(
+      (item) => item.originObservationId === receipt.observation!.observationId,
+    );
+    expect(scheduled).toMatchObject({
+      status: "due",
+      timing: "overdue",
+      exercise: { exerciseId: "companion-reasoning-v1" },
+    });
+    expect(JSON.stringify(scheduled)).not.toContain('"answer":');
+    expect(
+      (
+        await runtime.query(
+          "SELECT origin_attempt_id FROM mastery.review_item WHERE review_id=$1",
+          [scheduled?.reviewId],
+        )
+      ).rows[0]?.origin_attempt_id,
+    ).toBe(attemptId);
+
+    const command = {
+      attemptId,
+      learnerId,
+      action: "open" as const,
+      idempotencyKey: "companion-open-once",
+      now: context().now,
+      eventId: ids.generate("event"),
+    };
+    expect((await companion.command(command)).url).toBe(
+      "https://leetcode.com/problems/container-with-most-water",
+    );
+    await companion.command({ ...command, eventId: ids.generate("event") });
+    expect(
+      (
+        await runtime.query(
+          "SELECT 1 FROM practice.external_practice_event WHERE idempotency_key='companion-open-once'",
+        )
+      ).rowCount,
+    ).toBe(1);
+    await expect(
+      companion.command({ ...command, action: "completed", eventId: ids.generate("event") }),
+    ).rejects.toMatchObject({ code: "version_conflict" });
+    const before = await progress.getProgress({ learnerId, now: context().now });
+    await companion.command({
+      ...command,
+      action: "completed",
+      idempotencyKey: "companion-completion",
+      now: context().now,
+      eventId: ids.generate("event"),
+    });
+    const report = await progress.getProgress({ learnerId, now: context().now });
+    expect(report.externalPractice.completed).toBe(before.externalPractice.completed + 1);
+    expect(report.mastery).toEqual(before.mastery);
+    expect(report.activities).toEqual(before.activities);
+    expect(report.reviewHealth).toEqual(before.reviewHealth);
+    await companion.command({
+      ...command,
+      idempotencyKey: "companion-reopen",
+      now: context().now,
+      eventId: ids.generate("event"),
+    });
+    expect(
+      (await progress.getProgress({ learnerId, now: context().now })).externalPractice.completed,
+    ).toBe(report.externalPractice.completed);
+    await content.command(technical, {
+      action: "review_reference",
+      referenceId: ref,
+      status: "blocked",
+    });
+    await expect(
+      companion.command({
+        ...command,
+        idempotencyKey: "companion-blocked",
+        eventId: ids.generate("event"),
+      }),
+    ).rejects.toMatchObject({ code: "invalid_request" });
+    await companion.command({
+      ...command,
+      action: "corrected",
+      idempotencyKey: "companion-correction",
+      now: context().now,
+      eventId: ids.generate("event"),
+    });
+    expect((await companion.view(attemptId, learnerId)).journal).toBe("corrected");
+    expect(
+      (await reviews.listReviews({ learnerId, now: reviewAt })).find(
+        (item) => item.reviewId === scheduled?.reviewId,
+      ),
+    ).toEqual(scheduled);
+    // Render the same assessment-derived queue after external confirmation and
+    // correction. Only HTTP/auth transport is a seam; queue data comes from SQL.
+    const server = spawn(
+      process.execPath,
+      [
+        resolve("apps/web/node_modules/next/dist/bin/next"),
+        "dev",
+        "--hostname",
+        "127.0.0.1",
+        "--port",
+        "3198",
+      ],
+      {
+        cwd: resolve("apps/web"),
+        stdio: "pipe",
+        env: {
+          ...process.env,
+          ALGOCOVE_TEST_DIST_DIR: ".next/integration-phase6",
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: "",
+          CLERK_SECRET_KEY: "",
+        },
+      },
+    );
+    server.stdout.on("data", () => undefined);
+    server.stderr.on("data", () => undefined);
+    let browser: Awaited<ReturnType<typeof chromium.launch>> | undefined;
+    try {
+      browser = await chromium.launch();
+      let available = false;
+      for (let n = 0; n < 60 && !available; n++) {
+        available = await fetch("http://127.0.0.1:3198/api/health")
+          .then((r) => r.ok)
+          .catch(() => false);
+        if (!available) await new Promise((r) => setTimeout(r, 100));
+      }
+      expect(available).toBe(true);
+      const page = await browser.newPage();
+      await page.route("**/api/auth/session", (r) =>
+        r.fulfill({
+          json: {
+            authenticated: true,
+            user: { id: learnerId, roles: ["learner"] },
+          },
+        }),
+      );
+      await page.route("**/api/review", async (r) =>
+        r.fulfill({
+          json: {
+            reviews: await reviews.listReviews({ learnerId, now: reviewAt }),
+            asOf: reviewAt,
+            policyVersion: 1,
+          },
+        }),
+      );
+      await page.goto("http://127.0.0.1:3198/review");
+      await browserExpect(
+        page.getByRole("heading", { name: "Companion delayed reasoning" }),
+      ).toBeVisible();
+      const card = page
+        .locator("article")
+        .filter({ has: page.getByRole("heading", { name: "Companion delayed reasoning" }) });
+      await browserExpect(card.getByText("Overdue · catch up when ready")).toBeVisible();
+      await browserExpect(
+        card.getByText("Which expression measures a container's area?"),
+      ).toBeVisible();
+    } finally {
+      await browser?.close();
+      server.kill("SIGTERM");
+      await new Promise<void>((done) => {
+        if (server.exitCode !== null) done();
+        else server.once("exit", () => done());
+      });
+    }
+    await content.command(technical, {
+      action: "review_reference",
+      referenceId: ref,
+      status: "reviewed",
+    });
+    await runtime.query("UPDATE practice.draft SET current_text='edited' WHERE attempt_id=$1", [
+      attemptId,
+    ]);
+    await expect(
+      companion.command({
+        ...command,
+        idempotencyKey: "companion-stale",
+        eventId: ids.generate("event"),
+      }),
+    ).rejects.toMatchObject({ code: "invalid_request" });
+    await expect(
+      companion.command({
+        ...command,
+        learnerId: must(formatId("learner", "9999999999999999")),
+        eventId: ids.generate("event"),
+      }),
+    ).rejects.toMatchObject({ code: "not_found" });
+    await expect(
+      progress.recordExternal({
+        learnerId,
+        referenceId: must(parseId("externalReference", ref)),
+        kind: "handoff_requested",
+        idempotencyKey: "legacy-bypass-blocked",
+        eventId: ids.generate("event"),
+        now: context().now,
+      }),
+    ).rejects.toMatchObject({ code: "invalid_request" });
   });
 });

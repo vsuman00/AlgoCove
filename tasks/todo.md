@@ -8,7 +8,7 @@
 
 **Cumulative audit (2026-10-03):** [The through-Phase-7 audit](../docs/architecture/through-phase7-audit-2026-10-03.md) records fresh passing technical gates, every named test, Phase 0 approval gaps, unreconciled Phase 1–5 plan checkboxes, open UI fidelity/manual accessibility and the two current-head real-host skips. Technical phase closure must not be read as complete governance or full design validation.
 
-**Status:** Phase 5 Tasks 25 through 29 and the technical F5 learning-kernel gates are COMPLETE on localhost for the first original problem in all six languages. The security owner approved gVisor `runsc` on 2026-09-26. Real signed execution, browser result/failure/resume, authored readiness checks, trace prediction/editing and persisted reference assistance pass. See [Phase 5 evidence](../docs/architecture/phase5-evidence.md). The owner authorized Phase 6 on 2026-10-02; Tasks 30–33 and the technical F6 checks are COMPLETE on localhost; Phase 7 was explicitly approved on 2026-10-02; Tasks 34–37 and 51 and technical F7 checks are COMPLETE on localhost as of 2026-10-03. Phase 8 awaits owner authorization. No hosted deployment is authorized. Earlier dated partial-status entries below describe superseded slices.
+**Status:** Phase 5 Tasks 25 through 29 and the technical F5 learning-kernel gates are COMPLETE on localhost for the first original problem in all six languages. The security owner approved gVisor `runsc` on 2026-09-26. Real signed execution, browser result/failure/resume, authored readiness checks, trace prediction/editing and persisted reference assistance pass. See [Phase 5 evidence](../docs/architecture/phase5-evidence.md). The owner authorized Phase 6 on 2026-10-02; Tasks 30–33 and the technical F6 checks are COMPLETE on localhost; Phase 7 was explicitly approved on 2026-10-02; Tasks 34–37 and 51 and technical F7 checks are COMPLETE on localhost as of 2026-10-03. The owner authorized Phase 8 implementation on 2026-10-06; Tasks 38–40 are complete locally with connected review-scheduling, bypass, telemetry and visual real-link evidence; Phase 9 was authorized on 2026-10-06; Tasks 41–45 are complete locally for worker infrastructure, governed index candidates, hybrid retrieval/evidence, validated tutor delivery with authored fallback and versioned evaluation/promotion gates; Task 45a now has locally implemented and synthetic-verified gateway composition, opt-in, promotion/budget gates and preserved baseline/acceptance; live activation remains pending the named provider/data-policy decision. No hosted deployment is authorized. Earlier dated partial-status entries below describe superseded slices.
 
 **Phase 6 entry (2026-10-02):** The owner directed Phase 6. Review of [the plan](plan.md), [architecture reading order](../docs/architecture/README.md), [system design](../docs/architecture/system-design.md), [data and AI contracts](../docs/architecture/data-and-ai-architecture.md), [runtime flows](../docs/architecture/interfaces-and-runtime-flows.md), [implementation contracts](../docs/architecture/implementation-contracts.md), [security and privacy rules](../docs/architecture/security-reliability-operations.md), [quality traceability](../docs/architecture/quality-and-traceability.md), [product closure matrix](../docs/architecture/product-plan-and-closure-matrix.md), and relevant ADRs found that the conceptual `PROBLEM_CONCEPT` relation was missing in the database. Migration `0018_problem_concept_mapping.sql` now binds concepts to exact problem versions and prevents changes once their content is published. The local practice seed adds the reviewed two-pointers mapping. This closes only the mapping-schema prerequisite; the content workflow still needs reviewed mapping authoring, and Task 30's evidence handler/projection were not yet complete in this initial slice; the subsequent submission slice is recorded below.
 
@@ -224,35 +224,39 @@
 - [x] Every supported horizon produces a feasible, explainable plan or reasoned rejection.
 - [x] AI-off mode remains complete.
 - [x] Replanning preserves history and avoids catch-up overload.
-- [ ] Human owner authorizes Phase 8.
+- [x] Human owner authorizes Phase 8 (2026-10-06).
 
 ## Phase 8: Outbound LeetCode practice handoff
 
-- [ ] Task 38: Implement readiness gate and explicit practice bypass
-- [ ] Task 39: Implement outbound opening and learner-confirmed journal
-- [ ] Task 40: Prove the companion journey end to end
+**Phase 8 implementation closure (2026-10-06):** Tasks 38–40 are complete locally. Governed readiness policies, server grading, safe outbound admission, and reversible learner-confirmed journals are connected through PostgreSQL and the learner/staff UI. All automated checks pass; see [Phase 8 evidence](../docs/architecture/phase8-evidence.md). No production rubric has been published or user database migrated. Task 40 now records connected review-scheduling evidence, browser bypass rejection, runtime telemetry inspection and a visual real-link check in native Safari; The owner authorized Phase 9 on 2026-10-06.
+
+- [x] Task 38: Implement readiness gate and explicit practice bypass
+- [x] Task 39: Implement outbound opening and learner-confirmed journal
+- [x] Task 40: Prove the companion journey end to end
 
 ### Checkpoint F8: Adaptive practice companion milestone M3
 
-- [ ] Timeboxed plan to independent external practice works.
-- [ ] No synchronization, scraping, automation, or verification claim exists.
-- [ ] Broken-link, bypass, and self-report semantics are explicit.
-- [ ] Human owner authorizes Phase 9.
+- [x] Timeboxed plan to independent external practice works.
+- [x] No synchronization, scraping, automation, or verification claim exists.
+- [x] Broken-link, bypass, and self-report semantics are explicit.
+- [x] Human owner authorizes Phase 9 (2026-10-06).
 
 ## Phase 9: Grounded retrieval and tutor
 
-- [ ] Task 41: Extend the existing relay for content and AI jobs
-- [ ] Task 42: Implement pedagogical derivation and versioned indexes
-- [ ] Task 43: Implement hybrid retrieval and immutable evidence packages
-- [ ] Task 44: Implement provider-neutral tutor and validate-before-display delivery
-- [ ] Task 45: Implement tutor/retrieval evaluation and promotion gate
-- [ ] Task 45a: Activate and evaluate the live roadmap proposal adapter
+**Phase 9 entry (2026-10-06):** The owner approved proceeding after Task 40 closure. Task 41 worker infrastructure is complete locally: bounded leased delivery, immutable effect receipts, fenced retries and audited replay, canonical job adapters, reconciliation, opt-in existing draft expiry, scoped credentials and worker-stopped learning evidence. Task 42 now adds canonical pedagogical chunks, lexical documents, immutable versioned embeddings, atomic publication admission and quarantine under scoped worker credentials. Task 43 now adds permission-first PostgreSQL/exact-vector retrieval, immutable evidence receipts and a declared local pilot benchmark. Task 44 now adds provider-neutral validated tutor delivery, private-code consent, durable pending/cancel/retry, conservative assistance and authored fallback. Task 45 now adds immutable synthetic evaluation, independent human-review gates and reversible fixture configuration promotion. Live adapters remain absent and production remains authored/off; Task 45a now adds locally verified gateway/runtime/UI composition and synthetic primary/fallback/outage evidence. Actual provider activation still requires the named live-provider/data-policy decision. See [Phase 9 evidence](../docs/architecture/phase9-evidence.md) and [worker operations](../docs/architecture/worker-operations.md).
+
+- [x] Task 41: Extend the existing relay for content and AI jobs
+- [x] Task 42: Implement pedagogical derivation and versioned indexes
+- [x] Task 43: Implement hybrid retrieval and immutable evidence packages
+- [x] Task 44: Implement provider-neutral tutor and validate-before-display delivery
+- [x] Task 45: Implement tutor/retrieval evaluation and promotion gate
+- [ ] Task 45a: Activate and evaluate the live roadmap proposal adapter — local implementation and synthetic verification complete; actual provider/data-policy approval, real vendor evaluation and production promotion remain pending. See [roadmap AI operations](../docs/architecture/roadmap-ai-operations.md).
 
 ### Checkpoint F9: Grounded tutor
 
-- [ ] Authored lessons/hints still work with worker and provider disabled; new code runs show queued/unavailable status without false success.
-- [ ] Retrieval permission and citation tests pass.
-- [ ] Critical hint-leak and prompt-injection cases have zero bypasses.
+- [x] Authored lessons/hints still work with worker and provider disabled; new code runs show queued/unavailable status without false success.
+- [x] Retrieval permission and citation tests pass.
+- [x] Critical hint-leak and prompt-injection cases have zero bypasses in the declared synthetic suites; production semantic quality remains unapproved.
 - [ ] Human owner authorizes Phase 10.
 
 ## Phase 10: Build the pilot curriculum and accessibility evidence

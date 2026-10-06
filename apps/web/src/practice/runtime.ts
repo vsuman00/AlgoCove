@@ -3,6 +3,9 @@ import type { ExecutionRelay } from "@algocove/application";
 import {
   createPool,
   PostgresDraftRepository,
+  PostgresExternalReadinessRepository,
+  PostgresExternalCompanionRepository,
+  PostgresReadinessContentRepository,
   PostgresHintRepository,
   PostgresPseudocodeRepository,
   PostgresPracticeRepository,
@@ -16,6 +19,9 @@ export type PracticeRuntime = {
   readonly drafts: PostgresDraftRepository;
   readonly pseudocode: PostgresPseudocodeRepository;
   readonly hints: PostgresHintRepository;
+  readonly externalReadiness: PostgresExternalReadinessRepository;
+  readonly companion: PostgresExternalCompanionRepository;
+  readonly readinessContent: PostgresReadinessContentRepository;
   /** Null until the approved isolated execution relay is configured. */
   readonly executionRelay: ExecutionRelay | null;
 };
@@ -55,6 +61,9 @@ export function getPracticeRuntime(): PracticeRuntime | null {
     drafts: new PostgresDraftRepository(pool),
     pseudocode: new PostgresPseudocodeRepository(pool),
     hints: new PostgresHintRepository(pool),
+    externalReadiness: new PostgresExternalReadinessRepository(pool),
+    companion: new PostgresExternalCompanionRepository(pool),
+    readinessContent: new PostgresReadinessContentRepository(pool),
     executionRelay,
   };
   return runtime;

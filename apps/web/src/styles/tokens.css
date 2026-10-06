@@ -110,6 +110,8 @@
 
   /* Elevation: flat by default */
   --shadow-none: none;
+  --shadow-card: 0 1px 3px rgba(8, 29, 33, 0.05), 0 4px 12px rgba(8, 29, 33, 0.04);
+  --shadow-card-hover: 0 4px 12px rgba(8, 29, 33, 0.08), 0 12px 24px rgba(8, 29, 33, 0.06);
   --shadow-float: 0 4px 12px rgba(8, 29, 33, 0.08);
   --shadow-dialog: 0 16px 40px rgba(8, 29, 33, 0.16);
 

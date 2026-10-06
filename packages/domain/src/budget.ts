@@ -1,4 +1,4 @@
-export type OptionalOperation = "plan_proposal" | "code_execution";
+export type OptionalOperation = "plan_proposal" | "code_execution" | "tutor_generation";
 export type BudgetPolicy = {
   version: number;
   dailyRequests: number;
@@ -11,13 +11,23 @@ export type BudgetPolicy = {
 };
 /** Server-owned initial policy. No browser-controlled quota, price or expiry. */
 export const BUDGET_POLICIES: Record<OptionalOperation, BudgetPolicy> = {
-  plan_proposal: {
+  tutor_generation: {
     version: 1,
     dailyRequests: 20,
     minuteRequests: 6,
     concurrent: 1,
-    dailyUnits: 200,
-    unitsPerRequest: 10,
+    dailyUnits: 560000,
+    unitsPerRequest: 28000,
+    failureThreshold: 3,
+    cooldownMs: 60000,
+  },
+  plan_proposal: {
+    version: 2,
+    dailyRequests: 20,
+    minuteRequests: 6,
+    concurrent: 1,
+    dailyUnits: 1120000,
+    unitsPerRequest: 56000,
     failureThreshold: 3,
     cooldownMs: 60000,
   },

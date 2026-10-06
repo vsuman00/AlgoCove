@@ -72,3 +72,49 @@ test("forbidden content access stays closed and transient failures can retry", a
   await page.getByRole("button", { name: "Retry content" }).click();
   await expect(page.getByRole("button", { name: "Retry content" })).toHaveCount(0);
 });
+
+test("readiness operations recover from load and JSON errors and reflow accessibly", async ({
+  page,
+}) => {
+  let reads = 0;
+  const commands: unknown[] = [];
+  await page.route("**/api/admin/readiness", async (route) => {
+    if (route.request().method() === "POST") {
+      commands.push(route.request().postDataJSON());
+      await route.fulfill({ json: {} });
+      return;
+    }
+    reads += 1;
+    await route.fulfill(
+      reads === 1
+        ? { status: 503, json: {} }
+        : {
+            json: { rubrics: [], references: [], draftTemplate: { action: "create_reference" } },
+          },
+    );
+  });
+  await page.setViewportSize({ width: 320, height: 800 });
+  await page.goto("/admin/readiness");
+  const load = page.getByRole("button", { name: "Load policies and references" });
+  await load.click();
+  await expect(
+    page.getByText("Content unavailable or staff access denied. Retry after signing in."),
+  ).toBeVisible();
+  await load.click();
+  await expect(page.getByRole("heading", { name: "References", exact: true })).toBeVisible();
+  const input = page.getByLabel("Preparation or reference command (JSON)");
+  await input.fill("invalid-json");
+  await page.getByRole("button", { name: "Record content command" }).click();
+  await expect(page.getByText("Enter valid JSON.")).toBeVisible();
+  expect(commands).toEqual([]);
+  await input.fill('{"action":"create_reference"}');
+  await page.getByRole("button", { name: "Record content command" }).click();
+  await expect(page.getByText("Content command recorded.")).toBeVisible();
+  expect(commands).toEqual([{ action: "create_reference" }]);
+  const dimensions = await page.evaluate(() => ({
+    width: document.documentElement.clientWidth,
+    scroll: document.documentElement.scrollWidth,
+  }));
+  expect(dimensions.scroll).toBeLessThanOrEqual(dimensions.width);
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+});

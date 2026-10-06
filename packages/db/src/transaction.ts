@@ -119,12 +119,13 @@ async function begin(
   readOnly: boolean,
   statementTimeoutMs: number | undefined,
 ): Promise<void> {
-  if (statementTimeoutMs !== undefined) {
-    // Applies to this transaction only; the pool default still protects the rest.
-    await client.query(`SET LOCAL statement_timeout = ${Math.trunc(statementTimeoutMs)}`);
-  }
   const mode = readOnly ? " READ ONLY" : "";
   await client.query(`BEGIN ISOLATION LEVEL ${isolationLevel.toUpperCase()}${mode}`);
+  if (statementTimeoutMs !== undefined) {
+    if (!Number.isSafeInteger(statementTimeoutMs) || statementTimeoutMs < 1)
+      throw new Error("Transaction statement timeout must be a positive integer.");
+    await client.query(`SET LOCAL statement_timeout = ${statementTimeoutMs}`);
+  }
 }
 
 async function rollbackQuietly(client: PoolClient): Promise<void> {

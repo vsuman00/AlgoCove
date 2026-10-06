@@ -50,8 +50,21 @@ export function createClerkIdentityAdapter(input: {
       ) {
         throw authenticationRequired();
       }
-      const learnerId = await input.store.findOrCreateLearner(`clerk:${state.userId}`);
-      const roles = await input.store.getRoles(learnerId);
+      let learnerId: LearnerId;
+      let roles: readonly Role[];
+      try {
+        learnerId = await input.store.findOrCreateLearner(`clerk:${state.userId}`);
+        roles = await input.store.getRoles(learnerId);
+      } catch (error) {
+        if (
+          error instanceof Error &&
+          "code" in error &&
+          (error.code === "unauthenticated" || error.code === "dependency_unavailable")
+        ) {
+          throw error;
+        }
+        throw dependencyUnavailableError("Identity persistence is unavailable.");
+      }
       if (roles.length === 0) {
         throw authenticationRequired("Authenticated account has no active AlgoCove role.");
       }

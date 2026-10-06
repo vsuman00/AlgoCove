@@ -8,6 +8,7 @@ type OutboxRow = {
   payload: unknown;
   occurred_at: Date;
   attempts: number;
+  delivery_attempts: number;
 };
 
 export type ClaimedOutboxEvent = {
@@ -17,6 +18,7 @@ export type ClaimedOutboxEvent = {
   readonly payload: Readonly<Record<string, unknown>>;
   readonly occurredAt: string;
   readonly attempts: number;
+  readonly deliveryAttempts?: number;
 };
 
 export type OutboxRelayRepository = {
@@ -29,16 +31,19 @@ export type OutboxRelayRepository = {
   readonly acknowledge: (input: {
     readonly eventId: string;
     readonly relayId: string;
+    readonly expectedAttempts?: number;
   }) => Promise<void>;
   readonly retry: (input: {
     readonly eventId: string;
     readonly relayId: string;
     readonly availableAt: string;
+    readonly expectedAttempts?: number;
   }) => Promise<void>;
   readonly deadLetter: (input: {
     readonly eventId: string;
     readonly relayId: string;
     readonly reason: "invalid_source" | "retry_exhausted";
+    readonly expectedAttempts?: number;
   }) => Promise<void>;
 };
 
@@ -76,7 +81,8 @@ export class PostgresOutboxRelayRepository implements OutboxRelayRepository {
            FROM candidate
           WHERE event.event_id = candidate.event_id
         RETURNING event.event_id, event.topic, event.aggregate_id, event.payload,
-                  event.occurred_at, event.attempts AS attempts`,
+                  event.occurred_at, event.attempts AS attempts,
+                  event.attempts - event.replay_attempt_base AS delivery_attempts`,
         [input.topic, input.now, input.relayId, claimExpiresAt],
       );
       const row = result.rows[0];
@@ -85,12 +91,17 @@ export class PostgresOutboxRelayRepository implements OutboxRelayRepository {
     });
   }
 
-  async acknowledge(input: { readonly eventId: string; readonly relayId: string }): Promise<void> {
+  async acknowledge(input: {
+    readonly eventId: string;
+    readonly relayId: string;
+    readonly expectedAttempts?: number;
+  }): Promise<void> {
     const result = await this.pool.query(
       `UPDATE platform.outbox_event
           SET published_at = now(), claimed_by = NULL, claim_expires_at = NULL
-        WHERE event_id = $1 AND claimed_by = $2 AND published_at IS NULL`,
-      [input.eventId, input.relayId],
+        WHERE event_id = $1 AND claimed_by = $2 AND published_at IS NULL
+          AND ($3::integer IS NULL OR attempts = $3)`,
+      [input.eventId, input.relayId, input.expectedAttempts ?? null],
     );
     if (result.rowCount !== 1) throw new Error("Outbox event was not owned for acknowledgement.");
   }
@@ -99,12 +110,14 @@ export class PostgresOutboxRelayRepository implements OutboxRelayRepository {
     readonly eventId: string;
     readonly relayId: string;
     readonly availableAt: string;
+    readonly expectedAttempts?: number;
   }): Promise<void> {
     const result = await this.pool.query(
       `UPDATE platform.outbox_event
           SET available_at = $3, claimed_by = NULL, claim_expires_at = NULL
-        WHERE event_id = $1 AND claimed_by = $2 AND published_at IS NULL`,
-      [input.eventId, input.relayId, input.availableAt],
+        WHERE event_id = $1 AND claimed_by = $2 AND published_at IS NULL
+          AND ($4::integer IS NULL OR attempts = $4)`,
+      [input.eventId, input.relayId, input.availableAt, input.expectedAttempts ?? null],
     );
     if (result.rowCount !== 1) throw new Error("Outbox event was not owned for retry.");
   }
@@ -113,11 +126,13 @@ export class PostgresOutboxRelayRepository implements OutboxRelayRepository {
     readonly eventId: string;
     readonly relayId: string;
     readonly reason: "invalid_source" | "retry_exhausted";
+    readonly expectedAttempts?: number;
   }): Promise<void> {
     const result = await this.pool.query(
       `UPDATE platform.outbox_event SET dead_lettered_at=now(),dead_letter_reason=$3,claimed_by=NULL,claim_expires_at=NULL
-      WHERE event_id=$1 AND claimed_by=$2 AND published_at IS NULL`,
-      [input.eventId, input.relayId, input.reason],
+      WHERE event_id=$1 AND claimed_by=$2 AND published_at IS NULL
+        AND ($4::integer IS NULL OR attempts=$4)`,
+      [input.eventId, input.relayId, input.reason, input.expectedAttempts ?? null],
     );
     if (result.rowCount !== 1) throw new Error("Outbox event was not owned for dead lettering.");
   }
@@ -132,6 +147,7 @@ function mapClaimedEvent(row: OutboxRow): ClaimedOutboxEvent {
     payload: row.payload,
     occurredAt: row.occurred_at.toISOString(),
     attempts: row.attempts,
+    deliveryAttempts: row.delivery_attempts,
   };
 }
 

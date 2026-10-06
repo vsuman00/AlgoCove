@@ -550,20 +550,7 @@ export function ProgressExperience(): ReactElement {
               data.externalPractice.references.map((ref) => (
                 <article key={ref.referenceId}>
                   <h3>{ref.title}</h3>
-                  <a
-                    href={ref.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() =>
-                      void command("/api/progress/external", {
-                        referenceId: ref.referenceId,
-                        kind: "handoff_requested",
-                        idempotencyKey: crypto.randomUUID(),
-                      })
-                    }
-                  >
-                    Open external practice (new tab)
-                  </a>
+                  <a href="/learn/arrays-two-pointer">Review internal preparation</a>
                   {(["completed", "corrected"] as const).map((kind) => (
                     <button
                       className="ac-small-button"

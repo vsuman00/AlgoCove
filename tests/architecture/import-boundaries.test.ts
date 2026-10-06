@@ -47,6 +47,15 @@ describe("package import boundaries", () => {
     );
   });
 
+  it("keeps derivation and retrieval independent of persistence and web delivery", async () => {
+    for (const packageName of ["content", "retrieval", "tutor"]) {
+      const source = await sourceText(path.join(root, `packages/${packageName}/src`));
+      expect(source).not.toMatch(
+        /from\s+["'](?:@algocove\/db|next(?:\/|["'])|react(?:\/|["'])|pg["'])/,
+      );
+    }
+  });
+
   it("detects the deliberately invalid dependency fixture", async () => {
     const fixture = await readFile(
       path.join(root, "tests/architecture/fixtures/invalid-domain-import.ts"),

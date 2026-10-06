@@ -10,6 +10,9 @@ import {
   createPool,
   PostgresPracticeRepository,
   PostgresDraftRepository,
+  PostgresExternalReadinessRepository,
+  PostgresExternalCompanionRepository,
+  PostgresReadinessContentRepository,
   PostgresHintRepository,
   PostgresPseudocodeRepository,
 } from "@algocove/db";
@@ -278,6 +281,9 @@ describe.skipIf(process.env.LOCAL_PHASE5_E2E !== "1")(
       await pool.query("INSERT INTO platform.learner (learner_id) VALUES ($1)", [learner.value]);
       fixture.runtime = {
         pool,
+        externalReadiness: new PostgresExternalReadinessRepository(pool),
+        companion: new PostgresExternalCompanionRepository(pool),
+        readinessContent: new PostgresReadinessContentRepository(pool),
         practice: new PostgresPracticeRepository(pool),
         drafts: new PostgresDraftRepository(pool),
         hints: new PostgresHintRepository(pool),

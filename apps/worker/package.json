@@ -13,7 +13,9 @@
     "@algocove/domain": "workspace:*",
     "@algocove/db": "workspace:*",
     "@algocove/execution-control": "workspace:*",
-    "pg": "8.23.0"
+    "pg": "8.23.0",
+    "@algocove/content": "workspace:*",
+    "@algocove/retrieval": "workspace:*"
   },
   "scripts": {
     "typecheck": "tsc --noEmit -p tsconfig.json"

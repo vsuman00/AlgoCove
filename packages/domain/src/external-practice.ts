@@ -91,7 +91,13 @@ export function validateExternalUrl(
   } catch {
     return err({ code: "invalid_url", message: "External references require a valid URL." });
   }
-  if (url.protocol !== "https:" || url.username !== "" || url.password !== "" || url.hash !== "") {
+  if (
+    url.protocol !== "https:" ||
+    url.port !== "" ||
+    url.username !== "" ||
+    url.password !== "" ||
+    url.hash !== ""
+  ) {
     return err({
       code: "invalid_url",
       message: "External references require HTTPS without credentials or fragments.",

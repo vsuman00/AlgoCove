@@ -36,3 +36,31 @@ export async function learningBody(request: Request): Promise<Record<string, unk
     throw validationError("An object body is required.");
   return body as Record<string, unknown>;
 }
+
+export async function boundedLearningBody(request: Request): Promise<Record<string, unknown>> {
+  if (!request.body) throw validationError("An object body is required.");
+  const reader = request.body.getReader();
+  const chunks: Uint8Array[] = [];
+  let bytes = 0;
+  try {
+    for (;;) {
+      const chunk = await reader.read();
+      if (chunk.done) break;
+      bytes += chunk.value.byteLength;
+      if (bytes > 65536) {
+        await reader.cancel();
+        throw validationError("Request exceeds the bounded size.");
+      }
+      chunks.push(chunk.value);
+    }
+  } finally {
+    reader.releaseLock();
+  }
+  return learningBody(
+    new Request(request.url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: Buffer.concat(chunks).toString("utf8"),
+    }),
+  );
+}

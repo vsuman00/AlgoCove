@@ -1,0 +1,597 @@
+{
+  "schemaVersion": 1,
+  "kind": "local-synthetic-pilot",
+  "productionPromotion": false,
+  "generatedAt": "2026-10-06T07:47:57.816Z",
+  "postgres": "PostgreSQL 17.11 (Homebrew) on aarch64-apple-darwin27.0.0, compiled by Apple clang version 21.0.0 (clang-2100.3.34.2), 64-bit",
+  "pgvector": "0.8.7",
+  "corpusVersion": "original.two-pointer.pilot.v1",
+  "scope": {
+    "learnerId": "usr_0000000000000001",
+    "attemptId": "att_0000000000070116",
+    "problemVersionId": "prb_0000000000070003",
+    "curriculumVersionId": "cur_aaaaaaaaaaaaaaaa",
+    "language": "python",
+    "conceptIds": [
+      "cpt_aaaaaaaaaaaaaaaa"
+    ],
+    "targetLevel": "unspecified",
+    "visibility": "published_curriculum",
+    "maximumHintTier": 6
+  },
+  "corpusIndexCount": 23,
+  "blockedChunkCount": 15,
+  "corpusSnapshots": [
+    {
+      "indexId": "idx_dfc338ab6c3355804f832417e35ab878bce711a2",
+      "contentVersionId": "cnt_0000000000070002",
+      "problemVersionId": "prb_0000000000070003",
+      "sourceChecksum": "sha256:99e5a01b09a940863e0f0bb75e107b77191520702e5a5dda49e759071a577af7",
+      "normalizedChecksum": "sha256:8d1154322bdff5546441d6211636d9a4a582486456a00792c86dcb527d152cdb",
+      "chunks": [
+        {
+          "chunkId": "chk_f1b626b99f7390e89d414a2cede05a26876ed093",
+          "textChecksum": "sha256:960a2a9c51e3e00a0bbb650e821ec7a69b8f4bb26f7a61f06ff22a361917df9c",
+          "kind": "problem_statement",
+          "tier": 0
+        },
+        {
+          "chunkId": "chk_59859c71fe2a28902210d96848598db98caf5edd",
+          "textChecksum": "sha256:a08cf5de863e948b10c6f1d3ae8c66a0fd743f1d0564ef9a9f1f533875a27e00",
+          "kind": "hint_tier",
+          "tier": 1
+        },
+        {
+          "chunkId": "chk_cf5de011b2d29ff04e243b04f7a458273ed762c4",
+          "textChecksum": "sha256:5fb760de7f66af1f52a53f3b2368c72215cb06edc2fba34753233ed588b8670b",
+          "kind": "hint_tier",
+          "tier": 2
+        },
+        {
+          "chunkId": "chk_121e4828f4d668e6e50653f7a33953ced9d5815f",
+          "textChecksum": "sha256:a3a98d84ee5abd50c11b880f5b2f70ca14e1c8dd1a23e2e97481ebb71e19b613",
+          "kind": "hint_tier",
+          "tier": 3
+        },
+        {
+          "chunkId": "chk_512eff32adabe37932f8cdd16da2b12414ba9224",
+          "textChecksum": "sha256:246ddd8d842d9410ac27eb4f650d1a3873ffc2d69e1b726b7aa1a7390876481a",
+          "kind": "hint_tier",
+          "tier": 4
+        },
+        {
+          "chunkId": "chk_a3e83cbe45c845333361c11e51030cbf96eed762",
+          "textChecksum": "sha256:2de5b88be4eac0740775388696af0cdc73fcffc6571fd616e2ea4f045c4bb359",
+          "kind": "hint_tier",
+          "tier": 5
+        },
+        {
+          "chunkId": "chk_5b1ddb8aeb7ec7795051a89a97e52bde468da614",
+          "textChecksum": "sha256:98aebbe5f2cd844b3808ae3d3bd1bef741debbb34f346ad69221de8c22362ea1",
+          "kind": "hint_tier",
+          "tier": 6
+        }
+      ]
+    },
+    {
+      "indexId": "idx_ce5acf7c88cc0b00d1d610ba92fcc3f809cf36ed",
+      "contentVersionId": "cnt_0000000000070007",
+      "problemVersionId": "prb_0000000000070008",
+      "sourceChecksum": "sha256:58daec510aa071a4e35d629652a2cf31bf73939693a44f7378803c3397280b5b",
+      "normalizedChecksum": "sha256:cd6a7e6a941dd6cb3f946f9f98d5ea31770b584c74f7e7aa13631811adda5931",
+      "chunks": [
+        {
+          "chunkId": "chk_fe6d0b3c8b70b6e94d06e8f1e9a0f65c8e02b55b",
+          "textChecksum": "sha256:834971903017c4c0988537e50fc4c3a7625dd7735853d5db1c2c8462998513cb",
+          "kind": "problem_statement",
+          "tier": 0
+        }
+      ]
+    },
+    {
+      "indexId": "idx_b5e879b6406637a8a4424b680bce0751b65a1cdb",
+      "contentVersionId": "cnt_0000000000070012",
+      "problemVersionId": "prb_0000000000070013",
+      "sourceChecksum": "sha256:c9c2d2d307c9242d32805b6e2693139889a63c61539b33f9871a5ed7ba2d2aa8",
+      "normalizedChecksum": "sha256:ae51bb03e2a85996f47d43a0f16cb3e70c07c5d335dd4d7379a237af1c2c833a",
+      "chunks": [
+        {
+          "chunkId": "chk_7a3d80fba376fc01e188152ced81ebd776b93fea",
+          "textChecksum": "sha256:72e91ac64fe3a5277a7a4fadf58988fcf93bff6bad30bfa45ef1c2adca01d653",
+          "kind": "problem_statement",
+          "tier": 0
+        }
+      ]
+    },
+    {
+      "indexId": "idx_a4596c1851537639a8be67f19d11db2651d51ef6",
+      "contentVersionId": "cnt_0000000000070017",
+      "problemVersionId": "prb_0000000000070018",
+      "sourceChecksum": "sha256:d6457792ac95f40d833a14897a7acd32b0b03581c571f20bda038f3eee102b3d",
+      "normalizedChecksum": "sha256:6def253eb0bb0060f1d6d18271de7e0f4ce64213bf90754544c5f78ed4630e3c",
+      "chunks": [
+        {
+          "chunkId": "chk_b0bb65f6998bcaf216a274633d3a631a27ec2100",
+          "textChecksum": "sha256:4b4605fe0138567492083573ead5900625a7323d65e542ec5b9df24806c15ef0",
+          "kind": "problem_statement",
+          "tier": 0
+        }
+      ]
+    },
+    {
+      "indexId": "idx_a9470a61fbb070a44d8106f1499176e988593fd1",
+      "contentVersionId": "cnt_0000000000070022",
+      "problemVersionId": "prb_0000000000070023",
+      "sourceChecksum": "sha256:7e134b75e4690e72284a8164a630224117618f6f288ab75caf92b3ca5a825739",
+      "normalizedChecksum": "sha256:20ba74f6da5e2b14e89b32d03f745ef323315df997dae52eeaf167e89c1d0863",
+      "chunks": [
+        {
+          "chunkId": "chk_28ed18d2b0a1f4e16db20e2092edbaff27225431",
+          "textChecksum": "sha256:7a9bfadf2eba5e95e8e725e1ee8741b5513d0abaff7ec96201011853531dc890",
+          "kind": "problem_statement",
+          "tier": 0
+        }
+      ]
+    },
+    {
+      "indexId": "idx_76f3979b90e375d2e855de3de2b8a2373f3bd1d8",
+      "contentVersionId": "cnt_0000000000070027",
+      "problemVersionId": "prb_0000000000070028",
+      "sourceChecksum": "sha256:9225d9447dc923bebf3767d5caae889d7899442754b04d109377a43c44c427a5",
+      "normalizedChecksum": "sha256:6e8ad8a299b768da6400257478d66df35c740c837427c2dd27d7e65e26362f86",
+      "chunks": [
+        {
+          "chunkId": "chk_bd1a1641c8a3a97ac403433971d3f34ad1395767",
+          "textChecksum": "sha256:c390f319aa2e410e038b5a9e4b124fe057457e2fef595295abfe0c43e7e7afdb",
+          "kind": "problem_statement",
+          "tier": 0
+        }
+      ]
+    },
+    {
+      "indexId": "idx_02ce9222ae5810cf5fd6cdfbb903e68f6dddb06c",
+      "contentVersionId": "cnt_0000000000070032",
+      "problemVersionId": "prb_0000000000070033",
+      "sourceChecksum": "sha256:8f4bdf4e8ebb2c810d9b91ecdd301e7126d5e49b9215d59f24dbe1edc80b543e",
+      "normalizedChecksum": "sha256:16deaeac46c3219a0dbc6980422b006f7be7be8dc2f24c2b4708b333ad0592b6",
+      "chunks": [
+        {
+          "chunkId": "chk_66508af686e88a8b0bcfaa855a9ec84545f47168",
+          "textChecksum": "sha256:452736a25e5103f88bea87deb1e3a58268db8565ee7ec1cec6acc3c930cbf95e",
+          "kind": "problem_statement",
+          "tier": 0
+        }
+      ]
+    },
+    {
+      "indexId": "idx_a7e9f7de3fad88fe1d77611e65526b892186ded9",
+      "contentVersionId": "cnt_0000000000070037",
+      "problemVersionId": "prb_0000000000070038",
+      "sourceChecksum": "sha256:bb5c7ae88dd329f634f49cf58b90b27efb30c697c3358081a4dc50cbb7d9b3c0",
+      "normalizedChecksum": "sha256:fb66f3c3595e6735163e4eacd413c31be49b62e30c133b0cefc96fa9d93b5cff",
+      "chunks": [
+        {
+          "chunkId": "chk_42a1fce96dc9310a0fd2d5e751df548c54d7f3b2",
+          "textChecksum": "sha256:29daa22661d18a3bbe7ce6b6459cd2a12130ea4f9b94097dfe978bd8f9a22053",
+          "kind": "problem_statement",
+          "tier": 0
+        }
+      ]
+    },
+    {
+      "indexId": "idx_40778c344094dba330ba2c79678f071aaf25a1a8",
+      "contentVersionId": "cnt_0000000000070042",
+      "problemVersionId": "prb_0000000000070043",
+      "sourceChecksum": "sha256:6c55acf8501d2195c97bcb7939d55b05c23cca4b5eedb3684199a54a7c7bd2d8",
+      "normalizedChecksum": "sha256:ed07f53ea24c1eb7bf7613f2ff19624f82ae6ef5c369909f537b4d4369e54118",
+      "chunks": [
+        {
+          "chunkId": "chk_26c07b47afc2a210b10bbe86061297941aae4fdb",
+          "textChecksum": "sha256:24d59edf861ac882d2821b48945099233885a5334e2c27d1e987716e624f01fd",
+          "kind": "problem_statement",
+          "tier": 0
+        }
+      ]
+    },
+    {
+      "indexId": "idx_04263da646b8f9b2b50c347cedf906e41211e39c",
+      "contentVersionId": "cnt_0000000000070047",
+      "problemVersionId": "prb_0000000000070048",
+      "sourceChecksum": "sha256:608d53ad03c3015570e928089a29e25cfccb0a942b898321a897429c5ceeae98",
+      "normalizedChecksum": "sha256:cc06ca89c0bc6d072af66da87166b9cc5896c95c3ca9713db7dd4b4f7ba1dcb7",
+      "chunks": [
+        {
+          "chunkId": "chk_f2b84b4029bd0533f10dd2a6f2f5b4c0c6d4fd38",
+          "textChecksum": "sha256:453522cf4de5478cd2f288973d5edda8480b9e0fa1c23d52cadfe50377e62211",
+          "kind": "problem_statement",
+          "tier": 0
+        }
+      ]
+    },
+    {
+      "indexId": "idx_66d5995423730503356b5a1af6941276c47b81ca",
+      "contentVersionId": "cnt_0000000000070052",
+      "problemVersionId": "prb_0000000000070053",
+      "sourceChecksum": "sha256:816ec1ebf618b2709d20856cda5ffd0c10b2bf16a49872f2e286a8afa6645d9a",
+      "normalizedChecksum": "sha256:8184fc116786ed5b9d68a49192ef6125c942445478bf715527ee397a6c0aa9c5",
+      "chunks": [
+        {
+          "chunkId": "chk_786f688e08243a896627182cc640ca5e5086e427",
+          "textChecksum": "sha256:973915a076dc045be0a7174ad59deab6952f81dd8819a00faba61efb2ee48487",
+          "kind": "problem_statement",
+          "tier": 0
+        }
+      ]
+    },
+    {
+      "indexId": "idx_d65c66931944aeabfe519ccd9aa2954749bd8b8a",
+      "contentVersionId": "cnt_0000000000070057",
+      "problemVersionId": "prb_0000000000070058",
+      "sourceChecksum": "sha256:91d808e573d3614ae9264aa007b4856605069c835533557edd293fb9ae468713",
+      "normalizedChecksum": "sha256:8149d45c1971c740e69609ec09a0958d42b9e98315e1232c4fcc0b5d6f556153",
+      "chunks": [
+        {
+          "chunkId": "chk_4d9a8c96f3adb5746d354d755fcd98bea50f4422",
+          "textChecksum": "sha256:a110d0a04459e5378902219c0c3813df81a917b24f63beaabb9a589024d668b6",
+          "kind": "problem_statement",
+          "tier": 0
+        }
+      ]
+    },
+    {
+      "indexId": "idx_7e95e3428f863de38a99914de04bdf5231e290c8",
+      "contentVersionId": "cnt_0000000000070062",
+      "problemVersionId": "prb_0000000000070063",
+      "sourceChecksum": "sha256:6129b65674ecb4965af1e0f0826d69b0fb7560a65006e58fac537a827fe73389",
+      "normalizedChecksum": "sha256:9b036fd763f8e832ef7cbfd34a3351f2e83e23261ec6f2c9eb7a90f065d361d8",
+      "chunks": [
+        {
+          "chunkId": "chk_193753667163d9445826d0b7923c18cb15f19b8e",
+          "textChecksum": "sha256:20e7532b89be48bd400260361841aa30df4daaaa27fc98aad3162f4609283a6b",
+          "kind": "problem_statement",
+          "tier": 0
+        }
+      ]
+    },
+    {
+      "indexId": "idx_def29ea6c49e88ba2032c2fb687f922bda0aaed2",
+      "contentVersionId": "cnt_0000000000070067",
+      "problemVersionId": "prb_0000000000070068",
+      "sourceChecksum": "sha256:028539fb18fda82edf9bd42e9470b1798224abe764664487da3fffd9360d0c59",
+      "normalizedChecksum": "sha256:54e0ef95e2d2263ea261d6e9fbde4d3c49d53c8389548f8898e162b0f74d2164",
+      "chunks": [
+        {
+          "chunkId": "chk_aaa08a5030abf2f53a45c311d05fa427306b2223",
+          "textChecksum": "sha256:12ab844bc215212d57d2381fbfbb1acc800921cc6f4030c282e817936cab4786",
+          "kind": "problem_statement",
+          "tier": 0
+        }
+      ]
+    },
+    {
+      "indexId": "idx_35b5fa6214e611ecd5584afecb708ebeea8a4cb0",
+      "contentVersionId": "cnt_0000000000070072",
+      "problemVersionId": "prb_0000000000070073",
+      "sourceChecksum": "sha256:05da6d282946e8698ea583fafdc5e972e3d937f8a3f779f94f129c55bbdfd92a",
+      "normalizedChecksum": "sha256:650e784b22302ba62b2ec2c9374476f58d56787d2dbd0c514cc7004cd491c9fd",
+      "chunks": [
+        {
+          "chunkId": "chk_fd53d2549acd96e896be60b8d2e443f6ae4834a2",
+          "textChecksum": "sha256:3200c4ef52a9e5a04594380e90969588b190a6773614dd8f778c32485c6bce88",
+          "kind": "problem_statement",
+          "tier": 0
+        }
+      ]
+    },
+    {
+      "indexId": "idx_fa3d2af12a5e0433440f2ae856ef7dcae3556ee6",
+      "contentVersionId": "cnt_0000000000070077",
+      "problemVersionId": "prb_0000000000070078",
+      "sourceChecksum": "sha256:936d59e8a3c710e6e15ca64cf5466c769698e522d77b643f37269722c7f36342",
+      "normalizedChecksum": "sha256:0eef83ce7b12d45dce6a53be14b13dddd4ec6e40216dbcc9adb03d330b1d1fb1",
+      "chunks": [
+        {
+          "chunkId": "chk_8e1f8c14a3eaf97731fbd214fe85d71968614262",
+          "textChecksum": "sha256:34c6fce2cdc504c3eddb23530a4e232a654a0dda8d9fec6291d8893c6a73cb37",
+          "kind": "problem_statement",
+          "tier": 0
+        }
+      ]
+    },
+    {
+      "indexId": "idx_4aae1da9acf7fef60a6d7fe12ffa6ac2400ef8d9",
+      "contentVersionId": "cnt_0000000000070082",
+      "problemVersionId": "prb_0000000000070083",
+      "sourceChecksum": "sha256:f8e4004bae795b5d2d93376e3479c5c6ee3b8926458f5898cc026618685cedef",
+      "normalizedChecksum": "sha256:72b295d1b984794091126d11012abd333607bb17b4d276c29c5ecc53e4bb768a",
+      "chunks": [
+        {
+          "chunkId": "chk_4af4f7650910ac8f266b31ed5fc19fb952f670f5",
+          "textChecksum": "sha256:bfeeaca251f16983bf0a7b9b7a5e9e838f1d000cdddb71b48fa43a83bc1f789e",
+          "kind": "problem_statement",
+          "tier": 0
+        }
+      ]
+    },
+    {
+      "indexId": "idx_6a2bda0163c2c3198be44ecec302dc6b226e4c3e",
+      "contentVersionId": "cnt_0000000000070087",
+      "problemVersionId": "prb_0000000000070088",
+      "sourceChecksum": "sha256:434526cd993bc455980cf1d53bdbc0d780774542253ba695e101b9790e859c9c",
+      "normalizedChecksum": "sha256:b98f765e619765e24fa2064bd5754f6525b90f96a7c24f547ce43f39e6d16846",
+      "chunks": [
+        {
+          "chunkId": "chk_fb37177bce3884fa6680ebbf20e3d2ae7f7ff046",
+          "textChecksum": "sha256:d890586585702d2a8a0a1a1cf7c59fdbd40df1b108a03b3bef6b2d1feab91ef2",
+          "kind": "problem_statement",
+          "tier": 0
+        }
+      ]
+    },
+    {
+      "indexId": "idx_266ac01d22340351df6e34bf73125c52f6b73dcf",
+      "contentVersionId": "cnt_0000000000070092",
+      "problemVersionId": "prb_0000000000070093",
+      "sourceChecksum": "sha256:0c525761c8069519eacb1f1be9b8a1d5e28004c9a1002366fcada8e40c4bcc80",
+      "normalizedChecksum": "sha256:5f677687257c8de680866021e286450b0072c5e9d090e41711a668d8af8f7756",
+      "chunks": [
+        {
+          "chunkId": "chk_e0ba39644abdf64e33ca1687970936bf0ce72a92",
+          "textChecksum": "sha256:2ea8e8f1cdfcd5b2639a7093d6d4d61d359c547c7e20c57755a65cfa76778824",
+          "kind": "problem_statement",
+          "tier": 0
+        }
+      ]
+    },
+    {
+      "indexId": "idx_5d3e6edb6788243ee22670b83fbc1c152f30d77c",
+      "contentVersionId": "cnt_0000000000070097",
+      "problemVersionId": "prb_0000000000070098",
+      "sourceChecksum": "sha256:d034fb02d925ca30faf668cb92eba4bf737a6a41a2a9bcebefa1f82963433597",
+      "normalizedChecksum": "sha256:0cc157295b9985b12a0b115cc08091b8fce1f16fbc373ee363695b92c76aad12",
+      "chunks": [
+        {
+          "chunkId": "chk_f03b69e0d01133221da4bb294aefdd8793daa214",
+          "textChecksum": "sha256:6718b870e27fa8fe4487094cc5b5b85c831756110a0f4f4307eac67626415f9b",
+          "kind": "problem_statement",
+          "tier": 0
+        }
+      ]
+    },
+    {
+      "indexId": "idx_2ba70492983bbee32f836ab621b2dc98257a189c",
+      "contentVersionId": "cnt_0000000000070102",
+      "problemVersionId": "prb_0000000000070103",
+      "sourceChecksum": "sha256:3668ba0a36ae97ee711147c9acde4bd238dcd751a5dc2843001ad0d64a86f777",
+      "normalizedChecksum": "sha256:48cba79bb2314dd52326abcad28e683cb547d03b572369be303012f9c099753a",
+      "chunks": [
+        {
+          "chunkId": "chk_23c362eeefb4c85252fbad62e0bd3662aa3283f2",
+          "textChecksum": "sha256:236c1380fe98aac5a01e4a90ea5d0e9c4903daaa08743f2c85879251c7a9ca0c",
+          "kind": "problem_statement",
+          "tier": 0
+        }
+      ]
+    },
+    {
+      "indexId": "idx_88f7e1e82e5380e102107797cf0eb66d95b40bbc",
+      "contentVersionId": "cnt_0000000000070107",
+      "problemVersionId": "prb_0000000000070108",
+      "sourceChecksum": "sha256:174a0f73094f87ae2a6bc607c9f4e728891615320774d0aaad4d0f5f29b83fd8",
+      "normalizedChecksum": "sha256:0040853c1bfcc3c91863064a19082b572881a2351397c0de8e2c614cd1b164fd",
+      "chunks": [
+        {
+          "chunkId": "chk_0dc47032e8c015d1126133406069f4617ef58cd6",
+          "textChecksum": "sha256:48e7722db8964a269b92ba262745b3f867d14a0b5ccc1303bc5baf0f693ef080",
+          "kind": "problem_statement",
+          "tier": 0
+        }
+      ]
+    },
+    {
+      "indexId": "idx_5716510b6de068039a03ca52e85bb416b9a95a50",
+      "contentVersionId": "cnt_0000000000070112",
+      "problemVersionId": "prb_0000000000070113",
+      "sourceChecksum": "sha256:fa13b917c167ce516b1dc76183036c25558990616c1b9ff6c5bee38c7f752bcf",
+      "normalizedChecksum": "sha256:43ef7897acbcc7f11080e84eeffcbc8dbaa579a0d5c332b727d04b7a0e161d64",
+      "chunks": [
+        {
+          "chunkId": "chk_50d53e875c2e2c742891b9833f006ea415493799",
+          "textChecksum": "sha256:203e9cfb4c71cdcd6597534d755e56243237ee79b310efc2c9434670be610e60",
+          "kind": "problem_statement",
+          "tier": 0
+        },
+        {
+          "chunkId": "chk_2da1f8f643c8137ed95af98f477bc2b9164f1264",
+          "textChecksum": "sha256:a08cf5de863e948b10c6f1d3ae8c66a0fd743f1d0564ef9a9f1f533875a27e00",
+          "kind": "hint_tier",
+          "tier": 1
+        },
+        {
+          "chunkId": "chk_623131470ab5dc2657418715d4ea554c79fdbede",
+          "textChecksum": "sha256:5fb760de7f66af1f52a53f3b2368c72215cb06edc2fba34753233ed588b8670b",
+          "kind": "hint_tier",
+          "tier": 2
+        },
+        {
+          "chunkId": "chk_c07ef349315e84cd8c741d37a89c900d4e709d0b",
+          "textChecksum": "sha256:a3a98d84ee5abd50c11b880f5b2f70ca14e1c8dd1a23e2e97481ebb71e19b613",
+          "kind": "hint_tier",
+          "tier": 3
+        },
+        {
+          "chunkId": "chk_c533c64b022b1cab6c49d0cbda6d9c93329c8336",
+          "textChecksum": "sha256:246ddd8d842d9410ac27eb4f650d1a3873ffc2d69e1b726b7aa1a7390876481a",
+          "kind": "hint_tier",
+          "tier": 4
+        },
+        {
+          "chunkId": "chk_5924a88315169dea6887b6afc94ea71cfe5a7e2c",
+          "textChecksum": "sha256:2de5b88be4eac0740775388696af0cdc73fcffc6571fd616e2ea4f045c4bb359",
+          "kind": "hint_tier",
+          "tier": 5
+        },
+        {
+          "chunkId": "chk_57067a99d5dab80d2b98d277f1d94b72a20b76bf",
+          "textChecksum": "sha256:98aebbe5f2cd844b3808ae3d3bd1bef741debbb34f346ad69221de8c22362ea1",
+          "kind": "hint_tier",
+          "tier": 6
+        }
+      ]
+    }
+  ],
+  "corpusChecksum": "sha256:4b017367c522d83b27f899557ac3e8f50bbb0a456347b4b9e98f71412102ed66",
+  "configuration": {
+    "schemaVersion": 1,
+    "version": "retrieval.pilot.v1",
+    "corpusVersion": "original.two-pointer.pilot.v1",
+    "indexIds": [
+      "idx_02ce9222ae5810cf5fd6cdfbb903e68f6dddb06c",
+      "idx_04263da646b8f9b2b50c347cedf906e41211e39c",
+      "idx_266ac01d22340351df6e34bf73125c52f6b73dcf",
+      "idx_2ba70492983bbee32f836ab621b2dc98257a189c",
+      "idx_35b5fa6214e611ecd5584afecb708ebeea8a4cb0",
+      "idx_40778c344094dba330ba2c79678f071aaf25a1a8",
+      "idx_4aae1da9acf7fef60a6d7fe12ffa6ac2400ef8d9",
+      "idx_5716510b6de068039a03ca52e85bb416b9a95a50",
+      "idx_5d3e6edb6788243ee22670b83fbc1c152f30d77c",
+      "idx_66d5995423730503356b5a1af6941276c47b81ca",
+      "idx_6a2bda0163c2c3198be44ecec302dc6b226e4c3e",
+      "idx_76f3979b90e375d2e855de3de2b8a2373f3bd1d8",
+      "idx_7e95e3428f863de38a99914de04bdf5231e290c8",
+      "idx_88f7e1e82e5380e102107797cf0eb66d95b40bbc",
+      "idx_a4596c1851537639a8be67f19d11db2651d51ef6",
+      "idx_a7e9f7de3fad88fe1d77611e65526b892186ded9",
+      "idx_a9470a61fbb070a44d8106f1499176e988593fd1",
+      "idx_b5e879b6406637a8a4424b680bce0751b65a1cdb",
+      "idx_ce5acf7c88cc0b00d1d610ba92fcc3f809cf36ed",
+      "idx_d65c66931944aeabfe519ccd9aa2954749bd8b8a",
+      "idx_def29ea6c49e88ba2032c2fb687f922bda0aaed2",
+      "idx_dfc338ab6c3355804f832417e35ab878bce711a2",
+      "idx_fa3d2af12a5e0433440f2ae856ef7dcae3556ee6"
+    ],
+    "embeddingConfigurationId": "emb_b6cff041094c8dfe94f12427a754cf58303c8cb5",
+    "chunkPolicyVersion": "pedagogical.problem.v1",
+    "lexicalPolicy": "english.plainto.cover-density.32.v1",
+    "densePolicy": "exact.cosine.v1",
+    "fusionPolicy": "rrf.equal.exact-duplicate.v1",
+    "rrfK": 60,
+    "candidateLimit": 50,
+    "topK": 3,
+    "maximumTextCharacters": 80000,
+    "timeoutMs": 2000
+  },
+  "configurationChecksum": "sha256:00fb92a5cf168d1cae8ff53c70a01a5aeff32e190521310e4560dfb7dd18b5d8",
+  "embedding": {
+    "provider": "retrieval-pilot-test",
+    "model": "original-term-basis.v1",
+    "dimensions": 8,
+    "normalization": "unit",
+    "policyVersion": "embedding.pilot.v1"
+  },
+  "approvedIndices": "Disposable test database only; no deployed promotion",
+  "labels": 8,
+  "warmups": 3,
+  "samples": 40,
+  "recallAt3": 1,
+  "mrrAt3": 1,
+  "p50Ms": 7.3084170000001905,
+  "p95Ms": 13.58954200000062,
+  "maximumMs": 14.955124999999498,
+  "latencyScope": "Full authorization, lexical+dense queries, current-source recheck, immutable persistence and commit",
+  "cases": [
+    {
+      "label": "invariant",
+      "query": "shorter boundary invariant",
+      "expectedChunkId": "chk_fe6d0b3c8b70b6e94d06e8f1e9a0f65c8e02b55b",
+      "selectedChunkIds": [
+        "chk_fe6d0b3c8b70b6e94d06e8f1e9a0f65c8e02b55b",
+        "chk_f2b84b4029bd0533f10dd2a6f2f5b4c0c6d4fd38",
+        "chk_121e4828f4d668e6e50653f7a33953ced9d5815f"
+      ],
+      "rank": 1
+    },
+    {
+      "label": "area",
+      "query": "minimum height distance area",
+      "expectedChunkId": "chk_7a3d80fba376fc01e188152ced81ebd776b93fea",
+      "selectedChunkIds": [
+        "chk_7a3d80fba376fc01e188152ced81ebd776b93fea",
+        "chk_4d9a8c96f3adb5746d354d755fcd98bea50f4422",
+        "chk_50d53e875c2e2c742891b9833f006ea415493799"
+      ],
+      "rank": 1
+    },
+    {
+      "label": "complexity",
+      "query": "linear time auxiliary space",
+      "expectedChunkId": "chk_b0bb65f6998bcaf216a274633d3a631a27ec2100",
+      "selectedChunkIds": [
+        "chk_b0bb65f6998bcaf216a274633d3a631a27ec2100",
+        "chk_786f688e08243a896627182cc640ca5e5086e427",
+        "chk_121e4828f4d668e6e50653f7a33953ced9d5815f"
+      ],
+      "rank": 1
+    },
+    {
+      "label": "termination",
+      "query": "termination pointers meet",
+      "expectedChunkId": "chk_28ed18d2b0a1f4e16db20e2092edbaff27225431",
+      "selectedChunkIds": [
+        "chk_28ed18d2b0a1f4e16db20e2092edbaff27225431",
+        "chk_121e4828f4d668e6e50653f7a33953ced9d5815f",
+        "chk_512eff32adabe37932f8cdd16da2b12414ba9224"
+      ],
+      "rank": 1
+    },
+    {
+      "label": "equality",
+      "query": "equal heights tie rule",
+      "expectedChunkId": "chk_bd1a1641c8a3a97ac403433971d3f34ad1395767",
+      "selectedChunkIds": [
+        "chk_bd1a1641c8a3a97ac403433971d3f34ad1395767",
+        "chk_121e4828f4d668e6e50653f7a33953ced9d5815f",
+        "chk_512eff32adabe37932f8cdd16da2b12414ba9224"
+      ],
+      "rank": 1
+    },
+    {
+      "label": "overflow",
+      "query": "integer product overflow",
+      "expectedChunkId": "chk_66508af686e88a8b0bcfaa855a9ec84545f47168",
+      "selectedChunkIds": [
+        "chk_66508af686e88a8b0bcfaa855a9ec84545f47168",
+        "chk_121e4828f4d668e6e50653f7a33953ced9d5815f",
+        "chk_512eff32adabe37932f8cdd16da2b12414ba9224"
+      ],
+      "rank": 1
+    },
+    {
+      "label": "empty",
+      "query": "empty input one bar",
+      "expectedChunkId": "chk_42a1fce96dc9310a0fd2d5e751df548c54d7f3b2",
+      "selectedChunkIds": [
+        "chk_42a1fce96dc9310a0fd2d5e751df548c54d7f3b2",
+        "chk_193753667163d9445826d0b7923c18cb15f19b8e",
+        "chk_121e4828f4d668e6e50653f7a33953ced9d5815f"
+      ],
+      "rank": 1
+    },
+    {
+      "label": "testing",
+      "query": "exhaustive pairs testing oracle",
+      "expectedChunkId": "chk_26c07b47afc2a210b10bbe86061297941aae4fdb",
+      "selectedChunkIds": [
+        "chk_26c07b47afc2a210b10bbe86061297941aae4fdb",
+        "chk_121e4828f4d668e6e50653f7a33953ced9d5815f",
+        "chk_512eff32adabe37932f8cdd16da2b12414ba9224"
+      ],
+      "rank": 1
+    }
+  ],
+  "limitations": [
+    "Original small two-pointer corpus; hand-authored term vectors, not a live semantic embedding model",
+    "Warm loopback PostgreSQL; excludes external provider network and production load",
+    "A local regression baseline, not Task45 human quality approval or index promotion"
+  ]
+}

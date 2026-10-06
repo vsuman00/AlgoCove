@@ -3,6 +3,9 @@
 import { useEffect, useMemo, useRef, useState, type ReactElement } from "react";
 import type { ProblemLanguage, PseudocodeFields } from "@algocove/domain";
 import TraceWorkspace from "./trace-workspace";
+import TutorPanel from "./tutor-panel";
+import ExternalReadiness from "./external-readiness";
+import type { ExternalPreparationView } from "@algocove/application";
 import { useAppSession } from "./staff-navigation";
 
 const LANGUAGES: readonly { readonly value: ProblemLanguage; readonly label: string }[] = [
@@ -24,6 +27,17 @@ const PSEUDOCODE_FIELDS = [
   ["output", "Output"],
   ["complexity", "Complexity"],
 ] as const;
+
+const PSEUDOCODE_PLACEHOLDERS: Record<string, string> = {
+  inputs: "e.g. heights array of positive integer elevations",
+  state: "e.g. left pointer, right pointer, best area so far",
+  initialization: "e.g. left = 0, right = heights.length - 1, best = 0",
+  invariant: "e.g. optimal container between [0, left-1] and [right+1, n-1] already checked",
+  loop: "e.g. while left < right: calculate current area, advance shorter line",
+  termination: "e.g. pointers converge (left >= right)",
+  output: "e.g. return maximum contained area (best)",
+  complexity: "e.g. O(n) time, O(1) auxiliary space",
+};
 
 const STARTERS: Record<ProblemLanguage, string> = {
   python:
@@ -603,7 +617,7 @@ export default function ProblemWorkspace({
         </aside>
       </header>
 
-      <ol className="ac-workspace__path" aria-label="Guided problem path">
+      <ol className="ac-workspace__path" aria-label="Guided problem path" tabIndex={0}>
         {[
           ["1", "Understand"],
           ["2", "Pseudocode"],
@@ -619,7 +633,10 @@ export default function ProblemWorkspace({
       </ol>
 
       <div className="ac-workspace__grid">
-        <section className="ac-panel ac-workspace__panel" aria-labelledby="prompt-title">
+        <section
+          className="ac-panel ac-workspace__panel ac-workspace__panel--problem"
+          aria-labelledby="prompt-title"
+        >
           <p className="ac-eyebrow">Problem</p>
           <h2 id="prompt-title">Problem statement</h2>
           {publishedProblem === null ? (
@@ -658,9 +675,23 @@ export default function ProblemWorkspace({
               </div>
             </dl>
           )}
+          {publishedProblem !== null && (
+            <div className="ac-invariant-callout">
+              <span className="ac-invariant-badge">Key Invariant</span>
+              <p>
+                The width decreases at every step. Any other container bounded by the shorter line
+                and an inner line will have both a strictly smaller width and height bounded by the
+                shorter line. Hence, the shorter boundary can safely be discarded without missing
+                the optimal area.
+              </p>
+            </div>
+          )}
         </section>
 
-        <section className="ac-panel ac-workspace__panel" aria-labelledby="pseudocode-title">
+        <section
+          className="ac-panel ac-workspace__panel ac-workspace__panel--pseudocode"
+          aria-labelledby="pseudocode-title"
+        >
           <div className="ac-panel-heading">
             <div>
               <p className="ac-eyebrow">Structured reasoning</p>
@@ -786,6 +817,70 @@ export default function ProblemWorkspace({
           >
             Check reasoning readiness
           </button>
+          <ExternalReadiness
+            enabled={sessionState === "authenticated" && workspaceStatus === "ready"}
+            revisionKey={JSON.stringify([language, source, pseudocode, learnerId, sessionState])}
+            perform={async (action, idempotencyKey) => {
+              const expectedAttemptId = remoteWorkspace.current?.attemptId;
+              await syncQueue.current;
+              const remote = remoteWorkspace.current;
+              if (!remote || remote.attemptId !== expectedAttemptId)
+                throw Error("Workspace changed.");
+              const response = await fetch("/api/practice/external-companion", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ attemptId: remote.attemptId, action, idempotencyKey }),
+                cache: "no-store",
+                signal: AbortSignal.timeout(10_000),
+              });
+              if (!response.ok)
+                throw Object.assign(Error("External practice unavailable."), {
+                  status: response.status,
+                });
+              return response.json();
+            }}
+            evaluate={(answers) => {
+              const expectedAttemptId = remoteWorkspace.current?.attemptId;
+              const evaluation = syncQueue.current.then(async () => {
+                const remote = remoteWorkspace.current;
+                if (remote === null || remote.attemptId !== expectedAttemptId)
+                  throw new Error("Workspace changed.");
+                const synced = await syncRemoteDrafts({ remote, source, pseudocode });
+                if (remoteWorkspace.current?.attemptId !== remote.attemptId)
+                  throw new Error("Workspace changed.");
+                remoteWorkspace.current = synced;
+                const response = await fetch("/api/practice/external-companion", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    attemptId: synced.attemptId,
+                    action: answers ? "grade" : "view",
+                    ...(answers ? { answers } : {}),
+                  }),
+                  signal: AbortSignal.timeout(10_000),
+                  cache: "no-store",
+                });
+                if (!response.ok) throw new Error("Preparation unavailable.");
+                const result = (await response.json()) as ExternalPreparationView;
+                const decision = result.decision;
+                if (
+                  !["ready", "not_ready"].includes(decision.status) ||
+                  !Array.isArray(decision.reasons) ||
+                  decision.reasons.some(
+                    (reason) =>
+                      typeof reason.code !== "string" || typeof reason.message !== "string",
+                  )
+                )
+                  throw new Error("Invalid preparation response.");
+                return result;
+              });
+              syncQueue.current = evaluation.then(
+                () => undefined,
+                () => undefined,
+              );
+              return evaluation;
+            }}
+          />
           <p className="ac-workspace__muted">
             Your reasoning is saved privately as you work. Save a revision when you are ready to
             check your answers.
@@ -843,6 +938,7 @@ export default function ProblemWorkspace({
                 <span>{label}</span>
                 <textarea
                   aria-label={label}
+                  placeholder={PSEUDOCODE_PLACEHOLDERS[field] ?? ""}
                   value={pseudocode[field]}
                   onChange={(event) => updatePseudocode(field, event.target.value)}
                   rows={2}
@@ -853,7 +949,7 @@ export default function ProblemWorkspace({
         </section>
 
         <section
-          className="ac-panel ac-workspace__panel ac-workspace__panel--wide"
+          className="ac-panel ac-workspace__panel ac-workspace__panel--wide ac-workspace__panel--trace"
           aria-labelledby="trace-workspace-title"
         >
           <p className="ac-eyebrow">Visual reasoning</p>
@@ -871,7 +967,10 @@ export default function ProblemWorkspace({
           )}
         </section>
 
-        <section className="ac-panel ac-workspace__panel" aria-labelledby="editor-title">
+        <section
+          className="ac-panel ac-workspace__panel ac-workspace__panel--editor"
+          aria-labelledby="editor-title"
+        >
           <div className="ac-panel-heading">
             <div>
               <p className="ac-eyebrow">Implementation</p>
@@ -892,14 +991,66 @@ export default function ProblemWorkspace({
               </select>
             </label>
           </div>
-          <textarea
-            aria-label={`${LANGUAGES.find((candidate) => candidate.value === language)?.label ?? "Code"} source`}
-            className="ac-workspace__editor"
-            spellCheck={false}
-            value={source}
-            onChange={(event) => updateSource(event.target.value)}
-            rows={14}
-          />
+          <div className="ac-editor-container">
+            <textarea
+              aria-label={`${LANGUAGES.find((candidate) => candidate.value === language)?.label ?? "Code"} source`}
+              className="ac-workspace__editor"
+              spellCheck={false}
+              value={source}
+              onChange={(event) => updateSource(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Tab") {
+                  event.preventDefault();
+                  const target = event.currentTarget;
+                  const start = target.selectionStart;
+                  const end = target.selectionEnd;
+                  const val = target.value;
+                  const indent = "    ";
+                  if (event.shiftKey) {
+                    const before = val.substring(0, start);
+                    const lineStart = before.lastIndexOf("\n") + 1;
+                    if (val.substring(lineStart, lineStart + 4) === indent) {
+                      const next = val.substring(0, lineStart) + val.substring(lineStart + 4);
+                      updateSource(next);
+                      requestAnimationFrame(() => {
+                        target.selectionStart = Math.max(lineStart, start - 4);
+                        target.selectionEnd = Math.max(lineStart, end - 4);
+                      });
+                    }
+                  } else {
+                    const next = val.substring(0, start) + indent + val.substring(end);
+                    updateSource(next);
+                    requestAnimationFrame(() => {
+                      target.selectionStart = target.selectionEnd = start + indent.length;
+                    });
+                  }
+                } else if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
+                  event.preventDefault();
+                  if (
+                    executionEnabled &&
+                    sessionState === "authenticated" &&
+                    workspaceStatus === "ready" &&
+                    !submitted &&
+                    executionState.kind !== "requesting" &&
+                    executionState.kind !== "queued" &&
+                    executionState.kind !== "suspended" &&
+                    executionState.kind !== "cancelling"
+                  ) {
+                    void executeWorkspace("run");
+                  }
+                }
+              }}
+              rows={14}
+            />
+            <div className="ac-editor-statusbar" aria-hidden="true">
+              <span>
+                {source.split("\n").length} lines · {source.length} chars
+              </span>
+              <span>
+                <kbd>Tab</kbd> indent · <kbd>⌘↵</kbd> run checks
+              </span>
+            </div>
+          </div>
           <div className="ac-button-row">
             <button
               className="ac-button ac-button--primary"
@@ -999,7 +1150,10 @@ export default function ProblemWorkspace({
           ) : null}
         </section>
 
-        <aside className="ac-panel ac-workspace__panel" aria-labelledby="hint-title">
+        <aside
+          className="ac-panel ac-workspace__panel ac-workspace__panel--guidance"
+          aria-labelledby="hint-title"
+        >
           <p className="ac-eyebrow">Guidance</p>
           <h2 id="hint-title">Need a nudge?</h2>
           <p>{hintState}</p>
@@ -1018,6 +1172,11 @@ export default function ProblemWorkspace({
             Hints reveal progressively more guidance. Each hint is recorded with your attempt so
             your progress reflects the help you used.
           </p>
+          <TutorPanel
+            key={`${learnerId}-${language}-${restart}`}
+            available={sessionState === "authenticated"}
+            getAttemptId={() => remoteWorkspace.current?.attemptId}
+          />
         </aside>
       </div>
     </main>

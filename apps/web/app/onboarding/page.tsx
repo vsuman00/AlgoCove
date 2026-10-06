@@ -92,36 +92,54 @@ export default function OnboardingPage(): ReactElement {
     event.preventDefault();
     setStatus("loading");
     setMessage("Saving your profile.");
-    const response = await fetch("/api/onboarding", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        goal: form.goal,
-        targetRole: form.targetRole,
-        timezone: form.timezone,
-        dailyCapacityMinutes: Number(form.dailyCapacityMinutes),
-        horizonDays: Number(form.horizonDays),
-        accessibility: {
-          reducedMotion: form.reducedMotion,
-          highContrast: form.highContrast,
-          screenReader: form.screenReader,
-        },
-        preferredLanguages: form.preferredLanguages
-          .split(",")
-          .map((language) => language.trim().toLowerCase())
-          .filter(Boolean),
-        ...(form.version === undefined ? {} : { version: form.version }),
-      }),
-    });
-    if (!response.ok) {
+    try {
+      const response = await fetch("/api/onboarding", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          goal: form.goal,
+          targetRole: form.targetRole,
+          timezone: form.timezone,
+          dailyCapacityMinutes: Number(form.dailyCapacityMinutes),
+          horizonDays: Number(form.horizonDays),
+          accessibility: {
+            reducedMotion: form.reducedMotion,
+            highContrast: form.highContrast,
+            screenReader: form.screenReader,
+          },
+          preferredLanguages: form.preferredLanguages
+            .split(",")
+            .map((language) => language.trim().toLowerCase())
+            .filter(Boolean),
+          ...(form.version === undefined ? {} : { version: form.version }),
+        }),
+      });
+      if (!response.ok) {
+        setStatus("error");
+        const body: unknown = await response.json().catch(() => null);
+        const error =
+          typeof body === "object" && body !== null && "error" in body ? body.error : null;
+        const validationMessage =
+          response.status === 400 &&
+          typeof error === "object" &&
+          error !== null &&
+          "code" in error &&
+          error.code === "invalid_request" &&
+          "message" in error &&
+          typeof error.message === "string"
+            ? error.message
+            : null;
+        setMessage(validationMessage ?? "We could not save that profile. Try again.");
+        return;
+      }
+      const body = (await response.json()) as { profile: { version: number } };
+      setForm((current) => ({ ...current, version: body.profile.version }));
+      setStatus("saved");
+      setMessage("Profile saved. Your learning plan can now use it.");
+    } catch {
       setStatus("error");
-      setMessage("We could not save that profile. Check the fields and try again.");
-      return;
+      setMessage("We could not reach the profile service. Try again.");
     }
-    const body = (await response.json()) as { profile: { version: number } };
-    setForm((current) => ({ ...current, version: body.profile.version }));
-    setStatus("saved");
-    setMessage("Profile saved. Your learning plan can now use it.");
   }
 
   return (

@@ -14,7 +14,10 @@
       "@algocove/execution-contracts": ["packages/execution-contracts/src/index.ts"],
       "@algocove/execution-control": ["services/execution-control/src/index.ts"],
       "@algocove/domain": ["packages/domain/src/index.ts"],
-      "@algocove/visualizer": ["packages/visualizer/src/index.ts"]
+      "@algocove/visualizer": ["packages/visualizer/src/index.ts"],
+      "@algocove/content": ["packages/content/src/index.ts"],
+      "@algocove/retrieval": ["packages/retrieval/src/index.ts"],
+      "@algocove/tutor": ["packages/tutor/src/index.ts"]
     },
     "moduleDetection": "force",
     "resolveJsonModule": true,

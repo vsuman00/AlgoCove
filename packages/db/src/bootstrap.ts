@@ -92,6 +92,8 @@ export const DATA_SCHEMAS = [
   "practice",
   "mastery",
   "planning",
+  "search",
+  "tutor",
 ] as const;
 export const BOOKKEEPING_TABLE = "schema_migration";
 
@@ -234,6 +236,10 @@ async function applyPrivileges(
   // create objects and impersonate platform tables.
   await pool.query("REVOKE CREATE ON SCHEMA public FROM PUBLIC");
   await pool.query(`REVOKE ALL ON SCHEMA public FROM ${runtimeRole}`);
+  await pool.query(`GRANT USAGE ON SCHEMA public TO ${runtimeRole}`);
+  await pool.query(
+    `ALTER DEFAULT PRIVILEGES FOR ROLE ${migrationRole} IN SCHEMA content GRANT EXECUTE ON FUNCTIONS TO ${runtimeRole}`,
+  );
 
   // Bookkeeping is internal: the runtime role may read the watermark, never write.
   await pool.query(

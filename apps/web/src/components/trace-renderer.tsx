@@ -31,7 +31,12 @@ export default function TraceRenderer({ trace }: TraceRendererProps): ReactEleme
   const [tilt, setTilt] = useState(24);
   const step = navigation.trace === trace ? navigation.step : 0;
 
-  if (!documentResult.ok || !transcript.ok) {
+  const replay = useMemo(() => {
+    if (!documentResult.ok) return null;
+    return replayTrace(documentResult.value, step);
+  }, [documentResult, step]);
+
+  if (!documentResult.ok || !transcript.ok || replay === null) {
     return (
       <section aria-labelledby="trace-unavailable-title" className="ac-trace ac-trace--error">
         <h2 id="trace-unavailable-title">Trace unavailable</h2>
@@ -43,7 +48,6 @@ export default function TraceRenderer({ trace }: TraceRendererProps): ReactEleme
     );
   }
 
-  const replay = replayTrace(documentResult.value, step);
   if (!replay.ok) {
     return (
       <section aria-labelledby="trace-unavailable-title" className="ac-trace ac-trace--error">
@@ -52,6 +56,19 @@ export default function TraceRenderer({ trace }: TraceRendererProps): ReactEleme
       </section>
     );
   }
+
+  const leftIdx = replay.value.state.left;
+  const rightIdx = replay.value.state.right;
+  const values = replay.value.state.values;
+  const currentLeftVal = leftIdx >= 0 && leftIdx < values.length ? (values[leftIdx] ?? null) : null;
+  const currentRightVal =
+    rightIdx >= 0 && rightIdx < values.length ? (values[rightIdx] ?? null) : null;
+  const distance = leftIdx >= 0 && rightIdx >= 0 && rightIdx >= leftIdx ? rightIdx - leftIdx : 0;
+  const minHeight =
+    currentLeftVal !== null && currentRightVal !== null
+      ? Math.min(currentLeftVal, currentRightVal)
+      : null;
+  const currentArea = minHeight !== null ? minHeight * distance : null;
 
   const move = (nextStep: number): void => {
     setNavigation({ trace, step: Math.max(0, Math.min(maxStep, nextStep)) });
@@ -95,12 +112,64 @@ export default function TraceRenderer({ trace }: TraceRendererProps): ReactEleme
         Step {replay.value.state.step} of {maxStep}. {stateSummary(replay.value)}
       </div>
 
+      {currentArea !== null && (
+        <div className="ac-trace-calculation" aria-live="polite">
+          <span className="ac-trace-calc-label">State calculation:</span>
+          <span className="ac-trace-calc-formula">
+            Width = <strong>{distance}</strong> · Height = min(
+            <span className="ac-val-jade">
+              h[{leftIdx}]={currentLeftVal}
+            </span>
+            ,{" "}
+            <span className="ac-val-coral">
+              h[{rightIdx}]={currentRightVal}
+            </span>
+            ) = <strong>{minHeight}</strong>
+          </span>
+          <span className="ac-trace-calc-result">
+            Current Area = <strong>{currentArea}</strong>
+          </span>
+        </div>
+      )}
+
       <div className="ac-trace-view-controls" role="group" aria-label="Trace view">
         <button type="button" aria-pressed={spatial} onClick={() => setSpatial((value) => !value)}>
           {spatial ? "Use flat view" : "Use 3D view"}
         </button>
         {spatial && (
           <>
+            <div className="ac-trace-camera-presets" role="group" aria-label="Camera presets">
+              <button
+                type="button"
+                className={`ac-preset-button${angle === -18 && tilt === 24 ? " is-active" : ""}`}
+                onClick={() => {
+                  setAngle(-18);
+                  setTilt(24);
+                }}
+              >
+                Isometric 3D
+              </button>
+              <button
+                type="button"
+                className={`ac-preset-button${angle === 0 && tilt === 45 ? " is-active" : ""}`}
+                onClick={() => {
+                  setAngle(0);
+                  setTilt(45);
+                }}
+              >
+                Top-Down
+              </button>
+              <button
+                type="button"
+                className={`ac-preset-button${angle === 0 && tilt === 0 ? " is-active" : ""}`}
+                onClick={() => {
+                  setAngle(0);
+                  setTilt(0);
+                }}
+              >
+                Front View
+              </button>
+            </div>
             <label>
               Rotate{" "}
               <input
@@ -133,7 +202,11 @@ export default function TraceRenderer({ trace }: TraceRendererProps): ReactEleme
           </>
         )}
       </div>
-      <div className={`ac-trace-stage${spatial ? " is-spatial" : ""}`}>
+      <div
+        className={`ac-trace-stage${spatial ? " is-spatial" : ""}`}
+        tabIndex={0}
+        aria-label="Trace values"
+      >
         <div
           aria-label="Array values"
           className="ac-trace-values"
@@ -146,6 +219,8 @@ export default function TraceRenderer({ trace }: TraceRendererProps): ReactEleme
               className="ac-trace-value"
               data-active={isActiveIndex(index, replay.value) ? "true" : "false"}
               data-answer={replay.value.state.answer?.includes(index) ? "true" : "false"}
+              data-pointer-left={replay.value.state.left === index ? "true" : "false"}
+              data-pointer-right={replay.value.state.right === index ? "true" : "false"}
               key={`${index}-${value}`}
               role="listitem"
             >
@@ -156,13 +231,15 @@ export default function TraceRenderer({ trace }: TraceRendererProps): ReactEleme
               </span>
               <small aria-hidden="true">{index}</small>
               <span className="ac-trace-pointer" aria-hidden="true">
-                {[
-                  replay.value.state.left === index ? "L" : null,
-                  replay.value.state.right === index ? "R" : null,
-                  replay.value.state.answer?.includes(index) ? "✓" : null,
-                ]
-                  .filter(Boolean)
-                  .join(" · ")}
+                {replay.value.state.left === index && (
+                  <span className="ac-pointer-badge ac-pointer-badge--left">L</span>
+                )}
+                {replay.value.state.right === index && (
+                  <span className="ac-pointer-badge ac-pointer-badge--right">R</span>
+                )}
+                {replay.value.state.answer?.includes(index) && (
+                  <span className="ac-pointer-badge ac-pointer-badge--answer">✓</span>
+                )}
               </span>
             </span>
           ))}

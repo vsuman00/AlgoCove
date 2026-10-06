@@ -68,7 +68,7 @@ export class PostgresProgressRepository implements LearningProgressRepository {
           [input.learnerId],
         );
         const external = await tx.query<{ kind: string }>(
-          "SELECT DISTINCT ON(reference_id) kind FROM practice.external_practice_event WHERE learner_id=$1 ORDER BY reference_id,occurred_at DESC,event_id DESC",
+          "SELECT DISTINCT ON(reference_id) kind FROM practice.external_practice_event WHERE learner_id=$1 AND kind IN ('completed','corrected') ORDER BY reference_id,occurred_at DESC,event_id DESC",
           [input.learnerId],
         );
         const requests = await tx.query<{ count: number }>(
@@ -80,7 +80,8 @@ export class PostgresProgressRepository implements LearningProgressRepository {
           title: string;
           canonical_url: string;
         }>(
-          "SELECT external_reference_id,title,canonical_url FROM content.external_reference WHERE url_status='reviewed' ORDER BY title",
+          "SELECT external_reference_id,title,canonical_url FROM content.external_reference r WHERE EXISTS(SELECT 1 FROM practice.external_practice_event e WHERE e.reference_id=r.external_reference_id AND e.learner_id=$1 AND e.kind='handoff_requested' AND e.attempt_id IS NOT NULL) ORDER BY title",
+          [input.learnerId],
         );
         const reviews = await tx.query<{ status: string; due_start: Date; due_end: Date }>(
           "SELECT status,due_start,due_end FROM mastery.review_item WHERE learner_id=$1 AND status<>'superseded'",
@@ -328,6 +329,22 @@ export class PostgresProgressRepository implements LearningProgressRepository {
         )
           throw conflictError("External journal key already has another intent.");
         return;
+      }
+      if (input.kind === "handoff_requested")
+        throw validationError("Open external practice from the preparation gate.");
+      const handoff = await tx.query(
+        "SELECT 1 FROM practice.external_practice_event WHERE learner_id=$1 AND reference_id=$2 AND kind='handoff_requested' AND attempt_id IS NOT NULL LIMIT 1",
+        [input.learnerId, input.referenceId],
+      );
+      if (!handoff.rowCount)
+        throw validationError("Record a gated handoff before external completion.");
+      if (input.kind === "corrected") {
+        const latest = await tx.query<{ kind: string }>(
+          "SELECT kind FROM practice.external_practice_event WHERE learner_id=$1 AND reference_id=$2 AND kind IN ('completed','corrected') ORDER BY occurred_at DESC,event_id DESC LIMIT 1",
+          [input.learnerId, input.referenceId],
+        );
+        if (latest.rows[0]?.kind !== "completed")
+          throw validationError("Only a completion can be corrected.");
       }
       const reference = await tx.query(
         "SELECT 1 FROM content.external_reference WHERE external_reference_id=$1 AND url_status='reviewed' FOR SHARE",

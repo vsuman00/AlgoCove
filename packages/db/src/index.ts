@@ -87,3 +87,24 @@ export * from "./roadmap-repository.ts";
 export * from "./budget-repository.ts";
 
 export { PostgresContentRepository } from "./content-repository.ts";
+export { PostgresExternalReadinessRepository } from "./external-readiness-repository.ts";
+
+export { PostgresExternalCompanionRepository } from "./external-companion-repository.ts";
+export { PostgresReadinessContentRepository } from "./readiness-content-repository.ts";
+
+export { PostgresWorkerOperationsRepository } from "./worker-operations-repository.ts";
+export { PostgresWorkerEffectsRepository } from "./worker-effects-repository.ts";
+export type { WorkerEffectSummary } from "./worker-effects-repository.ts";
+
+export { bootstrapWorkerRole } from "./bootstrap-worker.ts";
+export {
+  PostgresContentIndexRepository,
+  enqueuePublishedContentDerivation,
+} from "./content-index-repository.ts";
+export { PostgresRetrievalRepository } from "./retrieval-queries.ts";
+
+export { PostgresTutorRepository } from "./tutor-repository.ts";
+
+export * from "./evaluation-repository.ts";
+
+export * from "./roadmap-generation-repository.ts";

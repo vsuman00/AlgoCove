@@ -179,7 +179,7 @@ export class PostgresExplanationRepository {
         throw validationError("Save an offered answer for every reviewed reasoning question.");
       }
       const tier = await tx.query<{ tier: number }>(
-        "SELECT COALESCE(max(tier),0)::integer AS tier FROM practice.hint_exposure WHERE learner_id=$1 AND problem_version_id=$2",
+        "SELECT COALESCE(max(tier),0)::integer AS tier FROM (SELECT tier FROM practice.hint_exposure WHERE learner_id=$1 AND problem_version_id=$2 UNION ALL SELECT tier FROM tutor.assistance WHERE learner_id=$1 AND problem_version_id=$2) exposure",
         [input.learnerId, revision.problem_version_id],
       );
       return persistLearning(

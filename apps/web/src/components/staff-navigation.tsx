@@ -98,6 +98,11 @@ export default function StaffNavigation({ active }: { active: string }): ReactEl
           Content
         </a>
       )}
+      {content && (
+        <a className="ac-nav-item" href="/admin/readiness">
+          Preparation policies
+        </a>
+      )}
       {operator && (
         <a
           className="ac-nav-item"

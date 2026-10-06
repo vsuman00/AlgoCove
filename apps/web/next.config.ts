@@ -37,6 +37,8 @@ if (process.env.NODE_ENV === "development") {
  */
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  // Isolated test servers must not share the developer server build/lock directory.
+  distDir: process.env.ALGOCOVE_TEST_DIST_DIR ?? ".next",
   agentRules: false,
   // Local reverse proxies and browser checks commonly expose localhost as 127.0.0.1.
   // Permit that loopback origin for Next.js development resources (HMR/CSS).
@@ -46,6 +48,9 @@ const nextConfig: NextConfig = {
     "@algocove/application",
     "@algocove/config",
     "@algocove/db",
+    "@algocove/content",
+    "@algocove/retrieval",
+    "@algocove/tutor",
     "@algocove/domain",
     "@algocove/visualizer",
   ],

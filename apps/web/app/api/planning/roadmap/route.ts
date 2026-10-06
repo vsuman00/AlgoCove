@@ -10,6 +10,7 @@ import {
 import { parseId } from "@algocove/domain";
 import { authenticatedWebRequestContext } from "../../../../src/auth/request-context";
 import { getRoadmapRepository } from "../../../../src/planning/runtime";
+import { getRoadmapOptional } from "../../../../src/planning/proposal-runtime";
 import {
   learningBody,
   learningResponse,
@@ -40,13 +41,29 @@ export async function POST(request: Request): Promise<NextResponse> {
     if (body.action === "build") {
       if (body.scope !== "reviewed_pilot" && body.scope !== "full_dsa")
         throw validationError("Choose a supported scope.");
-      // AI-off is the complete production path in Phase 7. Fixtures are injected only by tests.
+      if (body.useProposal !== undefined && typeof body.useProposal !== "boolean")
+        throw validationError("Choose whether to request optional sequencing.");
+      if (
+        Object.keys(body).some(
+          (key) =>
+            !["action", "scope", "expectedToken", "idempotencyKey", "useProposal"].includes(key),
+        )
+      )
+        throw validationError("Planning build accepts declared fields only.");
+      const optional =
+        body.useProposal === true ? await getRoadmapOptional(context, repository) : undefined;
       return learningResponse(
-        await buildOwnedRoadmap(context, repository, {
-          scope: body.scope,
-          expectedToken: body.expectedToken as string | null,
-          idempotencyKey: body.idempotencyKey,
-        }),
+        await buildOwnedRoadmap(
+          context,
+          repository,
+          {
+            useProposal: body.useProposal === true,
+            scope: body.scope,
+            expectedToken: body.expectedToken as string | null,
+            idempotencyKey: body.idempotencyKey,
+          },
+          optional,
+        ),
       );
     }
     if (

@@ -1,0 +1,14 @@
+{
+  "name": "@algocove/tutor",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@algocove/application": "workspace:*",
+    "@algocove/domain": "workspace:*",
+    "@algocove/retrieval": "workspace:*"
+  }
+}

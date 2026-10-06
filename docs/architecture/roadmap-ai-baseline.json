@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "scenarioSet": "roadmap.gateway.synthetic.v1",
+  "governanceFixtureSuite": "tutor-retrieval.synthetic.v1",
+  "sourceVersion": "sha256:09a29ffbf1d2725973c37ffa72cc521ce8544e439837885255f0986a4ad8bc9b",
+  "environment": "synthetic-local",
+  "providerTransport": "injected original fixture; no live vendor",
+  "costUnit": "bounded prompt/candidate characters, not billed tokens or currency",
+  "configuration": [
+    {
+      "fixture": true,
+      "version": "roadmap.fixture.bundle.v1",
+      "indexVersion": "roadmap.catalog.v1",
+      "corpusVersion": "cur_aaaaaaaaaaaaaaaa",
+      "policyVersion": "roadmap.policy.v1",
+      "promptVersion": "roadmap.prompt.v1",
+      "retrievalVersion": "roadmap.catalog.v1",
+      "approvalReference": null,
+      "generationVersion": "sha256:52b099d46da852ba455b20e16f7c1221f580895b3d9b62b9c04d7ebdc4e53ec7"
+    }
+  ],
+  "measurements": [
+    {
+      "model": "original.schedule.v1",
+      "outcome": "validated",
+      "provider": "fixture",
+      "latencyMs": 1.475999999999999,
+      "modelVersion": "roadmap.fixture.v1",
+      "bundleVersion": "roadmap.fixture.bundle.v1",
+      "policyVersion": "roadmap.policy.v1",
+      "promptVersion": "roadmap.prompt.v1",
+      "schemaVersion": 1,
+      "promptCharacters": 1034,
+      "candidateCharacters": 197
+    },
+    {
+      "model": "original.schedule.v1",
+      "outcome": "rejected",
+      "provider": "fixture",
+      "latencyMs": 0.07533300000000054,
+      "modelVersion": "roadmap.fixture.v1",
+      "bundleVersion": "roadmap.fixture.bundle.v1",
+      "policyVersion": "roadmap.policy.v1",
+      "promptVersion": "roadmap.prompt.v1",
+      "schemaVersion": 1,
+      "promptCharacters": 1034,
+      "candidateCharacters": 0
+    },
+    {
+      "model": "original.schedule.v1",
+      "outcome": "rejected",
+      "provider": "fixture",
+      "latencyMs": 0.032125000000064574,
+      "modelVersion": "roadmap.fixture.fallback.v1",
+      "bundleVersion": "roadmap.fixture.bundle.v1",
+      "policyVersion": "roadmap.policy.v1",
+      "promptVersion": "roadmap.prompt.v1",
+      "schemaVersion": 1,
+      "promptCharacters": 1043,
+      "candidateCharacters": 0
+    },
+    {
+      "model": "original.schedule.v1",
+      "outcome": "validated",
+      "provider": "fixture",
+      "latencyMs": 1.1507500000000164,
+      "modelVersion": "roadmap.fixture.v1",
+      "bundleVersion": "roadmap.fixture.bundle.v1",
+      "policyVersion": "roadmap.policy.v1",
+      "promptVersion": "roadmap.prompt.v1",
+      "schemaVersion": 1,
+      "promptCharacters": 1034,
+      "candidateCharacters": 197
+    }
+  ]
+}
