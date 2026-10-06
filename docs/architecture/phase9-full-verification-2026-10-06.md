@@ -9,6 +9,9 @@ Date: 2026-10-06. Scope: accumulated Phase 8–9 implementation, associated UI r
 - The full dependency audit discovered [GHSA-68fv-2mgg-jv7q](https://github.com/advisories/GHSA-68fv-2mgg-jv7q). The workspace now pins transitive `source-map-js` to the patched 1.2.2 release. Production audit passes. The full audit passes its existing narrow exception for the unpatched development-only `braces` advisory; that exception was not expanded.
 - A controlled mutation inverted the new evaluation configuration approval condition. The retrieval evaluation test rejecting live configurations without approval failed as expected. The original file was restored and its SHA-256 verified before final tests.
 
+- Further component review reproduced a late cancellation response overwriting a newer tutor result. Both successful and failed cancellation responses are now fenced by the same request epoch as generation; two regression tests failed before the fix and pass after it.
+- Initial GitHub quality CI reported 132 database tests passing and two browser-backed integration cases failing because Chromium was installed after integration. The workflow now installs Chromium before those tests and also runs the execution-result browser suite. A fresh CI run is required to verify this ordering.
+
 ## Coverage inventory
 
 The checkout has 13 page components, 19 shared UI components and 31 API route handlers. The following maps their feature groups to current tests. Rendering and behavior are covered at different layers; this is a declared regression suite, not a claim of exhaustive coverage of every possible state or input.
@@ -37,7 +40,7 @@ The checkout has 13 page components, 19 shared UI components and 31 API route ha
 
 ## Final local results
 
-- `pnpm verify`: **458 tests passed**; format, lint, application/web/worker types, tokens, docs and secret checks passed.
+- `pnpm verify`: **460 tests passed**; format, lint, application/web/worker types, tokens, docs and secret checks passed.
 - Disposable PostgreSQL integration: **134 passed, two optional Linux-host cases skipped**; lifecycle verifies **33 migrations**. A dedicated cluster on port 54439 isolated verification from the existing repair database on port 54329.
 - Production build: passed in `.next/publication-review`. Browser suites used that completed build without rebuilding during a run.
 - Chromium standard E2E: **47 passed with four workers**. The previously recorded parallel reset instability did not reproduce in this run or the preceding 40-case parallel run.

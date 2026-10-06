@@ -96,7 +96,7 @@ export default function TutorPanel({
   }
   async function cancel() {
     const turn = current.current;
-    epoch.current++;
+    const token = ++epoch.current;
     if (!turn?.id) {
       setView(null);
       setStatus("Stop requested. Retry later to check any saved request.");
@@ -104,6 +104,7 @@ export default function TutorPanel({
     }
     try {
       const result = await request({ action: "cancel", requestId: turn.id });
+      if (token !== epoch.current) return;
       setView(result);
       setStatus(
         result.status === "cancelled"
@@ -111,6 +112,7 @@ export default function TutorPanel({
           : "The saved request has already completed.",
       );
     } catch {
+      if (token !== epoch.current) return;
       setView(null);
       setStatus("Cancellation could not be confirmed. Retry to check the saved request.");
     }

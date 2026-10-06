@@ -41,6 +41,9 @@ jobs:
       - name: Run repository verification
         run: pnpm verify
 
+      - name: Install Chromium for integration and UI tests
+        run: pnpm exec playwright install --with-deps chromium
+
       - name: Start PostgreSQL and pgvector
         run: docker compose up -d --wait db
 
@@ -52,14 +55,14 @@ jobs:
       - name: Build production application
         run: pnpm build
 
-      - name: Install Chromium for accessibility tests
-        run: pnpm exec playwright install --with-deps chromium
-
       - name: Run browser accessibility tests
         run: pnpm test:a11y
 
       - name: Run roadmap and offline recovery journeys
         run: pnpm test:e2e
+
+      - name: Run execution result browser tests
+        run: pnpm test:execution-browser
 
       - name: Audit production dependencies
         run: pnpm audit --prod --audit-level high
