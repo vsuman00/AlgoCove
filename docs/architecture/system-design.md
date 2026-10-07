@@ -6,6 +6,12 @@
 
 ## 1. System mission
 
+**2026-10-07 target extension:** Learn DSA, sheets, roadmap and future interview sessions consume the same governed problem identities and exact versions. A proposed release manifest pins lesson, approach, pseudocode, trace, rubric, hints and language assets. Practice owns attempts and observations; mastery/review owns evidence interpretation. A new entry page cannot independently award progress or create another copy of the problem. See the [evolution proposal](learning-platform-evolution-2026-10-07.md) and ADRs 0019–0022.
+
+Published catalog queries expose actual asset/language availability. Planning consumes this catalog rather than a fixed problem ID. Collections reference problems; a future interview module orchestrates practice through application commands and adds timing/assistance policy. Keep the existing modular monolith, PostgreSQL, worker and isolated executor.
+
+Compose server-rendered catalog/lesson views with client controls for drafts, editing and trace playback. Server rendering and browser handlers share authorized application queries. One replay state drives structure, active pseudocode, variables and narration. All extensions here are planned, not implemented.
+
 AlgoCove is not a generic DSA chatbot or a large problem directory. It is an adaptive mastery system and outbound practice companion composed of six cooperating engines:
 
 | Engine | Responsibility | Must remain deterministic? |
@@ -156,7 +162,7 @@ TypeScript is a first-class learner language, not merely an editor mode. Its pro
 
 #### Background worker
 
-Not deployed at the start. It is extracted when jobs exceed interactive request budgets, require durable retries, or compete with learner traffic. The first trigger is durable code-run dispatch in Task 21. It later handles content derivation, embeddings, offline evaluations, review-schedule batches, and retention jobs. A transactional outbox prevents lost work.
+The initial design deferred the worker until durable dispatch. The worker and outbox are now implemented locally, including Phase 9 job/indexing evidence. Reuse this process boundary for dispatch, indexing and reconciliation. Further jobs require scoped tasks; local implementation does not establish hosted deployment or operational readiness.
 
 ## 6. C4 level 3 — web application components
 
@@ -233,7 +239,7 @@ flowchart LR
 
 ### External practice handoff
 
-- A learner reaches an external practice gate only after configured internal learning checkpoints, unless they explicitly choose practice mode.
+- A learner reaches an external practice gate after configured checkpoints. Any practice-mode bypass requires an explicitly approved policy; selecting a mode alone does not bypass the gate.
 - The handoff opens the reviewed canonical provider URL. AlgoCove records navigation and optional learner-confirmed completion, not provider submission truth.
 - No provider password, cookie, private endpoint, automatic submission, or automatic profile synchronization is accepted by this context.
 
@@ -513,3 +519,9 @@ The application may store private source snapshots under the retention policy bu
 - Analytics/telemetry vendors
 
 These are deferred intentionally. The architecture defines ports, data ownership, and decision criteria so vendor selection can happen later without redesigning domain logic.
+
+## Website journey orchestration extension (proposed)
+
+The [J/E contract](website-journeys-and-coverage.md) defines entry routes and escape/recovery behavior. The shell coordinates navigation; application modules remain authoritative for content availability, ownership, attempt state, planning and timed sessions. A route change is not a learning-state command.
+
+Collections add owner-scoped private composition and explicit public-safe share snapshots. Interviews add mode-specific artifact/rubric adapters behind the existing session boundary. Both reuse PostgreSQL transactions, established authorization/idempotency and the existing worker for durable effects. Public cacheable summaries and private progress/artifacts remain separate projections; withdrawal and share revocation recheck current operational availability. See proposed ADRs [0023](../adr/0023-learner-owned-sheets-and-sharing.md) and [0024](../adr/0024-typed-interview-modes.md).

@@ -1,5 +1,7 @@
 # AlgoCove Design System and Product UI Plan
 
+**Documentation extension (2026-10-07):** Section 29 specifies proposed course, sheet and interview surfaces plus synchronized walkthroughs. Existing brand authority remains the basis. New navigation and interaction contracts remain proposed until the design/phase approval recorded in the plan; this document update authorizes no application changes.
+
 **Phase 1–7 implementation update (2026-10-03):** [Current UI evidence](docs/architecture/phase7-production-ui-evidence-2026-10-03.md) records self-hosted fonts, canonical SVG assets, focused learning shell, real learner/content state, responsive review and the owner-requested interactive 3D presentation. [ADR-0018](docs/adr/0018-production-spatial-trace-presentation.md) defines the renderer change. Existing reference-approval and later-page checklists retain their historical status; engineering screenshots do not imply owner approval.
 
 **Status:** Approved brand and visual direction, implementation not started  
@@ -1804,3 +1806,39 @@ For a new pattern:
 ### 28.4 Current boundary
 
 This design plan is detailed enough to guide future UI implementation, but it does not claim that components, contrast measurements, responsive behavior, keyboard behavior, or runtime states have been implemented or validated. Those require later implementation and verification under the approved architecture and phase gates.
+
+## 29. Proposed learning platform extension
+
+### 29.1 Navigation and discovery
+
+Target learner navigation is Home, Learn DSA, Sheets, Roadmap, Interview Prep, Reviews and Progress. Account/preferences are secondary. Introduce links only when supported destinations exist. Preserve current problem URLs as aliases when a published catalog replaces the single-problem route. Course and sheet pages reuse canonical problem identities, availability and learner progress.
+
+### 29.2 Focused problem workspace
+
+Compose brief, reasoning, walkthrough, implementation, guidance and evidence panels around one workspace controller. Preserve Understand → Pseudocode → Trace → Implement → Validate. Stage selection must preserve drafts, expose the current stage and support keyboard/focus recovery. Reveal reasoning fields progressively while retaining the full artifact. Keep published reference solutions behind the existing assistance policy.
+
+The walkthrough places the visual structure, active pseudocode lines, changed variables and explanation together. Previous/next/restart/scrub/play controls operate on one deterministic step. Approach/scenario changes reset playback explicitly. Prediction prompts pause reveal; camera changes earn no correctness credit. Spatial, flat and text views have equivalent semantic operation. On mobile, labelled panels/tabs preserve actions and reading order; raw trace JSON is an advanced authoring/debug surface rather than the primary learner interaction.
+
+### 29.3 Course, sheet and roadmap states
+
+Topic/pattern pages show prerequisites, objective, examples, recognition cues and available exercises. Sheet rows show title, pattern/difficulty, internal learning, asset/language support, reviewed external action and separate learning/self-report/review state. Include empty, loading, partial coverage, unavailable/withdrawn, signed-out and retry states. Filters and counts must reflect real published data.
+
+Roadmaps show milestones, effort, review/buffer allocation and why an item appears next. Preserve capacity rejection, explicit acceptance and historical replans. Do not promise full-course coverage from the pilot or imply AI is active when authored/off.
+
+### 29.4 DSA interview preparation
+
+Future coached and timed sessions disclose assistance rules and duration before start. The server deadline governs expiry; reconnect does not restart the timer. Reference walkthrough access follows session policy. The debrief cites concrete attempt evidence and provides specific review actions. Correctness, strategy, explanation and assistance are distinct; no arbitrary combined interview-readiness score is introduced.
+
+### 29.5 Review evidence
+
+Tasks 45b–45e, 50a–50b and 61–64 carry design contracts into bounded implementation work. Require keyboard, screen-reader, reduced-motion, responsive, failure/recovery and content-withdrawal evidence for each delivered journey. Reference-site styling and marketing counts are not AlgoCove acceptance baselines.
+
+### 29.6 Entries, exits and recovery
+
+The proposed [website journey contract](docs/architecture/website-journeys-and-coverage.md) specifies routes, normal outcomes and E01–E19 failure/escape behavior. Preserve catalog filters, sheet section and originating plan context on return. Every terminal/error state offers a relevant next action. Browser back and dialog Escape must not silently submit, abandon, cancel a run or clear drafts. Save, pending, conflict, unavailable and projection-delay states are explicit and accessible.
+
+### 29.7 Custom sheets and broader interviews
+
+Private sheet edits remain private. Sharing previews the exact sanitized snapshot, visibility and revocation behavior; code, notes and personal progress are excluded. Shared unavailable/report states avoid disclosing private ownership. Tasks 59a–59b require design and publication-policy review before the feature appears.
+
+Proposed Phase 15 adds distinct code-review, LLD and system-design layouts over typed artifacts. Keep requirements, learner response and permitted feedback distinguishable. Preserve authoritative timer, recovery and accessible operation across modes. Diagrams require text equivalents; voice/collaboration/upload controls remain outside this scope. New navigation and assessment displays still require the design approval process in section 28.

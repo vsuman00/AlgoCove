@@ -91,3 +91,11 @@ Readiness evaluates a published per-problem/mode rubric with explicit required e
 Retries never mint a new identity for the same logical save, submission, acceptance, reveal or job result. An ambiguous outcome is reconciled before retrying a consequential effect. API response loss after commit returns the original receipt on retry. Cancellation records intent; a late terminal result is resolved by the documented run state/lease epoch, not response arrival order. Orphaned hosts remain quarantined until workloads are fenced/terminated; quota reconciliation cannot silently admit overlapping replacement work.
 
 Content and privacy revocation invalidate caches and derived retrieval eligibility. Every reference resolution rechecks current permissions; an old signed URL, RSC payload, citation, active tutor turn, export, or replay endpoint is not an authorization bypass. Static authored content remains available during model outages; execution-relay outages suspend new runs and display pending/unavailable state, rather than pretending the whole learning loop remains functional.
+
+## Website journey and escape-path extension (proposed)
+
+The [website contract](website-journeys-and-coverage.md) defines J01–J19 and E01–E19 for future discovery, sheets, roadmap and interview work. Existing security, evidence, readiness, versioning and retention policies still apply. Any conflict must be resolved in the task's contract review; new UI labels do not bypass an existing gate.
+
+Private sheet saves do not publish. Public sharing exposes only the reviewed snapshot payload and remains revocable; unlisted is not private. Opening external solve/video/editorial links cannot complete an internal attempt. Leaving a workspace cannot finalize a run or stop an interview clock. Browser Escape closes dismissible UI and does not silently abandon learner work. Pending outcomes survive navigation with a recoverable identifier and truthful status.
+
+New interview kinds reject incompatible artifacts and preserve independent rubric/evidence provenance. Valid alternative design answers require reviewed assessment handling; a model's preference cannot establish objective failure. Tasks 59a–59b and 65–68 close these contracts before feature release.

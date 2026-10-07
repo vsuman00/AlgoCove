@@ -156,7 +156,7 @@ Purely conceptual content can remain language-neutral. Every executable problem 
 
 ### Content types
 
-The content model supports typed pedagogical objects rather than arbitrary chunks:
+The target content model includes the objects below. Current `content.content_item` admits only `problem`; dedicated hint/review records also exist. Remaining types require schema, publication, renderer and retrieval work. This list is not an implementation claim:
 
 - concept explanation;
 - recognition cue;
@@ -172,6 +172,14 @@ The content model supports typed pedagogical objects rather than arbitrary chunk
 - interview rubric.
 
 ### Publication state machine
+
+**Proposed release contract (2026-10-07):** Resolve current content through a stable slug registry with legacy aliases. An immutable release manifest references compatible problem, lesson, approach/pseudocode, scenario, rubric, hint and language versions. New attempts pin that release; historical IDs remain intact. Recheck current availability after retirement/rights withdrawal. Publication selects the compatible release atomically. See [ADR-0019](../adr/0019-published-learning-releases.md).
+
+Relational records own identity, ownership, ordering and references; bounded validated JSONB may hold typed lesson/trace payloads. Exclude executable component code and arbitrary expressions. Answer keys remain server-owned. New lesson types need explicit retrieval admission and evaluation.
+
+**Proposed reference correction:** Destination platform/problem, versioned curated collection, membership and internal mapping are separate concepts. Current provider IDs mix sites and lists. Preserve source provenance and legacy reference/journal IDs during reviewed migration; update database/domain allowlists together. See [ADR-0020](../adr/0020-destination-and-collection-identity.md).
+
+Walkthroughs bind approach, input scenario, stable pseudocode lines, trace schema and narration. Checkpoint prompts may be visible; grading keys stay server-side. Maintain historical schema readers. Future interview sessions pin template/problem/rubric versions, server start/deadline and assistance policy. Debriefs distinguish trusted outcomes from advisory feedback. See [ADR-0021](../adr/0021-synchronized-algorithm-walkthroughs.md) and [ADR-0022](../adr/0022-dsa-interview-session-boundary.md).
 
 ```mermaid
 stateDiagram-v2
@@ -613,3 +621,15 @@ Do not send the transactional database schema directly to analytics. Use version
 - Candidate AI changes have benchmark, human-review, rollback, latency, and cost evidence.
 - Every advertised language/problem combination has a published manifest and passes the same semantic fixture set.
 - Every execution result resolves to an immutable sandbox image, compiler/runtime, harness, limits, and policy version.
+
+## Proposed sheet and interview data extensions
+
+| Conceptual aggregate | Required relationships and constraints | Private/public boundary |
+|---|---|---|
+| Learner sheet | Owner, revision, sections and stable ordered memberships referencing canonical identities; bounded fields; atomic edits | Owner-only; notes/private progress excluded from sharing |
+| Share snapshot | Exact source revision, public-safe selected fields/references, opaque share ID, publication and revocation status | Public/unlisted only after explicit publication policy; no private overlays |
+| Moderation case | Share/reference identity, reason, scoped reporter data, decision/audit and retention policy | Scoped staff access; reports are not public sheet content |
+| Interview template/session | Kind, exact template/rubric/artifact versions, owner, deadline, assistance policy and finalization receipt | Owned responses; authorized debrief; restricted reference artifacts |
+| Interview artifact/review | Mode-specific bounded typed payload, draft revision, evidence source and evaluation provenance | Never shared corpus by default; export/deletion covers private records |
+
+These are proposed aggregates, not implemented tables or migration names. Tasks 59a–59b and 65 specify migrations, indexes, payload limits, foreign keys, uniqueness and retention before coding. Schema discriminators reject unsupported versions. Curated collections, external journals and existing DSA session semantics remain compatible. Neither shared user content nor model feedback enters authoritative curriculum/mastery automatically. See the [journey contract](website-journeys-and-coverage.md).

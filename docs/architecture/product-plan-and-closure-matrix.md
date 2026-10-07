@@ -6,6 +6,10 @@
 
 ## 1. Product contract
 
+**2026-10-07 planned extension:** The [evolution proposal](learning-platform-evolution-2026-10-07.md) specifies Learn DSA, curated sheets, synchronized walkthroughs and DSA interview preparation. Course, sheet and roadmap entries share catalog identities and learning history. A sheet checkmark or external self-report does not establish mastery. Custom sharing and non-DSA interview rounds remain separately scoped future options.
+
+Courses distinguish topics, patterns, lessons, guided exercises, independent exercises and delayed transfer. Sheets label internally supported, external-only and unavailable entries. Roadmaps schedule eligible assets within capacity. Future interviews use exact problem/rubric versions and explicit assistance rules. New features are planned; this extension does not approve a readiness bypass.
+
 AlgoCove is a guided DSA learning and consistency platform. It teaches and validates a learner's understanding inside AlgoCove, then sends the learner to the original external problem page for an independent solve.
 
 The product promises:
@@ -294,3 +298,9 @@ Implementation planning may be prepared for review, but implementation execution
 4. Which exact sessions count toward a consistency streak?
 5. Are custom plan horizons outside 1, 2, 3, 4, and 6 months deferred?
 6. Is the recruiter-facing profile card included in the first learner release or deferred?
+
+## Website feature closure extension (proposed)
+
+[J01–J19 and E01–E19](website-journeys-and-coverage.md) define complete journeys and their exits/recovery. The delivery plan now explicitly tracks private custom sheets (59a), controlled sharing (59b) and broader interview preparation (65–68). These later packages do not expand the four-pattern pilot or authorize implementation. Phase 14 stays DSA-only; Phase 15 needs separate authorization and rubric review.
+
+Before declaring comparison-feature coverage, record what is observed, advertised/unverified, planned, implemented, verified or explicitly deferred. Public marketing, empty navigation, generated placeholder content and a large problem count cannot close a feature. Owner decisions still needed include custom-sharing visibility/moderation, broad-interview rubric boundaries and exact curriculum/collection inventory; each is assigned to a task rather than silently assumed.

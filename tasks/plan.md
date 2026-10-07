@@ -1,5 +1,9 @@
 # AlgoCove phased implementation plan
 
+**Journey coverage expansion (2026-10-07):** The [website journey contract](../docs/architecture/website-journeys-and-coverage.md) maps 19 feature journeys and 19 edge/exit cases to tasks. Additional proposed work covers shell/auth return, authoring preflight, recovery, private/shared sheets and broader interviews. This is documentation-only scope. Existing approvals and implementation evidence are unchanged.
+
+**Documentation revision (2026-10-07):** The owner requested architecture/build-document changes only. Tasks 45b–45e, 50a–50b and Phase 14 are proposed additions from the [learning platform design](../docs/architecture/learning-platform-evolution-2026-10-07.md). No new implementation or phase authorization is implied; Task 45a and the unchecked F9 owner gate remain unchanged.
+
 **Latest authorized repair (2026-10-03):** The owner reviewed the diagnosis and authorized Ponytail repairs. [Runtime repair evidence](../docs/architecture/runtime-repair-evidence-2026-10-03.md) records configuration, authenticated session recovery, workspace synchronization, published-content withdrawal, diagnostics and CI corrections. Repair commit `2803c23` passed all three CI jobs including both mandatory actual Linux learning-loop scenarios. Application repair commit `0f8b7a5` also passed all three jobs in CI run 37104114731, with both real Linux scenarios and fresh isolation evidence. U4/U6/U8 are complete for this repair scope; historical manual/design approvals remain separate. No deployment is authorized.
 
 **Current implementation evidence:** [Real product and 3D UI record](../docs/architecture/phase7-production-ui-evidence-2026-10-03.md) supplements the historical audit with persisted content administration, release identity persistence and the new mandatory Linux guided-loop gate. Final CI status is recorded there.
@@ -42,6 +46,8 @@ Task IDs are stable identifiers, not execution order. Follow document order and 
 | M4: Grounded learning product | 10 | Tutor/RAG, four initial pattern packs, reviews, accessibility, and evaluation gates work against reviewed content |
 | M5: Hosted pilot candidate | 12 | Privacy, hosted identity, restore, security, load, SLO, runbook, rollout, and rollback evidence pass for a scoped four-pattern pilot |
 | M6: Coverage-qualified course | 13 | Approved DSA track breadth and truthful sheet coverage support the offered plans; learning claims require learner evidence |
+| M7: DSA interview preparation (proposed) | 14 | Reviewed timed DSA sessions and evidence-based debriefs pass their own release gate |
+| M8: Broader interview preparation (proposed) | 15 | Separately reviewed code review, LLD and system design modes pass scope-specific gates |
 
 ## 3. Dependency graph
 
@@ -60,13 +66,15 @@ Phase 0 decisions and approval
                       -> Phase 11 privacy and operations
                         -> Phase 12 hosted pilot assurance
                           -> Phase 13 approved curriculum expansion and coverage-qualified release
+                            -> Phase 14 DSA interview preparation (proposed; separate owner gate)
+                              -> Phase 15 broader interviews (proposed; separate owner gate)
 ```
 
 Safe parallel work begins only after contracts are frozen:
 
 - Runtime images can be implemented in parallel after Task 20.
 - Renderer work can run beside attempt-domain work after Task 24.
-- Individual content problem bundles can run in parallel after Task 45.
+- Individual content problem bundles can run in parallel after Tasks 45c/45e and the first Task 46 bundle establish the shared contract.
 - Infrastructure preparation can begin beside assurance work only after Task 52, but rollout remains sequential.
 
 ## 4. Planned repository and command contract
@@ -1109,7 +1117,95 @@ The acceptance checks above have local fixture/gateway evidence. They do not ass
 - [x] Critical hint-leak and prompt-injection cases have zero bypasses in the declared synthetic suites; production semantic quality remains unapproved.
 - [ ] Human owner authorizes Phase 10.
 
-## Phase 10: Build the pilot curriculum and accessibility evidence
+## Phase 10: Build the shared learning platform, pilot curriculum and journey coverage
+
+### Task 45b: Specify shared learning catalog and release contracts
+
+**Description:** Resolve ADRs 0019–0021 and DESIGN section 29 into reviewed query, asset, migration and interaction contracts.
+
+**Acceptance criteria:**
+- [ ] Define pagination, filters, authorization, error cases, release pins, restricted fields and withdrawal behavior for the six proposed catalog queries.
+- [ ] Record content-kind/schema extensions, compatibility matrix and rollback approach.
+- [ ] Approve proposed navigation and panel behavior before implementation; retain existing design exceptions.
+
+**Verification:** Review the contract and record focused automated/manual evidence for the acceptance criteria during authorized implementation. This documentation revision does not run these future checks.
+
+**Dependencies:** Tasks 18, 29 and 45; owner Phase 10 authorization
+**Estimated scope:** Contract and design review; split into bounded subcards before coding.
+
+### Task 45c: Generalize the published catalog and learning workspace
+
+**Description:** Replace the fixed slug/problem lookup and container-specific workspace assumptions with release-backed application queries and typed learning panels.
+
+**Acceptance criteria:**
+- [ ] Existing pilot plus a distinct test-only fixture demonstrate reusable lookup without publishing unreviewed curriculum.
+- [ ] Preserve existing URLs, attempt release pins, draft recovery and ownership boundaries.
+- [ ] Learn, sheet and plan consumers share availability rules; server reads and client interaction have explicit boundaries.
+
+**Verification:** Review the contract and record focused automated/manual evidence for the acceptance criteria during authorized implementation. This documentation revision does not run these future checks.
+
+**Dependencies:** Task 45b
+**Estimated scope:** Catalog and workspace foundation; split into bounded subcards before coding.
+
+### Task 45d: Separate external destination and collection identities
+
+**Description:** Implement the reviewed ADR-0020 migration and compatible consumers.
+
+**Acceptance criteria:**
+- [ ] Preserve legacy IDs, journal ownership, provenance and collection memberships.
+- [ ] Manually reconcile ambiguous links; destination/platform identity does not derive blindly from a legacy collection enum.
+- [ ] Deduplicate required work across sheets while keeping membership order and truthful coverage labels.
+
+**Verification:** Review the contract and record focused automated/manual evidence for the acceptance criteria during authorized implementation. This documentation revision does not run these future checks.
+
+**Dependencies:** Tasks 45b, 17 and 40
+**Estimated scope:** External-reference migration; split into bounded subcards before coding.
+
+### Task 45e: Synchronize pseudocode and algorithm walkthroughs
+
+**Description:** Extend the existing pilot with the ADR-0021 replay contract and renderer adapters.
+
+**Acceptance criteria:**
+- [ ] Stable pseudocode line IDs, variables, narration and visual/text frames share one deterministic timeline.
+- [ ] Step, play/pause, speed, restart and scrub preserve equivalent state; schema-1 traces remain supported or explicitly converted.
+- [ ] No container-area assumptions leak into generic rendering; hidden checkpoints and references obey server reveal policy.
+
+**Verification:** Review the contract and record focused automated/manual evidence for the acceptance criteria during authorized implementation. This documentation revision does not run these future checks.
+
+**Dependencies:** Tasks 45c and 27
+**Estimated scope:** Existing pilot walkthrough; split into bounded subcards before coding.
+
+### Task 45f: Specify and implement navigation, deep links and authenticated return
+
+**Description:** Deliver the proposed shell and route contracts for available features, preserving current routes and private state.
+
+**Acceptance criteria:**
+- [ ] Cover J01–J04 and E01–E04/E19 from the journey contract; every visible CTA has a working destination and valid return path.
+- [ ] Preserve current problem URLs and one plan authority across /plan and /roadmap; authorize direct entry without relying on prior navigation.
+- [ ] Validate same-origin return targets; sign-in cancellation, onboarding interruption and unavailable content have explicit exits.
+- [ ] Route changes, dialog Escape and back navigation never silently submit, abandon or erase work.
+
+**Verification:** Review the route inventory and exercise signed-out/owned/unauthorized direct links, refresh, browser history, keyboard focus and mobile navigation. Record results only during authorized implementation.
+
+**Dependencies:** Task 45b; navigation design approval under DESIGN section 28
+
+**Estimated scope:** Parent work package; define bounded subcards and exact fixtures/files before coding.
+
+### Task 45g: Extend release authoring and publication preflight
+
+**Description:** Make the shared content model operable through the existing author/reviewer workflow.
+
+**Acceptance criteria:**
+- [ ] Preview the exact release, lesson blocks, six-language manifests, approaches, pseudocode lines, scenarios, transcripts and allowed external actions.
+- [ ] Preflight rejects missing/incompatible assets, unsafe markup, invalid mappings or restricted data in public views; publication remains transactional and reviewed.
+- [ ] Optional video/explanation roles are distinct from solve links; essential media has a transcript and unavailable media cannot block authored learning.
+- [ ] Withdrawal affects catalogs, caches and new commands while retaining lawful historical metadata; author draft edits do not mutate published versions.
+
+**Verification:** Review J18 and E03/E08/E11; exercise rejected publication, staff authorization, preview isolation and withdrawal propagation. Record results only during authorized implementation.
+
+**Dependencies:** Tasks 45c, 45d and 45e
+
+**Estimated scope:** Parent work package; define bounded subcards and exact fixtures/files before coding.
 
 ### Task 46: Author the arrays/hashing pilot bundle
 
@@ -1125,7 +1221,7 @@ The acceptance checks above have local fixture/gateway evidence. They do not ass
 - [ ] Run content validation, conformance, visualizer, and tutor evaluation for the bundle.
 - [ ] Human reviewers sign the publication record.
 
-**Dependencies:** Tasks 18, 24, 29, and 45  
+**Dependencies:** Tasks 18, 24, 29, 45c, 45e and 45g
 **Files likely touched:** `content/patterns/arrays-hashing/`, `tests/language-conformance/arrays-hashing/`, `tests/retrieval-eval/arrays-hashing/`  
 **Estimated scope:** Medium; one problem bundle only
 
@@ -1177,6 +1273,52 @@ The acceptance checks above have local fixture/gateway evidence. They do not ass
 **Files likely touched:** `content/patterns/stack/`, `tests/language-conformance/stack/`, `tests/retrieval-eval/stack/`  
 **Estimated scope:** Medium
 
+### Task 50a: Build curated Learn and sheet discovery
+
+**Description:** Connect published topics, problem summaries, lessons and curated collections to the shared catalog.
+
+**Acceptance criteria:**
+- [ ] Search/filter/pagination and empty, loading, unavailable and withdrawn states work consistently.
+- [ ] Rows distinguish internal walkthrough, explanation link and reviewed external solve destination.
+- [ ] A solved item remains one problem across collections; no inflated progress or unsupported coverage claims.
+- [ ] Private sheets and public sharing are deferred from the pilot to proposed Tasks 59a–59b, with separate ownership, privacy and publication contracts.
+
+**Verification:** Review the contract and record focused automated/manual evidence for the acceptance criteria during authorized implementation. This documentation revision does not run these future checks.
+
+**Dependencies:** Tasks 45d and 46–49
+**Estimated scope:** Curated discovery journeys; split into bounded subcards before coding.
+
+### Task 50b: Drive roadmap planning from the published catalog
+
+**Description:** Replace the single-exercise planning catalog with eligible release-backed prerequisites, estimates and reviewed mappings.
+
+**Acceptance criteria:**
+- [ ] Only supported published content enters a plan, with exact versions and deduplicated external memberships.
+- [ ] Insufficient content or time returns a scoped alternative or reasoned rejection.
+- [ ] Existing deterministic planning and authored fallback work without AI; existing live-provider approvals remain separate.
+
+**Verification:** Review the contract and record focused automated/manual evidence for the acceptance criteria during authorized implementation. This documentation revision does not run these future checks.
+
+**Dependencies:** Tasks 50a, 36 and 37
+**Estimated scope:** Catalog-driven roadmap; split into bounded subcards before coding.
+
+### Task 50c: Close learner journeys, exits and recovery paths
+
+**Description:** Exercise the connected pilot against the website journey and edge-case contract; implement missing transitions without expanding advertised curriculum.
+
+**Acceptance criteria:**
+- [ ] J01–J08 and J11–J14 have entry, normal completion, back/cancel/leave, empty/unavailable and retry behavior, with J18/J19 operational boundaries.
+- [ ] Applicable E01–E12 and E16–E19 have traceable evidence; no code/draft loss, false save, accidental completion or duplicate credit.
+- [ ] External solve return remains self-report; editorial/video actions cannot masquerade as a solve action.
+- [ ] Plan preview cancellation preserves the active plan; accepted replan preserves history; execution and projection pending states remain discoverable.
+- [ ] Produce a coverage report mapping each journey/edge-case ID to task, fixture/manual evidence, release identity and unresolved gap.
+
+**Verification:** Cover keyboard/mobile, deep links, offline/lost-response, session expiry, concurrent tabs, stale callbacks, withdrawal and source edits after a passing run. Record results only during authorized implementation.
+
+**Dependencies:** Tasks 45f, 45g, 50a and 50b
+
+**Estimated scope:** Parent work package; define bounded subcards and exact fixtures/files before coding.
+
 ### Task 50: Validate pilot accessibility and collection mapping
 
 **Description:** Map reviewed external source links and collection memberships to the four pilot concepts, then run keyboard, screen-reader, reduced-motion, contrast, low-power, content readability, and link-attribution reviews.
@@ -1190,7 +1332,7 @@ The acceptance checks above have local fixture/gateway evidence. They do not ass
 - [ ] Run accessibility automation plus manual assistive-technology review.
 - [ ] Run link-health/deduplication and complete pilot E2E suite.
 
-**Dependencies:** Tasks 17, 40, and 46-49  
+**Dependencies:** Tasks 17, 40, 46–49 and 50a–50c
 **Files likely touched:** `content/collections/`, `tests/accessibility/`, `tests/e2e/pilot-curriculum.spec.ts`  
 **Estimated scope:** Medium
 
@@ -1198,7 +1340,10 @@ The acceptance checks above have local fixture/gateway evidence. They do not ass
 
 - [ ] Four pattern bundles pass all six-language and content gates.
 - [ ] Guided, roadmap, external handoff, review, and tutor paths work together.
+- [ ] Learn, sheets and roadmap share release availability, deduplication and truthful coverage.
+- [ ] Pseudocode, variables, visuals and accessible transcripts stay synchronized; historical attempts retain version pins.
 - [ ] Accessibility critical journeys pass manual and automated review.
+- [ ] Task 50c closes the pilot J/E coverage report; every advertised action has a valid outcome, return path and relevant failure/recovery evidence.
 - [ ] Human owner authorizes Phase 11.
 
 ## Phase 11: Privacy, observability, resilience, and operational readiness
@@ -1348,6 +1493,7 @@ The four-pattern pilot is not a complete DSA course or full third-party sheet. T
 
 **Acceptance criteria:**
 - [ ] Each offered track has prerequisites, measurable outcomes, estimated workload and six-language coverage targets.
+- [ ] Maintain the per-bundle inventory from the journey contract: exact problems, owners, source rights, assets, language support and missing/draft/reviewed/published status. Choose minimum counts explicitly; do not copy marketing totals.
 - [ ] Distinguish exact equivalent problems from same-pattern/prerequisite/transfer mappings; independent source links do not license copied content.
 
 **Verification:**
@@ -1364,6 +1510,8 @@ The four-pattern pilot is not a complete DSA course or full third-party sheet. T
 **Acceptance criteria:**
 - [ ] Each batch passes rights, six-language conformance, judge, accessibility and tutor regression gates before publication.
 - [ ] New trace primitives require semantic/reducer/transcript tests before content uses them; no promise of automatic arbitrary-code visualization.
+- [ ] Each problem subcard covers its pseudocode, approaches, scenarios/edge cases, transcript, language guides, assessments, external mappings and transfer/review assets; unsupported assets are labelled.
+- [ ] The approved taxonomy includes renderer semantics for lists, recursion, trees, graphs and DP before those assets are advertised.
 
 **Verification:**
 - [ ] Run per-bundle evidence suites and human review; retirement/quarantine must remove availability without rewriting historical learning evidence.
@@ -1371,6 +1519,38 @@ The four-pattern pilot is not a complete DSA course or full third-party sheet. T
 **Dependencies:** Task 58  
 **Files likely touched:** `content/patterns/`, `packages/visualizer/`, `tests/language-conformance/`, `tests/retrieval-eval/`  
 **Estimated scope:** Repeatable parent package; one bounded subcard per reviewed bundle
+
+### Task 59a: Build learner-owned private sheets
+
+**Description:** Add private collection composition over canonical catalog/reference identities under ADR-0023.
+
+**Acceptance criteria:**
+- [ ] Create, rename, section, add/remove, reorder, duplicate and delete sheets with owner authorization and expected revision.
+- [ ] Empty sections, duplicates, stale reorder, unavailable references, size limits and delete/cancel flows have explicit outcomes; personal notes stay private.
+- [ ] Unknown external URLs are restricted private references until reviewed; no scraping, trusted publication or shared tutor indexing follows from saving a URL.
+- [ ] Reuse canonical progress overlays without duplicating attempts/mastery; export/deletion includes owned sheets.
+
+**Verification:** Cover J09 and E02/E04–E06/E13/E17/E18, including cross-user mutations and concurrent edits. Record results only during authorized implementation.
+
+**Dependencies:** Tasks 58, 50c and 52; ADR-0023 decision
+
+**Estimated scope:** Parent work package; define bounded subcards and exact fixtures/files before coding.
+
+### Task 59b: Build explicit sheet sharing and moderation
+
+**Description:** Publish sanitized immutable snapshots of learner sheets with revocation and report handling.
+
+**Acceptance criteria:**
+- [ ] Review visibility, discoverability, moderator ownership and retention before enabling share creation; private-by-default is preserved.
+- [ ] Preview the exact shared fields; code, personal notes, attempts, progress and private profile metadata never enter public payloads or caches.
+- [ ] Revocation, withdrawal, removed owner, stale cache and copied link produce the documented unavailable behavior; public copy keeps allowed references and attribution only.
+- [ ] Report, triage, hide and appeal/support handling have owners and audit records; sharing never turns user content into reviewed curriculum.
+
+**Verification:** Cover J10 and E03/E06/E14/E18 with payload inspection, unauthorized access, snapshot revision and revoke/cache scenarios. Record results only during authorized implementation.
+
+**Dependencies:** Task 59a; privacy/security review and explicit sharing-policy approval
+
+**Estimated scope:** Parent work package; define bounded subcards and exact fixtures/files before coding.
 
 ### Task 60: Qualify coverage and learning claims before broad release
 
@@ -1384,7 +1564,7 @@ The four-pattern pilot is not a complete DSA course or full third-party sheet. T
 **Verification:**
 - [ ] Test full prerequisite chains across offered horizons and languages; review a versioned learner-outcome report with uncertainty and cohort limits.
 
-**Dependencies:** Tasks 58-59  
+**Dependencies:** Tasks 58–59; Tasks 59a–59b for any shipped custom/shared sheets, or an explicit recorded scope deferral with their UI disabled
 **Files likely touched:** `docs/evidence/course-readiness.md`, `tests/e2e/full-track.spec.ts`, `docs/evidence/learning-outcomes.md`  
 **Estimated scope:** Release-assurance package
 
@@ -1392,8 +1572,142 @@ The four-pattern pilot is not a complete DSA course or full third-party sheet. T
 
 - [ ] Detailed batch plan and supported curriculum breadth are approved.
 - [ ] Every advertised track/sheet has truthful coverage and feasibility evidence.
+- [ ] Private/shared sheet Tasks 59a–59b are complete if advertised, or explicitly deferred with unsupported UI hidden.
 - [ ] Broad release has a human readiness decision; interview or job outcomes are not guaranteed.
 
+
+## Phase 14: DSA interview preparation (proposed)
+
+Default order is after F13. The owner must authorize this phase; earlier scheduling requires an explicit plan revision after F10 and a review of operational prerequisites. Non-DSA interview modes are excluded from this phase.
+
+### Task 61: Specify interview templates and evidence rubrics
+
+**Description:** Resolve ADR-0022 into owned session contracts, lifecycle, assistance policy, deadlines and versioned DSA templates.
+
+**Acceptance criteria:**
+- [ ] Define guided versus timed modes, submission rules, accommodations and retention.
+- [ ] Pin compatible releases, language manifests and rubric versions; distinguish scored evidence from advisory feedback.
+
+**Verification:** Review the contract and record focused automated/manual evidence for the acceptance criteria during authorized implementation. This documentation revision does not run these future checks.
+
+**Dependencies:** Task 60, F13 and owner Phase 14 authorization
+**Estimated scope:** Session specification; split into bounded subcards before coding.
+
+### Task 62: Implement timed interview session lifecycle
+
+**Description:** Reuse the learning workspace and isolated executor with server-owned deadlines and recoverable drafts.
+
+**Acceptance criteria:**
+- [ ] Ownership, retries, reload, multi-tab and deadline races cannot duplicate finalization or extend a session.
+- [ ] Queued, failed and late execution results follow the approved cutoff policy without false success.
+
+**Verification:** Review the contract and record focused automated/manual evidence for the acceptance criteria during authorized implementation. This documentation revision does not run these future checks.
+
+**Dependencies:** Task 61
+**Estimated scope:** One reviewed DSA template first; split into bounded subcards before coding.
+
+### Task 63: Deliver evidence-based interview debriefs
+
+**Description:** Produce rubric-based debriefs with assistance history and justified next review activities.
+
+**Acceptance criteria:**
+- [ ] Explain code results, reasoning checks and self-report separately; AI commentary cannot modify scores.
+- [ ] Only approved evidence events update mastery/reviews, idempotently.
+
+**Verification:** Review the contract and record focused automated/manual evidence for the acceptance criteria during authorized implementation. This documentation revision does not run these future checks.
+
+**Dependencies:** Task 62
+**Estimated scope:** Debrief and review integration; split into bounded subcards before coding.
+
+### Task 64: Qualify interview accessibility and release claims
+
+**Description:** Review rubric reliability, recovery, accessibility and operational readiness for the declared DSA session scope.
+
+**Acceptance criteria:**
+- [ ] Keyboard, screen-reader, reduced-motion and timed accommodations pass manual review.
+- [ ] Record rubric limitations, privacy, failure recovery and release/rollback decisions; no job-readiness guarantee.
+
+**Verification:** Review the contract and record focused automated/manual evidence for the acceptance criteria during authorized implementation. This documentation revision does not run these future checks.
+
+**Dependencies:** Tasks 61–63
+**Estimated scope:** Scoped release review; split into bounded subcards before coding.
+
+### Checkpoint F14: DSA interview milestone M7
+
+- [ ] Reviewed templates, server timing, execution, debriefs and recovery work together.
+- [ ] J15 and E15 plus applicable identity, recovery, AI, privacy and accessibility cases have evidence.
+- [ ] Accessibility and rubric evaluation evidence support the declared scope.
+- [ ] Human owner approves the scoped interview release; broader interview modes remain deferred to separately authorized Phase 15.
+
+## Phase 15: Broader interview preparation (proposed)
+
+This phase tracks the reference site’s advertised code review, low-level design and system design modes. Their private behavior was not inspected. Default dependency is F14 plus explicit owner authorization; they remain deferred from Phase 14. Typed artifacts are the initial scope; voice, live collaboration and file uploads require separate decisions.
+
+### Task 65: Specify broader interview artifacts and scoring boundaries
+
+**Description:** Decide ADR-0024 and author one reviewed template/rubric contract per proposed mode.
+
+**Acceptance criteria:**
+- [ ] Define typed code-review findings, LLD artifacts and system-design artifacts with schema/size limits, ownership, version pins and autosave/finalization rules.
+- [ ] Separate objective checks, human review and model advisory feedback; account for valid alternatives and novel findings.
+- [ ] Define assistance, deadline, accommodations, outage, debrief, retention and provider-data policy for each kind; no hiring prediction claim.
+
+**Verification:** Review J16/J17 contracts and calibrate the proposed rubric on authored counterexamples before implementation. Record results only during authorized implementation.
+
+**Dependencies:** Task 64, F14 and explicit Phase 15 authorization
+
+**Estimated scope:** Parent work package; define bounded subcards and exact fixtures/files before coding.
+
+### Task 66: Deliver a code review interview slice
+
+**Description:** Reuse session lifecycle with an original/licensed code artifact, stable line anchors and structured learner findings.
+
+**Acceptance criteria:**
+- [ ] Preserve code version/anchors across drafts; invalid/stale anchors have recoverable errors.
+- [ ] Collect findings and rationale, optionally suggested patches; do not execute supplied patches outside the approved execution plane.
+- [ ] Debrief cites evidence and distinguishes expected issues, alternative valid findings and unsupported model claims.
+
+**Verification:** Exercise one reviewed template, line-anchor changes, missing/duplicate findings, session expiry and recoverable draft conflicts. Record results only during authorized implementation.
+
+**Dependencies:** Task 65
+
+**Estimated scope:** Parent work package; define bounded subcards and exact fixtures/files before coding.
+
+### Task 67: Deliver low-level and system design interview slices
+
+**Description:** Build separate bounded subcards for LLD and system design over typed requirements and design artifacts.
+
+**Acceptance criteria:**
+- [ ] LLD captures entities/interfaces and interactions; system design captures components/data flows, capacity assumptions and failure reasoning.
+- [ ] Use safe structured text/rendering; diagrams have accessible textual equivalents and no executable uploaded content.
+- [ ] Rubric feedback explains satisfied/unsatisfied constraints and uncertainty; alternative viable designs are not rejected merely for differing from a reference answer.
+
+**Verification:** Exercise each mode independently, incomplete artifacts, contradictory requirements, alternative designs, advisory failure and privacy boundaries. Record results only during authorized implementation.
+
+**Dependencies:** Task 65
+
+**Estimated scope:** Parent work package; define bounded subcards and exact fixtures/files before coding.
+
+### Task 68: Qualify broader interview journeys and release
+
+**Description:** Evaluate each implemented interview kind with independently reviewed artifacts and mode-specific reliability evidence.
+
+**Acceptance criteria:**
+- [ ] J16/J17 and applicable E02/E04–E06/E15/E16/E18/E19 pass; measure reviewer agreement and disclose rubric limitations.
+- [ ] Each mode has accessibility, provider-off behavior, ownership, deadline/recovery, private-data and rollback evidence.
+- [ ] Unsupported modes remain absent; no cross-mode aggregate readiness score or unsupported career claim is published.
+
+**Verification:** Record per-mode evaluations, manual accessibility review and a scoped human release decision; synthetic checks alone do not prove coaching quality. Record results only during authorized implementation.
+
+**Dependencies:** Tasks 66–67; existing privacy and operational release controls
+
+**Estimated scope:** Parent work package; define bounded subcards and exact fixtures/files before coding.
+
+### Checkpoint F15: Broader interview milestone M8
+
+- [ ] Code review, LLD and system design each have an approved scope and evidence-backed rubric.
+- [ ] Normal, exit, recovery, accessibility and privacy paths pass for every advertised mode.
+- [ ] Human owner approves the declared release scope and limitations; deferred modes stay hidden.
 
 ## 6. Critical risks and mitigations
 

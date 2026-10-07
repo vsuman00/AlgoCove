@@ -16,6 +16,12 @@
 
 ## 2. Delivery surfaces
 
+**Proposed learner-platform queries (2026-10-07):** `ListPublishedTopics`, `ListPublishedProblems`, `GetLesson`, `GetSheet`, `GetProblemWorkspace` and `GetEligiblePlanningCatalog`. These are proposed use cases, not existing endpoints. Task 45b defines their schemas/error mappings. Server components and browser handlers share the same authorized application queries.
+
+List queries require bounded filters/pagination and stable ordering. View models include stable IDs, exact release versions, asset availability and reason codes. Public content and private progress have separate visibility/cache policies. Exclude hidden tests, answer keys and restricted reference assets. Start/reveal/run/handoff commands revalidate current availability and ownership.
+
+New commands reuse current error envelopes, payload-bound idempotency, optimistic concurrency and explicit pending/terminal responses. Existing endpoints need not be renamed. Future interview deadlines are server-owned, with late-submit and interruption semantics specified before implementation.
+
 | Surface | Use | Do not use for |
 |---|---|---|
 | Server-rendered components | Initial authenticated reads and page composition | Business writes or hidden authorization assumptions |
@@ -490,3 +496,11 @@ sequenceDiagram
 - Events contain no raw learner code or conversation by default.
 - Historical results can resolve all relevant content and policy versions.
 - The fixed-hint fallback preserves the learning flow when model providers fail.
+
+## Proposed navigation, private sheets and interview contracts
+
+Use the [route and recovery matrix](website-journeys-and-coverage.md) as the client/server behavior contract. Deep links execute the same authorized use cases as in-app navigation. Only validated same-origin return targets may survive sign-in. Preserve pending run, save and candidate identities across route changes; stale responses cannot overwrite a newer workspace revision.
+
+Task 59a specifies `ListOwnedSheets`, `GetOwnedSheet`, `CreateSheet`, `UpdateSheet`, `CopySheet` and `DeleteSheet`; Task 59b specifies `PublishSheetSnapshot`, `GetSharedSheet`, `RevokeSheetShare` and `ReportSharedSheet`. These are proposed use-case names, not existing HTTP endpoints. Mutations require authenticated ownership/scoped role, bounded input, expected revision where applicable and payload-bound idempotency. Public shared reads recheck revocation/content availability and exclude private fields. Reports require abuse limits and a non-disclosing receipt.
+
+Task 65 extends the session API with a validated kind-specific template and artifact payload. Draft saves preserve revision conflict semantics; finalization is server-authoritative and idempotent. API errors distinguish unsupported mode/schema, inaccessible object, stale revision, expired session, unavailable content, throttling and temporary infrastructure failure using the existing error envelope. Do not leak hidden rubric answers through validation errors. Exact transport schemas and limits must be approved before implementation.

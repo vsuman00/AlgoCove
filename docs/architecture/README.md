@@ -7,6 +7,21 @@
 
 ## 1. Architectural objective
 
+**2026-10-07 documentation scope:** Read the [feature comparison](chai-prep-comparison-2026-10-07.md), [architecture evolution](learning-platform-evolution-2026-10-07.md), proposed ADRs 0019–0024 and updated plan for the expanded learner platform. The owner authorized documentation changes only.
+
+### Current implementation versus target
+
+| Area | Current evidence | Planned extension |
+|---|---|---|
+| Core | Next.js, PostgreSQL, worker, isolated six-language execution and local learning loop | Reuse existing boundaries |
+| Curriculum | One admitted learner problem and fixed planning catalog | Published catalog, lesson assets, release manifests and reviewed bundles |
+| Visualization | Array/two-pointer replay with spatial, flat and text views under ADR-0018 | Pseudocode synchronization and additional structures |
+| External practice | Local Phase 8 readiness, handoff and learner-confirmed journal | Separate destination/collection identity and curated learner sheets |
+| AI | Phase 9 local technical and synthetic evidence; authored/off operation | Live provider activation remains gated |
+| Interviews | No dedicated timed DSA session feature | Proposed Phase 14 |
+
+The ledger and dated evidence establish implementation state. Original proposed descriptions retain historical context and do not negate later accepted decisions.
+
 Design an enterprise-quality architecture for a calm, adaptive DSA learning platform without prematurely creating an enterprise-scale operational burden. “Enterprise-quality” here means explicit boundaries, replaceable dependencies, security and privacy by design, deterministic fallbacks, measurable reliability, reproducible AI evaluation, and a controlled path to scale. It does not mean starting with microservices, Kubernetes, multiple databases, or multi-region infrastructure.
 
 The architecture optimizes for the product's core proof:
@@ -39,7 +54,7 @@ Code must not silently override an approved architectural invariant. A conflict 
 | A-02 | Initial curriculum covers arrays/hashing, two pointers, sliding window, and stack | Small, curated curriculum graph and deterministic trace grammar | Unvalidated |
 | A-03 | A recommended next action reduces overwhelm | Recommendation service is a first-class domain capability | Unvalidated |
 | A-04 | Progressive hints outperform immediate full solutions | Hint policy is enforced outside the LLM | Unvalidated |
-| A-05 | Active 2D visualization helps selected topics | 2D trace runtime is core; 3D remains experimental | Unvalidated |
+| A-05 | Active visualization helps selected topics | Spatial, flat and text views share deterministic state; local presentation is covered by ADR-0018 | Learning benefit remains unvalidated |
 | A-06 | Original or explicitly licensed content is available | Publication is fail-closed on provenance and review | Unvalidated |
 | A-07 | Early traffic is compatible with a modular monolith and one PostgreSQL primary | No microservice or distributed database fleet initially | Planning assumption |
 | A-08 | One model provider plus one tested fallback is sufficient initially | Provider-neutral gateway, no multi-model router | Planning assumption |
@@ -118,7 +133,7 @@ Dependencies point toward stable providers and must remain acyclic. Cross-contex
 | `REJECTED` | Considered and not selected; rationale retained |
 | `SUPERSEDED` | Replaced by a later ADR; history retained |
 
-Active ADRs are currently `PROPOSED`; ADR-0004 remains `SUPERSEDED`.
+Use the [ADR index](../adr/README.md) for individual statuses. ADR-0008, ADR-0013 and ADR-0018 record scoped acceptance; ADR-0004 remains superseded. ADRs 0019–0024 are proposed extensions.
 
 ## 9. Architecture review gates
 
@@ -170,5 +185,9 @@ These are intentionally not resolved by guessing. The proposed design isolates t
 - Scraping or importing third-party coding-platform content
 - Automatic synchronization or verification of third-party coding-platform accounts
 - Selection or provisioning of the production sandbox platform
-- 3D visualization implementation
+- Broad 3D structure coverage beyond the local array/two-pointer presentation accepted in ADR-0018
 - Chroma, Redis, Kafka, Kubernetes, or multi-region deployment
+
+## Website completeness and build tracking
+
+The [journey and edge-case contract](website-journeys-and-coverage.md) maps J01–J19 and E01–E19 to route ownership, data contracts and delivery tasks. It extends the reference comparison with normal, exit, failure and recovery requirements. Proposed ADRs [0023](../adr/0023-learner-owned-sheets-and-sharing.md) and [0024](../adr/0024-typed-interview-modes.md) cover learner-owned sharing and broader interview modes. Implementation remains gated; public reference observations do not establish its private backend behavior.

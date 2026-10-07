@@ -1,5 +1,9 @@
 # AlgoCove implementation task ledger
 
+**Journey coverage expansion (2026-10-07):** The [website journey contract](../docs/architecture/website-journeys-and-coverage.md) maps 19 feature journeys and 19 edge/exit cases to tasks. Additional proposed work covers shell/auth return, authoring preflight, recovery, private/shared sheets and broader interviews. This is documentation-only scope. Existing approvals and implementation evidence are unchanged.
+
+**Documentation revision (2026-10-07):** The owner requested architecture/build-document changes only. Tasks 45b–45e, 50a–50b and Phase 14 are proposed additions from the [learning platform design](../docs/architecture/learning-platform-evolution-2026-10-07.md). No new implementation or phase authorization is implied; Task 45a and the unchecked F9 owner gate remain unchanged.
+
 **Latest authorized repair (2026-10-03):** The owner reviewed the diagnosis and authorized Ponytail repairs. [Runtime repair evidence](../docs/architecture/runtime-repair-evidence-2026-10-03.md) records configuration, authenticated session recovery, workspace synchronization, published-content withdrawal, diagnostics and CI corrections. Repair commit `2803c23` passed all three CI jobs including both mandatory actual Linux learning-loop scenarios. Application repair commit `0f8b7a5` also passed all three jobs in CI run 37104114731, with both real Linux scenarios and fresh isolation evidence. U4/U6/U8 are complete for this repair scope; historical manual/design approvals remain separate. No deployment is authorized.
 
 **Current implementation evidence:** [Real product and 3D UI record](../docs/architecture/phase7-production-ui-evidence-2026-10-03.md) supplements the historical audit with persisted content administration, release identity persistence and the new mandatory Linux guided-loop gate. Final CI status is recorded there.
@@ -259,19 +263,31 @@
 - [x] Critical hint-leak and prompt-injection cases have zero bypasses in the declared synthetic suites; production semantic quality remains unapproved.
 - [ ] Human owner authorizes Phase 10.
 
-## Phase 10: Build the pilot curriculum and accessibility evidence
+## Phase 10: Build the shared learning platform, pilot curriculum and journey coverage
 
+- [ ] Task 45b: Specify shared learning catalog and release contracts
+- [ ] Task 45c: Generalize the published catalog and learning workspace
+- [ ] Task 45d: Separate external destination and collection identities
+- [ ] Task 45e: Synchronize pseudocode and algorithm walkthroughs
+- [ ] Task 45f: Specify and implement navigation, deep links and authenticated return
+- [ ] Task 45g: Extend release authoring and publication preflight
 - [ ] Task 46: Author the arrays/hashing pilot bundle
 - [ ] Task 47: Author the two-pointers pilot bundle
 - [ ] Task 48: Author the sliding-window pilot bundle
 - [ ] Task 49: Author the stack pilot bundle
+- [ ] Task 50a: Build curated Learn and sheet discovery
+- [ ] Task 50b: Drive roadmap planning from the published catalog
+- [ ] Task 50c: Close learner journeys, exits and recovery paths
 - [ ] Task 50: Validate pilot accessibility and collection mapping
 
 ### Checkpoint F10: Pilot learning product milestone M4
 
 - [ ] Four pattern bundles pass all six-language and content gates.
 - [ ] Guided, roadmap, external handoff, review, and tutor paths work together.
+- [ ] Learn, sheets and roadmap share release availability, deduplication and truthful coverage.
+- [ ] Pseudocode, variables, visuals and accessible transcripts stay synchronized; historical attempts retain version pins.
 - [ ] Accessibility critical journeys pass manual and automated review.
+- [ ] Task 50c closes the pilot J/E coverage report; every advertised action has a valid outcome, return path and relevant failure/recovery evidence.
 - [ ] Human owner authorizes Phase 11.
 
 ## Phase 11: Privacy, observability, resilience, and operational readiness
@@ -305,10 +321,53 @@
 
 - [ ] Task 58: Approve full-track taxonomy and coverage budgets
 - [ ] Task 59: Deliver reviewed problem and visualization batches
+- [ ] Task 59a: Build learner-owned private sheets
+- [ ] Task 59b: Build explicit sheet sharing and moderation
 - [ ] Task 60: Qualify coverage and learning claims before broad release
 
 ### Checkpoint F13: Coverage-qualified course milestone M6
 
 - [ ] Detailed batch plan and supported curriculum breadth are approved.
 - [ ] Every advertised track/sheet has truthful coverage and feasibility evidence.
+- [ ] Private/shared sheet Tasks 59a–59b are complete if advertised, or explicitly deferred with unsupported UI hidden.
 - [ ] Broad release has a human readiness decision; interview or job outcomes are not guaranteed.
+
+## Phase 14: DSA interview preparation (proposed)
+
+- [ ] Human owner authorizes Phase 14 after F13, or explicitly approves resequencing and prerequisites.
+- [ ] Task 61: Specify interview templates and evidence rubrics
+- [ ] Task 62: Implement timed interview session lifecycle
+- [ ] Task 63: Deliver evidence-based interview debriefs
+- [ ] Task 64: Qualify interview accessibility and release claims
+
+### Checkpoint F14: DSA interview milestone M7
+
+- [ ] Reviewed templates, server timing, execution, debriefs and recovery work together.
+- [ ] J15 and E15 plus applicable identity, recovery, AI, privacy and accessibility cases have evidence.
+- [ ] Accessibility and rubric evaluation evidence support the declared scope.
+- [ ] Human owner approves the scoped interview release; broader interview modes remain deferred to separately authorized Phase 15.
+
+## Phase 15: Broader interview preparation (proposed)
+
+- [ ] Human owner authorizes Phase 15 after F14 and reviews mode-specific scope/rubrics.
+- [ ] Task 65: Specify broader interview artifacts and scoring boundaries
+- [ ] Task 66: Deliver a code review interview slice
+- [ ] Task 67: Deliver low-level and system design interview slices
+- [ ] Task 68: Qualify broader interview journeys and release
+
+### Checkpoint F15: Broader interview milestone M8
+
+- [ ] Code review, LLD and system design each have an approved scope and evidence-backed rubric.
+- [ ] Normal, exit, recovery, accessibility and privacy paths pass for every advertised mode.
+- [ ] Human owner approves the declared release scope and limitations; deferred modes stay hidden.
+
+## Journey evidence tracking rules
+
+The [coverage contract](../docs/architecture/website-journeys-and-coverage.md) defines J01–J19 and E01–E19. For each implementation subcard, record applicable IDs, current status, release/version identity, evidence links and remaining gaps. Checkboxes above track delivery; the contract tables do not claim completion.
+
+- [ ] F10 pilot coverage report: J01–J08, J11–J14, applicable J18/J19 and E cases (Task 50c).
+- [ ] F13 curriculum/collection report: expanded J03/J06/J18; J09/J10 if shipped, with explicit deferrals otherwise (Tasks 58–60).
+- [ ] F14 DSA interview report: J15 and applicable E cases (Task 64).
+- [ ] F15 broader interview report: J16/J17 and applicable E cases (Task 68).
+
+These reports link actual evidence; no additional code tests were run by the documentation update.

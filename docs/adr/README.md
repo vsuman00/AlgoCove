@@ -18,8 +18,13 @@ Active records are `Proposed` unless individually accepted; ADR-0004 is supersed
 | [ADR-0012](0012-outbound-external-practice-handoff.md) | Outbound-only handoff to external practice providers | Proposed |
 | [ADR-0013](0013-configurable-timeboxed-roadmap-planning.md) | Configurable timeboxed plans with AI proposals and deterministic validation | Accepted for local Phase 7 |
 | [ADR-0014](0014-validate-before-display-and-trust-evidence.md) | Validate tutor content before display; trusted judging and evidence provenance | Proposed |
-
 | [ADR-0018](0018-production-spatial-trace-presentation.md) | Spatial trace presentation with equivalent flat and textual operation | Accepted for local Phase 1–7 |
+| [ADR-0019](0019-published-learning-releases.md) | Published learning releases | Proposed |
+| [ADR-0020](0020-destination-and-collection-identity.md) | Separate practice destinations and collections | Proposed |
+| [ADR-0021](0021-synchronized-algorithm-walkthroughs.md) | Synchronized algorithm walkthroughs | Proposed |
+| [ADR-0022](0022-dsa-interview-session-boundary.md) | DSA interview session boundary | Proposed |
+| [ADR-0023](0023-learner-owned-sheets-and-sharing.md) | Learner-owned sheets and explicit sharing | Proposed |
+| [ADR-0024](0024-typed-interview-modes.md) | Typed interview modes with separate assessment rules | Proposed |
 
 ## Lifecycle
 

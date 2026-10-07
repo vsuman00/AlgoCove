@@ -192,3 +192,26 @@ Do not edit an accepted ADR to make history look correct; supersede it.
 - [ ] ADR-0001 through ADR-0013 accepted, revised, rejected, superseded, or explicitly deferred
 
 Unchecked items keep the architecture gate open. An open gate is not a failure; it is an honest signal that implementation authorization has not yet been given.
+
+## Learning platform extension: proposed acceptance evidence (2026-10-07)
+
+These are future implementation gates for the [architecture proposal](learning-platform-evolution-2026-10-07.md), not passing evidence from this documentation revision.
+
+| Boundary | Required evidence | Plan tasks |
+|---|---|---|
+| Published learning releases | Exact asset pins, schema compatibility, withdrawal, historical attempt recovery, restricted payload exclusion | 45b–45c |
+| Destination and collection identity | Migration preserves journals; overlap deduplicates work; solve and source URLs remain distinct | 45d |
+| Walkthrough replay | Pseudocode IDs, variables, narration and visual/text state agree after stepping and scrubbing; schema-1 compatibility; hidden-key exclusion | 45e, 46–49 |
+| Discovery and planning | Same published availability across Learn, sheets and roadmap; bounded filters/pagination; honest coverage and infeasibility | 50a–50b, 50 |
+| Interview lifecycle | Ownership, server deadline races, retry/reconnect, assistance history, deterministic rubric, approved mastery events | 61–63 |
+| Accessible release | Keyboard, screen reader, reduced motion, responsive recovery, timing accommodations and manual review | 50, 64 |
+
+- [ ] ADRs 0019–0022 receive explicit decisions before their dependent implementation.
+- [ ] New content/navigation has design review and original or appropriately licensed authoring records.
+- [ ] Each implemented slice records actual evidence and unresolved limits separately from this target contract.
+
+## Website completeness traceability (proposed)
+
+The [J01–J19/E01–E19 matrices](website-journeys-and-coverage.md) are the source of journey coverage. Tasks 45f/45g cover navigation and publication; 50c records connected pilot recovery evidence; 59a/59b cover private/shared sheets; 65–68 cover broader interview artifacts. F10/F13/F14/F15 require scope-specific coverage reports.
+
+A report row contains requirement ID, task/subcard, applicable release/version, normal/negative/exit evidence, accessibility/manual evidence, current status and remaining defect or explicit deferral. Review source-to-solve correspondence and actual action destinations as well as link syntax. Documentation checks validate links/fences only; they do not establish browser, migration, scoring, privacy or learning efficacy.

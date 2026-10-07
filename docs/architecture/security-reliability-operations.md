@@ -491,3 +491,15 @@ The architecture cannot be called production-ready until all are evidenced:
 - rollback for code, schema-compatible app, content, and AI configuration is demonstrated.
 
 Until then, the correct status is `architecture proposed` or later `pilot under validation`, never `enterprise production-ready`.
+
+## Proposed discovery, sharing and interview threat-model extension
+
+| New surface | Required control and recovery | Delivery |
+|---|---|---|
+| Return-to URLs and deep links | Same-origin allowlist, authorization on direct entry, no sensitive query payloads or open redirects | 45f, 50c |
+| Public catalog cache + private progress | Separate cache policy/keys; no private data in shared responses; current availability recheck for actions | 45c, 50a–50c |
+| User-authored sheet title, notes and links | Bounded sanitized text, owner checks, URL role/host validation, no arbitrary server fetching or trusted index promotion | 59a |
+| Shared snapshots | Explicit disclosure preview, private field exclusion, opaque IDs, revocation and cache invalidation, abuse reporting/moderation and retention | 59b |
+| New interview artifacts | Kind/schema limits, safe text/diagram rendering, hidden-reference protection, deadline/finalization enforcement, provenance and private-data policy | 65–68 |
+
+Moderation and provider-policy decisions must precede publication of the related surface; a new UI cannot imply completed operational readiness. Extend the existing export/deletion inventory and audit schemas for private sheets, shares, moderation records and interview artifacts. Evaluate worker retry and delayed provider responses against deletion/revocation so they cannot recreate withdrawn access. Existing hosted privacy/security gates remain required. See [journey failure cases](website-journeys-and-coverage.md).
