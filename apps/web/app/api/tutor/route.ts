@@ -5,8 +5,10 @@ import { parseTutorInput } from "@algocove/tutor";
 import { authenticatedWebRequestContext } from "../../../src/auth/request-context";
 import { learningError } from "../../../src/mastery/learning-http";
 import { getTutorRuntime } from "../../../src/tutor/runtime";
+import { recordRouteMeasurement } from "../../../src/operations/telemetry";
 export const dynamic = "force-dynamic";
 export async function POST(request: Request): Promise<NextResponse> {
+  const started = performance.now();
   try {
     const ctx = await authenticatedWebRequestContext(request),
       runtime = getTutorRuntime();
@@ -28,6 +30,28 @@ export async function POST(request: Request): Promise<NextResponse> {
       raw.action === "cancel"
         ? await runtime.repository.cancel(ctx, id.value)
         : await runtime.service.complete(ctx, id.value, request.signal);
+    if (raw.action === "complete" && ["completed", "fallback"].includes(result.status)) {
+      if (result.status === "fallback") {
+        await recordRouteMeasurement(
+          request,
+          "tutor_provider",
+          "fallback",
+          performance.now() - started,
+        );
+        await recordRouteMeasurement(
+          request,
+          "tutor_authored",
+          "success",
+          performance.now() - started,
+        );
+      } else
+        await recordRouteMeasurement(
+          request,
+          "tutor_provider",
+          "success",
+          performance.now() - started,
+        );
+    }
     return NextResponse.json(result, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
     return learningError(request, error);

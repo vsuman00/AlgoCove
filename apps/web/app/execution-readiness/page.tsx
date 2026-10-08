@@ -1,7 +1,7 @@
 import { LANGUAGE_PROFILES } from "@algocove/domain";
 import type { ReactElement } from "react";
-import AlgoCoveShell from "../../src/components/algocove-shell";
-import { Icon } from "../../src/components/algocove-icons";
+import AlgoCoveShell from "../../src/components/shell/algocove-shell";
+import { Icon } from "../../src/components/shell/algocove-icons";
 
 const evidence = [
   {

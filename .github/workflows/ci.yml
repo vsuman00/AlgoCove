@@ -114,6 +114,9 @@ jobs:
       - name: Run six-language semantic conformance
         run: pnpm test:conformance
 
+      - name: Run four-pilot six-language conformance
+        run: pnpm test:pilot-conformance
+
       - name: Run bounded sandbox abuse fixtures
         run: pnpm test:sandbox
 
@@ -165,7 +168,7 @@ jobs:
       - name: Start disposable PostgreSQL
         run: docker compose up -d --wait db
 
-      - name: Test real six-language guided journeys and host recovery
+      - name: Test legacy and four-pilot six-language journeys with host recovery
         env:
           ALGO_COVE_REAL_LOOP_CI: "1"
           DATABASE_TEST_OPERATOR_URL: postgres://postgres:postgres@127.0.0.1:54329/postgres

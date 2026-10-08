@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import ProblemWorkspace from "../../../apps/web/src/components/problem-workspace";
+import ProblemWorkspace from "../../../apps/web/src/components/practice/problem-workspace";
 
 afterEach(() => {
   vi.restoreAllMocks();

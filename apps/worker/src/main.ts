@@ -100,6 +100,9 @@ async function main(): Promise<void> {
       process.on("SIGINT", stop);
       try {
         for (let n = 0; n < limit && !stopped; n++) {
+          await pool.query(
+            "INSERT INTO platform.service_heartbeat(service,observed_at) VALUES('content-worker',clock_timestamp()) ON CONFLICT(service) DO UPDATE SET observed_at=EXCLUDED.observed_at",
+          );
           const result = await relay.pumpOnce();
           process.stdout.write(JSON.stringify(result) + "\n");
           if (result.kind === "idle") break;

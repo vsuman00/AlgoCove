@@ -66,7 +66,7 @@ async function selectExercise(
     return original.rows[0] ?? null;
   }
   const result = await db.query<ExerciseRow>(
-    `SELECT e.* FROM content.review_exercise e WHERE e.concept_id=$1 AND e.status='published' AND (e.rights_expires_at IS NULL OR e.rights_expires_at>$3) ORDER BY CASE WHEN e.kind='transfer' AND NOT EXISTS(SELECT 1 FROM practice.learning_observation o WHERE o.learner_id=$2 AND o.facts->>'exerciseId'=e.exercise_id) THEN 0 ELSE 1 END,e.exercise_id LIMIT 1`,
+    `SELECT e.* FROM content.available_release_exercise e WHERE e.concept_id=$1 AND e.status='published' AND (e.rights_expires_at IS NULL OR e.rights_expires_at>$3) ORDER BY CASE WHEN e.kind='transfer' AND NOT EXISTS(SELECT 1 FROM practice.learning_observation o WHERE o.learner_id=$2 AND o.facts->>'exerciseId'=e.exercise_id) THEN 0 ELSE 1 END,e.exercise_id LIMIT 1`,
     [row.concept_id, row.learner_id, now],
   );
   return result.rows[0] ?? null;
@@ -284,7 +284,7 @@ export class PostgresReviewRepository implements LearningReviewRepository {
         throw notFoundError("Reviewed exercise is unavailable. Refresh the review queue.");
       // Protect publication/retirement through the grade and observation commit.
       const eligible = await tx.query(
-        "SELECT 1 FROM content.review_exercise WHERE exercise_id=$1 AND status='published' AND (rights_expires_at IS NULL OR rights_expires_at>$2) FOR SHARE",
+        "SELECT 1 FROM content.available_release_exercise WHERE exercise_id=$1 AND status='published' AND (rights_expires_at IS NULL OR rights_expires_at>$2) FOR SHARE",
         [exercise.exercise_id, input.now],
       );
       if (eligible.rowCount === 0) throw notFoundError("Review exercise has been retired.");

@@ -9,13 +9,15 @@ export type ClerkAuthState = {
   readonly isAuthenticated: boolean;
   readonly userId: string | null;
   readonly sessionId: string | null;
+  /** Server-only exception used solely to read pending privacy status. */
+  readonly allowDeletionPending?: boolean;
   /** Claims are intentionally not used for AlgoCove roles or ownership. */
   readonly claims?: Readonly<Record<string, unknown>>;
 };
 
 export type ClerkIdentityStore = LearnerProfileRepository & {
   findOrCreateLearner(providerSubject: string): Promise<LearnerId>;
-  getRoles(learnerId: LearnerId): Promise<readonly Role[]>;
+  getRoles(learnerId: LearnerId, allowDeletionPending?: boolean): Promise<readonly Role[]>;
 };
 
 export type ClerkIdentityAdapter = {
@@ -54,7 +56,7 @@ export function createClerkIdentityAdapter(input: {
       let roles: readonly Role[];
       try {
         learnerId = await input.store.findOrCreateLearner(`clerk:${state.userId}`);
-        roles = await input.store.getRoles(learnerId);
+        roles = await input.store.getRoles(learnerId, state.allowDeletionPending === true);
       } catch (error) {
         if (
           error instanceof Error &&

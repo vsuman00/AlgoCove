@@ -2,7 +2,7 @@
 
 **Documentation extension (2026-10-07):** Section 29 specifies proposed course, sheet and interview surfaces plus synchronized walkthroughs. Existing brand authority remains the basis. New navigation and interaction contracts remain proposed until the design/phase approval recorded in the plan; this document update authorizes no application changes.
 
-**Phase 1–7 implementation update (2026-10-03):** [Current UI evidence](docs/architecture/phase7-production-ui-evidence-2026-10-03.md) records self-hosted fonts, canonical SVG assets, focused learning shell, real learner/content state, responsive review and the owner-requested interactive 3D presentation. [ADR-0018](docs/adr/0018-production-spatial-trace-presentation.md) defines the renderer change. Existing reference-approval and later-page checklists retain their historical status; engineering screenshots do not imply owner approval.
+**Phase 1–7 implementation update (2026-10-03):** [Current UI evidence](./docs/evidence/phases/phase7-production-ui-evidence-2026-10-03.md) records self-hosted fonts, canonical SVG assets, focused learning shell, real learner/content state, responsive review and the owner-requested interactive 3D presentation. [ADR-0018](docs/adr/0018-production-spatial-trace-presentation.md) defines the renderer change. Existing reference-approval and later-page checklists retain their historical status; engineering screenshots do not imply owner approval.
 
 **Status:** Approved brand and visual direction, implementation not started  
 **Document role:** Project-wide source of truth for learner-facing UI and visual design  
@@ -62,7 +62,7 @@ The repository owns the visual contract. No developer-local path, generated-imag
 | Reference screen | Versioned contract | Purpose & authority |
 |---|---|---|
 | Learner Home | Sections 8.2, 13.1, and 26.1 | Light shell, canonical cove-and-angle-brackets mark, daily learning hierarchy, review queue, and learning signals |
-| Guided Problem Workspace | Sections 8.3, 13.3, and 26.2; `apps/web/src/components/problem-workspace.tsx` | Focused rail-free workspace, evidence stepper, structured pseudocode, reviewed trace, and durable learner recovery |
+| Guided Problem Workspace | Sections 8.3, 13.3, and 26.2; `apps/web/src/components/practice/problem-workspace.tsx` | Focused rail-free workspace, evidence stepper, structured pseudocode, reviewed trace, and durable learner recovery |
 | DSA Roadmap | Sections 8.2, 13.2, and 26.3 | Deep-ocean journey rail, prerequisite DAG, capacity allocation, plan health, and scheduled reviews |
 
 A screenshot may become a visual baseline only when it is committed under `docs/design-assets/<content-sha256>/` with a manifest containing its SHA-256, viewport, route, and approval date. Until then, the versioned contracts above and automated accessibility/browser checks are the shared source of truth.

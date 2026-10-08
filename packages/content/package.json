@@ -4,7 +4,11 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./pilot": "./src/pilot-bundle.ts",
+    "./pilot-harness": "./src/pilot-harness.ts",
+    "./pilot-collection": "./src/pilot-collection.ts",
+    "./learning-release": "./src/learning-release.ts"
   },
   "dependencies": {
     "@algocove/domain": "workspace:*"

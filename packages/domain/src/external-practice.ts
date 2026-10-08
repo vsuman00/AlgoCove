@@ -13,6 +13,7 @@ export type ExternalReferenceId = OpaqueId<"externalReference">;
 export type CollectionId = OpaqueId<"collection">;
 
 export const EXTERNAL_PROVIDERS = [
+  "leetcode",
   "blind",
   "neetcode",
   "top_interview_150",
@@ -25,6 +26,7 @@ export const EXTERNAL_LINK_STATUSES = ["unreviewed", "reviewed", "unavailable", 
 export type ExternalLinkStatus = (typeof EXTERNAL_LINK_STATUSES)[number];
 
 export const PROVIDER_DOMAINS: Readonly<Record<ExternalProvider, readonly string[]>> = {
+  leetcode: ["leetcode.com"],
   blind: ["blind75.com"],
   neetcode: ["neetcode.io"],
   top_interview_150: ["leetcode.com"],

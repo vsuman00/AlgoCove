@@ -1,3 +1,4 @@
+import { observeRequest } from "../../../../src/operations/telemetry";
 import type { NextResponse } from "next/server";
 import {
   getOwnedRoadmap,
@@ -27,7 +28,7 @@ export async function GET(request: Request): Promise<NextResponse> {
     return learningError(request, error);
   }
 }
-export async function POST(request: Request): Promise<NextResponse> {
+async function handlePOST(request: Request): Promise<NextResponse> {
   try {
     const context = await authenticatedWebRequestContext(request),
       body = await learningBody(request);
@@ -93,4 +94,8 @@ export async function POST(request: Request): Promise<NextResponse> {
   } catch (error) {
     return learningError(request, error);
   }
+}
+
+export async function POST(request: Request): Promise<Response> {
+  return observeRequest(request, "roadmap", () => handlePOST(request));
 }

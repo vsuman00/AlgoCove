@@ -28,6 +28,16 @@ export class PostgresConceptMappingRepository implements ConceptMappingRepositor
         throw conflictError(
           "Published mappings are immutable. Create a reviewed successor version.",
         );
+      if (
+        (
+          await tx.query("SELECT 1 FROM content.pilot_bundle WHERE problem_version_id=$1", [
+            input.problemVersionId,
+          ])
+        ).rowCount
+      )
+        throw conflictError(
+          "Pilot concept mappings are checksum-bound; create a registered successor.",
+        );
       await tx.query("DELETE FROM learning.problem_concept WHERE problem_version_id=$1", [
         input.problemVersionId,
       ]);

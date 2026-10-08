@@ -1,0 +1,385 @@
+{
+  "schemaVersion": 1,
+  "version": "pilot.stack.v1",
+  "pattern": "stack",
+  "slug": "signal-cancellation",
+  "title": "Signal cancellation",
+  "statement": "A log records integer labels from 0 to 100. Repeatedly cancel adjacent equal labels until no adjacent equal pair remains. Return the number of labels left. Cancellation can bring another equal pair together. The empty log returns zero. There are at most 100 labels; do not change the input.",
+  "rights": {
+    "kind": "original",
+    "rightsHolder": "AlgoCove",
+    "license": "original-v1"
+  },
+  "semantics": {
+    "maxLength": 100,
+    "minValue": 0,
+    "maxValue": 100,
+    "sortedDistinct": false,
+    "output": "integer",
+    "mutation": "forbidden"
+  },
+  "lesson": {
+    "summary": "Process labels from left to right with a stack. If the incoming label equals the top, pop the top and consume the incoming label. Otherwise push it. Return the final stack size.",
+    "recognition": [
+      "Only the most recent surviving label can cancel the incoming label.",
+      "Earlier cancellations can expose another matching top.",
+      "Keep a stack representing the fully reduced processed prefix."
+    ],
+    "invariant": "After processing a prefix, the stack is its reduced sequence and has no adjacent equal labels. The next label can affect only the top.",
+    "complexity": "O(n) time and O(n) auxiliary space; each label is pushed at most once and popped at most once.",
+    "pitfalls": [
+      "Popping an empty stack is invalid.",
+      "Deleting only original adjacent pairs misses pairs exposed by cancellation.",
+      "Deleting every occurrence of a duplicated value cancels nonadjacent labels incorrectly."
+    ]
+  },
+  "pseudocode": {
+    "inputs": "A log records integer labels from 0 to 100. Repeatedly cancel adjacent equal labels until no adjacent equal pair remains. Return the number of labels left. Cancellation can bring another equal pair together. The empty log returns zero. There are at most 100 labels; do not change the input.",
+    "state": "Keep a stack representing the fully reduced processed prefix.",
+    "initialization": "Start with an empty stack. The processed prefix reduces to the empty sequence.",
+    "invariant": "After processing a prefix, the stack is its reduced sequence and has no adjacent equal labels. The next label can affect only the top.",
+    "loop": "Process labels from left to right with a stack. If the incoming label equals the top, pop the top and consume the incoming label. Otherwise push it. Return the final stack size.",
+    "termination": "Every input position has been examined; the bounded state has reached the terminal condition.",
+    "output": "Return the integer result without changing the input.",
+    "complexity": "O(n) time and O(n) auxiliary space; each label is pushed at most once and popped at most once."
+  },
+  "hints": [
+    {
+      "tier": 1,
+      "text": "Only the most recent surviving label can cancel the incoming label."
+    },
+    {
+      "tier": 2,
+      "text": "Earlier cancellations can expose another matching top."
+    },
+    {
+      "tier": 3,
+      "text": "After processing a prefix, the stack is its reduced sequence and has no adjacent equal labels. The next label can affect only the top."
+    },
+    {
+      "tier": 4,
+      "text": "Process labels from left to right with a stack. If the incoming label equals the top, pop the top and consume the incoming label. Otherwise push it. Return the final stack size."
+    },
+    {
+      "tier": 5,
+      "text": "Guard the top lookup with a nonempty-stack check. Complete one pop for a matching top and one push otherwise. Test [1, 2, 2, 1] so the cancellation exposing the earlier top is handled."
+    },
+    {
+      "tier": 6,
+      "text": "Reference reasoning: Process labels from left to right with a stack. If the incoming label equals the top, pop the top and consume the incoming label. Otherwise push it. Return the final stack size. O(n) time and O(n) auxiliary space; each label is pushed at most once and popped at most once."
+    }
+  ],
+  "languages": {
+    "python": {
+      "starter": "def solve(values):\n    # Return the scalar result without changing values.\n    return 0\n",
+      "solution": "def solve(values):\n    stack = []\n    for value in values:\n        if stack and stack[-1] == value: stack.pop()\n        else: stack.append(value)\n    return len(stack)\n",
+      "commonErrors": [
+        "Do not change the input.",
+        "Popping an empty stack is invalid.",
+        "Deleting only original adjacent pairs misses pairs exposed by cancellation.",
+        "Deleting every occurrence of a duplicated value cancels nonadjacent labels incorrectly.",
+        "Use integer results; do not coerce counts or lengths to floating point."
+      ]
+    },
+    "javascript": {
+      "starter": "function solve(values) {\n  // Return the scalar result without changing values.\n  return 0;\n}\n",
+      "solution": "function solve(values) {\n  const stack = [];\n  for (const value of values) {\n    if (stack.length && stack[stack.length - 1] === value) stack.pop();\n    else stack.push(value);\n  }\n  return stack.length;\n}\n",
+      "commonErrors": [
+        "Do not change the input.",
+        "Popping an empty stack is invalid.",
+        "Deleting only original adjacent pairs misses pairs exposed by cancellation.",
+        "Deleting every occurrence of a duplicated value cancels nonadjacent labels incorrectly.",
+        "Return an integer from solve; avoid undefined results and diagnostic output."
+      ]
+    },
+    "typescript": {
+      "starter": "function solve(values: number[]): number {\n  // Return the scalar result without changing values.\n  return 0;\n}\n",
+      "solution": "function solve(values: number[]): number {\n  const stack: number[] = [];\n  for (const value of values) {\n    if (stack.length && stack[stack.length - 1] === value) stack.pop();\n    else stack.push(value);\n  }\n  return stack.length;\n}\n",
+      "commonErrors": [
+        "Do not change the input.",
+        "Popping an empty stack is invalid.",
+        "Deleting only original adjacent pairs misses pairs exposed by cancellation.",
+        "Deleting every occurrence of a duplicated value cancels nonadjacent labels incorrectly.",
+        "Annotate an initially empty stack as number[] so strict compilation can establish its element type."
+      ]
+    },
+    "java": {
+      "starter": "static int solve(int[] values) {\n    // Return the scalar result without changing values.\n    return 0;\n}\n",
+      "solution": "static int solve(int[] values) {\n    int[] stack = new int[values.length];\n    int size = 0;\n    for (int value : values) {\n        if (size > 0 && stack[size - 1] == value) size--;\n        else stack[size++] = value;\n    }\n    return size;\n}\n",
+      "commonErrors": [
+        "Do not change the input.",
+        "Popping an empty stack is invalid.",
+        "Deleting only original adjacent pairs misses pairs exposed by cancellation.",
+        "Deleting every occurrence of a duplicated value cancels nonadjacent labels incorrectly.",
+        "Keep solve static with an int result; the wrapper invokes it without constructing an object."
+      ]
+    },
+    "cpp": {
+      "starter": "int solve(const vector<int>& values) {\n  // Return the scalar result without changing values.\n  return 0;\n}\n",
+      "solution": "int solve(const vector<int>& values) {\n  vector<int> stack;\n  for (int value : values) {\n    if (!stack.empty() && stack.back() == value) stack.pop_back();\n    else stack.push_back(value);\n  }\n  return (int)stack.size();\n}\n",
+      "commonErrors": [
+        "Do not change the input.",
+        "Popping an empty stack is invalid.",
+        "Deleting only original adjacent pairs misses pairs exposed by cancellation.",
+        "Deleting every occurrence of a duplicated value cancels nonadjacent labels incorrectly.",
+        "Keep the reviewed vector<int>& entry signature and preserve the input contents."
+      ]
+    },
+    "c": {
+      "starter": "int solve(const int values[], int length) {\n  /* Return the scalar result without changing values. */\n  return 0;\n}\n",
+      "solution": "int solve(const int values[], int length) {\n  int stack[100], size = 0;\n  for (int i = 0; i < length; i++) {\n    if (size > 0 && stack[size - 1] == values[i]) size--;\n    else stack[size++] = values[i];\n  }\n  return size;\n}\n",
+      "commonErrors": [
+        "Do not change the input.",
+        "Popping an empty stack is invalid.",
+        "Deleting only original adjacent pairs misses pairs exposed by cancellation.",
+        "Deleting every occurrence of a duplicated value cancels nonadjacent labels incorrectly.",
+        "Track the initialized stack prefix; never read a popped or uninitialized slot."
+      ]
+    }
+  },
+  "fixtures": [
+    {
+      "id": "stack-0",
+      "values": [],
+      "expected": 0
+    },
+    {
+      "id": "stack-1",
+      "values": [1],
+      "expected": 1
+    },
+    {
+      "id": "stack-2",
+      "values": [1, 1],
+      "expected": 0
+    },
+    {
+      "id": "stack-3",
+      "values": [1, 2, 2, 1],
+      "expected": 0
+    },
+    {
+      "id": "stack-4",
+      "values": [1, 2, 2, 1, 3],
+      "expected": 1
+    },
+    {
+      "id": "stack-5",
+      "values": [1, 2, 1],
+      "expected": 3
+    },
+    {
+      "id": "stack-6",
+      "values": [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0
+      ],
+      "expected": 0
+    },
+    {
+      "id": "stack-7",
+      "values": [100, 100, 0],
+      "expected": 1
+    }
+  ],
+  "trace": {
+    "values": [1, 2, 2, 1, 3],
+    "states": [
+      {
+        "action": "initialize",
+        "cursor": 0,
+        "left": null,
+        "right": null,
+        "memory": [],
+        "stack": [],
+        "answer": 0,
+        "explanation": "Start with an empty stack. The processed prefix reduces to the empty sequence."
+      },
+      {
+        "action": "push",
+        "cursor": 1,
+        "left": null,
+        "right": null,
+        "memory": [],
+        "stack": [1],
+        "answer": 1,
+        "explanation": "Incoming label 1 has no equal stack top. Push it onto the retained sequence."
+      },
+      {
+        "action": "push",
+        "cursor": 2,
+        "left": null,
+        "right": null,
+        "memory": [],
+        "stack": [1, 2],
+        "answer": 2,
+        "explanation": "Incoming label 2 has no equal stack top. Push it onto the retained sequence."
+      },
+      {
+        "action": "pop",
+        "cursor": 3,
+        "left": null,
+        "right": null,
+        "memory": [],
+        "stack": [1],
+        "answer": 1,
+        "explanation": "Incoming label 2 equals the stack top. Pop that top and consume the incoming label as a cancelling pair."
+      },
+      {
+        "action": "pop",
+        "cursor": 4,
+        "left": null,
+        "right": null,
+        "memory": [],
+        "stack": [],
+        "answer": 0,
+        "explanation": "Incoming label 1 equals the stack top. Pop that top and consume the incoming label as a cancelling pair."
+      },
+      {
+        "action": "push",
+        "cursor": 5,
+        "left": null,
+        "right": null,
+        "memory": [],
+        "stack": [3],
+        "answer": 1,
+        "explanation": "Incoming label 3 has no equal stack top. Push it onto the retained sequence."
+      },
+      {
+        "action": "complete",
+        "cursor": 5,
+        "left": null,
+        "right": null,
+        "memory": [],
+        "stack": [3],
+        "answer": 1,
+        "explanation": "The retained stack has 1 label. No adjacent equal pair remains."
+      }
+    ]
+  },
+  "review": {
+    "afterDays": [1, 3, 7, 21],
+    "prompt": "For labels [1, 2, 2, 1], which explanation correctly gives a final stack size of zero?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Canceling the two middle labels exposes the earlier 1 as the top, so the final incoming 1 cancels it."
+      },
+      {
+        "id": "b",
+        "text": "Cancel only the pair that was adjacent in the original input and leave the two outer labels."
+      },
+      {
+        "id": "c",
+        "text": "After one pop, stop processing the remaining input because the stack is already reduced."
+      }
+    ],
+    "correctOption": "a",
+    "rationale": "The stack represents the reduced processed prefix. Pop the matching 2; the resulting top 1 is the only survivor that can cancel the last 1."
+  },
+  "transfer": {
+    "delayDays": 7,
+    "title": "Cancel a burst of three",
+    "statement": "Change the rule so that three adjacent equal labels cancel. Explain why each stack entry must now remember a run count and why the pair-cancellation implementation cannot be reused unchanged.",
+    "invariant": "The stack represents the reduced prefix as runs with counts below three; only the top run can combine with the incoming label.",
+    "expectedReasoning": "Store label/count pairs; increment a matching top count and pop when it reaches three. Preserve chain reactions when another run is exposed.",
+    "checkpoint": {
+      "prompt": "Which adaptation preserves the transfer invariant?",
+      "options": [
+        {
+          "id": "adapt",
+          "text": "Store label/count pairs; increment a matching top count and pop when it reaches three. Preserve chain reactions when another run is exposed."
+        },
+        {
+          "id": "unchanged",
+          "text": "Reuse the original update rules without changing the invariant."
+        }
+      ],
+      "correctOption": "adapt"
+    }
+  },
+  "readinessQuestions": [
+    {
+      "id": "concept",
+      "category": "concept",
+      "prompt": "Which quantity does the exercise ask you to compute?",
+      "options": [
+        {
+          "value": "choice_a",
+          "label": "The number of labels remaining after adjacent cancellation"
+        },
+        {
+          "value": "choice_b",
+          "label": "The sum of all input labels"
+        }
+      ],
+      "answer": "choice_a"
+    },
+    {
+      "id": "pattern",
+      "category": "pattern",
+      "prompt": "Which recognition cue fits this exercise?",
+      "options": [
+        {
+          "value": "choice_a",
+          "label": "Every input requires an all-pairs search"
+        },
+        {
+          "value": "choice_b",
+          "label": "Only the most recent surviving label can cancel the incoming label."
+        }
+      ],
+      "answer": "choice_b"
+    },
+    {
+      "id": "invariant",
+      "category": "invariant",
+      "prompt": "Which statement must remain true during the scan?",
+      "options": [
+        {
+          "value": "choice_a",
+          "label": "After processing a prefix, the stack is its reduced sequence and has no adjacent equal labels. The next label can affect only the top."
+        },
+        {
+          "value": "choice_b",
+          "label": "Changing the input is necessary to preserve correctness"
+        }
+      ],
+      "answer": "choice_a"
+    },
+    {
+      "id": "pseudocode",
+      "category": "pseudocode",
+      "prompt": "Which order of operations matches the reasoning rubric?",
+      "options": [
+        {
+          "value": "choice_a",
+          "label": "Choose the answer before processing any input"
+        },
+        {
+          "value": "choice_b",
+          "label": "Process labels from left to right with a stack. If the incoming label equals the top, pop the top and consume the incoming label. Otherwise push it. Return the final stack size."
+        }
+      ],
+      "answer": "choice_b"
+    },
+    {
+      "id": "visualization",
+      "category": "visualization",
+      "prompt": "After the reviewed trace on [1, 2, 2, 1, 3], what integer result remains?",
+      "options": [
+        {
+          "value": "choice_a",
+          "label": "1"
+        },
+        {
+          "value": "choice_b",
+          "label": "2"
+        }
+      ],
+      "answer": "choice_a"
+    }
+  ]
+}

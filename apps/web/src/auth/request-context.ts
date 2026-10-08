@@ -11,6 +11,7 @@ import { formatId } from "@algocove/domain";
 import { getClerkIdentityAdapter } from "./clerk-adapter";
 import { isClerkConfigured } from "./clerk-config";
 import { auth } from "./clerk-server";
+import { rememberTelemetryContext } from "../operations/telemetry";
 
 const randomIds: IdGenerator = {
   generate<TKind extends Parameters<typeof formatId>[0]>(kind: TKind) {
@@ -27,7 +28,11 @@ export function webTraceId(request: Request): string {
   if (existing !== undefined) return existing;
   const supplied = request.headers.get("x-trace-id");
   const trace =
-    supplied !== null && TRACE_ID_PATTERN.test(supplied) ? supplied : randomIds.generate("request");
+    supplied !== null &&
+    TRACE_ID_PATTERN.test(supplied) &&
+    /^(?:req|trace|request)[_-][0-9a-hjkmnp-tv-z]{8,64}$/.test(supplied)
+      ? supplied
+      : randomIds.generate("request");
   requestTraces.set(request, trace);
   return trace;
 }
@@ -42,7 +47,10 @@ export function createWebRequestContext(actor: Actor, traceId?: string): Request
   });
 }
 
-export async function authenticatedWebRequestContext(request: Request): Promise<RequestContext> {
+export async function authenticatedWebRequestContext(
+  request: Request,
+  options: { allowDeletionPending?: boolean } = {},
+): Promise<RequestContext> {
   const clerkAuth = isClerkConfigured()
     ? await auth()
     : { isAuthenticated: false, userId: null, sessionId: null };
@@ -50,6 +58,9 @@ export async function authenticatedWebRequestContext(request: Request): Promise<
     isAuthenticated: clerkAuth.isAuthenticated,
     userId: clerkAuth.userId,
     sessionId: clerkAuth.sessionId,
+    allowDeletionPending: options.allowDeletionPending === true,
   });
-  return createWebRequestContext(actor, webTraceId(request));
+  const context = createWebRequestContext(actor, webTraceId(request));
+  rememberTelemetryContext(request, context);
+  return context;
 }

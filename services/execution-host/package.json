@@ -10,6 +10,7 @@
   "dependencies": {
     "@algocove/domain": "workspace:*",
     "@algocove/execution-contracts": "workspace:*",
-    "@algocove/execution-control": "workspace:*"
+    "@algocove/execution-control": "workspace:*",
+    "@algocove/content": "workspace:*"
   }
 }

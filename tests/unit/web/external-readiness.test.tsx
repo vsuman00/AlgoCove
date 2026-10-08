@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import ExternalReadiness from "../../../apps/web/src/components/external-readiness";
+import ExternalReadiness from "../../../apps/web/src/components/readiness/external-readiness";
 import type { ExternalReadinessDecision } from "@algocove/domain";
 const ready: ExternalReadinessDecision = {
   status: "ready",

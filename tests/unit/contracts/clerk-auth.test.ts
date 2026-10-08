@@ -86,9 +86,12 @@ describe("web request correlation", () => {
     expect(webTraceId(request)).toMatch(/^req_[a-z0-9]{16,52}$/);
     expect(webTraceId(request)).toBe(webTraceId(request));
     expect(webTraceId(new Request(request))).not.toBe(webTraceId(request));
-    expect(webTraceId(new Request(request, { headers: { "x-trace-id": "safe-trace-123" } }))).toBe(
-      "safe-trace-123",
+    expect(webTraceId(new Request(request, { headers: { "x-trace-id": "trace_12345678" } }))).toBe(
+      "trace_12345678",
     );
+    expect(
+      webTraceId(new Request(request, { headers: { "x-trace-id": "PRIVATE_CODE_CANARY" } })),
+    ).toMatch(/^req_/);
     expect(webTraceId(new Request(request, { headers: { "x-trace-id": "unsafe trace" } }))).toMatch(
       /^req_/,
     );

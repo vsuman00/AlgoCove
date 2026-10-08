@@ -1,8 +1,8 @@
 # ADR-0021: Synchronized algorithm walkthroughs
 
-**Status:** Proposed
+**Status:** Accepted for local Phase 10 implementation, 2026-10-07; delivery evidence remains task-specific
 **Date:** 2026-10-07
-**Scope:** Documentation proposal only; implementation and phase approvals remain pending.
+**Scope:** Owner instruction on 2026-10-07 authorizes the remaining Phase 10 extensions against the new architecture. The [shared learning contract](../architecture/shared-learning-contract.md) resolves implementation contracts. Independent publication, live-provider and later-phase gates remain separate.
 
 ## Context
 

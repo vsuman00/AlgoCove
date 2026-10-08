@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { afterEach, expect, it, vi } from "vitest";
 import OnboardingPage from "../../../apps/web/app/onboarding/page";
 
-vi.mock("../../../apps/web/src/components/algocove-shell", () => ({
+vi.mock("../../../apps/web/src/components/shell/algocove-shell", () => ({
   default: ({ children }: { children: ReactNode }) => children,
 }));
 afterEach(() => vi.unstubAllGlobals());

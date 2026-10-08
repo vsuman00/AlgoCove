@@ -108,3 +108,17 @@ export { PostgresTutorRepository } from "./tutor-repository.ts";
 export * from "./evaluation-repository.ts";
 
 export * from "./roadmap-generation-repository.ts";
+
+export {
+  PostgresPilotRepository,
+  PILOT_REVIEW_KINDS,
+  type PilotReviewKind,
+} from "./pilot-repository.ts";
+
+export { PostgresLearningCatalogRepository } from "./learning-catalog-repository.ts";
+export { PostgresLearningReleaseRepository } from "./learning-release-repository.ts";
+export { PostgresDestinationRepository } from "./destination-repository.ts";
+export * from "./learning-collection-repository.ts";
+export * from "./privacy-repository.ts";
+export * from "./operational-repository.ts";
+export * from "./privacy-operations-repository.ts";

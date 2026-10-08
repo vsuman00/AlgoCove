@@ -22,6 +22,16 @@ export default defineConfig({
   resolve: {
     alias: {
       "@algocove/tutor": path.join(root, "packages/tutor/src/index.ts"),
+      "@algocove/content/learning-release": path.join(
+        root,
+        "packages/content/src/learning-release.ts",
+      ),
+      "@algocove/content/pilot-collection": path.join(
+        root,
+        "packages/content/src/pilot-collection.ts",
+      ),
+      "@algocove/content/pilot": path.join(root, "packages/content/src/pilot-bundle.ts"),
+      "@algocove/content/pilot-harness": path.join(root, "packages/content/src/pilot-harness.ts"),
       "@algocove/content": path.join(root, "packages/content/src/index.ts"),
       "@algocove/retrieval": path.join(root, "packages/retrieval/src/index.ts"),
       "@algocove/application": path.join(root, "packages/application/src/index.ts"),

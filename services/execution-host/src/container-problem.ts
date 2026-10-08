@@ -1,3 +1,4 @@
+import type { ReviewedPilot } from "./pilot-problem.ts";
 import { languageProfile, type ProblemLanguage } from "@algocove/domain";
 import {
   parseRunDescriptor,
@@ -119,12 +120,18 @@ export function createContainerDescriptorPolicy(
   key: SigningKeyPair,
   images: Readonly<Record<ProblemLanguage, string>>,
   now: () => string,
+  pilots: ReadonlyMap<string, ReviewedPilot> = new Map(),
 ): (run: WebsiteExecutionRun, eventId: string) => ExecutionDispatchMessage {
   return (
     run: WebsiteExecutionRun,
     eventId: Parameters<typeof createExecutionDispatchMessage>[0]["dispatchKey"],
   ) => {
-    if (run.problemVersionId !== CONTAINER_PROBLEM || run.manifestId !== manifests[run.language])
+    const pilot = pilots.get(run.problemVersionId);
+    if (
+      pilot
+        ? run.manifestId !== pilot.manifestId(run.language)
+        : run.problemVersionId !== CONTAINER_PROBLEM || run.manifestId !== manifests[run.language]
+    )
       throw new Error("Reviewed problem manifest unavailable.");
     if (
       !Number.isSafeInteger(run.sourceLength) ||
@@ -145,8 +152,8 @@ export function createContainerDescriptorPolicy(
       language: run.language,
       adapterId: profile.adapterId,
       entrySignature: profile.entrySignature,
-      manifestDigest: containerManifestDigest(run.language),
-      fixtureDigest: CONTAINER_FIXTURE_DIGEST,
+      manifestDigest: pilot?.manifestDigest(run.language) ?? containerManifestDigest(run.language),
+      fixtureDigest: pilot?.fixtureDigest ?? CONTAINER_FIXTURE_DIGEST,
       runtimeImageDigest: digest,
       sourceDigest: run.sourceChecksum,
       limits: {

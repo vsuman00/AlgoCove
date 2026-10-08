@@ -15,7 +15,8 @@
     "@algocove/execution-control": "workspace:*",
     "pg": "8.23.0",
     "@algocove/content": "workspace:*",
-    "@algocove/retrieval": "workspace:*"
+    "@algocove/retrieval": "workspace:*",
+    "@algocove/observability": "workspace:*"
   },
   "scripts": {
     "typecheck": "tsc --noEmit -p tsconfig.json"

@@ -1,0 +1,19 @@
+{
+  "recordedAt": "2026-10-07T18:16:46.824Z",
+  "scope": "persistent local readiness; no learner purge or hosted deployment",
+  "migrationWatermark": 40,
+  "accounts": {
+    "total": 5,
+    "active": 5,
+    "deleted": 0
+  },
+  "privacyWorker": {
+    "runtime_purge": false,
+    "worker_private_read": false,
+    "worker_outbox_read": false
+  },
+  "backupInventoryRegistered": 2,
+  "finalCheckedAt": "2026-10-07T18:36:21.909Z",
+  "disposableDatabaseResidue": 0,
+  "privacyWorkerIdle": true
+}

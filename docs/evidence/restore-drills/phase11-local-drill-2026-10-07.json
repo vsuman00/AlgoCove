@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-07T18:31:36.186Z",
+  "scope": "isolated local PostgreSQL/immutable assets/production app artifacts; synthetic identities and publication; no hosted PITR or Linux/gVisor qualification",
+  "checks": {
+    "privacyGameDay": {
+      "unavailableCancellationBlockedPurge": true,
+      "retryCompleted": true,
+      "deletionLedgerFsyncedBeforePurge": true,
+      "hostCancellation": "controlled adapter; this synthetic run never left the database"
+    },
+    "restore": {
+      "migrationWatermark": "0040",
+      "ownedSourceRestored": true,
+      "ownedAttemptResumed": true,
+      "indexLineageRestored": true,
+      "outboxReconciliationDelivered": true,
+      "deletionLedgerReapplied": true,
+      "deletedIdentityResurrectionDenied": true,
+      "immutableAssets": {
+        "arrays-hashing": "sha256:25ef1357b10c89bef67aacc8c0b84ac1f07ecbba6b9a10fd6ad4d553bdcc63b9",
+        "two-pointers": "sha256:a192cfa1b167168fd266ab152c529127e39c46fe6b52903822df0ad936472b1d",
+        "sliding-window": "sha256:66e2f7c030002557058647df7bea1f4c7e5df10a048c4db2b7dc4b37f2a9638d",
+        "stack": "sha256:c1199a77446a05b369b3f6b014461e0bb60a0dcef3ebd297079ce04ee747f82f"
+      },
+      "backupSha256": "sha256:267ef476cefb6c3963fb8c8055711971d12672d05fb82be494ab3292290c2e4e",
+      "deletionLedgerSha256": "sha256:361c3baf417e4da2357637775ebb6537448c4270667259dd4bfb9e22ea1e7959",
+      "rpoSnapshotWindowSeconds": 0.208,
+      "rpoObservedLostSyntheticWrites": 1,
+      "rtoSeconds": 0.485
+    },
+    "contentRollback": {
+      "withdrawnSuccessor": true,
+      "priorEligibleVersionRestored": true,
+      "historicalAttemptPreserved": true
+    },
+    "aiRollback": {
+      "fixtureChannelOnly": true,
+      "authoredOffRestored": true,
+      "liveProviderCalls": 0
+    },
+    "runtimeRollback": {
+      "missingCandidateRejected": true,
+      "previousDigest": "sha256:ce1f798ce7c07307251f8d340dfae57029c559119dacf84d8e97ae98049e9c85",
+      "previousRuntimeSmokePassed": true,
+      "host": "Docker Desktop; not a gVisor sandbox qualification"
+    },
+    "applicationRollback": {
+      "currentBuildId": "tOFfNc3GQZeAjVqw-khOM",
+      "previousBuildId": "3I77LWxQAc_SCZCgO9RuI",
+      "bothArtifactsReadyOnRestoredSchema": true,
+      "priorLearningRoutePassed": true
+    },
+    "backupInventory": {
+      "backupRegistered": true,
+      "expiryTracked": true,
+      "destructionReceiptRecorded": true
+    },
+    "cleanup": {
+      "isolatedDatabasesAndRolesDropped": true,
+      "syntheticDumpAssetsAndDeletionLedgerRemoved": true,
+      "ownedApplicationProcessesStopped": true
+    }
+  },
+  "status": "passed"
+}

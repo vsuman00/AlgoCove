@@ -29,7 +29,7 @@ test.describe("Guided problem workspace", () => {
     await expect(page.getByRole("textbox", { name: "Python source" })).toHaveCount(0);
     await expect(page.getByRole("heading", { name: "Container with most water" })).toHaveCount(0);
     expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
-    const response = await page.goto("/learn/unknown-problem");
+    const response = await page.goto("/learn/unknown-problem!");
     expect(response?.status()).toBe(404);
     await expect(page.getByRole("heading", { name: "This page is not available." })).toBeVisible();
     expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);

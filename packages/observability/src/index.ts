@@ -33,15 +33,29 @@ export type TelemetryEvent = {
   readonly result?: TelemetryResult;
 };
 
-const SAFE_ID = /^[A-Za-z0-9._-]{8,128}$/;
-const SAFE_LABEL = /^[a-z][a-z0-9._-]{1,79}$/;
+const SAFE_ID = /^(?:req|request|trace)[_-][0-9a-hjkmnp-tv-z]{8,64}$/;
+const SAFE_LABELS = new Set([
+  "profile.updated",
+  "auth.rejected",
+  "dependency.timeout",
+  "request.completed",
+  "request.failed",
+  "dependency.failed",
+  "worker.retry",
+  "privacy.requested",
+  "privacy.completed",
+  "postgres",
+  "execution",
+  "tutor",
+  "worker",
+]);
 
 function boundedId(value: string | undefined): string {
   return value !== undefined && SAFE_ID.test(value) ? value : "unknown";
 }
 
 function boundedLabel(value: string, fallback: string): string {
-  return SAFE_LABEL.test(value) ? value : fallback;
+  return SAFE_LABELS.has(value) ? value : fallback;
 }
 
 function boundedDuration(value: number | undefined): number | undefined {
@@ -61,30 +75,34 @@ function boundedStatus(value: number | undefined): number | undefined {
  * telemetry below does not accept arbitrary fields, but this helper protects
  * adapter-specific error context when a caller needs to summarize a value.
  */
-export function redactTelemetryValue(value: unknown): unknown {
+export function redactTelemetryValue(value: unknown, depth = 0): unknown {
+  if (depth > 6) return "[redacted]";
   if (typeof value === "string") {
-    if (
-      /(bearer\s+|token|secret|password|cookie|authorization|postgres(?:ql)?:\/\/|-----begin)/i.test(
-        value,
-      )
-    ) {
-      return "[redacted]";
-    }
-    return value.length > 500 ? `${value.slice(0, 499)}…` : value;
+    return [
+      "success",
+      "failure",
+      "timeout",
+      "retry",
+      "denied",
+      "cancelled",
+      "unknown",
+      "unavailable",
+    ].includes(value)
+      ? value
+      : "[redacted]";
   }
-  if (typeof value === "number" || typeof value === "boolean" || value === null) {
-    return typeof value === "number" && !Number.isFinite(value) ? "[invalid-number]" : value;
-  }
-  if (Array.isArray(value)) return value.slice(0, 32).map(redactTelemetryValue);
+  if (typeof value === "number") return Number.isFinite(value) ? value : "[invalid-number]";
+  if (typeof value === "boolean" || value === null) return value;
+  if (Array.isArray(value))
+    return value.slice(0, 32).map((item) => redactTelemetryValue(item, depth + 1));
   if (typeof value === "object" && value !== null) {
     return Object.fromEntries(
       Object.entries(value)
-        .filter(
-          ([key]) =>
-            !/(token|secret|password|cookie|authorization|source|code|prompt|body)/i.test(key),
+        .filter(([key]) =>
+          ["outcome", "result", "status", "durationMs", "retryable", "count"].includes(key),
         )
         .slice(0, 32)
-        .map(([key, nested]) => [key, redactTelemetryValue(nested)]),
+        .map(([key, nested]) => [key, redactTelemetryValue(nested, depth + 1)]),
     );
   }
   return "[unsupported]";
@@ -96,15 +114,19 @@ export function createTelemetryEvent(input: TelemetryEventInput): TelemetryEvent
   return {
     traceId: boundedId(input.traceId),
     requestId: boundedId(input.requestId),
-    category: input.category,
+    category: Object.values(TELEMETRY_CATEGORIES).includes(input.category)
+      ? input.category
+      : "security",
     event: boundedLabel(input.event, "unknown"),
     ...(durationMs === undefined ? {} : { durationMs }),
     ...(status === undefined ? {} : { status }),
-    ...(input.retryable === undefined ? {} : { retryable: input.retryable }),
+    ...(typeof input.retryable === "boolean" ? { retryable: input.retryable } : {}),
     ...(input.dependency === undefined
       ? {}
       : { dependency: boundedLabel(input.dependency, "unknown") }),
-    ...(input.result === undefined ? {} : { result: input.result }),
+    ...(["success", "failure", "timeout", "retry"].includes(input.result ?? "")
+      ? { result: input.result }
+      : {}),
   };
 }
 
@@ -112,3 +134,4 @@ export function createTelemetryEvent(input: TelemetryEventInput): TelemetryEvent
 export function serializeTelemetryEvent(input: TelemetryEventInput): string {
   return JSON.stringify(createTelemetryEvent(input));
 }
+export * from "./telemetry.ts";

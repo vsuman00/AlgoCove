@@ -246,7 +246,7 @@ export class PostgresReadinessContentRepository {
                 provider: Parameters<typeof validateExternalUrl>[0];
                 canonical_url: string;
               }>(
-                "SELECT provider,canonical_url FROM content.external_reference WHERE external_reference_id=$1 AND url_status='reviewed' AND reviewed_by IS NOT NULL AND reviewed_at IS NOT NULL FOR SHARE",
+                "SELECT d.platform AS provider,d.canonical_url FROM content.reviewed_practice_destination d JOIN content.external_reference r USING(external_reference_id) WHERE d.external_reference_id=$1 FOR SHARE OF r",
                 [row.external_reference_id],
               )
             ).rows[0];

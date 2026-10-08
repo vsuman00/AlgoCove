@@ -12,6 +12,7 @@ import {
 } from "@algocove/domain";
 import type { QueryResultRow } from "pg";
 import type { Queryable } from "./connection.ts";
+import { authenticationRequired } from "@algocove/application";
 
 type LearnerRow = QueryResultRow & { learner_id: string };
 type ProfileRow = QueryResultRow & {
@@ -29,7 +30,7 @@ type ProfileRow = QueryResultRow & {
   updated_by: string;
 };
 
-function learnerIdForSubject(providerSubject: string): LearnerId {
+export function learnerIdForSubject(providerSubject: string): LearnerId {
   const entropy = createHash("sha256").update(providerSubject, "utf8").digest("hex").slice(0, 40);
   const result = formatId("learner", entropy);
   if (!result.ok) throw new Error(result.error.message);
@@ -85,6 +86,12 @@ export class PostgresIdentityRepository {
     if (existingId !== undefined) return this.parseLearnerId(existingId);
 
     const learnerId = learnerIdForSubject(providerSubject);
+    const tombstone = await this.database.query<{ account_state: string }>(
+      "SELECT account_state FROM platform.learner WHERE learner_id=$1",
+      [learnerId],
+    );
+    if (tombstone.rows[0] && tombstone.rows[0].account_state !== "active")
+      throw authenticationRequired("Account is unavailable.");
     await this.database.query(
       `INSERT INTO platform.learner (learner_id) VALUES ($1)
        ON CONFLICT DO NOTHING RETURNING learner_id`,
@@ -109,11 +116,12 @@ export class PostgresIdentityRepository {
     return this.parseLearnerId(mappedId);
   }
 
-  async getRoles(learnerId: LearnerId): Promise<readonly Role[]> {
+  async getRoles(learnerId: LearnerId, allowDeletionPending = false): Promise<readonly Role[]> {
     const result = await this.database.query<{ role: string }>(
-      `SELECT role FROM platform.role_grant
-        WHERE learner_id = $1 AND revoked_at IS NULL ORDER BY role`,
-      [learnerId],
+      `SELECT g.role FROM platform.role_grant g JOIN platform.learner l USING(learner_id)
+        WHERE learner_id = $1 AND revoked_at IS NULL
+        AND (l.account_state='active' OR ($2 AND l.account_state='deletion_pending' AND g.role='learner')) ORDER BY role`,
+      [learnerId, allowDeletionPending],
     );
     return result.rows.map((row) => {
       const role = parseRole(row.role);

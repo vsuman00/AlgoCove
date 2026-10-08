@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, expect, it, vi } from "vitest";
-import TutorPanel from "../../../apps/web/src/components/tutor-panel";
+import TutorPanel from "../../../apps/web/src/components/tutor/tutor-panel";
 
 afterEach(() => vi.unstubAllGlobals());
 

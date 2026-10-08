@@ -1,16 +1,20 @@
-import { parseId, type OpaqueId } from "@algocove/domain";
-import { validationError } from "@algocove/application";
+import type { OpaqueId } from "@algocove/domain";
+import {
+  dependencyUnavailableError,
+  resolvePublishedProblem,
+  validateCatalogSlug,
+} from "@algocove/application";
+import { PostgresLearningCatalogRepository } from "@algocove/db";
+import { getPracticeRuntime } from "./runtime";
 
-const PROBLEM_VERSION_BY_SLUG = {
-  "arrays-two-pointer": "prb_dddddddddddddddd",
-} as const;
-
-export function problemVersionFrom(value: unknown): OpaqueId<"problemVersion"> {
-  if (typeof value !== "string" || !Object.hasOwn(PROBLEM_VERSION_BY_SLUG, value)) {
-    throw validationError("Problem workspace is not available.", { field: "problem_id" });
-  }
-  const raw = PROBLEM_VERSION_BY_SLUG[value as keyof typeof PROBLEM_VERSION_BY_SLUG];
-  const problemVersionId = parseId("problemVersion", raw);
-  if (!problemVersionId.ok) throw new Error("Practice catalog identifier is invalid.");
-  return problemVersionId.value;
+/** Route identity resolves from the published catalog; never invent a version from a slug. */
+export async function problemVersionFrom(value: unknown): Promise<OpaqueId<"problemVersion">> {
+  const slug = validateCatalogSlug(value);
+  const runtime = getPracticeRuntime();
+  if (!runtime) throw dependencyUnavailableError("Practice content is temporarily unavailable.");
+  const problem = await resolvePublishedProblem(
+    new PostgresLearningCatalogRepository(runtime.pool),
+    slug,
+  );
+  return problem.problemVersionId;
 }

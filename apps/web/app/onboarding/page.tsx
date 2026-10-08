@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState, type FormEvent, type ReactElement } from "react";
-import AlgoCoveShell from "../../src/components/algocove-shell";
+import { useBrowserLocation } from "../../src/auth/browser-location";
+import { safeReturnTo } from "../../src/auth/return-target";
+import AlgoCoveShell from "../../src/components/shell/algocove-shell";
 
 type ProfileForm = {
   goal: string;
@@ -33,6 +35,10 @@ const focusRing =
 const inputClass = `mt-2 min-h-11 w-full rounded-cove-sm border border-cove-strong bg-cove-surface px-3 py-2 text-cove-primary ${focusRing}`;
 
 export default function OnboardingPage(): ReactElement {
+  const location = useBrowserLocation();
+  const returnTo = safeReturnTo(
+    new URL(location, "https://algocove.local").searchParams.get("returnTo"),
+  );
   const [form, setForm] = useState<ProfileForm>(initialForm);
   const [status, setStatus] = useState<"loading" | "ready" | "saved" | "signed-out" | "error">(
     "loading",
@@ -172,10 +178,13 @@ export default function OnboardingPage(): ReactElement {
           {message}
         </div>
 
+        <p>
+          <a href={returnTo}>{status === "saved" ? "Continue learning" : "Cancel and return"}</a>
+        </p>
         {status === "signed-out" ? (
           <a
             className={`inline-flex min-h-11 items-center rounded-cove-sm bg-cove-action-primary px-4 py-3 font-semibold text-cove-on-dark no-underline ${focusRing}`}
-            href="/sign-in"
+            href={`/sign-in?returnTo=${encodeURIComponent(`/onboarding?returnTo=${encodeURIComponent(returnTo)}`)}`}
           >
             Sign in with Clerk
           </a>

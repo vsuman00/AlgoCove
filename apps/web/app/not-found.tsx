@@ -1,5 +1,5 @@
 import type { ReactElement } from "react";
-import AlgoCoveShell from "../src/components/algocove-shell";
+import AlgoCoveShell from "../src/components/shell/algocove-shell";
 export default function NotFound(): ReactElement {
   return (
     <AlgoCoveShell>

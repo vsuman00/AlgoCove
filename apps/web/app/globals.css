@@ -68,6 +68,15 @@ a {
 button {
   cursor: pointer;
 }
+:focus-visible {
+  outline: 2px solid var(--action-primary, #1a8f78);
+  outline-offset: 2px;
+}
+.ac-app-shell[data-shell="deep-journey"] :focus-visible,
+.ac-workspace :focus-visible {
+  outline: 2px solid var(--color-jade-400, #42a991);
+  outline-offset: 2px;
+}
 
 .ac-app-shell {
   min-height: 100vh;
@@ -187,8 +196,11 @@ button {
 }
 .ac-nav-item.is-active {
   background: var(--color-jade-100);
-  color: var(--color-jade-800);
+  color: var(--color-ink-950);
   font-weight: 600;
+}
+.ac-nav-item.is-active svg {
+  color: var(--color-jade-600);
 }
 .ac-nav-item.is-disabled {
   cursor: default;
@@ -803,6 +815,7 @@ button {
   font-weight: 400;
 }
 .ac-panel {
+  padding: 20px;
   border: 1px solid var(--color-slate-200);
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.92);
@@ -962,6 +975,17 @@ button {
   font-size: 15px;
   font-weight: 600;
   text-decoration: none;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.1s ease;
+}
+.ac-button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+.ac-button:disabled {
+  opacity: 0.48;
+  cursor: not-allowed;
 }
 .ac-button--primary {
   color: var(--color-cloud-0);
@@ -970,13 +994,17 @@ button {
 .bg-cove-action-primary {
   color: var(--color-cloud-0);
 }
-.ac-button--primary:hover {
+.ac-button--primary:hover:not(:disabled) {
   background: var(--color-jade-700);
 }
 .ac-button--secondary {
   color: var(--color-ink-900);
   border: 1px solid var(--color-slate-300);
   background: var(--color-cloud-25);
+}
+.ac-button--secondary:hover:not(:disabled) {
+  background: var(--color-cloud-100);
+  border-color: var(--color-slate-400);
 }
 .ac-algorithm-card {
   align-self: stretch;
@@ -1116,12 +1144,30 @@ button {
   border-radius: 6px;
   background: var(--color-cloud-25);
   font-size: 13px;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.1s ease;
+}
+.ac-small-button:hover:not(:disabled) {
+  background: var(--color-cloud-100);
+  border-color: var(--color-slate-400);
+}
+.ac-small-button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+.ac-small-button:disabled {
+  opacity: 0.48;
+  cursor: not-allowed;
 }
 .ac-small-button--filled {
   color: var(--color-jade-700);
   border-color: transparent;
   background: var(--color-jade-100);
   font-weight: 600;
+}
+.ac-small-button--filled:hover:not(:disabled) {
+  background: var(--color-jade-200);
 }
 .ac-text-link {
   display: inline-flex;

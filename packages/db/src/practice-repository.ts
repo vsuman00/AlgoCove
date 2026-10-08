@@ -1,3 +1,4 @@
+import type { PilotPublicView } from "@algocove/content/pilot";
 import { reserveOptional, finishOptional } from "./budget-repository.ts";
 import { lockStudyOwner, sourceDigest } from "./learning-source-repository.ts";
 import { AppError } from "@algocove/application";
@@ -315,17 +316,23 @@ export class PostgresPracticeRepository {
   /** Public payloads are visible only while the reviewed version and its rights are active. */
   async getPublishedProblem(
     problemVersionId: string,
-  ): Promise<{ title: string; statement: string } | null> {
-    const result = await this.pool.query<{ title: string; statement: string }>(
-      `SELECT version.title, problem.statement
+  ): Promise<{ title: string; statement: string; pilot?: PilotPublicView | null } | null> {
+    const result = await this.pool.query<{
+      title: string;
+      statement: string;
+      pilot: PilotPublicView | null;
+    }>(
+      `SELECT version.title, problem.statement, pilot.public_payload AS pilot
          FROM content.problem_version AS problem
          JOIN content.content_version AS version ON version.content_version_id = problem.content_version_id
+        LEFT JOIN content.pilot_bundle pilot ON pilot.problem_version_id=problem.problem_version_id
         WHERE problem.problem_version_id = $1 AND version.status = 'published'
           AND version.payload_status = 'available' AND problem.statement IS NOT NULL
           AND (version.rights_expires_at IS NULL OR version.rights_expires_at > now())`,
       [problemVersionId],
     );
-    return result.rows[0] ?? null;
+    const row = result.rows[0];
+    return row ? (row.pilot ? row : { title: row.title, statement: row.statement }) : null;
   }
 
   private readonly pool: Pool;

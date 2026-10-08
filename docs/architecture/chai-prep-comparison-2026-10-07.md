@@ -203,11 +203,11 @@ Use provider problem routes for solve links, explicit destination labels and new
 | --- | --- | --- |
 | `apps/web/app/learn/[problemId]/page.tsx` | Rejects every slug except `arrays-two-pointer`. | More published content alone cannot produce more learner pages. |
 | `packages/db/src/planning-catalog.ts` | Selects fixed `prb_dddddddddddddddd`, emits the single learning route and declares limited scope. | Roadmaps do not consume a general problem catalog. |
-| `apps/web/src/components/problem-workspace.tsx` | Facts, invariant and structured choice controls are specific to container area. | Generalizing the route without metadata would teach the wrong problem. |
-| `apps/web/src/components/trace-workspace.tsx` | Starts from fixed heights and a left/right boundary prediction. Learner edits are exposed as JSON. | Needs problem-specific authored scenarios and learner-facing interactions. |
-| `apps/web/src/components/trace-renderer.tsx` | Computes container area for the generic array/two-pointer structure. | Pair-sum or palindrome traces would receive irrelevant calculations. |
+| `apps/web/src/components/practice/problem-workspace.tsx` | Facts, invariant and structured choice controls are specific to container area. | Generalizing the route without metadata would teach the wrong problem. |
+| `apps/web/src/components/practice/trace-workspace.tsx` | Starts from fixed heights and a left/right boundary prediction. Learner edits are exposed as JSON. | Needs problem-specific authored scenarios and learner-facing interactions. |
+| `apps/web/src/components/practice/trace-renderer.tsx` | Computes container area for the generic array/two-pointer structure. | Pair-sum or palindrome traces would receive irrelevant calculations. |
 | `packages/visualizer/src/index.ts` | One structure; comparison, pointer moves, answer, prediction and complete events. | Other structures and pseudocode synchronization require explicit contracts. |
-| `apps/web/src/components/algocove-shell.tsx` and page inventory | No learner course library, sheets or interview pages. | Requested experiences are not discoverable or implemented. |
+| `apps/web/src/components/shell/algocove-shell.tsx` and page inventory | No learner course library, sheets or interview pages. | Requested experiences are not discoverable or implemented. |
 | `tasks/todo.md` | Phase 10 content is unstarted; Phase 9 live activation and human next-phase gate remain open. | Comparison recommendations do not establish completion or authorize the next phase. |
 
 The underlying versioning, content review, execution, learning evidence and external-reference modules should be reused. A new application framework or broad rewrite is not required by these findings.
@@ -232,8 +232,8 @@ The first reviewable acceptance journey should be: find a supported pattern, ope
 
 - [Architecture](../../ARCHITECTURE.md), [design](../../DESIGN.md), [implementation plan](../../tasks/plan.md) and [task ledger](../../tasks/todo.md).
 - [Product contract and closure matrix](product-plan-and-closure-matrix.md).
-- [Phase 9 implementation evidence](phase9-evidence.md) and [prior full verification](phase9-full-verification-2026-10-06.md).
+- [Phase 9 implementation evidence](../evidence/phases/phase9-evidence.md) and [prior full verification](../evidence/phases/phase9-full-verification-2026-10-06.md).
 - [Outbound practice ADR](../adr/0012-outbound-external-practice-handoff.md) and [spatial trace ADR](../adr/0018-production-spatial-trace-presentation.md).
-- [Learner route](../../apps/web/app/learn/[problemId]/page.tsx), [planning catalog](../../packages/db/src/planning-catalog.ts), [workspace](../../apps/web/src/components/problem-workspace.tsx), [trace workspace](../../apps/web/src/components/trace-workspace.tsx), [renderer](../../apps/web/src/components/trace-renderer.tsx) and [trace protocol](../../packages/visualizer/src/index.ts).
+- [Learner route](../../apps/web/app/learn/[problemId]/page.tsx), [planning catalog](../../packages/db/src/planning-catalog.ts), [workspace](../../apps/web/src/components/practice/problem-workspace.tsx), [trace workspace](../../apps/web/src/components/practice/trace-workspace.tsx), [renderer](../../apps/web/src/components/practice/trace-renderer.tsx) and [trace protocol](../../packages/visualizer/src/index.ts).
 - [Pseudocode domain](../../packages/domain/src/pseudocode.ts), [authored checks](../../packages/domain/src/structured-learning.ts) and [local bundle seed](../../packages/db/src/cli/seed-practice.ts).
 - Historical [workspace image](../design-reviews/phase7-2026-10-03/workspace-1440.png).

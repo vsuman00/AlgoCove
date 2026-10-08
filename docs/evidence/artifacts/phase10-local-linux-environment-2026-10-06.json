@@ -1,0 +1,37 @@
+{
+  "scope": "Owned isolated local Linux verification; no remote CI or deployment",
+  "vm": "algocove-phase10-assurance",
+  "hostMounts": false,
+  "environment": [
+    "Linux 7.0.0-34-generic aarch64 GNU/Linux",
+    "runsc version release-20260928.0",
+    "spec: 1.2.1",
+    "29.8.2",
+    "v22.22.0",
+    "12.4.2",
+    "algocove/execution-c-cpp:2026-09-17 5818fbc9267f",
+    "algocove/execution-java:2026-09-17 07dc58e4f03e",
+    "algocove/execution-javascript-typescript:2026-09-17 86cdec11bca8",
+    "algocove/execution-python:2026-09-17 44ecc4f4a12f",
+    "pgvector/pgvector:0.8.6-pg17 cf134a767f47",
+    "hello-world:latest 5e2309035332",
+    "algocove-db Up 14 minutes (healthy)"
+  ],
+  "executionImageDigests": [
+    "[algocove/execution-python:2026-09-17] sha256:44ecc4f4a12f7d54914efb289dcbb76225c706c4477228c1d2ef257d1965972b",
+    "[algocove/execution-javascript-typescript:2026-09-17] sha256:86cdec11bca82ed792bbab2bd034cf4ad8c0d1465f8fd4f37ee0b4c5e35a84a9",
+    "[algocove/execution-java:2026-09-17] sha256:07dc58e4f03e9f92cdb379fb3890f005f37467e7798fcfb07829ee67d61c08e6",
+    "[algocove/execution-c-cpp:2026-09-17] sha256:5818fbc9267f0aa3b874a4fa8b92f4555ab30b15e0303c08e5e7661969de645e"
+  ],
+  "sourceChecksums": {
+    "apps/web/app/api/practice/workspace/route.ts": "sha256:99e64ff252ca01599cedfcf62c5de59bd1b075b407aa87a78d6bc7217d2fb82e",
+    "apps/web/src/components/problem-workspace.tsx": "sha256:7abc5638bca981c3e08cfe0b1f69df9c444b275350555a2330aeabb021ff2482",
+    "apps/web/src/components/pilot-trace-renderer.tsx": "sha256:f07a23b8acdc081f5a5bb3564242ddc517037f8de1a6fd60d01ff1d2f9fd2ede",
+    "tests/integration/local-learning-loop.test.ts": "sha256:8d404abf20d4d1aac6236666adb61aa828254acb1bfbdb35543062f4318815c7",
+    "packages/db/src/pilot-repository.ts": "sha256:a2dbd8cfb0f398aa1e561c2ad14cf0424b2774b583f08e615fd8ef32c0fed418",
+    "services/execution-host/src/pilot-problem.ts": "sha256:6db627db2360394c61da5874e9635ba9aaabc3758dd36659c07cdb4eb6c8a0c5",
+    "services/execution-host/src/docker-runner.ts": "sha256:d6fa0e41ee60167e026f7ab88e4a01b51060143aa139edaf5d5fd851abd6b265"
+  },
+  "learningLoopReportChecksum": "sha256:0dfd6b30cd5e1d385d144a4907a8cbdf935394df1a68c34e2aaa52105e014139",
+  "qualification": "Three native Linux scenarios passed; all 24 pilot/language combinations qualified; publication/authentication actors are explicitly synthetic."
+}

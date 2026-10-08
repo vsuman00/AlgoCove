@@ -1,9 +1,12 @@
 # AlgoCove architecture index
 
-**Status:** Proposed  
-**Architecture gate:** `A0 — awaiting owner approval`  
-**Prepared:** 2026-09-17  
-**Scope:** Architecture plus a separately proposed implementation plan; implementation evidence is tracked in the phase evidence records and task ledger
+**Document type:** Architecture index, originally prepared 2026-09-17
+
+**Original review gate:** `A0 — awaiting owner approval` (historical; later phase authorizations are recorded in the plan)
+
+**Current status:** See the [plan](../../tasks/plan.md), [task ledger](../../tasks/todo.md), and [dated evidence](../evidence/README.md). Proposed design text below is retained as design history; it is not a current implementation inventory.
+
+**Phase 10 extension authorization (2026-10-07):** The owner subsequently instructed implementation of the newly added Phase 10 tasks against the updated architecture before Phase 11. See the [shared learning contract](shared-learning-contract.md) and [bounded work cards](work-cards/phase10-platform-extension.md). [Local completion evidence](../evidence/phases/phase10-platform-extension-evidence.md) and [J/E coverage](../evidence/phases/phase10-platform-extension-coverage.md) close the extension. Earlier documentation-only notes are historical.
 
 ## 1. Architectural objective
 
@@ -14,9 +17,9 @@
 | Area | Current evidence | Planned extension |
 |---|---|---|
 | Core | Next.js, PostgreSQL, worker, isolated six-language execution and local learning loop | Reuse existing boundaries |
-| Curriculum | One admitted learner problem and fixed planning catalog | Published catalog, lesson assets, release manifests and reviewed bundles |
-| Visualization | Array/two-pointer replay with spatial, flat and text views under ADR-0018 | Pseudocode synchronization and additional structures |
-| External practice | Local Phase 8 readiness, handoff and learner-confirmed journal | Separate destination/collection identity and curated learner sheets |
+| Curriculum | Four governed pilot bundles plus legacy compatibility; SQL catalog and exact release pins | Broader independently reviewed curriculum and production publication |
+| Visualization | Synchronized four-pattern replay, pseudocode/variables, playback and spatial/flat/text views | Additional reviewed scenarios and structures |
+| External practice | Canonical destination/collection identities, curated discovery, readiness/handoff and separate self-report | Private/shared sheets under Tasks 59a–59b |
 | AI | Phase 9 local technical and synthetic evidence; authored/off operation | Live provider activation remains gated |
 | Interviews | No dedicated timed DSA session feature | Proposed Phase 14 |
 
@@ -99,9 +102,9 @@ AlgoCove is multi-language by design, not a JavaScript product with later transl
 4. [Security, reliability, and operations](security-reliability-operations.md) — how the design fails safely and can be operated.
 5. [Quality and traceability](quality-and-traceability.md) — measurable scenarios, source traceability, standards, and review checks.
 6. [Product plan and closure matrix](product-plan-and-closure-matrix.md) — end-to-end journeys, plan horizons, gates, loopholes, and non-goals.
-7. [Phase evidence](phase2-evidence.md) and [Phase 3 evidence](phase3-evidence.md) — implementation and validation records through governed content.
-8. [Phase 4 evidence](phase4-evidence.md) — execution-boundary spikes and security gates.
-9. [Phase 5 evidence](phase5-evidence.md), [Phase 6 evidence](phase6-evidence.md), and [Phase 7 evidence](phase7-evidence.md) — localhost learning-kernel, mastery and roadmap closure.
+7. [Phase evidence](../evidence/phases/phase2-evidence.md) and [Phase 3 evidence](../evidence/phases/phase3-evidence.md) — implementation and validation records through governed content.
+8. [Phase 4 evidence](../evidence/phases/phase4-evidence.md) — execution-boundary spikes and security gates.
+9. [Phase 5 evidence](../evidence/phases/phase5-evidence.md), [Phase 6 evidence](../evidence/phases/phase6-evidence.md), and [Phase 7 evidence](../evidence/phases/phase7-evidence.md) — localhost learning-kernel, mastery and roadmap closure.
 10. [ADRs](../adr/README.md) — why the expensive-to-reverse decisions were selected.
 
 The [implementation contracts](implementation-contracts.md) resolve roadmap, judging, evidence and recovery details. The [review findings](review-findings.md) record corrections and remaining validation gates. [DESIGN.md](../../DESIGN.md) is the approved UI input; architecture review does not replace it.
@@ -133,7 +136,7 @@ Dependencies point toward stable providers and must remain acyclic. Cross-contex
 | `REJECTED` | Considered and not selected; rationale retained |
 | `SUPERSEDED` | Replaced by a later ADR; history retained |
 
-Use the [ADR index](../adr/README.md) for individual statuses. ADR-0008, ADR-0013 and ADR-0018 record scoped acceptance; ADR-0004 remains superseded. ADRs 0019–0024 are proposed extensions.
+Use the [ADR index](../adr/README.md) for individual statuses. ADR-0008, ADR-0013 and ADR-0018 record scoped acceptance; ADR-0004 remains superseded. ADRs 0019–0021 are accepted for owner-authorized local Phase 10 implementation; task-specific local delivery is complete; independent publication remains separate. ADRs 0022–0024 remain proposed later-phase extensions.
 
 ## 9. Architecture review gates
 
@@ -191,3 +194,7 @@ These are intentionally not resolved by guessing. The proposed design isolates t
 ## Website completeness and build tracking
 
 The [journey and edge-case contract](website-journeys-and-coverage.md) maps J01–J19 and E01–E19 to route ownership, data contracts and delivery tasks. It extends the reference comparison with normal, exit, failure and recovery requirements. Proposed ADRs [0023](../adr/0023-learner-owned-sheets-and-sharing.md) and [0024](../adr/0024-typed-interview-modes.md) cover learner-owned sharing and broader interview modes. Implementation remains gated; public reference observations do not establish its private backend behavior.
+
+## Phase 11 local operational assurance
+
+[Implementation evidence](../evidence/phases/phase11-evidence.md) closes Tasks 52–54 locally. [Operational policy](phase11-operational-policy.md) defines privacy defaults, dedicated worker/ledger, telemetry and alert scheduling, restore limits and the separate hosted decisions. Independent publication remains pending; Phase 12 requires its own authorization.

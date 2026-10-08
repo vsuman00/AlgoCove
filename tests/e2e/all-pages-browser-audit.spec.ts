@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 import { mkdirSync } from "node:fs";
 import { join } from "node:path";
 
-const SCREENSHOT_DIR = join(process.cwd(), "test-results", "browser-audit");
+const SCREENSHOT_DIR = join(process.cwd(), ".tmp", "test-results", "browser-audit");
 
 test.beforeAll(() => {
   mkdirSync(SCREENSHOT_DIR, { recursive: true });

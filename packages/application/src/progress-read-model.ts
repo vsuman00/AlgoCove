@@ -38,6 +38,7 @@ export type ProgressSnapshot = {
     readonly requested: number;
     readonly completed: number;
     readonly references: readonly {
+      internalHref?: string;
       referenceId: OpaqueId<"externalReference">;
       title: string;
       url: string;

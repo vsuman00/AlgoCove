@@ -1,6 +1,6 @@
 # Real Phase 1–7 product and production 3D UI completion
 
-**Latest repair (2026-10-03):** The owner authorized Ponytail implementation after the [error audit](../docs/architecture/runtime-error-audit-2026-10-03.md). [Repair evidence](../docs/architecture/runtime-repair-evidence-2026-10-03.md) records corrected recovery, real localhost persistence and the green mandatory Linux run. All three CI jobs passed on application repair commit `0f8b7a5`, including both real Linux scenarios and fresh gVisor evidence; the repair scope is complete.
+**Latest repair (2026-10-03):** The owner authorized Ponytail implementation after the [error audit](../docs/evidence/audits/runtime-error-audit-2026-10-03.md). [Repair evidence](../docs/evidence/audits/runtime-repair-evidence-2026-10-03.md) records corrected recovery, real localhost persistence and the green mandatory Linux run. All three CI jobs passed on application repair commit `0f8b7a5`, including both real Linux scenarios and fresh gVisor evidence; the repair scope is complete.
 
 **Direction:** Owner narrowed scope on 2026-10-03 to real implementation through Phase 7, clean production-quality learner GUI and production 3D UI. No deployment, age/country restrictions, privacy-policy work, later-phase implementation or full-course authoring in this task.
 
@@ -31,4 +31,4 @@ The owner's explicit production 3D request supersedes ADR-0007's proposed 2D-fir
 
 ## Current verification
 
-Local final repair gates: 254 repository tests, 63 PostgreSQL checks (two opt-in Linux cases skipped locally), build, 31 accessibility checks, three journey tests and five execution-category browser checks. Application repair commit `0f8b7a5` passed both actual Linux scenarios and all three CI jobs in run 37104114731; reports have exact commit/run provenance. Source fixes and evidence are committed and pushed; no deployment occurred. Actual user Clerk sign-in and persisted localhost source/reasoning writes were observed separately from controlled browser fixtures. See [repair evidence](../docs/architecture/runtime-repair-evidence-2026-10-03.md).
+Local final repair gates: 254 repository tests, 63 PostgreSQL checks (two opt-in Linux cases skipped locally), build, 31 accessibility checks, three journey tests and five execution-category browser checks. Application repair commit `0f8b7a5` passed both actual Linux scenarios and all three CI jobs in run 37104114731; reports have exact commit/run provenance. Source fixes and evidence are committed and pushed; no deployment occurred. Actual user Clerk sign-in and persisted localhost source/reasoning writes were observed separately from controlled browser fixtures. See [repair evidence](../docs/evidence/audits/runtime-repair-evidence-2026-10-03.md).

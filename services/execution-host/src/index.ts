@@ -7,3 +7,5 @@ export {
 export { createGvisorRunner, dockerCommand } from "./docker-runner.ts";
 export type { HostVerdict, DockerCommand } from "./docker-runner.ts";
 export { createLocalSourceHost } from "./local-host.ts";
+
+export { loadPublishedPilotCatalog, type ReviewedPilot } from "./pilot-problem.ts";

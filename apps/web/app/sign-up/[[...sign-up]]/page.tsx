@@ -1,8 +1,9 @@
+import { safeReturnTo } from "../../../src/auth/return-target";
 import { SignUp } from "@clerk/nextjs";
 import type { ReactElement } from "react";
 import { isClerkConfigured } from "../../../src/auth/clerk-config";
-import AlgoCoveMark from "../../../src/components/algocove-mark";
-import ClerkConnectionStatus from "../../../src/components/clerk-connection-status";
+import AlgoCoveMark from "../../../src/components/shell/algocove-mark";
+import ClerkConnectionStatus from "../../../src/components/account/clerk-connection-status";
 
 function ClerkSetupNotice(): ReactElement {
   return (
@@ -20,7 +21,12 @@ function ClerkSetupNotice(): ReactElement {
   );
 }
 
-export default function SignUpPage(): ReactElement {
+export default async function SignUpPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ returnTo?: string }>;
+}): Promise<ReactElement> {
+  const returnTo = safeReturnTo((await searchParams).returnTo);
   const clerkConfigured = isClerkConfigured();
   return (
     <main className="ac-auth-page">
@@ -29,10 +35,16 @@ export default function SignUpPage(): ReactElement {
       </a>
       <ClerkConnectionStatus configured={clerkConfigured} />
       {clerkConfigured ? (
-        <SignUp path="/sign-up" routing="path" signInUrl="/sign-in" />
+        <SignUp
+          path="/sign-up"
+          routing="path"
+          signInUrl={`/sign-in?returnTo=${encodeURIComponent(returnTo)}`}
+          forceRedirectUrl={returnTo}
+        />
       ) : (
         <ClerkSetupNotice />
       )}
+      <a href={returnTo}>Cancel and return</a>
     </main>
   );
 }

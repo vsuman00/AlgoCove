@@ -6,22 +6,24 @@
   "description": "Next.js application shell: delivery, BFF, and application composition root.",
   "scripts": {
     "dev": "next dev",
-    "build": "next build --webpack",
+    "build": "node ../../scripts/build-web.mjs",
     "start": "next start",
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
     "@algocove/application": "workspace:*",
     "@algocove/config": "workspace:*",
+    "@algocove/content": "workspace:*",
     "@algocove/db": "workspace:*",
     "@algocove/domain": "workspace:*",
     "@algocove/execution-contracts": "workspace:*",
+    "@algocove/observability": "workspace:*",
+    "@algocove/retrieval": "workspace:*",
+    "@algocove/tutor": "workspace:*",
     "@algocove/visualizer": "workspace:*",
     "@clerk/nextjs": "7.9.4",
-    "next": "16.3.6",
+    "next": "16.3.8",
     "react": "19.3.0",
-    "react-dom": "19.3.0",
-    "@algocove/tutor": "workspace:*",
-    "@algocove/retrieval": "workspace:*"
+    "react-dom": "19.3.0"
   }
 }

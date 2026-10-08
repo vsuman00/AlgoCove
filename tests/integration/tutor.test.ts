@@ -2,7 +2,7 @@ import { spawn } from "node:child_process";
 import { chromium, expect as browserExpect } from "@playwright/test";
 import { parseTutorInput } from "@algocove/tutor";
 import { beforeAll, afterAll, beforeEach, describe, it, expect, vi } from "vitest";
-import { PostgresTutorRepository } from "@algocove/db";
+import { PostgresTutorRepository, PostgresPrivacyRepository } from "@algocove/db";
 import { TutorService, fixtureGenerationPort, type GenerationPort } from "@algocove/tutor";
 import type { TutorInput } from "@algocove/application";
 import { createRetrievalFixture } from "./support/retrieval-fixture.ts";
@@ -503,5 +503,43 @@ describe("Task44 transactional tutor delivery", () => {
         ])
       ).rowCount,
     ).toBe(0);
+  });
+  it("purges owned tutor evidence, saved responses and assistance without deleting public corpus", async () => {
+    expect(
+      (
+        await f.runtime.query(
+          "SELECT 1 FROM tutor.response r JOIN tutor.request q USING(request_id) WHERE q.learner_id=$1",
+          [f.learner],
+        )
+      ).rowCount,
+    ).toBeGreaterThan(0);
+    const publicChunks = (
+      await f.runtime.query("SELECT count(*)::int AS n FROM search.content_chunk")
+    ).rows[0].n;
+    const pending = await new PostgresPrivacyRepository(f.runtime).requestDeletion(f.context());
+    const owner = f.pool(f.migrationUrl);
+    try {
+      const token = "tutor-privacy-lease-12345678";
+      const job = (await owner.query("SELECT * FROM platform.claim_privacy_deletion($1)", [token]))
+        .rows[0];
+      expect(job.request_id).toBe(pending.requestId);
+      const result = (
+        await owner.query("SELECT platform.complete_privacy_deletion($1,$2) AS result", [
+          pending.requestId,
+          token,
+        ])
+      ).rows[0].result;
+      expect(result).toMatchObject({ state: "completed", activePrivateReferences: 0 });
+      for (const table of ["tutor.request", "tutor.evidence_package", "tutor.assistance"])
+        expect(
+          (await owner.query(`SELECT 1 FROM ${table} WHERE learner_id=$1`, [f.learner])).rowCount,
+        ).toBe(0);
+      expect((await owner.query("SELECT 1 FROM tutor.response")).rowCount).toBe(0);
+      expect(
+        (await owner.query("SELECT count(*)::int AS n FROM search.content_chunk")).rows[0].n,
+      ).toBe(publicChunks);
+    } finally {
+      await owner.end();
+    }
   });
 });

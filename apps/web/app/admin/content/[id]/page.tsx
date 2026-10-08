@@ -1,6 +1,6 @@
 import type { ReactElement } from "react";
-import AlgoCoveShell from "../../../../src/components/algocove-shell";
-import ContentOperations from "../../../../src/components/content-operations";
+import AlgoCoveShell from "../../../../src/components/shell/algocove-shell";
+import ContentOperations from "../../../../src/components/staff/content-operations";
 export default async function ContentWorkflowPage({
   params,
 }: {

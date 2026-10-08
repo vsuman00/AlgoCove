@@ -270,7 +270,20 @@ describe("authenticated practice draft routes", () => {
     const runtime = {
       pool: {
         query: vi.fn().mockResolvedValue({
-          rows: [{ manifest_id: "man_eeeeeeeeeeeeeeee", starter_template: "starter" }],
+          rows: [
+            {
+              manifest_id: "man_eeeeeeeeeeeeeeee",
+              starter_template: "starter",
+              problem_id: "pro_dddddddddddddddd",
+              problem_version_id: "prb_dddddddddddddddd",
+              content_version_id: "cnt_dddddddddddddddd",
+              checksum: `sha256:${"d".repeat(64)}`,
+              slug: "arrays-two-pointer",
+              title: "Reviewed problem",
+              pattern: null,
+              languages: ["python", "javascript", "typescript", "java", "cpp", "c"],
+            },
+          ],
         }),
       },
       practice: {
@@ -335,7 +348,20 @@ describe("authenticated practice draft routes", () => {
     runtimeMock.getPracticeRuntime.mockReturnValue({
       pool: {
         query: vi.fn().mockResolvedValue({
-          rows: [{ manifest_id: "man_eeeeeeeeeeeeeeee", starter_template: "starter" }],
+          rows: [
+            {
+              manifest_id: "man_eeeeeeeeeeeeeeee",
+              starter_template: "starter",
+              problem_id: "pro_dddddddddddddddd",
+              problem_version_id: "prb_dddddddddddddddd",
+              content_version_id: "cnt_dddddddddddddddd",
+              checksum: `sha256:${"d".repeat(64)}`,
+              slug: "arrays-two-pointer",
+              title: "Reviewed problem",
+              pattern: null,
+              languages: ["python", "javascript", "typescript", "java", "cpp", "c"],
+            },
+          ],
         }),
       },
       practice: {

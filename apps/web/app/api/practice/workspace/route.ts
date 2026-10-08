@@ -1,6 +1,10 @@
+import { observeRequest } from "../../../../src/operations/telemetry";
+import { PostgresLearningReleaseRepository, withTransaction } from "@algocove/db";
+import { LEGACY_LEARNING_VIEW } from "../../../../src/practice/learning-workspace-adapters";
 import { learningError as errorResponse } from "../../../../src/mastery/learning-http";
 import { problemVersionFrom } from "../../../../src/practice/problem-catalog";
 import { NextResponse } from "next/server";
+import type { PilotPublicView } from "@algocove/content/pilot";
 import {
   dependencyUnavailableError,
   startOwnedPseudocode,
@@ -16,18 +20,33 @@ import { getPracticeRuntime, type PracticeRuntime } from "../../../../src/practi
 
 export const dynamic = "force-dynamic";
 
-export async function POST(request: Request): Promise<NextResponse> {
+async function handlePOST(request: Request): Promise<NextResponse> {
   try {
     const context = await authenticatedWebRequestContext(request);
     const input = await request.json();
     if (!isRecord(input)) throw validationError("Workspace input must be an object.");
-    const problemVersionId = problemVersionFrom(input.problemId);
+    let problemVersionId = await problemVersionFrom(input.problemId);
     if (!PROBLEM_LANGUAGES.includes(input.language as ProblemLanguage)) {
       throw validationError("Workspace language is not supported.", { field: "language" });
     }
     const language = input.language as ProblemLanguage;
     const runtime = getPracticeRuntime();
     if (runtime === null) throw dependencyUnavailableError("Practice persistence is unavailable.");
+    let pinnedAttempt: Awaited<ReturnType<typeof runtime.practice.getAttempt>> = null;
+    if (input.attemptId !== undefined && input.restart !== true) {
+      const id = parseId("attempt", input.attemptId);
+      if (!id.ok) throw validationError("Attempt identifier is invalid.");
+      const owned = await runtime.practice.getAttempt(id.value, context.actor.userId);
+      if (!owned) throw validationError("Owned workspace is unavailable.");
+      const same = await runtime.pool.query(
+        "SELECT 1 FROM content.problem_version pinned JOIN content.problem_version current ON current.problem_id=pinned.problem_id WHERE pinned.problem_version_id=$1 AND current.problem_version_id=$2",
+        [owned.problemVersionId, problemVersionId],
+      );
+      if (!same.rowCount || owned.language !== language)
+        throw validationError("Attempt does not belong to this problem and language.");
+      problemVersionId = owned.problemVersionId;
+      pinnedAttempt = owned;
+    }
     const manifest = await manifestFor(runtime.pool, problemVersionId, language);
     if (manifest === null) {
       throw dependencyUnavailableError("This problem is not available for practice yet.");
@@ -44,13 +63,15 @@ export async function POST(request: Request): Promise<NextResponse> {
       }
     }
 
-    let attempt = await runtime.practice.findActiveAttempt({
-      learnerId: context.actor.userId,
-      problemVersionId,
-      manifestId: manifest.manifestId,
-      language,
-      includeSubmitted: input.restart !== true,
-    });
+    let attempt =
+      pinnedAttempt ??
+      (await runtime.practice.findActiveAttempt({
+        learnerId: context.actor.userId,
+        problemVersionId,
+        manifestId: manifest.manifestId,
+        language,
+        includeSubmitted: input.restart !== true,
+      }));
     if (attempt === null) {
       try {
         attempt = await startPracticeAttempt(context, runtime.practice, {
@@ -165,8 +186,20 @@ export async function POST(request: Request): Promise<NextResponse> {
         pseudocode,
         activeRun: runView,
         starterTemplate: manifest.starterTemplate,
-        problem: { title: manifest.title, statement: manifest.statement },
-        firstHintId: "hint-arrays-1",
+        problem: {
+          title: manifest.title,
+          statement: manifest.statement,
+          pilot: manifest.pilot,
+          learning:
+            problemVersionId === "prb_dddddddddddddddd"
+              ? LEGACY_LEARNING_VIEW
+              : await withTransaction(
+                  runtime.pool,
+                  (tx) => new PostgresLearningReleaseRepository(tx).publicView(problemVersionId),
+                  { readOnly: true },
+                ),
+        },
+        firstHintId: manifest.firstHintId,
         highestHintTier: await runtime.hints.getHighestExposedTier({
           learnerId: context.actor.userId,
           problemVersionId,
@@ -189,13 +222,18 @@ async function manifestFor(
     starter_template: string;
     title: string;
     statement: string;
+    pilot: PilotPublicView | null;
+    first_hint_id: string | null;
   }>(
-    `SELECT manifest.manifest_id, manifest.starter_template, version.title, problem.statement
+    `SELECT manifest.manifest_id, manifest.starter_template, version.title, problem.statement,
+            pilot.public_payload AS pilot, (SELECT hint_id FROM content.problem_hint WHERE problem_version_id=problem.problem_version_id ORDER BY tier LIMIT 1) AS first_hint_id
        FROM content.problem_language_manifest AS manifest
        JOIN content.problem_version AS problem
          ON problem.problem_version_id = manifest.problem_version_id
        JOIN content.content_version AS version
          ON version.content_version_id = problem.content_version_id
+       LEFT JOIN content.pilot_bundle AS pilot
+         ON pilot.problem_version_id = problem.problem_version_id
       WHERE manifest.problem_version_id = $1
         AND manifest.language = $2
         AND manifest.status = 'published'
@@ -213,6 +251,8 @@ async function manifestFor(
     starterTemplate: row.starter_template,
     title: row.title,
     statement: row.statement,
+    pilot: row.pilot ?? null,
+    firstHintId: row.first_hint_id ?? "",
   };
 }
 
@@ -227,4 +267,8 @@ function isUniqueViolation(error: unknown): boolean {
     "code" in error &&
     (error as { readonly code?: unknown }).code === "23505"
   );
+}
+
+export async function POST(request: Request): Promise<Response> {
+  return observeRequest(request, "workspace", () => handlePOST(request));
 }

@@ -316,3 +316,7 @@ function failure(
 ): { readonly ok: false; readonly error: TraceFailure } {
   return { ok: false, error: { code, message } };
 }
+
+export { validatePilotTrace, pilotTraceTranscript } from "./pilot-trace.ts";
+export type { PilotTrace, PilotTraceState } from "./pilot-trace.ts";
+export * from "./walkthrough.ts";

@@ -63,9 +63,9 @@ async function preparationPolicy(
   const reference = referenceId
     ? ((
         await tx.query<{ value: ExternalReference }>(
-          `SELECT jsonb_build_object('externalReferenceId',external_reference_id,'provider',provider,'externalKey',external_key,'title',title,
-      'canonicalUrl',canonical_url,'attribution',attribution,'urlStatus',url_status,'reviewedBy',reviewed_by,'reviewedAt',reviewed_at,'version',version) value
-      FROM content.external_reference WHERE external_reference_id=$1`,
+          `SELECT jsonb_build_object('externalReferenceId',r.external_reference_id,'provider',COALESCE(d.platform,r.provider),'externalKey',COALESCE(d.canonical_key,r.external_key),'title',r.title,
+      'canonicalUrl',COALESCE(d.canonical_url,r.canonical_url),'attribution',r.attribution,'urlStatus',CASE WHEN d.destination_id IS NOT NULL THEN 'reviewed' ELSE 'unavailable' END,'reviewedBy',r.reviewed_by,'reviewedAt',r.reviewed_at,'version',r.version) value
+      FROM content.external_reference r LEFT JOIN content.reviewed_practice_destination d USING(external_reference_id) WHERE r.external_reference_id=$1`,
           [referenceId],
         )
       ).rows[0]?.value ?? null)

@@ -1,3 +1,4 @@
+import { PostgresLearningReleaseRepository } from "@algocove/db";
 import { createHash } from "node:crypto";
 import {
   authorizationError,
@@ -16,6 +17,7 @@ import {
 } from "@algocove/application";
 import {
   PostgresContentRepository,
+  PostgresPilotRepository,
   enqueuePublishedContentDerivation,
   PostgresPlatformRepository,
   withTransaction,
@@ -37,8 +39,14 @@ import {
 } from "@algocove/domain";
 import { getPracticeRuntime } from "../practice/runtime";
 
-export function contentRevision(content: ProblemContentVersion, manifest: ProblemManifest): string {
-  return createHash("sha256").update(JSON.stringify({ content, manifest })).digest("hex");
+export function contentRevision(
+  content: ProblemContentVersion,
+  manifest: ProblemManifest,
+  releaseChecksum: string | null = null,
+): string {
+  return createHash("sha256")
+    .update(JSON.stringify({ content, manifest, releaseChecksum }))
+    .digest("hex");
 }
 function contentAccess(ctx: RequestContext): void {
   if (!ctx.actor.roles.some((role) => isContentRole(role) || role === ROLES.evaluator))
@@ -82,7 +90,16 @@ export async function readContent(
       const validation = validateProblemManifest(manifest);
       records.push({
         content,
-        revision: contentRevision(content, manifest),
+        revision: contentRevision(
+          content,
+          manifest,
+          (
+            await tx.query(
+              "SELECT packet_checksum FROM content.learning_release WHERE content_version_id=$1",
+              [content.contentVersionId],
+            )
+          ).rows[0]?.packet_checksum ?? null,
+        ),
         manifest,
         manifestIssue: validation.ok ? null : validation.error.message,
       });
@@ -153,10 +170,29 @@ export async function commandContent(
       if (current === null) throw notFoundError("Content version is unavailable.");
       if (
         body.expectedRevision !==
-        contentRevision(current, await repository.manifest(current.problemVersionId))
+        contentRevision(
+          current,
+          await repository.manifest(current.problemVersionId),
+          (
+            await tx.query(
+              "SELECT packet_checksum FROM content.learning_release WHERE content_version_id=$1",
+              [current.contentVersionId],
+            )
+          ).rows[0]?.packet_checksum ?? null,
+        )
       )
         throw conflictError("Content changed. Reload before recording a decision.");
       if (command === "manifest") {
+        if (
+          (
+            await tx.query("SELECT 1 FROM content.pilot_bundle WHERE content_version_id=$1", [
+              current.contentVersionId,
+            ])
+          ).rowCount
+        )
+          throw conflictError(
+            "Pilot contracts are checksum-bound. Import a registered successor instead.",
+          );
         requirePermission(ctx, PERMISSIONS.contentAuthor);
         if (current.authorId !== ctx.actor.userId)
           throw authorizationError("Only the draft author may edit language contracts.");
@@ -265,7 +301,10 @@ export async function commandContent(
             })),
             { actorId: ctx.actor.userId, role: ROLES.publisher },
           ]);
+          await new PostgresLearningReleaseRepository(tx).prepare(ctx, id);
+          await new PostgresPilotRepository(tx).preparePublication(ctx, id);
           content = await publishProblemVersion(ctx, repository, id);
+          await new PostgresPilotRepository(tx).publishGraphIfReady(ctx);
         }
       } else {
         if (!["retired", "rights_withdrawn", "security_tombstone"].includes(String(body.reason)))
@@ -276,7 +315,14 @@ export async function commandContent(
         });
       }
     }
-    if (command === "publish")
+    if (
+      command === "publish" &&
+      !(
+        await tx.query("SELECT 1 FROM content.pilot_bundle WHERE content_version_id=$1", [
+          content.contentVersionId,
+        ])
+      ).rowCount
+    )
       await enqueuePublishedContentDerivation(tx, {
         contentVersionId: content.contentVersionId,
         sourceChecksum: content.checksum,
@@ -290,7 +336,16 @@ export async function commandContent(
       payload: {
         status: content.status,
         checksum: content.checksum,
-        revision: contentRevision(content, await repository.manifest(content.problemVersionId)),
+        revision: contentRevision(
+          content,
+          await repository.manifest(content.problemVersionId),
+          (
+            await tx.query(
+              "SELECT packet_checksum FROM content.learning_release WHERE content_version_id=$1",
+              [content.contentVersionId],
+            )
+          ).rows[0]?.packet_checksum ?? null,
+        ),
         ...(command === "review" ? { reviewKind: body.kind, decision: body.decision } : {}),
         ...(command === "validate" ? { validationStatus: content.validation.status } : {}),
         ...(command === "retire" ? { reason: content.retirementReason } : {}),
@@ -307,7 +362,16 @@ export async function commandContent(
     });
     const response = {
       content: { contentVersionId: content.contentVersionId, status: content.status },
-      revision: contentRevision(content, await repository.manifest(content.problemVersionId)),
+      revision: contentRevision(
+        content,
+        await repository.manifest(content.problemVersionId),
+        (
+          await tx.query(
+            "SELECT packet_checksum FROM content.learning_release WHERE content_version_id=$1",
+            [content.contentVersionId],
+          )
+        ).rows[0]?.packet_checksum ?? null,
+      ),
     };
     await platform.complete({ ...claim, response: { status: 200, body: response } });
     return response;

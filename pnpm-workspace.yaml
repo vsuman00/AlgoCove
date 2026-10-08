@@ -17,3 +17,5 @@ allowBuilds:
 # GHSA-68fv-2mgg-jv7q: keep all transitive source-map consumers on the patched release.
 overrides:
   source-map-js: 1.2.2
+  # GHSA-wq5f-xc86-pv6w: patched librsvg in the Next image-processing dependency.
+  sharp: 0.35.5

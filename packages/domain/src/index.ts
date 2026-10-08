@@ -312,3 +312,5 @@ export * from "./budget.ts";
 export * from "./plan-adherence.ts";
 export * from "./readiness-gate.ts";
 export * from "./external-readiness-policy.ts";
+export { PILOT_CATALOG, pilotIdentity, pilotIdentityFromVersion } from "./pilot-catalog.ts";
+export * from "./practice-destination.ts";

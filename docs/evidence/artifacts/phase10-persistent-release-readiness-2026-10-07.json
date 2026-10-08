@@ -1,0 +1,88 @@
+{
+  "recordedAt": "2026-10-07T17:33:24.164Z",
+  "environment": "persistent local Docker volume algocove_algocove-db-data",
+  "ownerAuthorization": "I approved, go to complete these task and ready for the next phase 11",
+  "checks": {
+    "health": [
+      {
+        "ok": true,
+        "server_time": "2026-10-07T17:33:24.163Z",
+        "applied_migrations": 38,
+        "schema_version": "0038"
+      }
+    ],
+    "runtime": [
+      {
+        "current_user": "algocove_app",
+        "rolsuper": false,
+        "rolcreatedb": false,
+        "rolcreaterole": false
+      }
+    ],
+    "identities": [
+      {
+        "authenticated_accounts": 1
+      }
+    ],
+    "roles": [
+      {
+        "role": "author",
+        "active_grants": 1,
+        "authenticated_grants": 0
+      },
+      {
+        "role": "evaluator",
+        "active_grants": 1,
+        "authenticated_grants": 0
+      },
+      {
+        "role": "learner",
+        "active_grants": 1,
+        "authenticated_grants": 1
+      },
+      {
+        "role": "pedagogical_reviewer",
+        "active_grants": 1,
+        "authenticated_grants": 0
+      },
+      {
+        "role": "technical_reviewer",
+        "active_grants": 1,
+        "authenticated_grants": 0
+      }
+    ],
+    "pilots": [
+      {
+        "imported_bundles": 0
+      }
+    ],
+    "reviews": [
+      {
+        "review_records": 0
+      }
+    ],
+    "guards": [
+      {
+        "tgname": "learning_release_publication_guard",
+        "tgenabled": "O"
+      },
+      {
+        "tgname": "pilot_publication_guard",
+        "tgenabled": "O"
+      }
+    ],
+    "learners": [
+      {
+        "learners": 5
+      }
+    ],
+    "ddlDenied": true
+  },
+  "backup": {
+    "path": ".tmp/learner-data-backups/algocove-before-phase10-release-2026-10-07.dump",
+    "sha256": "046969b1aceca3104f39a120e9cfeaeccaad3ba7cf1b6fab584ef1b15c9e06d1"
+  },
+  "publicationStatus": "awaiting actual authenticated independent staff assignments and checksum-bound decisions; no synthetic accounts promoted",
+  "migrationReplay": "passed; zero applied migrations",
+  "services": "Persistent local database left running for staff publication; no VM, worker or deployment started"
+}

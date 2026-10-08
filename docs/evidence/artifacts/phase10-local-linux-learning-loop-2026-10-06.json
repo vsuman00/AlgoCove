@@ -1,0 +1,1013 @@
+{
+  "date": "2026-10-06T18:29:35.160Z",
+  "authentication": "fixture actor only; real application routes, PostgreSQL, gVisor and signed callback",
+  "outcomes": [
+    {
+      "runId": "run_091178bf6c7f2bc0e94d45cb5304bbc785b41611",
+      "language": "python",
+      "mode": "run",
+      "terminalCategory": "wrong_answer",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_579cec456bae0b48237023abbc63dd0aaac5e464",
+      "language": "python",
+      "mode": "run",
+      "terminalCategory": "compile_error",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_930c3214be335c23d2f777a513e40803283fbde9",
+      "language": "python",
+      "mode": "run",
+      "terminalCategory": "limits",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_5804bd2c70d129b3cfa793c239acbd48c6b6e863",
+      "language": "python",
+      "mode": "run",
+      "terminalCategory": "pass",
+      "classification": "success"
+    },
+    {
+      "runId": "run_4dd33c9a8b67f987a95fc51925d476ad0863857b",
+      "language": "python",
+      "mode": "submit",
+      "terminalCategory": "pass",
+      "classification": "success"
+    },
+    {
+      "language": "python",
+      "resumeSameAttempt": true,
+      "reasoningRevision": true,
+      "trace": true,
+      "tracePrediction": true,
+      "invalidTraceRejected": true,
+      "referenceAssistancePersisted": true,
+      "authoredChecks": true,
+      "readiness": true
+    },
+    {
+      "editedSourceDoesNotInheritPass": true,
+      "reloadDoesNotInheritPass": true
+    },
+    {
+      "runId": "run_34d7e5c786dcbdd544dffab4c86cdaea99cc9e24",
+      "language": "javascript",
+      "mode": "run",
+      "terminalCategory": "wrong_answer",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_95d4e52bf86c8b4d550b1047888a0c648187cf90",
+      "language": "javascript",
+      "mode": "run",
+      "terminalCategory": "compile_error",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_2bfafef63a32336aaa56d1c093ed2faa1a2b723b",
+      "language": "javascript",
+      "mode": "run",
+      "terminalCategory": "limits",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_2eb616d49602b921c66a6e8a5ee4e6c88b99807c",
+      "language": "javascript",
+      "mode": "run",
+      "terminalCategory": "pass",
+      "classification": "success"
+    },
+    {
+      "runId": "run_fcdcc05f28c889160dc88e85f0a7a7293e59656f",
+      "language": "javascript",
+      "mode": "submit",
+      "terminalCategory": "pass",
+      "classification": "success"
+    },
+    {
+      "language": "javascript",
+      "resumeSameAttempt": true,
+      "reasoningRevision": true,
+      "trace": true,
+      "tracePrediction": true,
+      "invalidTraceRejected": true,
+      "referenceAssistancePersisted": true,
+      "authoredChecks": true,
+      "readiness": true
+    },
+    {
+      "runId": "run_c099a0df654a8db297a59aadf6c0f2d9958c0aa8",
+      "language": "typescript",
+      "mode": "run",
+      "terminalCategory": "wrong_answer",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_c603a9c64756d04ab4d5172a366a48a45e9dde66",
+      "language": "typescript",
+      "mode": "run",
+      "terminalCategory": "type_error",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_3e53edb6f4624970757f05e2f1dba967165b4f6f",
+      "language": "typescript",
+      "mode": "run",
+      "terminalCategory": "limits",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_4680e0f23d726922ec5bfe8804751e4043e65d27",
+      "language": "typescript",
+      "mode": "run",
+      "terminalCategory": "pass",
+      "classification": "success"
+    },
+    {
+      "runId": "run_5351c14ffaaa9801a15ca7f07d7d8809bbea6986",
+      "language": "typescript",
+      "mode": "submit",
+      "terminalCategory": "pass",
+      "classification": "success"
+    },
+    {
+      "language": "typescript",
+      "resumeSameAttempt": true,
+      "reasoningRevision": true,
+      "trace": true,
+      "tracePrediction": true,
+      "invalidTraceRejected": true,
+      "referenceAssistancePersisted": true,
+      "authoredChecks": true,
+      "readiness": true
+    },
+    {
+      "runId": "run_7be085f0d9ba672528b043a24325c3fcdd1d0a3f",
+      "language": "java",
+      "mode": "run",
+      "terminalCategory": "wrong_answer",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_6d3d76cf30ee3c66f9d14ca80ccc516a1acb3593",
+      "language": "java",
+      "mode": "run",
+      "terminalCategory": "compile_error",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_b3776368d7214437d1b7a8450757f71ef3ad9510",
+      "language": "java",
+      "mode": "run",
+      "terminalCategory": "limits",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_3bbfeac6c8073d152a6068857fac03c0812c00bb",
+      "language": "java",
+      "mode": "run",
+      "terminalCategory": "pass",
+      "classification": "success"
+    },
+    {
+      "runId": "run_969a879aed0102824c2389fc2d84cdc618a48f16",
+      "language": "java",
+      "mode": "submit",
+      "terminalCategory": "pass",
+      "classification": "success"
+    },
+    {
+      "language": "java",
+      "resumeSameAttempt": true,
+      "reasoningRevision": true,
+      "trace": true,
+      "tracePrediction": true,
+      "invalidTraceRejected": true,
+      "referenceAssistancePersisted": true,
+      "authoredChecks": true,
+      "readiness": true
+    },
+    {
+      "runId": "run_9c8ef7642c22716a84d8f33a5e906c2b62466f13",
+      "language": "cpp",
+      "mode": "run",
+      "terminalCategory": "wrong_answer",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_a51c2467df854f2054e7dcb45802aa484b915150",
+      "language": "cpp",
+      "mode": "run",
+      "terminalCategory": "compile_error",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_b673681a89decba97fceb9e5ef0e4424f73b0a64",
+      "language": "cpp",
+      "mode": "run",
+      "terminalCategory": "limits",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_1abce6501c72cba33021de746e9831680a0f9250",
+      "language": "cpp",
+      "mode": "run",
+      "terminalCategory": "pass",
+      "classification": "success"
+    },
+    {
+      "runId": "run_2581c5c40089f6b6d8f129714ebc70514ac958fa",
+      "language": "cpp",
+      "mode": "submit",
+      "terminalCategory": "pass",
+      "classification": "success"
+    },
+    {
+      "language": "cpp",
+      "resumeSameAttempt": true,
+      "reasoningRevision": true,
+      "trace": true,
+      "tracePrediction": true,
+      "invalidTraceRejected": true,
+      "referenceAssistancePersisted": true,
+      "authoredChecks": true,
+      "readiness": true
+    },
+    {
+      "runId": "run_0153303072db97701d2884b00fb81feb39a1a403",
+      "language": "c",
+      "mode": "run",
+      "terminalCategory": "wrong_answer",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_7d13d7633071eaf518d163def11217dd55f44da2",
+      "language": "c",
+      "mode": "run",
+      "terminalCategory": "compile_error",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_33471e1b51fe18fb85f99790221838637a432a60",
+      "language": "c",
+      "mode": "run",
+      "terminalCategory": "limits",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_53bc6934fd3b99dd0d3b923359b87134bdcbbe6c",
+      "language": "c",
+      "mode": "run",
+      "terminalCategory": "pass",
+      "classification": "success"
+    },
+    {
+      "runId": "run_1a55d11ddef8fb5c8a1f5fbfcc13601b6ecadbd8",
+      "language": "c",
+      "mode": "submit",
+      "terminalCategory": "pass",
+      "classification": "success"
+    },
+    {
+      "language": "c",
+      "resumeSameAttempt": true,
+      "reasoningRevision": true,
+      "trace": true,
+      "tracePrediction": true,
+      "invalidTraceRejected": true,
+      "referenceAssistancePersisted": true,
+      "authoredChecks": true,
+      "readiness": true
+    },
+    {
+      "runId": "run_32051bae77a3e699369867ef2ceb9c2f0bbd552c",
+      "language": "python",
+      "mode": "run",
+      "terminalCategory": "wrong_answer",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_7dacf36bd494919e8ddac02d8857643250e9edf3",
+      "language": "python",
+      "mode": "submit",
+      "terminalCategory": "pass",
+      "classification": "success"
+    },
+    {
+      "runId": "run_0c9efea967052c2c90065256732a3ff20b1a0cce",
+      "language": "javascript",
+      "mode": "run",
+      "terminalCategory": "wrong_answer",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_3b410c7fb3f01915e942ace047dbe5bc7713a1ae",
+      "language": "javascript",
+      "mode": "submit",
+      "terminalCategory": "pass",
+      "classification": "success"
+    },
+    {
+      "runId": "run_f446c3095326ac06af5839c70b712090a5d7df07",
+      "language": "typescript",
+      "mode": "run",
+      "terminalCategory": "wrong_answer",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_c251097a9be97e7c17db5f4557c3a0935aaeb1cb",
+      "language": "typescript",
+      "mode": "submit",
+      "terminalCategory": "pass",
+      "classification": "success"
+    },
+    {
+      "runId": "run_8db0945568cb7b9dfade618a4a25aa538422e047",
+      "language": "java",
+      "mode": "run",
+      "terminalCategory": "wrong_answer",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_29d7b86cc7c61b5109315d8171704f53eb283da9",
+      "language": "java",
+      "mode": "submit",
+      "terminalCategory": "pass",
+      "classification": "success"
+    },
+    {
+      "runId": "run_4134531ac8cdb448b7e0629e6560f021e98d5be2",
+      "language": "cpp",
+      "mode": "run",
+      "terminalCategory": "wrong_answer",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_eeecc3ab4e34e55845c29f2a558b845542971b4f",
+      "language": "cpp",
+      "mode": "submit",
+      "terminalCategory": "pass",
+      "classification": "success"
+    },
+    {
+      "runId": "run_bc452f3b272c5b795fb7ec70a90762ee9e88e3bc",
+      "language": "c",
+      "mode": "run",
+      "terminalCategory": "wrong_answer",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_e07fd241030c11395cfb4fa848fb6dfc729bf7ac",
+      "language": "c",
+      "mode": "submit",
+      "terminalCategory": "pass",
+      "classification": "success"
+    },
+    {
+      "runId": "run_776ddc7cc1b2f3a4fffd77cdafc5e3ba559da0af",
+      "language": "python",
+      "mode": "run",
+      "terminalCategory": "wrong_answer",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_e90d1c23f31f58ce59e8213ccf892d7f93b692f4",
+      "language": "python",
+      "mode": "submit",
+      "terminalCategory": "pass",
+      "classification": "success"
+    },
+    {
+      "runId": "run_549821bd8decb9be479c346066a0c818153f6fd0",
+      "language": "javascript",
+      "mode": "run",
+      "terminalCategory": "wrong_answer",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_6a6c21ffcb85386b85d5aa6b311e5ac78f0a5714",
+      "language": "javascript",
+      "mode": "submit",
+      "terminalCategory": "pass",
+      "classification": "success"
+    },
+    {
+      "runId": "run_f2e2643285db127c71e716b7d735fc6a3367a878",
+      "language": "typescript",
+      "mode": "run",
+      "terminalCategory": "wrong_answer",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_2df9858c6b8bf0b2b2e993bb43e287eee9bd9316",
+      "language": "typescript",
+      "mode": "submit",
+      "terminalCategory": "pass",
+      "classification": "success"
+    },
+    {
+      "runId": "run_ede7806769cef02bc6896965435335191d1cdacd",
+      "language": "java",
+      "mode": "run",
+      "terminalCategory": "wrong_answer",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_03d6ad176f77f33a51a75eed684a1752124efd48",
+      "language": "java",
+      "mode": "submit",
+      "terminalCategory": "pass",
+      "classification": "success"
+    },
+    {
+      "runId": "run_567b7a4ebf599e292c92abcb2c90fa22b1275782",
+      "language": "cpp",
+      "mode": "run",
+      "terminalCategory": "wrong_answer",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_ac7745772d5bd8347cbc5e564bf4b251ea11cbe6",
+      "language": "cpp",
+      "mode": "submit",
+      "terminalCategory": "pass",
+      "classification": "success"
+    },
+    {
+      "runId": "run_b94c50252c8e97568dc630f1e3f0e38cb3e7a1a2",
+      "language": "c",
+      "mode": "run",
+      "terminalCategory": "wrong_answer",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_2c979d7ef44cbd567bb0779e3a7518d355a5551d",
+      "language": "c",
+      "mode": "submit",
+      "terminalCategory": "pass",
+      "classification": "success"
+    },
+    {
+      "runId": "run_d25df24be78223a34b6f1558cfbaaa5536c57c6e",
+      "language": "python",
+      "mode": "run",
+      "terminalCategory": "wrong_answer",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_9c21d5e5dac2f2fff39ab83787ea0acb7eb073e4",
+      "language": "python",
+      "mode": "submit",
+      "terminalCategory": "pass",
+      "classification": "success"
+    },
+    {
+      "runId": "run_d07d52abff9727ed4ec686ec6a5766956634b23f",
+      "language": "javascript",
+      "mode": "run",
+      "terminalCategory": "wrong_answer",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_64c6ebe7b808261c2c530763a3b583a35829051e",
+      "language": "javascript",
+      "mode": "submit",
+      "terminalCategory": "pass",
+      "classification": "success"
+    },
+    {
+      "runId": "run_a6d4a16da1ffb90ba19ca6546bc220022110fcba",
+      "language": "typescript",
+      "mode": "run",
+      "terminalCategory": "wrong_answer",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_b0a77f7fe4a2080f474c3992e488d96cc977611c",
+      "language": "typescript",
+      "mode": "submit",
+      "terminalCategory": "pass",
+      "classification": "success"
+    },
+    {
+      "runId": "run_c1c8dda026a4e7ecc617fd09c11dcc2bc789a2cd",
+      "language": "java",
+      "mode": "run",
+      "terminalCategory": "wrong_answer",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_53bd3ec00a7c609cf478efec69ccaf65cc847938",
+      "language": "java",
+      "mode": "submit",
+      "terminalCategory": "pass",
+      "classification": "success"
+    },
+    {
+      "runId": "run_cd9c26d569decb8df4f382699ad8c2c41b6682a3",
+      "language": "cpp",
+      "mode": "run",
+      "terminalCategory": "wrong_answer",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_83d573bdf9ce6b617bd1a29d0ef26691a511a49f",
+      "language": "cpp",
+      "mode": "submit",
+      "terminalCategory": "pass",
+      "classification": "success"
+    },
+    {
+      "runId": "run_d7cd8deb7be97002a03991aa8cd538f4d8ce1ea3",
+      "language": "c",
+      "mode": "run",
+      "terminalCategory": "wrong_answer",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_b7a84e8883a2f0df0ce5985cfb726f9b3cd8eff3",
+      "language": "c",
+      "mode": "submit",
+      "terminalCategory": "pass",
+      "classification": "success"
+    },
+    {
+      "runId": "run_8840951488ccf8cb0081945ffd758f9648783305",
+      "language": "python",
+      "mode": "run",
+      "terminalCategory": "wrong_answer",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_e8a091474dac495ae7899e89991a75ec17d77c57",
+      "language": "python",
+      "mode": "submit",
+      "terminalCategory": "pass",
+      "classification": "success"
+    },
+    {
+      "runId": "run_cd069a3fe5b5c7fc7a8ceb16d40b93bd5552fd1e",
+      "language": "javascript",
+      "mode": "run",
+      "terminalCategory": "wrong_answer",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_e30dd89507496c6b8ed29c45b091500633200a22",
+      "language": "javascript",
+      "mode": "submit",
+      "terminalCategory": "pass",
+      "classification": "success"
+    },
+    {
+      "runId": "run_76341a457979905cc99178dfeff25a160f1eff2d",
+      "language": "typescript",
+      "mode": "run",
+      "terminalCategory": "wrong_answer",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_c8bcc9022eb8f94840aa2e4fb93b1369c41186fa",
+      "language": "typescript",
+      "mode": "submit",
+      "terminalCategory": "pass",
+      "classification": "success"
+    },
+    {
+      "runId": "run_45b7c5db03e23ddb6f88487f8877ec2a437c3c86",
+      "language": "java",
+      "mode": "run",
+      "terminalCategory": "wrong_answer",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_52bd80b2814b6e30ca92e3e239538b0b4708b822",
+      "language": "java",
+      "mode": "submit",
+      "terminalCategory": "pass",
+      "classification": "success"
+    },
+    {
+      "runId": "run_ea688ea1d16db17e2f4470e3f1fb2923d9b36888",
+      "language": "cpp",
+      "mode": "run",
+      "terminalCategory": "wrong_answer",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_2cf60126cea8eaa34d3f898fd37296dccf970ec4",
+      "language": "cpp",
+      "mode": "submit",
+      "terminalCategory": "pass",
+      "classification": "success"
+    },
+    {
+      "runId": "run_1a3ccdb7528668a4b23e7f4c204fa70d57aca5fb",
+      "language": "c",
+      "mode": "run",
+      "terminalCategory": "wrong_answer",
+      "classification": "learner_failure"
+    },
+    {
+      "runId": "run_588869c98aa999739330c1196058511b24740bd0",
+      "language": "c",
+      "mode": "submit",
+      "terminalCategory": "pass",
+      "classification": "success"
+    },
+    {
+      "realCancellation": true
+    },
+    {
+      "hostCrashReconciled": true,
+      "noCredit": true,
+      "noReplacement": true
+    },
+    {
+      "runId": "run_e5a2a4e2534e6256071c1afa4bd0ed852794aa06",
+      "language": "python",
+      "mode": "submit",
+      "terminalCategory": "infrastructure_error",
+      "classification": "infrastructure_failure"
+    },
+    {
+      "runId": "run_0a7c6d5312487010606f5d914f5978eb473ca31b",
+      "language": "javascript",
+      "mode": "submit",
+      "terminalCategory": "infrastructure_error",
+      "classification": "infrastructure_failure"
+    },
+    {
+      "runId": "run_7410bb42168e6c18ed9e25724a910d457755eb42",
+      "language": "typescript",
+      "mode": "submit",
+      "terminalCategory": "infrastructure_error",
+      "classification": "infrastructure_failure"
+    },
+    {
+      "runId": "run_95401478a76dbf5ad97b1878cf9256db066b38ce",
+      "language": "java",
+      "mode": "submit",
+      "terminalCategory": "infrastructure_error",
+      "classification": "infrastructure_failure"
+    },
+    {
+      "runId": "run_455404d1c24066cd375491f7e411d9b43092b903",
+      "language": "cpp",
+      "mode": "submit",
+      "terminalCategory": "infrastructure_error",
+      "classification": "infrastructure_failure"
+    },
+    {
+      "runId": "run_4f830f646b1006bde63ea8869f49aa0516d0b024",
+      "language": "c",
+      "mode": "submit",
+      "terminalCategory": "infrastructure_error",
+      "classification": "infrastructure_failure"
+    }
+  ],
+  "pilotJourneys": [
+    {
+      "pattern": "arrays-hashing",
+      "language": "python",
+      "bundleChecksum": "sha256:3041ae63c223ce617f83c1ddc089f86286eba7cbcf285b73a42409eba21494b2",
+      "wrongRunId": "run_32051bae77a3e699369867ef2ceb9c2f0bbd552c",
+      "passedRunId": "run_7dacf36bd494919e8ddac02d8857643250e9edf3",
+      "actualSandbox": true,
+      "reasoningReady": true,
+      "assistanceTier": 4,
+      "authoredTutorFallback": true,
+      "externalReadiness": "ready",
+      "journal": "handoff_requested",
+      "publication": "synthetic fixture"
+    },
+    {
+      "pattern": "arrays-hashing",
+      "language": "javascript",
+      "bundleChecksum": "sha256:3041ae63c223ce617f83c1ddc089f86286eba7cbcf285b73a42409eba21494b2",
+      "wrongRunId": "run_0c9efea967052c2c90065256732a3ff20b1a0cce",
+      "passedRunId": "run_3b410c7fb3f01915e942ace047dbe5bc7713a1ae",
+      "actualSandbox": true,
+      "reasoningReady": true,
+      "assistanceTier": 4,
+      "authoredTutorFallback": true,
+      "externalReadiness": "ready",
+      "journal": "handoff_requested",
+      "publication": "synthetic fixture"
+    },
+    {
+      "pattern": "arrays-hashing",
+      "language": "typescript",
+      "bundleChecksum": "sha256:3041ae63c223ce617f83c1ddc089f86286eba7cbcf285b73a42409eba21494b2",
+      "wrongRunId": "run_f446c3095326ac06af5839c70b712090a5d7df07",
+      "passedRunId": "run_c251097a9be97e7c17db5f4557c3a0935aaeb1cb",
+      "actualSandbox": true,
+      "reasoningReady": true,
+      "assistanceTier": 4,
+      "authoredTutorFallback": true,
+      "externalReadiness": "ready",
+      "journal": "handoff_requested",
+      "publication": "synthetic fixture"
+    },
+    {
+      "pattern": "arrays-hashing",
+      "language": "java",
+      "bundleChecksum": "sha256:3041ae63c223ce617f83c1ddc089f86286eba7cbcf285b73a42409eba21494b2",
+      "wrongRunId": "run_8db0945568cb7b9dfade618a4a25aa538422e047",
+      "passedRunId": "run_29d7b86cc7c61b5109315d8171704f53eb283da9",
+      "actualSandbox": true,
+      "reasoningReady": true,
+      "assistanceTier": 4,
+      "authoredTutorFallback": true,
+      "externalReadiness": "ready",
+      "journal": "handoff_requested",
+      "publication": "synthetic fixture"
+    },
+    {
+      "pattern": "arrays-hashing",
+      "language": "cpp",
+      "bundleChecksum": "sha256:3041ae63c223ce617f83c1ddc089f86286eba7cbcf285b73a42409eba21494b2",
+      "wrongRunId": "run_4134531ac8cdb448b7e0629e6560f021e98d5be2",
+      "passedRunId": "run_eeecc3ab4e34e55845c29f2a558b845542971b4f",
+      "actualSandbox": true,
+      "reasoningReady": true,
+      "assistanceTier": 4,
+      "authoredTutorFallback": true,
+      "externalReadiness": "ready",
+      "journal": "handoff_requested",
+      "publication": "synthetic fixture"
+    },
+    {
+      "pattern": "arrays-hashing",
+      "language": "c",
+      "bundleChecksum": "sha256:3041ae63c223ce617f83c1ddc089f86286eba7cbcf285b73a42409eba21494b2",
+      "wrongRunId": "run_bc452f3b272c5b795fb7ec70a90762ee9e88e3bc",
+      "passedRunId": "run_e07fd241030c11395cfb4fa848fb6dfc729bf7ac",
+      "actualSandbox": true,
+      "reasoningReady": true,
+      "assistanceTier": 4,
+      "authoredTutorFallback": true,
+      "externalReadiness": "ready",
+      "journal": "handoff_requested",
+      "publication": "synthetic fixture"
+    },
+    {
+      "pattern": "two-pointers",
+      "language": "python",
+      "bundleChecksum": "sha256:ff74035adb0a04744472096368f2e92d0fb81491278b54e126610aecd6451a01",
+      "wrongRunId": "run_776ddc7cc1b2f3a4fffd77cdafc5e3ba559da0af",
+      "passedRunId": "run_e90d1c23f31f58ce59e8213ccf892d7f93b692f4",
+      "actualSandbox": true,
+      "reasoningReady": true,
+      "assistanceTier": 4,
+      "authoredTutorFallback": true,
+      "externalReadiness": "ready",
+      "journal": "handoff_requested",
+      "publication": "synthetic fixture"
+    },
+    {
+      "pattern": "two-pointers",
+      "language": "javascript",
+      "bundleChecksum": "sha256:ff74035adb0a04744472096368f2e92d0fb81491278b54e126610aecd6451a01",
+      "wrongRunId": "run_549821bd8decb9be479c346066a0c818153f6fd0",
+      "passedRunId": "run_6a6c21ffcb85386b85d5aa6b311e5ac78f0a5714",
+      "actualSandbox": true,
+      "reasoningReady": true,
+      "assistanceTier": 4,
+      "authoredTutorFallback": true,
+      "externalReadiness": "ready",
+      "journal": "handoff_requested",
+      "publication": "synthetic fixture"
+    },
+    {
+      "pattern": "two-pointers",
+      "language": "typescript",
+      "bundleChecksum": "sha256:ff74035adb0a04744472096368f2e92d0fb81491278b54e126610aecd6451a01",
+      "wrongRunId": "run_f2e2643285db127c71e716b7d735fc6a3367a878",
+      "passedRunId": "run_2df9858c6b8bf0b2b2e993bb43e287eee9bd9316",
+      "actualSandbox": true,
+      "reasoningReady": true,
+      "assistanceTier": 4,
+      "authoredTutorFallback": true,
+      "externalReadiness": "ready",
+      "journal": "handoff_requested",
+      "publication": "synthetic fixture"
+    },
+    {
+      "pattern": "two-pointers",
+      "language": "java",
+      "bundleChecksum": "sha256:ff74035adb0a04744472096368f2e92d0fb81491278b54e126610aecd6451a01",
+      "wrongRunId": "run_ede7806769cef02bc6896965435335191d1cdacd",
+      "passedRunId": "run_03d6ad176f77f33a51a75eed684a1752124efd48",
+      "actualSandbox": true,
+      "reasoningReady": true,
+      "assistanceTier": 4,
+      "authoredTutorFallback": true,
+      "externalReadiness": "ready",
+      "journal": "handoff_requested",
+      "publication": "synthetic fixture"
+    },
+    {
+      "pattern": "two-pointers",
+      "language": "cpp",
+      "bundleChecksum": "sha256:ff74035adb0a04744472096368f2e92d0fb81491278b54e126610aecd6451a01",
+      "wrongRunId": "run_567b7a4ebf599e292c92abcb2c90fa22b1275782",
+      "passedRunId": "run_ac7745772d5bd8347cbc5e564bf4b251ea11cbe6",
+      "actualSandbox": true,
+      "reasoningReady": true,
+      "assistanceTier": 4,
+      "authoredTutorFallback": true,
+      "externalReadiness": "ready",
+      "journal": "handoff_requested",
+      "publication": "synthetic fixture"
+    },
+    {
+      "pattern": "two-pointers",
+      "language": "c",
+      "bundleChecksum": "sha256:ff74035adb0a04744472096368f2e92d0fb81491278b54e126610aecd6451a01",
+      "wrongRunId": "run_b94c50252c8e97568dc630f1e3f0e38cb3e7a1a2",
+      "passedRunId": "run_2c979d7ef44cbd567bb0779e3a7518d355a5551d",
+      "actualSandbox": true,
+      "reasoningReady": true,
+      "assistanceTier": 4,
+      "authoredTutorFallback": true,
+      "externalReadiness": "ready",
+      "journal": "handoff_requested",
+      "publication": "synthetic fixture"
+    },
+    {
+      "pattern": "sliding-window",
+      "language": "python",
+      "bundleChecksum": "sha256:8bcb100aa1f98597b1a53f075120e7394d82b77bf252e539aa32ade23a10d0bc",
+      "wrongRunId": "run_d25df24be78223a34b6f1558cfbaaa5536c57c6e",
+      "passedRunId": "run_9c21d5e5dac2f2fff39ab83787ea0acb7eb073e4",
+      "actualSandbox": true,
+      "reasoningReady": true,
+      "assistanceTier": 4,
+      "authoredTutorFallback": true,
+      "externalReadiness": "ready",
+      "journal": "handoff_requested",
+      "publication": "synthetic fixture"
+    },
+    {
+      "pattern": "sliding-window",
+      "language": "javascript",
+      "bundleChecksum": "sha256:8bcb100aa1f98597b1a53f075120e7394d82b77bf252e539aa32ade23a10d0bc",
+      "wrongRunId": "run_d07d52abff9727ed4ec686ec6a5766956634b23f",
+      "passedRunId": "run_64c6ebe7b808261c2c530763a3b583a35829051e",
+      "actualSandbox": true,
+      "reasoningReady": true,
+      "assistanceTier": 4,
+      "authoredTutorFallback": true,
+      "externalReadiness": "ready",
+      "journal": "handoff_requested",
+      "publication": "synthetic fixture"
+    },
+    {
+      "pattern": "sliding-window",
+      "language": "typescript",
+      "bundleChecksum": "sha256:8bcb100aa1f98597b1a53f075120e7394d82b77bf252e539aa32ade23a10d0bc",
+      "wrongRunId": "run_a6d4a16da1ffb90ba19ca6546bc220022110fcba",
+      "passedRunId": "run_b0a77f7fe4a2080f474c3992e488d96cc977611c",
+      "actualSandbox": true,
+      "reasoningReady": true,
+      "assistanceTier": 4,
+      "authoredTutorFallback": true,
+      "externalReadiness": "ready",
+      "journal": "handoff_requested",
+      "publication": "synthetic fixture"
+    },
+    {
+      "pattern": "sliding-window",
+      "language": "java",
+      "bundleChecksum": "sha256:8bcb100aa1f98597b1a53f075120e7394d82b77bf252e539aa32ade23a10d0bc",
+      "wrongRunId": "run_c1c8dda026a4e7ecc617fd09c11dcc2bc789a2cd",
+      "passedRunId": "run_53bd3ec00a7c609cf478efec69ccaf65cc847938",
+      "actualSandbox": true,
+      "reasoningReady": true,
+      "assistanceTier": 4,
+      "authoredTutorFallback": true,
+      "externalReadiness": "ready",
+      "journal": "handoff_requested",
+      "publication": "synthetic fixture"
+    },
+    {
+      "pattern": "sliding-window",
+      "language": "cpp",
+      "bundleChecksum": "sha256:8bcb100aa1f98597b1a53f075120e7394d82b77bf252e539aa32ade23a10d0bc",
+      "wrongRunId": "run_cd9c26d569decb8df4f382699ad8c2c41b6682a3",
+      "passedRunId": "run_83d573bdf9ce6b617bd1a29d0ef26691a511a49f",
+      "actualSandbox": true,
+      "reasoningReady": true,
+      "assistanceTier": 4,
+      "authoredTutorFallback": true,
+      "externalReadiness": "ready",
+      "journal": "handoff_requested",
+      "publication": "synthetic fixture"
+    },
+    {
+      "pattern": "sliding-window",
+      "language": "c",
+      "bundleChecksum": "sha256:8bcb100aa1f98597b1a53f075120e7394d82b77bf252e539aa32ade23a10d0bc",
+      "wrongRunId": "run_d7cd8deb7be97002a03991aa8cd538f4d8ce1ea3",
+      "passedRunId": "run_b7a84e8883a2f0df0ce5985cfb726f9b3cd8eff3",
+      "actualSandbox": true,
+      "reasoningReady": true,
+      "assistanceTier": 4,
+      "authoredTutorFallback": true,
+      "externalReadiness": "ready",
+      "journal": "handoff_requested",
+      "publication": "synthetic fixture"
+    },
+    {
+      "pattern": "stack",
+      "language": "python",
+      "bundleChecksum": "sha256:499d01614bd1b141575ff0e59e35ff2ab006043a301fde4b8e084167eb39f58e",
+      "wrongRunId": "run_8840951488ccf8cb0081945ffd758f9648783305",
+      "passedRunId": "run_e8a091474dac495ae7899e89991a75ec17d77c57",
+      "actualSandbox": true,
+      "reasoningReady": true,
+      "assistanceTier": 4,
+      "authoredTutorFallback": true,
+      "externalReadiness": "ready",
+      "journal": "handoff_requested",
+      "publication": "synthetic fixture"
+    },
+    {
+      "pattern": "stack",
+      "language": "javascript",
+      "bundleChecksum": "sha256:499d01614bd1b141575ff0e59e35ff2ab006043a301fde4b8e084167eb39f58e",
+      "wrongRunId": "run_cd069a3fe5b5c7fc7a8ceb16d40b93bd5552fd1e",
+      "passedRunId": "run_e30dd89507496c6b8ed29c45b091500633200a22",
+      "actualSandbox": true,
+      "reasoningReady": true,
+      "assistanceTier": 4,
+      "authoredTutorFallback": true,
+      "externalReadiness": "ready",
+      "journal": "handoff_requested",
+      "publication": "synthetic fixture"
+    },
+    {
+      "pattern": "stack",
+      "language": "typescript",
+      "bundleChecksum": "sha256:499d01614bd1b141575ff0e59e35ff2ab006043a301fde4b8e084167eb39f58e",
+      "wrongRunId": "run_76341a457979905cc99178dfeff25a160f1eff2d",
+      "passedRunId": "run_c8bcc9022eb8f94840aa2e4fb93b1369c41186fa",
+      "actualSandbox": true,
+      "reasoningReady": true,
+      "assistanceTier": 4,
+      "authoredTutorFallback": true,
+      "externalReadiness": "ready",
+      "journal": "handoff_requested",
+      "publication": "synthetic fixture"
+    },
+    {
+      "pattern": "stack",
+      "language": "java",
+      "bundleChecksum": "sha256:499d01614bd1b141575ff0e59e35ff2ab006043a301fde4b8e084167eb39f58e",
+      "wrongRunId": "run_45b7c5db03e23ddb6f88487f8877ec2a437c3c86",
+      "passedRunId": "run_52bd80b2814b6e30ca92e3e239538b0b4708b822",
+      "actualSandbox": true,
+      "reasoningReady": true,
+      "assistanceTier": 4,
+      "authoredTutorFallback": true,
+      "externalReadiness": "ready",
+      "journal": "handoff_requested",
+      "publication": "synthetic fixture"
+    },
+    {
+      "pattern": "stack",
+      "language": "cpp",
+      "bundleChecksum": "sha256:499d01614bd1b141575ff0e59e35ff2ab006043a301fde4b8e084167eb39f58e",
+      "wrongRunId": "run_ea688ea1d16db17e2f4470e3f1fb2923d9b36888",
+      "passedRunId": "run_2cf60126cea8eaa34d3f898fd37296dccf970ec4",
+      "actualSandbox": true,
+      "reasoningReady": true,
+      "assistanceTier": 4,
+      "authoredTutorFallback": true,
+      "externalReadiness": "ready",
+      "journal": "handoff_requested",
+      "publication": "synthetic fixture"
+    },
+    {
+      "pattern": "stack",
+      "language": "c",
+      "bundleChecksum": "sha256:499d01614bd1b141575ff0e59e35ff2ab006043a301fde4b8e084167eb39f58e",
+      "wrongRunId": "run_1a3ccdb7528668a4b23e7f4c204fa70d57aca5fb",
+      "passedRunId": "run_588869c98aa999739330c1196058511b24740bd0",
+      "actualSandbox": true,
+      "reasoningReady": true,
+      "assistanceTier": 4,
+      "authoredTutorFallback": true,
+      "externalReadiness": "ready",
+      "journal": "handoff_requested",
+      "publication": "synthetic fixture"
+    }
+  ],
+  "publication": "Independent actor fixture approvals only; not actual human review or learner curriculum activation",
+  "commit": null,
+  "workflowRun": null
+}

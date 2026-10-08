@@ -11,7 +11,8 @@
     "apps/web/src/**/*.tsx",
     "tests/**/*.ts",
     "tests/**/*.tsx",
-    "scripts/test-real-learning-loop.ts"
+    "scripts/test-real-learning-loop.ts",
+    "ops/**/*.ts"
   ],
   "exclude": ["**/node_modules", "apps/web/.next", "tests/architecture/fixtures"]
 }

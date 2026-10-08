@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "slug": "algocove-pilot-transfer",
+  "title": "AlgoCove pilot transfer links",
+  "scope": "Four independently solved outbound resources; no complete named-sheet coverage.",
+  "reviewStatus": "pending-human-review",
+  "checkedAt": "2026-10-06",
+  "entries": [
+    {
+      "pattern": "arrays-hashing",
+      "problemSlug": "matching-readings",
+      "provider": "leetcode",
+      "externalKey": "1512",
+      "title": "Number of Good Pairs",
+      "canonicalUrl": "https://leetcode.com/problems/number-of-good-pairs/",
+      "attribution": "LeetCode owns the external problem. AlgoCove stores only a title, outbound URL and original mapping rationale.",
+      "relation": "same_pattern",
+      "rationale": "Frequency counting prepares equal-value pair counting. This original sensor exercise has different bounds and includes an empty list; solve the external problem independently.",
+      "linkHealth": "reachable",
+      "reviewStatus": "pending-human-review"
+    },
+    {
+      "pattern": "two-pointers",
+      "problemSlug": "target-gap-pairs",
+      "provider": "leetcode",
+      "externalKey": "167",
+      "title": "Two Sum II - Input Array Is Sorted",
+      "canonicalUrl": "https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/",
+      "attribution": "LeetCode owns the external problem. AlgoCove stores only a title, outbound URL and original mapping rationale.",
+      "relation": "transfer",
+      "rationale": "Transfer from fixed differences between sorted distinct readings to a target sum with opposite-end pointers; the external output and constraints differ.",
+      "linkHealth": "reachable",
+      "reviewStatus": "pending-human-review"
+    },
+    {
+      "pattern": "sliding-window",
+      "problemSlug": "stable-signal-run",
+      "provider": "leetcode",
+      "externalKey": "904",
+      "title": "Fruit Into Baskets",
+      "canonicalUrl": "https://leetcode.com/problems/fruit-into-baskets/",
+      "attribution": "LeetCode owns the external problem. AlgoCove stores only a title, outbound URL and original mapping rationale.",
+      "relation": "same_pattern",
+      "rationale": "A window frequency invariant transfers to two-category contiguous selection; the external limits and narrative differ.",
+      "linkHealth": "reachable",
+      "reviewStatus": "pending-human-review"
+    },
+    {
+      "pattern": "stack",
+      "problemSlug": "signal-cancellation",
+      "provider": "leetcode",
+      "externalKey": "1047",
+      "title": "Remove All Adjacent Duplicates In String",
+      "canonicalUrl": "https://leetcode.com/problems/remove-all-adjacent-duplicates-in-string/",
+      "attribution": "LeetCode owns the external problem. AlgoCove stores only a title, outbound URL and original mapping rationale.",
+      "relation": "transfer",
+      "rationale": "Adjacent cancellation transfers from integer labels and remaining length to characters and a remaining string.",
+      "linkHealth": "reachable",
+      "reviewStatus": "pending-human-review"
+    }
+  ]
+}

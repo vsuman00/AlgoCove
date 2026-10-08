@@ -67,5 +67,5 @@ if (!expectedOnlyFinding) {
 }
 
 process.stderr.write(
-  "::warning title=Unpatched development-only dependency advisory::Full audit reports GHSA-vfj7-8cjw-p6xm in braces@3.0.3 through eslint-config-next. The finding is dev-only, has no published patch, and is excluded from the blocking production dependency audit. See docs/architecture/phase7-production-ui-evidence-2026-10-03.md.\n",
+  "::warning title=Unpatched development-only dependency advisory::Full audit reports GHSA-vfj7-8cjw-p6xm in braces@3.0.3 through eslint-config-next. The finding is dev-only, has no published patch, and is excluded from the blocking production dependency audit. See docs/evidence/phases/phase7-production-ui-evidence-2026-10-03.md.\n",
 );

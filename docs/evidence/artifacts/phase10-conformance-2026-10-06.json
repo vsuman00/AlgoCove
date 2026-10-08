@@ -1,0 +1,654 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "results": [
+    {
+      "pattern": "arrays-hashing",
+      "language": "python",
+      "imageDigest": "sha256:ce1f798ce7c07307251f8d340dfae57029c559119dacf84d8e97ae98049e9c85",
+      "assetChecksum": "sha256:25ef1357b10c89bef67aacc8c0b84ac1f07ecbba6b9a10fd6ad4d553bdcc63b9",
+      "bundleChecksum": "sha256:3041ae63c223ce617f83c1ddc089f86286eba7cbcf285b73a42409eba21494b2",
+      "outcomes": [
+        {
+          "candidate": "solution",
+          "fixtures": 7,
+          "correct": 7,
+          "rejected": 0
+        },
+        {
+          "candidate": "starter",
+          "fixtures": 7,
+          "correct": 3,
+          "rejected": 4
+        },
+        {
+          "candidate": "mutation",
+          "fixtures": 1,
+          "correct": 0,
+          "rejected": 1
+        }
+      ]
+    },
+    {
+      "pattern": "arrays-hashing",
+      "language": "javascript",
+      "imageDigest": "sha256:4311bfaa879adbd9d7bbb13fd9a8a1c2b4d6536b6c710d402a5f9a2c40d42486",
+      "assetChecksum": "sha256:25ef1357b10c89bef67aacc8c0b84ac1f07ecbba6b9a10fd6ad4d553bdcc63b9",
+      "bundleChecksum": "sha256:3041ae63c223ce617f83c1ddc089f86286eba7cbcf285b73a42409eba21494b2",
+      "outcomes": [
+        {
+          "candidate": "solution",
+          "fixtures": 7,
+          "correct": 7,
+          "rejected": 0
+        },
+        {
+          "candidate": "starter",
+          "fixtures": 7,
+          "correct": 3,
+          "rejected": 4
+        },
+        {
+          "candidate": "mutation",
+          "fixtures": 1,
+          "correct": 0,
+          "rejected": 1
+        }
+      ]
+    },
+    {
+      "pattern": "arrays-hashing",
+      "language": "typescript",
+      "imageDigest": "sha256:4311bfaa879adbd9d7bbb13fd9a8a1c2b4d6536b6c710d402a5f9a2c40d42486",
+      "assetChecksum": "sha256:25ef1357b10c89bef67aacc8c0b84ac1f07ecbba6b9a10fd6ad4d553bdcc63b9",
+      "bundleChecksum": "sha256:3041ae63c223ce617f83c1ddc089f86286eba7cbcf285b73a42409eba21494b2",
+      "outcomes": [
+        {
+          "candidate": "solution",
+          "fixtures": 7,
+          "correct": 7,
+          "rejected": 0
+        },
+        {
+          "candidate": "starter",
+          "fixtures": 7,
+          "correct": 3,
+          "rejected": 4
+        },
+        {
+          "candidate": "mutation",
+          "fixtures": 1,
+          "correct": 0,
+          "rejected": 1
+        }
+      ]
+    },
+    {
+      "pattern": "arrays-hashing",
+      "language": "java",
+      "imageDigest": "sha256:b721e01f76b2e2c6f3b9d76e566a0e86ee9b879cc3ef5e0ddc2541a0a668c753",
+      "assetChecksum": "sha256:25ef1357b10c89bef67aacc8c0b84ac1f07ecbba6b9a10fd6ad4d553bdcc63b9",
+      "bundleChecksum": "sha256:3041ae63c223ce617f83c1ddc089f86286eba7cbcf285b73a42409eba21494b2",
+      "outcomes": [
+        {
+          "candidate": "solution",
+          "fixtures": 7,
+          "correct": 7,
+          "rejected": 0
+        },
+        {
+          "candidate": "starter",
+          "fixtures": 7,
+          "correct": 3,
+          "rejected": 4
+        },
+        {
+          "candidate": "mutation",
+          "fixtures": 1,
+          "correct": 0,
+          "rejected": 1
+        }
+      ]
+    },
+    {
+      "pattern": "arrays-hashing",
+      "language": "cpp",
+      "imageDigest": "sha256:bb12b67b7936a57088d91e603b508a88900abe0eac054618689b477435b83904",
+      "assetChecksum": "sha256:25ef1357b10c89bef67aacc8c0b84ac1f07ecbba6b9a10fd6ad4d553bdcc63b9",
+      "bundleChecksum": "sha256:3041ae63c223ce617f83c1ddc089f86286eba7cbcf285b73a42409eba21494b2",
+      "outcomes": [
+        {
+          "candidate": "solution",
+          "fixtures": 7,
+          "correct": 7,
+          "rejected": 0
+        },
+        {
+          "candidate": "starter",
+          "fixtures": 7,
+          "correct": 3,
+          "rejected": 4
+        },
+        {
+          "candidate": "mutation",
+          "fixtures": 1,
+          "correct": 0,
+          "rejected": 1
+        }
+      ]
+    },
+    {
+      "pattern": "arrays-hashing",
+      "language": "c",
+      "imageDigest": "sha256:bb12b67b7936a57088d91e603b508a88900abe0eac054618689b477435b83904",
+      "assetChecksum": "sha256:25ef1357b10c89bef67aacc8c0b84ac1f07ecbba6b9a10fd6ad4d553bdcc63b9",
+      "bundleChecksum": "sha256:3041ae63c223ce617f83c1ddc089f86286eba7cbcf285b73a42409eba21494b2",
+      "outcomes": [
+        {
+          "candidate": "solution",
+          "fixtures": 7,
+          "correct": 7,
+          "rejected": 0
+        },
+        {
+          "candidate": "starter",
+          "fixtures": 7,
+          "correct": 3,
+          "rejected": 4
+        },
+        {
+          "candidate": "mutation",
+          "fixtures": 1,
+          "correct": 0,
+          "rejected": 1
+        }
+      ]
+    },
+    {
+      "pattern": "two-pointers",
+      "language": "python",
+      "imageDigest": "sha256:ce1f798ce7c07307251f8d340dfae57029c559119dacf84d8e97ae98049e9c85",
+      "assetChecksum": "sha256:a192cfa1b167168fd266ab152c529127e39c46fe6b52903822df0ad936472b1d",
+      "bundleChecksum": "sha256:ff74035adb0a04744472096368f2e92d0fb81491278b54e126610aecd6451a01",
+      "outcomes": [
+        {
+          "candidate": "solution",
+          "fixtures": 7,
+          "correct": 7,
+          "rejected": 0
+        },
+        {
+          "candidate": "starter",
+          "fixtures": 7,
+          "correct": 3,
+          "rejected": 4
+        },
+        {
+          "candidate": "mutation",
+          "fixtures": 1,
+          "correct": 0,
+          "rejected": 1
+        }
+      ]
+    },
+    {
+      "pattern": "two-pointers",
+      "language": "javascript",
+      "imageDigest": "sha256:4311bfaa879adbd9d7bbb13fd9a8a1c2b4d6536b6c710d402a5f9a2c40d42486",
+      "assetChecksum": "sha256:a192cfa1b167168fd266ab152c529127e39c46fe6b52903822df0ad936472b1d",
+      "bundleChecksum": "sha256:ff74035adb0a04744472096368f2e92d0fb81491278b54e126610aecd6451a01",
+      "outcomes": [
+        {
+          "candidate": "solution",
+          "fixtures": 7,
+          "correct": 7,
+          "rejected": 0
+        },
+        {
+          "candidate": "starter",
+          "fixtures": 7,
+          "correct": 3,
+          "rejected": 4
+        },
+        {
+          "candidate": "mutation",
+          "fixtures": 1,
+          "correct": 0,
+          "rejected": 1
+        }
+      ]
+    },
+    {
+      "pattern": "two-pointers",
+      "language": "typescript",
+      "imageDigest": "sha256:4311bfaa879adbd9d7bbb13fd9a8a1c2b4d6536b6c710d402a5f9a2c40d42486",
+      "assetChecksum": "sha256:a192cfa1b167168fd266ab152c529127e39c46fe6b52903822df0ad936472b1d",
+      "bundleChecksum": "sha256:ff74035adb0a04744472096368f2e92d0fb81491278b54e126610aecd6451a01",
+      "outcomes": [
+        {
+          "candidate": "solution",
+          "fixtures": 7,
+          "correct": 7,
+          "rejected": 0
+        },
+        {
+          "candidate": "starter",
+          "fixtures": 7,
+          "correct": 3,
+          "rejected": 4
+        },
+        {
+          "candidate": "mutation",
+          "fixtures": 1,
+          "correct": 0,
+          "rejected": 1
+        }
+      ]
+    },
+    {
+      "pattern": "two-pointers",
+      "language": "java",
+      "imageDigest": "sha256:b721e01f76b2e2c6f3b9d76e566a0e86ee9b879cc3ef5e0ddc2541a0a668c753",
+      "assetChecksum": "sha256:a192cfa1b167168fd266ab152c529127e39c46fe6b52903822df0ad936472b1d",
+      "bundleChecksum": "sha256:ff74035adb0a04744472096368f2e92d0fb81491278b54e126610aecd6451a01",
+      "outcomes": [
+        {
+          "candidate": "solution",
+          "fixtures": 7,
+          "correct": 7,
+          "rejected": 0
+        },
+        {
+          "candidate": "starter",
+          "fixtures": 7,
+          "correct": 3,
+          "rejected": 4
+        },
+        {
+          "candidate": "mutation",
+          "fixtures": 1,
+          "correct": 0,
+          "rejected": 1
+        }
+      ]
+    },
+    {
+      "pattern": "two-pointers",
+      "language": "cpp",
+      "imageDigest": "sha256:bb12b67b7936a57088d91e603b508a88900abe0eac054618689b477435b83904",
+      "assetChecksum": "sha256:a192cfa1b167168fd266ab152c529127e39c46fe6b52903822df0ad936472b1d",
+      "bundleChecksum": "sha256:ff74035adb0a04744472096368f2e92d0fb81491278b54e126610aecd6451a01",
+      "outcomes": [
+        {
+          "candidate": "solution",
+          "fixtures": 7,
+          "correct": 7,
+          "rejected": 0
+        },
+        {
+          "candidate": "starter",
+          "fixtures": 7,
+          "correct": 3,
+          "rejected": 4
+        },
+        {
+          "candidate": "mutation",
+          "fixtures": 1,
+          "correct": 0,
+          "rejected": 1
+        }
+      ]
+    },
+    {
+      "pattern": "two-pointers",
+      "language": "c",
+      "imageDigest": "sha256:bb12b67b7936a57088d91e603b508a88900abe0eac054618689b477435b83904",
+      "assetChecksum": "sha256:a192cfa1b167168fd266ab152c529127e39c46fe6b52903822df0ad936472b1d",
+      "bundleChecksum": "sha256:ff74035adb0a04744472096368f2e92d0fb81491278b54e126610aecd6451a01",
+      "outcomes": [
+        {
+          "candidate": "solution",
+          "fixtures": 7,
+          "correct": 7,
+          "rejected": 0
+        },
+        {
+          "candidate": "starter",
+          "fixtures": 7,
+          "correct": 3,
+          "rejected": 4
+        },
+        {
+          "candidate": "mutation",
+          "fixtures": 1,
+          "correct": 0,
+          "rejected": 1
+        }
+      ]
+    },
+    {
+      "pattern": "sliding-window",
+      "language": "python",
+      "imageDigest": "sha256:ce1f798ce7c07307251f8d340dfae57029c559119dacf84d8e97ae98049e9c85",
+      "assetChecksum": "sha256:66e2f7c030002557058647df7bea1f4c7e5df10a048c4db2b7dc4b37f2a9638d",
+      "bundleChecksum": "sha256:8bcb100aa1f98597b1a53f075120e7394d82b77bf252e539aa32ade23a10d0bc",
+      "outcomes": [
+        {
+          "candidate": "solution",
+          "fixtures": 8,
+          "correct": 8,
+          "rejected": 0
+        },
+        {
+          "candidate": "starter",
+          "fixtures": 8,
+          "correct": 1,
+          "rejected": 7
+        },
+        {
+          "candidate": "mutation",
+          "fixtures": 1,
+          "correct": 0,
+          "rejected": 1
+        }
+      ]
+    },
+    {
+      "pattern": "sliding-window",
+      "language": "javascript",
+      "imageDigest": "sha256:4311bfaa879adbd9d7bbb13fd9a8a1c2b4d6536b6c710d402a5f9a2c40d42486",
+      "assetChecksum": "sha256:66e2f7c030002557058647df7bea1f4c7e5df10a048c4db2b7dc4b37f2a9638d",
+      "bundleChecksum": "sha256:8bcb100aa1f98597b1a53f075120e7394d82b77bf252e539aa32ade23a10d0bc",
+      "outcomes": [
+        {
+          "candidate": "solution",
+          "fixtures": 8,
+          "correct": 8,
+          "rejected": 0
+        },
+        {
+          "candidate": "starter",
+          "fixtures": 8,
+          "correct": 1,
+          "rejected": 7
+        },
+        {
+          "candidate": "mutation",
+          "fixtures": 1,
+          "correct": 0,
+          "rejected": 1
+        }
+      ]
+    },
+    {
+      "pattern": "sliding-window",
+      "language": "typescript",
+      "imageDigest": "sha256:4311bfaa879adbd9d7bbb13fd9a8a1c2b4d6536b6c710d402a5f9a2c40d42486",
+      "assetChecksum": "sha256:66e2f7c030002557058647df7bea1f4c7e5df10a048c4db2b7dc4b37f2a9638d",
+      "bundleChecksum": "sha256:8bcb100aa1f98597b1a53f075120e7394d82b77bf252e539aa32ade23a10d0bc",
+      "outcomes": [
+        {
+          "candidate": "solution",
+          "fixtures": 8,
+          "correct": 8,
+          "rejected": 0
+        },
+        {
+          "candidate": "starter",
+          "fixtures": 8,
+          "correct": 1,
+          "rejected": 7
+        },
+        {
+          "candidate": "mutation",
+          "fixtures": 1,
+          "correct": 0,
+          "rejected": 1
+        }
+      ]
+    },
+    {
+      "pattern": "sliding-window",
+      "language": "java",
+      "imageDigest": "sha256:b721e01f76b2e2c6f3b9d76e566a0e86ee9b879cc3ef5e0ddc2541a0a668c753",
+      "assetChecksum": "sha256:66e2f7c030002557058647df7bea1f4c7e5df10a048c4db2b7dc4b37f2a9638d",
+      "bundleChecksum": "sha256:8bcb100aa1f98597b1a53f075120e7394d82b77bf252e539aa32ade23a10d0bc",
+      "outcomes": [
+        {
+          "candidate": "solution",
+          "fixtures": 8,
+          "correct": 8,
+          "rejected": 0
+        },
+        {
+          "candidate": "starter",
+          "fixtures": 8,
+          "correct": 1,
+          "rejected": 7
+        },
+        {
+          "candidate": "mutation",
+          "fixtures": 1,
+          "correct": 0,
+          "rejected": 1
+        }
+      ]
+    },
+    {
+      "pattern": "sliding-window",
+      "language": "cpp",
+      "imageDigest": "sha256:bb12b67b7936a57088d91e603b508a88900abe0eac054618689b477435b83904",
+      "assetChecksum": "sha256:66e2f7c030002557058647df7bea1f4c7e5df10a048c4db2b7dc4b37f2a9638d",
+      "bundleChecksum": "sha256:8bcb100aa1f98597b1a53f075120e7394d82b77bf252e539aa32ade23a10d0bc",
+      "outcomes": [
+        {
+          "candidate": "solution",
+          "fixtures": 8,
+          "correct": 8,
+          "rejected": 0
+        },
+        {
+          "candidate": "starter",
+          "fixtures": 8,
+          "correct": 1,
+          "rejected": 7
+        },
+        {
+          "candidate": "mutation",
+          "fixtures": 1,
+          "correct": 0,
+          "rejected": 1
+        }
+      ]
+    },
+    {
+      "pattern": "sliding-window",
+      "language": "c",
+      "imageDigest": "sha256:bb12b67b7936a57088d91e603b508a88900abe0eac054618689b477435b83904",
+      "assetChecksum": "sha256:66e2f7c030002557058647df7bea1f4c7e5df10a048c4db2b7dc4b37f2a9638d",
+      "bundleChecksum": "sha256:8bcb100aa1f98597b1a53f075120e7394d82b77bf252e539aa32ade23a10d0bc",
+      "outcomes": [
+        {
+          "candidate": "solution",
+          "fixtures": 8,
+          "correct": 8,
+          "rejected": 0
+        },
+        {
+          "candidate": "starter",
+          "fixtures": 8,
+          "correct": 1,
+          "rejected": 7
+        },
+        {
+          "candidate": "mutation",
+          "fixtures": 1,
+          "correct": 0,
+          "rejected": 1
+        }
+      ]
+    },
+    {
+      "pattern": "stack",
+      "language": "python",
+      "imageDigest": "sha256:ce1f798ce7c07307251f8d340dfae57029c559119dacf84d8e97ae98049e9c85",
+      "assetChecksum": "sha256:c1199a77446a05b369b3f6b014461e0bb60a0dcef3ebd297079ce04ee747f82f",
+      "bundleChecksum": "sha256:499d01614bd1b141575ff0e59e35ff2ab006043a301fde4b8e084167eb39f58e",
+      "outcomes": [
+        {
+          "candidate": "solution",
+          "fixtures": 8,
+          "correct": 8,
+          "rejected": 0
+        },
+        {
+          "candidate": "starter",
+          "fixtures": 8,
+          "correct": 4,
+          "rejected": 4
+        },
+        {
+          "candidate": "mutation",
+          "fixtures": 1,
+          "correct": 0,
+          "rejected": 1
+        }
+      ]
+    },
+    {
+      "pattern": "stack",
+      "language": "javascript",
+      "imageDigest": "sha256:4311bfaa879adbd9d7bbb13fd9a8a1c2b4d6536b6c710d402a5f9a2c40d42486",
+      "assetChecksum": "sha256:c1199a77446a05b369b3f6b014461e0bb60a0dcef3ebd297079ce04ee747f82f",
+      "bundleChecksum": "sha256:499d01614bd1b141575ff0e59e35ff2ab006043a301fde4b8e084167eb39f58e",
+      "outcomes": [
+        {
+          "candidate": "solution",
+          "fixtures": 8,
+          "correct": 8,
+          "rejected": 0
+        },
+        {
+          "candidate": "starter",
+          "fixtures": 8,
+          "correct": 4,
+          "rejected": 4
+        },
+        {
+          "candidate": "mutation",
+          "fixtures": 1,
+          "correct": 0,
+          "rejected": 1
+        }
+      ]
+    },
+    {
+      "pattern": "stack",
+      "language": "typescript",
+      "imageDigest": "sha256:4311bfaa879adbd9d7bbb13fd9a8a1c2b4d6536b6c710d402a5f9a2c40d42486",
+      "assetChecksum": "sha256:c1199a77446a05b369b3f6b014461e0bb60a0dcef3ebd297079ce04ee747f82f",
+      "bundleChecksum": "sha256:499d01614bd1b141575ff0e59e35ff2ab006043a301fde4b8e084167eb39f58e",
+      "outcomes": [
+        {
+          "candidate": "solution",
+          "fixtures": 8,
+          "correct": 8,
+          "rejected": 0
+        },
+        {
+          "candidate": "starter",
+          "fixtures": 8,
+          "correct": 4,
+          "rejected": 4
+        },
+        {
+          "candidate": "mutation",
+          "fixtures": 1,
+          "correct": 0,
+          "rejected": 1
+        }
+      ]
+    },
+    {
+      "pattern": "stack",
+      "language": "java",
+      "imageDigest": "sha256:b721e01f76b2e2c6f3b9d76e566a0e86ee9b879cc3ef5e0ddc2541a0a668c753",
+      "assetChecksum": "sha256:c1199a77446a05b369b3f6b014461e0bb60a0dcef3ebd297079ce04ee747f82f",
+      "bundleChecksum": "sha256:499d01614bd1b141575ff0e59e35ff2ab006043a301fde4b8e084167eb39f58e",
+      "outcomes": [
+        {
+          "candidate": "solution",
+          "fixtures": 8,
+          "correct": 8,
+          "rejected": 0
+        },
+        {
+          "candidate": "starter",
+          "fixtures": 8,
+          "correct": 4,
+          "rejected": 4
+        },
+        {
+          "candidate": "mutation",
+          "fixtures": 1,
+          "correct": 0,
+          "rejected": 1
+        }
+      ]
+    },
+    {
+      "pattern": "stack",
+      "language": "cpp",
+      "imageDigest": "sha256:bb12b67b7936a57088d91e603b508a88900abe0eac054618689b477435b83904",
+      "assetChecksum": "sha256:c1199a77446a05b369b3f6b014461e0bb60a0dcef3ebd297079ce04ee747f82f",
+      "bundleChecksum": "sha256:499d01614bd1b141575ff0e59e35ff2ab006043a301fde4b8e084167eb39f58e",
+      "outcomes": [
+        {
+          "candidate": "solution",
+          "fixtures": 8,
+          "correct": 8,
+          "rejected": 0
+        },
+        {
+          "candidate": "starter",
+          "fixtures": 8,
+          "correct": 4,
+          "rejected": 4
+        },
+        {
+          "candidate": "mutation",
+          "fixtures": 1,
+          "correct": 0,
+          "rejected": 1
+        }
+      ]
+    },
+    {
+      "pattern": "stack",
+      "language": "c",
+      "imageDigest": "sha256:bb12b67b7936a57088d91e603b508a88900abe0eac054618689b477435b83904",
+      "assetChecksum": "sha256:c1199a77446a05b369b3f6b014461e0bb60a0dcef3ebd297079ce04ee747f82f",
+      "bundleChecksum": "sha256:499d01614bd1b141575ff0e59e35ff2ab006043a301fde4b8e084167eb39f58e",
+      "outcomes": [
+        {
+          "candidate": "solution",
+          "fixtures": 8,
+          "correct": 8,
+          "rejected": 0
+        },
+        {
+          "candidate": "starter",
+          "fixtures": 8,
+          "correct": 4,
+          "rejected": 4
+        },
+        {
+          "candidate": "mutation",
+          "fixtures": 1,
+          "correct": 0,
+          "rejected": 1
+        }
+      ]
+    }
+  ]
+}

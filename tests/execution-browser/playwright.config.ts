@@ -1,8 +1,11 @@
 import { defineConfig, devices } from "@playwright/test";
+import { loadLocalWebEnv } from "../../apps/web/local-env.ts";
+
+loadLocalWebEnv();
 
 export default defineConfig({
   testDir: "..",
-  outputDir: "../../test-results/execution-browser",
+  outputDir: "../../.tmp/test-results/execution-browser",
   testMatch: /(?:guided-results|worker-offline)\.spec\.ts$/,
   fullyParallel: true,
   forbidOnly: Boolean(process.env.CI),

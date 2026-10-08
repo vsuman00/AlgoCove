@@ -13,7 +13,9 @@
     "pg": "8.23.0",
     "@algocove/content": "workspace:*",
     "@algocove/retrieval": "workspace:*",
-    "@algocove/tutor": "workspace:*"
+    "@algocove/tutor": "workspace:*",
+    "@algocove/visualizer": "workspace:*",
+    "@algocove/observability": "workspace:*"
   },
   "scripts": {
     "typecheck": "tsc --noEmit -p tsconfig.json"

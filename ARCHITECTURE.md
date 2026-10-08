@@ -4,7 +4,7 @@
 
 AlgoCove is a guided Data Structures and Algorithms mastery platform for students and job seekers learning through Python, JavaScript, TypeScript, Java, C++, or C. Its architectural purpose is to support a measurable learning loop: recommend the next useful activity, let the learner struggle productively, provide the smallest safe intervention, collect mastery evidence, and schedule a later retrieval check.
 
-This document began as an architecture-only baseline. The owner subsequently authorized implementation through Phase 7. Current implemented behavior and validation are recorded in the [task ledger](tasks/todo.md) and [runtime repair evidence](docs/architecture/runtime-repair-evidence-2026-10-03.md); proposed architecture decisions remain distinct from implemented code.
+This document began as an architecture-only baseline. The owner subsequently authorized implementation through Phase 7. Current implemented behavior and validation are recorded in the [task ledger](tasks/todo.md) and [runtime repair evidence](./docs/evidence/audits/runtime-repair-evidence-2026-10-03.md); proposed architecture decisions remain distinct from implemented code.
 
 ## Architecture set
 

@@ -1,31 +1,9 @@
 import type { NextConfig } from "next";
-import { readFileSync } from "node:fs";
-import { parseEnv } from "node:util";
-import { rawConfigSchema } from "../../packages/config/src/schema.ts";
+import { loadLocalWebEnv } from "./local-env.ts";
 
-// ponytail: Next already loaded app-local settings; root files are development fallbacks only.
-// Copy known runtime settings only, never operator credentials, into the web process.
-if (process.env.NODE_ENV === "development") {
-  for (const filename of ["../../.env.local", "../../.env"]) {
-    let values: ReturnType<typeof parseEnv>;
-    try {
-      values = parseEnv(readFileSync(new URL(filename, import.meta.url), "utf8"));
-    } catch (error) {
-      if (typeof error === "object" && error !== null && "code" in error && error.code === "ENOENT")
-        continue;
-      throw error;
-    }
-    for (const key of Object.keys(rawConfigSchema.shape)) {
-      if (
-        key !== "DATABASE_ADMIN_URL" &&
-        process.env[key] === undefined &&
-        values[key] !== undefined
-      ) {
-        process.env[key] = values[key];
-      }
-    }
-  }
-}
+// Production runtimes receive explicit environment injection. Local root files
+// are read by the dev server and the build-only wrapper, never by `next start`.
+if (process.env.NODE_ENV === "development") loadLocalWebEnv();
 
 /**
  * Web application configuration.
@@ -37,6 +15,9 @@ if (process.env.NODE_ENV === "development") {
  */
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  // Next's development request logger prints raw query strings, including Clerk
+  // handshake/session credentials. Keep these URLs out of terminal logs.
+  logging: { incomingRequests: false },
   // Isolated test servers must not share the developer server build/lock directory.
   distDir: process.env.ALGOCOVE_TEST_DIST_DIR ?? ".next",
   agentRules: false,

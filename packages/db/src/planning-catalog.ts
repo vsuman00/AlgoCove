@@ -26,13 +26,19 @@ export async function loadPlanningCatalog(
     title: string;
     languages: ProblemLanguage[];
     rights_valid: boolean;
+    slug: string | null;
   }>(
-    `SELECT v.problem_version_id,c.content_version_id,c.title,(c.rights_expires_at IS NULL OR c.rights_expires_at>$1) AS rights_valid,ARRAY(SELECT language FROM content.problem_language_manifest WHERE problem_version_id=v.problem_version_id AND status='published') AS languages FROM content.problem_version v JOIN content.content_version c USING(content_version_id) WHERE v.problem_version_id='prb_dddddddddddddddd' AND c.status='published' AND c.payload_status='available' ${lock ? "FOR SHARE OF c" : ""}`,
+    `SELECT eligible.problem_version_id,eligible.content_version_id,eligible.title,eligible.slug,
+       (c.rights_expires_at IS NULL OR c.rights_expires_at>$1) AS rights_valid,eligible.languages
+     FROM content.eligible_learning_problem eligible
+     JOIN content.content_version c USING(content_version_id)
+     WHERE eligible.problem_version_id=(SELECT latest.problem_version_id FROM content.eligible_learning_problem latest
+       WHERE latest.problem_id=eligible.problem_id ORDER BY latest.published_at DESC,latest.problem_version_id DESC LIMIT 1)
+     ORDER BY eligible.slug ${lock ? "FOR SHARE OF c" : ""}`,
     [now],
   );
   const units: PlanUnit[] = [];
-  const row = problem.rows[0];
-  if (row) {
+  for (const row of problem.rows) {
     const edges = await tx.query<{ from_concept_id: string }>(
       `SELECT DISTINCT e.from_concept_id FROM learning.curriculum_edge e JOIN learning.problem_concept m ON m.concept_id=e.to_concept_id WHERE e.curriculum_version_id=$1 AND e.edge_kind='required' AND m.problem_version_id=$2`,
       [graph.rows[0]?.curriculum_version_id ?? null, row.problem_version_id],
@@ -42,7 +48,7 @@ export async function loadPlanningCatalog(
       kind: "lesson",
       targetId: row.content_version_id,
       title: `Introduction: ${row.title}`,
-      href: "/learn/arrays-two-pointer",
+      href: `/learn/lessons/${row.slug ?? "arrays-two-pointer"}`,
       minutes: 20,
       required: true,
       prerequisites: edges.rows.map((e) => `concept:${e.from_concept_id}`),
@@ -57,7 +63,7 @@ export async function loadPlanningCatalog(
       kind: "internal_problem",
       targetId: row.problem_version_id,
       title: row.title,
-      href: "/learn/arrays-two-pointer",
+      href: `/learn/${row.slug ?? "arrays-two-pointer"}`,
       minutes: 50,
       required: true,
       prerequisites: [`lesson:${row.content_version_id}`],
@@ -79,7 +85,7 @@ export async function loadPlanningCatalog(
     title: string;
     available: boolean;
   }>(
-    `SELECT r.review_id,r.due_start,r.due_end,c.title,EXISTS(SELECT 1 FROM content.review_exercise e WHERE e.concept_id=r.concept_id AND e.status='published' AND (e.rights_expires_at IS NULL OR e.rights_expires_at>$2)) AS available FROM mastery.review_item r JOIN learning.concept c USING(concept_id) WHERE r.learner_id=$1 AND r.status IN ('due','deferred') ORDER BY r.due_start,r.review_id ${lock ? "FOR SHARE OF r" : ""}`,
+    `SELECT r.review_id,r.due_start,r.due_end,c.title,EXISTS(SELECT 1 FROM content.available_release_exercise e WHERE e.concept_id=r.concept_id AND e.status='published' AND (e.rights_expires_at IS NULL OR e.rights_expires_at>$2)) AS available FROM mastery.review_item r JOIN learning.concept c USING(concept_id) WHERE r.learner_id=$1 AND r.status IN ('due','deferred') ORDER BY r.due_start,r.review_id ${lock ? "FOR SHARE OF r" : ""}`,
     [learnerId, now],
   );
   const today = localStudyDay(now, p.timezone);
@@ -106,8 +112,11 @@ export async function loadPlanningCatalog(
   }
   const collections = [];
   for (const id of p.collectionIds) {
-    const counts = await tx.query<{ total: number; unavailable: number }>(
-      `SELECT count(*)::integer AS total,count(*) FILTER(WHERE r.url_status<>'reviewed')::integer AS unavailable FROM content.external_collection_membership m JOIN content.external_reference r USING(external_reference_id) WHERE m.collection_id=$1`,
+    const counts = await tx.query<{ total: number; unavailable: number; supported: number }>(
+      `SELECT count(DISTINCT canonical_identity)::integer AS total,
+       count(DISTINCT canonical_identity) FILTER(WHERE availability='unavailable')::integer AS unavailable,
+       count(DISTINCT canonical_identity) FILTER(WHERE availability='supported_internal')::integer AS supported
+       FROM content.collection_entry_availability WHERE collection_id=$1`,
       [id],
     );
     const c = counts.rows[0]!;
@@ -121,8 +130,8 @@ export async function loadPlanningCatalog(
       id,
       ...(title === undefined ? {} : { title }),
       total: c.total,
-      supported: 0,
-      externalOnly: c.total - c.unavailable,
+      supported: c.supported,
+      externalOnly: c.total - c.unavailable - c.supported,
       unavailable: c.unavailable,
     });
   }
@@ -131,7 +140,7 @@ export async function loadPlanningCatalog(
     units,
     masteredKeys: mastered.rows.map((r) => `concept:${r.concept_id}`),
     coverage:
-      "Reviewed two-pointer pilot: one original exercise, its introduction and existing review obligations. Comprehensive DSA and complete sheet coverage are unavailable.",
+      "Published original pilot exercises, their introductions and existing review obligations. Comprehensive DSA and complete sheet coverage are unavailable.",
     fullCoverage: false,
     collections,
   };

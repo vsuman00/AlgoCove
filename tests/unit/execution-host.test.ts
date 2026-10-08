@@ -279,4 +279,84 @@ describe("local isolated source host", () => {
       rmSync(directory, { recursive: true, force: true });
     }
   });
+  it("waits for active teardown before acknowledging privacy cancellation", async () => {
+    const directory = mkdtempSync(join(tmpdir(), "algocove-privacy-cancel-"));
+    let started!: () => void, finish!: () => void;
+    const ready = new Promise<void>((resolve) => {
+      started = resolve;
+    });
+    const ended = new Promise<void>((resolve) => {
+      finish = resolve;
+    });
+    const host = await createLocalSourceHost({
+      journalPath: join(directory, "host.sqlite"),
+      key,
+      verificationKeys: keys,
+      images,
+      runner: async (_descriptor, _source, signal) => {
+        started();
+        await ended;
+        expect(signal.aborted).toBe(true);
+        return { category: "pass", phase: "run", teardownConfirmed: true };
+      },
+      deliver: async () => {},
+    });
+    try {
+      await host.dispatch({ message: message(), source });
+      await ready;
+      let acknowledged = false;
+      const cancelled = host.cancel({ runId: request.runId, reason: "system" }).then(() => {
+        acknowledged = true;
+      });
+      await new Promise<void>((resolve) => setImmediate(resolve));
+      expect(acknowledged).toBe(false);
+      finish();
+      await cancelled;
+      expect(acknowledged).toBe(true);
+      await host.drain();
+    } finally {
+      finish();
+      await host.close();
+      rmSync(directory, { recursive: true, force: true });
+    }
+  });
+  it("refuses privacy cancellation acknowledgement when teardown is unconfirmed, including after restart", async () => {
+    const directory = mkdtempSync(join(tmpdir(), "algocove-privacy-teardown-"));
+    let started!: () => void;
+    const ready = new Promise<void>((resolve) => {
+      started = resolve;
+    });
+    const options = {
+      journalPath: join(directory, "host.sqlite"),
+      key,
+      verificationKeys: keys,
+      images,
+      runner: async () => {
+        started();
+        return {
+          category: "infrastructure_error" as const,
+          phase: "run" as const,
+          teardownConfirmed: false,
+        };
+      },
+      deliver: async () => {},
+    };
+    let host = await createLocalSourceHost(options);
+    try {
+      await host.dispatch({ message: message(), source });
+      await ready;
+      await host.drain();
+      await expect(host.cancel({ runId: request.runId, reason: "system" })).rejects.toThrow(
+        "unconfirmed",
+      );
+      await host.close();
+      host = await createLocalSourceHost(options);
+      await expect(host.cancel({ runId: request.runId, reason: "system" })).rejects.toThrow(
+        "unconfirmed",
+      );
+    } finally {
+      await host.close();
+      rmSync(directory, { recursive: true, force: true });
+    }
+  });
 });

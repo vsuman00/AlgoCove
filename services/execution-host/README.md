@@ -1,7 +1,7 @@
 # Local gVisor execution host
 
 This is the localhost Phase 5 composition for the original Container problem.
-Read the [evidence and limits](../../docs/architecture/phase5-evidence.md).
+Read the [evidence and limits](../../docs/evidence/phases/phase5-evidence.md).
 It requires Linux, Docker registered with `runsc`, and a Node build with native
 TypeScript support. Official Node 22.22.0 was used; the Ubuntu packaged build
 did not support TypeScript stripping. On macOS, use a temporary Linux VM.

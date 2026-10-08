@@ -1,3 +1,4 @@
+import type { ReviewedPilot } from "./pilot-problem.ts";
 import { DatabaseSync } from "node:sqlite";
 import {
   createExecutionResult,
@@ -22,6 +23,7 @@ type Options = {
   images: Parameters<typeof createGvisorRunner>[0];
   deliver: (result: SignedExecutionResult) => Promise<void>;
   /** Only tests substitute the runner. The CLI always uses gVisor. */
+  pilots?: ReadonlyMap<string, ReviewedPilot>;
   runner?: ReturnType<typeof createGvisorRunner>;
 };
 
@@ -39,7 +41,7 @@ export async function createLocalSourceHost(options: Options): Promise<
   const journal = createSqliteExecutionJournal(options.journalPath);
   const metadata = new DatabaseSync(options.journalPath);
   metadata.exec(
-    "CREATE TABLE IF NOT EXISTS host_cancel (run_id TEXT PRIMARY KEY); CREATE TABLE IF NOT EXISTS host_delivery (run_id TEXT PRIMARY KEY)",
+    "CREATE TABLE IF NOT EXISTS host_cancel (run_id TEXT PRIMARY KEY); CREATE TABLE IF NOT EXISTS host_delivery (run_id TEXT PRIMARY KEY); CREATE TABLE IF NOT EXISTS host_teardown_failure (run_id TEXT PRIMARY KEY)",
   );
   const control = createExecutionControl({
     verificationKeys: options.verificationKeys,
@@ -48,7 +50,7 @@ export async function createLocalSourceHost(options: Options): Promise<
     orphanTimeoutMs: 1,
     maxQueuePerQuota: 100,
   });
-  const runner = options.runner ?? createGvisorRunner(options.images);
+  const runner = options.runner ?? createGvisorRunner(options.images, undefined, options.pilots);
   const sources = new Map<string, string>();
   const restoredQueued = new Set(
     journal
@@ -57,6 +59,10 @@ export async function createLocalSourceHost(options: Options): Promise<
       .map((record) => record.descriptor.payload.runId),
   );
   const active = new Map<string, AbortController>();
+  const completions = new Map<
+    string,
+    { done: Promise<boolean>; finish: (confirmed: boolean) => void }
+  >();
   const deliveryAttempts = new Map<string, number>();
   const workerId = "local-gvisor-host";
   let stopped = false;
@@ -87,11 +93,10 @@ export async function createLocalSourceHost(options: Options): Promise<
         const attempts = deliveryAttempts.get(result.payload.runId) ?? 0;
         deliveryAttempts.delete(result.payload.runId);
         logHostEvent("result_delivered", { runId: result.payload.runId, attempts: attempts + 1 });
-      } catch (error) {
+      } catch {
         const attempts = (deliveryAttempts.get(result.payload.runId) ?? 0) + 1;
         deliveryAttempts.set(result.payload.runId, attempts);
-        const reason =
-          error instanceof Error ? error.message.replace(/[\r\n]/g, " ").slice(0, 160) : "unknown";
+        const reason = "delivery_unavailable";
         if (attempts === 1 || attempts % 10 === 0)
           logHostEvent("result_delivery_pending", {
             runId: result.payload.runId,
@@ -123,6 +128,11 @@ export async function createLocalSourceHost(options: Options): Promise<
       logHostEvent("run_started", { runId: descriptor.runId, language: descriptor.language });
       const abort = new AbortController();
       active.set(descriptor.runId, abort);
+      let finish!: (confirmed: boolean) => void;
+      const done = new Promise<boolean>((resolve) => {
+        finish = resolve;
+      });
+      completions.set(descriptor.runId, { done, finish });
       if (
         metadata.prepare("SELECT 1 FROM host_cancel WHERE run_id=?").get(descriptor.runId) !==
         undefined
@@ -176,7 +186,14 @@ export async function createLocalSourceHost(options: Options): Promise<
         now: now(),
       };
       if (verdict.teardownConfirmed) must(control.confirmTeardown(teardown));
-      else must(control.teardownFailed(teardown));
+      else {
+        metadata
+          .prepare("INSERT OR IGNORE INTO host_teardown_failure VALUES (?)")
+          .run(descriptor.runId);
+        must(control.teardownFailed(teardown));
+      }
+      completions.get(descriptor.runId)?.finish(verdict.teardownConfirmed);
+      completions.delete(descriptor.runId);
       await deliver();
     }
   };
@@ -186,9 +203,10 @@ export async function createLocalSourceHost(options: Options): Promise<
       pumping = undefined;
     });
     // Keep failure observable through drain; avoid an unhandled rejection in the background.
-    void pumping.catch((error: unknown) => {
-      const reason =
-        error instanceof Error ? error.message.replace(/[\r\n]/g, " ").slice(0, 160) : "unknown";
+    void pumping.catch(() => {
+      for (const completion of completions.values()) completion.finish(false);
+      completions.clear();
+      const reason = "worker_failure";
       logHostEvent("worker_pump_stopped", { reason });
       stopped = true;
     });
@@ -252,10 +270,14 @@ export async function createLocalSourceHost(options: Options): Promise<
     async cancel({ runId, reason }) {
       if (stopped) throw new Error("Execution host is stopped.");
       metadata.prepare("INSERT OR IGNORE INTO host_cancel VALUES (?)").run(runId);
+      const completion = completions.get(runId);
       active.get(runId)?.abort();
       if (journal.get(runId) !== undefined) must(control.cancel({ runId, reason, now: now() }));
       sources.delete(runId);
       schedule();
+      if (completion && !(await completion.done)) throw Error("Execution teardown is unconfirmed.");
+      if (metadata.prepare("SELECT 1 FROM host_teardown_failure WHERE run_id=?").get(runId))
+        throw Error("Execution teardown is unconfirmed.");
     },
     async drain() {
       await pumping;

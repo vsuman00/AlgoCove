@@ -1,3 +1,4 @@
+import { observeRequest } from "../../../../src/operations/telemetry";
 import { learningError as errorResponse } from "../../../../src/mastery/learning-http";
 import { NextResponse } from "next/server";
 import {
@@ -12,7 +13,7 @@ import { getPracticeRuntime } from "../../../../src/practice/runtime";
 
 export const dynamic = "force-dynamic";
 
-export async function POST(request: Request): Promise<NextResponse> {
+async function handlePOST(request: Request): Promise<NextResponse> {
   try {
     const context = await authenticatedWebRequestContext(request);
     const input = await request.json();
@@ -49,4 +50,8 @@ export async function POST(request: Request): Promise<NextResponse> {
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+export async function POST(request: Request): Promise<Response> {
+  return observeRequest(request, "code_execution", () => handlePOST(request));
 }

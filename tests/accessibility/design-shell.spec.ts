@@ -91,8 +91,8 @@ test.describe("Learner Home shell", () => {
     await expect(signInButton.or(signInLink)).toBeVisible();
     await expect(createAccountButton.or(createAccountLink)).toBeVisible();
     if ((await signInLink.count()) > 0) {
-      await expect(signInLink).toHaveAttribute("href", "/sign-in");
-      await expect(createAccountLink).toHaveAttribute("href", "/sign-up");
+      await expect(signInLink).toHaveAttribute("href", "/sign-in?returnTo=%2F");
+      await expect(createAccountLink).toHaveAttribute("href", "/sign-up?returnTo=%2F");
     }
     await expect(page.getByText("VS", { exact: true })).toHaveCount(0);
   });

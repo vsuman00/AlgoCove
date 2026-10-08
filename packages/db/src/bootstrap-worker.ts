@@ -12,11 +12,11 @@ export async function bootstrapWorkerRole(input: {
   operatorConnectionString: string;
   name: string;
   password: string;
-  capability?: "maintenance" | "content_indexing";
+  capability?: "maintenance" | "content_indexing" | "privacy";
 }): Promise<void> {
   if (
     (input.capability !== undefined &&
-      !["maintenance", "content_indexing"].includes(input.capability)) ||
+      !["maintenance", "content_indexing", "privacy"].includes(input.capability)) ||
     !/^[a-z][a-z0-9_]{0,62}$/.test(input.name) ||
     input.password.length < 16 ||
     input.password.includes("\0")
@@ -44,6 +44,17 @@ export async function bootstrapWorkerRole(input: {
           `CREATE ROLE ${role} LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT PASSWORD ${literal(input.password)}`,
         );
         await tx.query(`GRANT CONNECT ON DATABASE ${identifier(database)} TO ${role}`);
+        await tx.query(`GRANT USAGE ON SCHEMA platform TO ${role}`);
+        await tx.query(`GRANT SELECT,INSERT,UPDATE ON platform.service_heartbeat TO ${role}`);
+        if (input.capability === "privacy") {
+          await tx.query(
+            `GRANT SELECT ON platform.privacy_deletion,platform.privacy_cancellation,platform.privacy_backup TO ${role}`,
+          );
+          await tx.query(
+            `GRANT EXECUTE ON FUNCTION platform.claim_privacy_deletion(text),platform.confirm_privacy_cancellation(text,text,text),platform.complete_privacy_deletion(text,text),platform.apply_privacy_retention(integer) TO ${role}`,
+          );
+          return;
+        }
         await tx.query(`GRANT USAGE ON SCHEMA platform,content,practice,search TO ${role}`);
         await tx.query(`GRANT SELECT,UPDATE ON platform.outbox_event TO ${role}`);
         await tx.query(`GRANT SELECT,INSERT ON platform.worker_effect_receipt TO ${role}`);
@@ -73,6 +84,7 @@ export async function bootstrapWorkerRole(input: {
             `GRANT SELECT(draft_id,revision,expires_at),DELETE ON practice.draft_revision TO ${role}`,
           );
         }
+        await tx.query(`GRANT SELECT,INSERT,UPDATE ON platform.service_heartbeat TO ${role}`);
       },
       { statementTimeoutMs: 5000 },
     );

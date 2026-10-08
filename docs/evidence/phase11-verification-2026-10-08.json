@@ -1,0 +1,45 @@
+{
+  "recordedAt": "2026-10-07T18:37:42.812Z",
+  "scope": "local Phase 11 Tasks 52-54; no hosted deployment or independent publication",
+  "status": "passed",
+  "packageManager": "pnpm@12.4.2",
+  "verify": {
+    "format": true,
+    "lint": true,
+    "rootWebWorkerTypes": true,
+    "tokens": true,
+    "coreTestsPassed": 516,
+    "docsLinks": true,
+    "secretsScan": true
+  },
+  "integration": {
+    "passed": 152,
+    "skipped": 3,
+    "skipReason": "existing Linux/gVisor-only cases on macOS"
+  },
+  "browser": {
+    "chromiumJourneysPassed": 64,
+    "accessibilityPassed": 32,
+    "privacyFixtureJourneysPassed": 2
+  },
+  "build": "passed",
+  "executionPrivacyCancellation": {
+    "waitsForTeardown": true,
+    "unconfirmedTeardownBlocksAcrossRestart": true,
+    "controlledRunnerTestsPassed": 2
+  },
+  "restoreDrill": {
+    "status": "passed",
+    "receipt": "restore-drills/phase11-local-drill-2026-10-07.json"
+  },
+  "persistentDatabase": {
+    "migrationWatermark": "0040",
+    "originalAccountsActive": 5,
+    "learnerAccountsPurged": 0
+  },
+  "git": {
+    "committed": false,
+    "pushed": false
+  },
+  "phase12Started": false
+}

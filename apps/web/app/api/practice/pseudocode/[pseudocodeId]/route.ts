@@ -15,10 +15,7 @@ import {
   validStructuredAnswers,
   type PseudocodeFields,
 } from "@algocove/domain";
-import {
-  containerReasoningChecks,
-  CONTAINER_REASONING_RUBRIC,
-} from "../../../../../src/practice/container-reasoning";
+import { reasoningContract } from "../../../../../src/practice/pilot-reasoning";
 import { authenticatedWebRequestContext } from "../../../../../src/auth/request-context";
 import { getPracticeRuntime } from "../../../../../src/practice/runtime";
 
@@ -41,14 +38,15 @@ export async function GET(request: Request, route: RouteContext): Promise<NextRe
         : (await getOwnedPseudocodeHistory(context, runtime.pseudocode, pseudocodeId)).find(
             (item) => item.revision === artifact.savedRevision,
           );
+    const contract = await reasoningContract(runtime.pool, revision);
     const readiness =
       artifact.savedRevision < 1
         ? null
         : await evaluateOwnedPseudocode(context, runtime.pseudocode, {
             pseudocodeId,
             revision: artifact.savedRevision,
-            rubric: CONTAINER_REASONING_RUBRIC,
-            structuredChecks: revision === undefined ? [] : containerReasoningChecks(revision),
+            rubric: contract.rubric,
+            structuredChecks: contract.structuredChecks,
             verifiedRuns: await runtime.practice.getVerifiedRunEvidence({
               attemptId: artifact.attemptId,
               learnerId: context.actor.userId,

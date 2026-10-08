@@ -1,12 +1,12 @@
-import PlanningPreferences from "../../../apps/web/src/components/planning-preferences";
+import PlanningPreferences from "../../../apps/web/src/components/planning/planning-preferences";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { useState, type ReactNode } from "react";
 import { afterEach, expect, it, vi } from "vitest";
-import AuthControls from "../../../apps/web/src/components/auth-controls";
+import AuthControls from "../../../apps/web/src/components/account/auth-controls";
 import {
   StaffNavigationProvider,
   useAppSession,
-} from "../../../apps/web/src/components/staff-navigation";
+} from "../../../apps/web/src/components/staff/staff-navigation";
 
 const clerk = vi.hoisted(() => ({ isLoaded: false, user: null as { id: string } | null }));
 vi.mock("../../../apps/web/node_modules/@clerk/nextjs", () => ({

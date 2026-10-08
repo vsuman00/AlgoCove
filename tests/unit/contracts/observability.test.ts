@@ -69,4 +69,17 @@ describe("observability contract", () => {
       dependency: "unknown",
     });
   });
+  it("rejects private text smuggled into allowed diagnostic fields", () => {
+    const serialized = serializeTelemetryEvent({
+      traceId: "PRIVATE_CANARY",
+      requestId: "PRIVATE_CANARY",
+      category: "security",
+      event: "private_source_canary",
+      dependency: "private_prompt_canary",
+    });
+    expect(serialized).not.toMatch(/CANARY|private_source|private_prompt/);
+    expect(
+      redactTelemetryValue({ outcome: "PRIVATE_CANARY", status: { source: "PRIVATE_CANARY" } }),
+    ).toEqual({ outcome: "[redacted]", status: {} });
+  });
 });

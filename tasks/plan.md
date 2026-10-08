@@ -1,20 +1,28 @@
+**Current phase (2026-10-08):** Phase 11 Tasks 52–54 are implemented and locally verified. Independent Phase 10 publication was set aside at the owner's request; Phase 12 is not authorized. See [Phase 11 evidence](../docs/evidence/phases/phase11-evidence.md). Earlier preparation notes below are historical.
+
+**Version-control publication (2026-10-08):** The owner authorized committing and pushing all accumulated project changes to GitHub and running the CI pipeline. This supersedes earlier keep-local/uncommitted instructions for repository publication. Independent curriculum publication, live AI, and hosted deployment remain separate gates. GitHub Actions records remote verification for the pushed revision.
+
 # AlgoCove phased implementation plan
 
-**Journey coverage expansion (2026-10-07):** The [website journey contract](../docs/architecture/website-journeys-and-coverage.md) maps 19 feature journeys and 19 edge/exit cases to tasks. Additional proposed work covers shell/auth return, authoring preflight, recovery, private/shared sheets and broader interviews. This is documentation-only scope. Existing approvals and implementation evidence are unchanged.
+**Current release preparation (2026-10-07):** Owner approval for Phase 11 preparation is recorded. The persistent local database is backed up, migrated through 0038 and verified with restricted runtime access. Actual independent publication remains pending authenticated staff assignments and checksum-bound reviews; see [release readiness](../docs/evidence/phases/phase10-release-readiness.md).
 
-**Documentation revision (2026-10-07):** The owner requested architecture/build-document changes only. Tasks 45b–45e, 50a–50b and Phase 14 are proposed additions from the [learning platform design](../docs/architecture/learning-platform-evolution-2026-10-07.md). No new implementation or phase authorization is implied; Task 45a and the unchecked F9 owner gate remain unchanged.
+**Phase 10 extension authorization (2026-10-07):** The owner instructed completion of the newly added Phase 10 tasks before Phase 11 and authorized building against the updated architecture. Tasks 45b–45g and 50a–50c are now authorized local implementation scope. Follow the [bounded work cards](../docs/architecture/work-cards/phase10-platform-extension.md) and [shared learning contract](../docs/architecture/shared-learning-contract.md). Keep existing local work uncommitted/unpushed; live AI, independent publication signatures, Phase 11 and hosted deployment remain separate. Historical proposal-only notes below describe the earlier documentation update, not the current authorization. [Completion evidence](../docs/evidence/phases/phase10-platform-extension-evidence.md) closes C1–C10 and Tasks 45b–45g/50a–50c for local engineering; independent publication and later-phase work remain separate.
 
-**Latest authorized repair (2026-10-03):** The owner reviewed the diagnosis and authorized Ponytail repairs. [Runtime repair evidence](../docs/architecture/runtime-repair-evidence-2026-10-03.md) records configuration, authenticated session recovery, workspace synchronization, published-content withdrawal, diagnostics and CI corrections. Repair commit `2803c23` passed all three CI jobs including both mandatory actual Linux learning-loop scenarios. Application repair commit `0f8b7a5` also passed all three jobs in CI run 37104114731, with both real Linux scenarios and fresh isolation evidence. U4/U6/U8 are complete for this repair scope; historical manual/design approvals remain separate. No deployment is authorized.
+**Historical journey coverage expansion (2026-10-07):** The [website journey contract](../docs/architecture/website-journeys-and-coverage.md) maps 19 feature journeys and 19 edge/exit cases to tasks. Additional proposed work covers shell/auth return, authoring preflight, recovery, private/shared sheets and broader interviews. This is documentation-only scope. Existing approvals and implementation evidence are unchanged.
 
-**Current implementation evidence:** [Real product and 3D UI record](../docs/architecture/phase7-production-ui-evidence-2026-10-03.md) supplements the historical audit with persisted content administration, release identity persistence and the new mandatory Linux guided-loop gate. Final CI status is recorded there.
+**Documentation revision (2026-10-07):** The owner requested architecture/build-document changes only. Tasks 45b–45e, 50a–50b and Phase 14 are proposed additions from the [learning platform design](../docs/architecture/learning-platform-evolution-2026-10-07.md). This published proposal does not itself authorize implementation. Local Phase 10 authorization and completion records below take precedence over the earlier unchecked F9 gate; Task 45a live activation remains pending.
 
-**Current work (owner clarification, 2026-10-03):** Complete real implementation through Phase 7 and the clean production 3D UI. [UI completion work](phase7-production-ui.md) tracks the scope. No deployment, age/country restrictions, privacy-policy implementation, or later phases are included. Existing security and ownership controls remain required.
+**Latest authorized repair (2026-10-03):** The owner reviewed the diagnosis and authorized Ponytail repairs. [Runtime repair evidence](../docs/evidence/audits/runtime-repair-evidence-2026-10-03.md) records configuration, authenticated session recovery, workspace synchronization, published-content withdrawal, diagnostics and CI corrections. Repair commit `2803c23` passed all three CI jobs including both mandatory actual Linux learning-loop scenarios. Application repair commit `0f8b7a5` also passed all three jobs in CI run 37104114731, with both real Linux scenarios and fresh isolation evidence. U4/U6/U8 are complete for this repair scope; historical manual/design approvals remain separate. No deployment is authorized.
 
-**Cumulative audit (2026-10-03):** [The through-Phase-7 audit](../docs/architecture/through-phase7-audit-2026-10-03.md) records fresh passing technical gates, every named test, Phase 0 approval gaps, unreconciled Phase 1–5 plan checkboxes, open UI fidelity/manual accessibility and the two current-head real-host skips. Technical phase closure must not be read as complete governance or full design validation.
+**Current implementation evidence:** [Real product and 3D UI record](../docs/evidence/phases/phase7-production-ui-evidence-2026-10-03.md) supplements the historical audit with persisted content administration, release identity persistence and the new mandatory Linux guided-loop gate. Final CI status is recorded there.
 
-**Status:** Phase 7 Tasks 34–37 and 51 have recorded local technical implementation evidence as of 2026-10-03. The subsequent authorized GUI/execution repairs are complete for their recorded scope; see the runtime repair evidence. Historical manual/design approvals remain separate. The reviewed pilot is explicit; insufficient breadth returns a reasoned rejection. The owner authorized Phase 8 implementation on 2026-10-06; Tasks 38–40 are complete locally with connected review-scheduling, bypass, telemetry and visual real-link evidence; Phase 9 was authorized on 2026-10-06; Tasks 41–45 are complete locally for worker infrastructure, governed index candidates, hybrid retrieval/evidence, validated tutor delivery with authored fallback and versioned evaluation/promotion gates; Task 45a now has locally implemented and synthetic-verified gateway composition, opt-in, promotion/budget gates and preserved baseline/acceptance; live activation remains pending the named provider/data-policy decision. No hosted deployment is authorized.
+**Current work (owner approval, 2026-10-06):** Phase 9 is approved for entry into Phase 10. Implement Tasks 46–50 with AI-off; credentials may follow later. [Phase 10 implementation and review evidence](../docs/evidence/phases/phase10-evidence.md) separates automated technical results from pending human publication, outbound-mapping and manual assistive-technology reviews. Phase 11 preparation was subsequently authorized on 2026-10-07; hosted deployment remains outside the approved scope.
+
+**Cumulative audit (2026-10-03):** [The through-Phase-7 audit](../docs/evidence/audits/through-phase7-audit-2026-10-03.md) records fresh passing technical gates, every named test, Phase 0 approval gaps, unreconciled Phase 1–5 plan checkboxes, open UI fidelity/manual accessibility and the two current-head real-host skips. Technical phase closure must not be read as complete governance or full design validation.
+
+**Status:** Phase 7 Tasks 34–37 and 51 have recorded local technical implementation evidence as of 2026-10-03. The subsequent authorized GUI/execution repairs are complete for their recorded scope; see the runtime repair evidence. Historical manual/design approvals remain separate. The reviewed pilot is explicit; insufficient breadth returns a reasoned rejection. The owner authorized Phase 8 implementation on 2026-10-06; Tasks 38–40 are complete locally with connected review-scheduling, bypass, telemetry and visual real-link evidence; Phase 9 was authorized on 2026-10-06; Tasks 41–45 are complete locally for worker infrastructure, governed index candidates, hybrid retrieval/evidence, validated tutor delivery with authored fallback and versioned evaluation/promotion gates; Task 45a now has locally implemented and synthetic-verified gateway composition, opt-in, promotion/budget gates and preserved baseline/acceptance; live activation remains pending the named provider/data-policy decision. The owner subsequently approved Phase 10; Tasks 46–50 have local technical implementation and automated verification, with F10 human reviews still open. No hosted deployment is authorized.
 **Prepared:** 2026-09-17  
-**Scope:** Phase 7 local implementation, testing, commit and GitHub publication are authorized. Hosted infrastructure and live deployment remain excluded.
+**Scope:** Phase 10 Tasks 46–50 implementation and verification are authorized. Phase 9 publication was completed separately. Human publication reviews, live AI approval, Phase 11 and hosted deployment remain separate gates.
 **Task ledger:** `tasks/todo.md`
 
 ## 1. Outcome
@@ -626,7 +634,7 @@ Review the evidence after every two or three task slices. Replan if assumptions 
 
 ## Phase 5: Deliver the guided internal learning loop
 
-**Evidence alignment (2026-10-01):** Checked criteria below refer to the recorded [localhost Phase 5 evidence](../docs/architecture/phase5-evidence.md) and [task ledger](todo.md). Automated browser suites cover reasoning revision, reduced motion/transcripts and result categories; the original manual checks remain unchecked, including a human screen-reader pass. No hosted deployment is claimed. CI run [36894660888](https://github.com/vsuman00/AlgoCove/actions/runs/36894660888) exposed a missing pnpm 12 package-manager lockfile document and an independent Java gVisor spike failure. The repair preserves frozen installs, bounds Java JVM sizing, aligns the PID ceiling with the approved host (128 rather than 32 after intermittent exit 2 with successful TypeScript boundary output), repeats the full probe three times and adds failure diagnostics; Linux CI revalidation passed in run [36903686854](https://github.com/vsuman00/AlgoCove/actions/runs/36903686854) on `95dd267`: quality (178 tests, 21 PostgreSQL tests, build, 16 accessibility checks and audit), execution images/conformance/abuse, and gVisor (36 repeated normal/hostile cases plus six concurrent startups). Two opt-in real-host integration scenarios remain skipped in ordinary CI; their separate localhost evidence is linked above.
+**Evidence alignment (2026-10-01):** Checked criteria below refer to the recorded [localhost Phase 5 evidence](../docs/evidence/phases/phase5-evidence.md) and [task ledger](todo.md). Automated browser suites cover reasoning revision, reduced motion/transcripts and result categories; the original manual checks remain unchecked, including a human screen-reader pass. No hosted deployment is claimed. CI run [36894660888](https://github.com/vsuman00/AlgoCove/actions/runs/36894660888) exposed a missing pnpm 12 package-manager lockfile document and an independent Java gVisor spike failure. The repair preserves frozen installs, bounds Java JVM sizing, aligns the PID ceiling with the approved host (128 rather than 32 after intermittent exit 2 with successful TypeScript boundary output), repeats the full probe three times and adds failure diagnostics; Linux CI revalidation passed in run [36903686854](https://github.com/vsuman00/AlgoCove/actions/runs/36903686854) on `95dd267`: quality (178 tests, 21 PostgreSQL tests, build, 16 accessibility checks and audit), execution images/conformance/abuse, and gVisor (36 repeated normal/hostile cases plus six concurrent startups). Two opt-in real-host integration scenarios remain skipped in ordinary CI; their separate localhost evidence is linked above.
 
 ### Task 25: Implement learning-session and attempt state machines
 
@@ -675,7 +683,7 @@ Review the evidence after every two or three task slices. Replan if assumptions 
 - [x] Browser-test two tabs, offline/reconnect, lost save response, expired session and language switch.
 
 **Dependencies:** Tasks 6a, 25 and 25a  
-**Files likely touched:** `packages/application/src/save-draft.ts`, `apps/web/src/components/draft-status.tsx`, `tests/e2e/draft-recovery.spec.ts`  
+**Files likely touched:** `packages/application/src/save-draft.ts`, `apps/web/src/components/practice/draft-status.tsx`, `tests/e2e/draft-recovery.spec.ts`
 **Estimated scope:** Small to medium; split if it exceeds one testable vertical slice
 
 ### Task 26: Implement structured pseudocode and readiness evidence
@@ -709,7 +717,7 @@ Review the evidence after every two or three task slices. Replan if assumptions 
 - [ ] Manually verify reduced-motion and screen-reader transcript.
 
 **Dependencies:** Tasks 15-16  
-**Files likely touched:** `packages/visualizer/src/trace-schema.ts`, `packages/visualizer/src/reducer.ts`, `packages/visualizer/src/transcript.ts`, `apps/web/src/components/visualizer.tsx`, `tests/unit/visualizer.test.ts`  
+**Files likely touched:** `packages/visualizer/src/trace-schema.ts`, `packages/visualizer/src/reducer.ts`, `packages/visualizer/src/transcript.ts`, `apps/web/src/components/practice/visualizer.tsx`, `tests/unit/visualizer.test.ts`
 **Estimated scope:** Medium
 
 ### Task 28: Implement deterministic hint ladder and authored fallback
@@ -726,7 +734,7 @@ Review the evidence after every two or three task slices. Replan if assumptions 
 - [x] Run adversarial requests for premature final solutions.
 
 **Dependencies:** Tasks 15 and 25  
-**Files likely touched:** `packages/domain/src/hint-policy.ts`, `packages/application/src/reveal-hint.ts`, `apps/web/src/components/hint-panel.tsx`, `tests/unit/hint-policy.test.ts`  
+**Files likely touched:** `packages/domain/src/hint-policy.ts`, `packages/application/src/reveal-hint.ts`, `apps/web/src/components/tutor/hint-panel.tsx`, `tests/unit/hint-policy.test.ts`
 **Estimated scope:** Medium
 
 ### Task 29: Complete the first end-to-end internal problem workspace
@@ -743,7 +751,7 @@ Review the evidence after every two or three task slices. Replan if assumptions 
 - [ ] Manually exercise correct, wrong, compile-error, timeout, and infrastructure-error paths.
 
 **Dependencies:** Tasks 6a, 25-28, 25a and 25b  
-**Files likely touched:** `apps/web/app/learn/[problemId]/page.tsx`, `apps/web/src/components/problem-workspace.tsx`, `packages/application/src/problem-workspace.ts`, `tests/e2e/guided-problem.spec.ts`  
+**Files likely touched:** `apps/web/app/learn/[problemId]/page.tsx`, `apps/web/src/components/practice/problem-workspace.tsx`, `packages/application/src/problem-workspace.ts`, `tests/e2e/guided-problem.spec.ts`
 **Estimated scope:** Medium
 
 ### Checkpoint F5: Learning kernel milestone M2
@@ -774,7 +782,7 @@ Review the evidence after every two or three task slices. Replan if assumptions 
 **Files likely touched:** `packages/domain/src/mastery.ts`, `packages/db/migrations/0018_problem_concept_mapping.sql`, `packages/db/migrations/0019_assessment_assistance.sql`, `packages/db/migrations/0020_mastery.sql`, `packages/application/src/mastery-projection.ts`, `tests/integration/mastery-replay.test.ts`
 **Estimated scope:** Medium
 
-**Completion (2026-10-02):** All source dimensions now have canonical persisted paths: code correctness/cumulative assistance, reviewed saved explanation checks, learner-reported confidence, and delayed recall/independent transfer reviews. Migration 0021 retains real source types, immutable source facts, review/history, captured-timezone activity, prospective pauses and external self-report events. Draft mapping authoring requires authenticated author ownership and invalidates prior review/validation. Deterministic replay, policy comparison, atomic outbox delivery, pending states and all Phase 6 pages are verified. See [Phase 6 evidence](../docs/architecture/phase6-evidence.md) for policies, commands, results, fixture boundaries and cleanup.
+**Completion (2026-10-02):** All source dimensions now have canonical persisted paths: code correctness/cumulative assistance, reviewed saved explanation checks, learner-reported confidence, and delayed recall/independent transfer reviews. Migration 0021 retains real source types, immutable source facts, review/history, captured-timezone activity, prospective pauses and external self-report events. Draft mapping authoring requires authenticated author ownership and invalidates prior review/validation. Deterministic replay, policy comparison, atomic outbox delivery, pending states and all Phase 6 pages are verified. See [Phase 6 evidence](../docs/evidence/phases/phase6-evidence.md) for policies, commands, results, fixture boundaries and cleanup.
 
 ### Task 31: Implement spaced review and transfer scheduling
 
@@ -838,13 +846,13 @@ Review the evidence after every two or three task slices. Replan if assumptions 
 
 **Entry review (2026-10-02):** Task 34 begins from the accepted F6 handoff. Roadmap data/state, calendar and publication contracts, interfaces, data architecture and the product closure matrix were reviewed. Plan acceptance remains explicit and cannot trust a browser-supplied validation verdict. Live AI remains reserved for Task 45a.
 
-**Phase 7 closure (2026-10-03):** Tasks 34–37 and 51 are verified against the roadmap/data/calendar/interface/closure contracts. Work covers schedule persistence/lifecycle, scheduler/validator, missed-session and changed-goal/language previews, optional-operation budgets and fixture-only proposals, plus the complete learner UI. The [evidence record](../docs/architecture/phase7-evidence.md) maps files, tests, policy choices and operational limits. F7 technical gates pass; the owner authorized Phase 8 implementation on 2026-10-06.
+**Phase 7 closure (2026-10-03):** Tasks 34–37 and 51 are verified against the roadmap/data/calendar/interface/closure contracts. Work covers schedule persistence/lifecycle, scheduler/validator, missed-session and changed-goal/language previews, optional-operation budgets and fixture-only proposals, plus the complete learner UI. The [evidence record](../docs/evidence/phases/phase7-evidence.md) maps files, tests, policy choices and operational limits. F7 technical gates pass; the owner authorized Phase 8 implementation on 2026-10-06.
 
 ### Task 34: Implement roadmap intent and immutable plan versions
 
 **Description:** Add plan horizon, target, capacity, language, collection, status, item, pause, completion, and supersession state machines.
 
-**Task 34 closure:** Private versioned intent, validated candidates, immutable accepted schedules, kind-specific targets, atomic expected-active-token acceptance, lifecycle and append-only adherence/corrections are implemented. Replans pin past/completed occurrences and their original timezone/language. See [Phase 7 evidence](../docs/architecture/phase7-evidence.md).
+**Task 34 closure:** Private versioned intent, validated candidates, immutable accepted schedules, kind-specific targets, atomic expected-active-token acceptance, lifecycle and append-only adherence/corrections are implemented. Replans pin past/completed occurrences and their original timezone/language. See [Phase 7 evidence](../docs/evidence/phases/phase7-evidence.md).
 
 **Acceptance criteria:**
 - [x] Supported horizons are 1, 2, 3, 4, and 6 months unless Gate P2 changes them.
@@ -936,7 +944,7 @@ Review the evidence after every two or three task slices. Replan if assumptions 
 
 ## Phase 8: Outbound LeetCode practice handoff
 
-**Phase 8 implementation closure (2026-10-06):** Tasks 38–40 are complete locally. Governed readiness policies, server grading, safe outbound admission, and reversible learner-confirmed journals are connected through PostgreSQL and the learner/staff UI. All automated checks pass; see [Phase 8 evidence](../docs/architecture/phase8-evidence.md). No production rubric has been published or user database migrated. Task 40 now records connected review-scheduling evidence, browser bypass rejection, runtime telemetry inspection and a visual real-link check in native Safari; The owner authorized Phase 9 on 2026-10-06.
+**Phase 8 implementation closure (2026-10-06):** Tasks 38–40 are complete locally. Governed readiness policies, server grading, safe outbound admission, and reversible learner-confirmed journals are connected through PostgreSQL and the learner/staff UI. All automated checks pass; see [Phase 8 evidence](../docs/evidence/phases/phase8-evidence.md). No production rubric has been published or user database migrated. Task 40 now records connected review-scheduling evidence, browser bypass rejection, runtime telemetry inspection and a visual real-link check in native Safari; The owner authorized Phase 9 on 2026-10-06.
 
 ### Task 38: Implement readiness gate and explicit practice bypass
 
@@ -952,7 +960,7 @@ Review the evidence after every two or three task slices. Replan if assumptions 
 - [x] Test bypass, missing evidence, and stale content versions.
 
 **Dependencies:** Tasks 26-33 and 37  
-**Files likely touched:** `packages/domain/src/readiness-gate.ts`, `packages/application/src/evaluate-readiness.ts`, `apps/web/src/components/external-readiness.tsx`, `tests/unit/readiness-gate.test.ts`  
+**Files likely touched:** `packages/domain/src/readiness-gate.ts`, `packages/application/src/evaluate-readiness.ts`, `apps/web/src/components/readiness/external-readiness.tsx`, `tests/unit/readiness-gate.test.ts`
 **Estimated scope:** Medium
 
 ### Task 39: Implement outbound opening and learner-confirmed journal
@@ -969,7 +977,7 @@ Review the evidence after every two or three task slices. Replan if assumptions 
 - [x] Browser test verifies actual navigation target without automation on LeetCode.
 
 **Dependencies:** Tasks 17, 33, and 38  
-**Files likely touched:** `packages/application/src/external-companion.ts`, `packages/db/src/external-companion-repository.ts`, `packages/db/migrations/0027_external_companion.sql`, `apps/web/src/components/external-readiness.tsx`, `tests/e2e/companion-journey.spec.ts`
+**Files likely touched:** `packages/application/src/external-companion.ts`, `packages/db/src/external-companion-repository.ts`, `packages/db/migrations/0027_external_companion.sql`, `apps/web/src/components/readiness/external-readiness.tsx`, `tests/e2e/companion-journey.spec.ts`
 **Estimated scope:** Medium
 
 ### Task 40: Prove the companion journey end to end
@@ -999,7 +1007,7 @@ Review the evidence after every two or three task slices. Replan if assumptions 
 
 ## Phase 9: Grounded retrieval and tutor
 
-**Phase 9 entry (2026-10-06):** The owner approved proceeding after Task 40 closure. Task 41 worker infrastructure is complete locally: bounded leased delivery, immutable effect receipts, fenced retries and audited replay, canonical job adapters, reconciliation, opt-in existing draft expiry, scoped credentials and worker-stopped learning evidence. Task 42 now adds canonical pedagogical chunks, lexical documents, immutable versioned embeddings, atomic publication admission and quarantine under scoped worker credentials. Task 43 now adds permission-first PostgreSQL/exact-vector retrieval, immutable evidence receipts and a declared local pilot benchmark. Task 44 now adds provider-neutral validated tutor delivery, private-code consent, durable pending/cancel/retry, conservative assistance and authored fallback. Task 45 now adds immutable synthetic evaluation, independent human-review gates and reversible fixture configuration promotion. Live adapters remain absent and production remains authored/off; Task 45a now adds locally verified gateway/runtime/UI composition and synthetic primary/fallback/outage evidence. Actual provider activation still requires the named live-provider/data-policy decision. See [Phase 9 evidence](../docs/architecture/phase9-evidence.md) and [worker operations](../docs/architecture/worker-operations.md).
+**Phase 9 entry (2026-10-06):** The owner approved proceeding after Task 40 closure. Task 41 worker infrastructure is complete locally: bounded leased delivery, immutable effect receipts, fenced retries and audited replay, canonical job adapters, reconciliation, opt-in existing draft expiry, scoped credentials and worker-stopped learning evidence. Task 42 now adds canonical pedagogical chunks, lexical documents, immutable versioned embeddings, atomic publication admission and quarantine under scoped worker credentials. Task 43 now adds permission-first PostgreSQL/exact-vector retrieval, immutable evidence receipts and a declared local pilot benchmark. Task 44 now adds provider-neutral validated tutor delivery, private-code consent, durable pending/cancel/retry, conservative assistance and authored fallback. Task 45 now adds immutable synthetic evaluation, independent human-review gates and reversible fixture configuration promotion. Live adapters remain absent and production remains authored/off; Task 45a now adds locally verified gateway/runtime/UI composition and synthetic primary/fallback/outage evidence. Actual provider activation still requires the named live-provider/data-policy decision. See [Phase 9 evidence](../docs/evidence/phases/phase9-evidence.md) and [worker operations](../docs/architecture/worker-operations.md).
 
 ### Task 41: Extend the existing relay for content and AI jobs
 
@@ -1024,7 +1032,7 @@ Review the evidence after every two or three task slices. Replan if assumptions 
 
 **Description:** Derive typed chunks, lexical documents, and embeddings from published content using checksums, lineage, injection scan status, and quarantine on failure.
 
-**Implementation boundary:** Complete for governed original problem statements and authored hint tiers. Local embedding fixtures validate the provider-neutral pipeline; candidates are not promoted for learner retrieval. Evaluated readiness and approved live providers remain later gates. See [Phase 9 evidence](../docs/architecture/phase9-evidence.md).
+**Implementation boundary:** Complete for governed original problem statements and authored hint tiers. Local embedding fixtures validate the provider-neutral pipeline; candidates are not promoted for learner retrieval. Evaluated readiness and approved live providers remain later gates. See [Phase 9 evidence](../docs/evidence/phases/phase9-evidence.md).
 
 **Acceptance criteria:**
 - [x] Draft/retired/disallowed content never becomes retrieval eligible.
@@ -1070,7 +1078,7 @@ Review the evidence after every two or three task slices. Replan if assumptions 
 - [x] Browser-network test proves rejected text and locked solutions never reach client payloads; covers pending/cancelled/fallback and persisted-answer retry.
 
 **Dependencies:** Tasks 13a, 28, 41, 43 and 51  
-**Files likely touched:** `packages/tutor/src/policy.ts`, `packages/tutor/src/provider-gateway.ts`, `apps/web/app/api/tutor/route.ts`, `apps/web/src/components/tutor-panel.tsx`, `tests/integration/tutor.test.ts`  
+**Files likely touched:** `packages/tutor/src/policy.ts`, `packages/tutor/src/provider-gateway.ts`, `apps/web/app/api/tutor/route.ts`, `apps/web/src/components/tutor/tutor-panel.tsx`, `tests/integration/tutor.test.ts`
 **Estimated scope:** Medium
 
 ### Task 45: Implement tutor/retrieval evaluation and promotion gate
@@ -1115,18 +1123,20 @@ The acceptance checks above have local fixture/gateway evidence. They do not ass
 - [x] Authored lessons/hints still work with worker and provider disabled; new code runs show queued/unavailable status without false success.
 - [x] Retrieval permission and citation tests pass.
 - [x] Critical hint-leak and prompt-injection cases have zero bypasses in the declared synthetic suites; production semantic quality remains unapproved.
-- [ ] Human owner authorizes Phase 10.
+- [x] Human owner authorizes Phase 10 — explicitly approved on 2026-10-06; AI credentials may be supplied later.
 
 ## Phase 10: Build the shared learning platform, pilot curriculum and journey coverage
 
 ### Task 45b: Specify shared learning catalog and release contracts
 
+**Status:** Contract card C1 complete; six query contracts, compatibility/rollback and scoped interaction direction recorded in the shared learning contract. Owner instruction authorizes the DESIGN section 29 direction for this Phase 10 scope. Runtime query delivery and browser verification remain downstream tasks.
+
 **Description:** Resolve ADRs 0019–0021 and DESIGN section 29 into reviewed query, asset, migration and interaction contracts.
 
 **Acceptance criteria:**
-- [ ] Define pagination, filters, authorization, error cases, release pins, restricted fields and withdrawal behavior for the six proposed catalog queries.
-- [ ] Record content-kind/schema extensions, compatibility matrix and rollback approach.
-- [ ] Approve proposed navigation and panel behavior before implementation; retain existing design exceptions.
+- [x] Define pagination, filters, authorization, error cases, release pins, restricted fields and withdrawal behavior for the six proposed catalog queries.
+- [x] Record content-kind/schema extensions, compatibility matrix and rollback approach.
+- [x] Approve proposed navigation and panel behavior before implementation; retain existing design exceptions.
 
 **Verification:** Review the contract and record focused automated/manual evidence for the acceptance criteria during authorized implementation. This documentation revision does not run these future checks.
 
@@ -1135,57 +1145,65 @@ The acceptance checks above have local fixture/gateway evidence. They do not ass
 
 ### Task 45c: Generalize the published catalog and learning workspace
 
+**Status:** Complete for local engineering, 2026-10-07. [Acceptance evidence](../docs/evidence/phases/phase10-platform-extension-evidence.md) and [journey coverage](../docs/evidence/phases/phase10-platform-extension-coverage.md); independent publication and later-phase gates remain separate.
+
 **Description:** Replace the fixed slug/problem lookup and container-specific workspace assumptions with release-backed application queries and typed learning panels.
 
 **Acceptance criteria:**
-- [ ] Existing pilot plus a distinct test-only fixture demonstrate reusable lookup without publishing unreviewed curriculum.
-- [ ] Preserve existing URLs, attempt release pins, draft recovery and ownership boundaries.
-- [ ] Learn, sheet and plan consumers share availability rules; server reads and client interaction have explicit boundaries.
+- [x] Existing pilot plus a distinct test-only fixture demonstrate reusable lookup without publishing unreviewed curriculum.
+- [x] Preserve existing URLs, attempt release pins, draft recovery and ownership boundaries.
+- [x] Learn, sheet and plan consumers share availability rules; server reads and client interaction have explicit boundaries.
 
-**Verification:** Review the contract and record focused automated/manual evidence for the acceptance criteria during authorized implementation. This documentation revision does not run these future checks.
+**Verification:** Passed applicable unit, PostgreSQL, browser/build/accessibility and connected Linux checks; see the linked evidence for exact results and fixture/manual boundaries.
 
 **Dependencies:** Task 45b
 **Estimated scope:** Catalog and workspace foundation; split into bounded subcards before coding.
 
 ### Task 45d: Separate external destination and collection identities
 
+**Status:** Complete for local engineering, 2026-10-07. [Acceptance evidence](../docs/evidence/phases/phase10-platform-extension-evidence.md) and [journey coverage](../docs/evidence/phases/phase10-platform-extension-coverage.md); independent publication and later-phase gates remain separate.
+
 **Description:** Implement the reviewed ADR-0020 migration and compatible consumers.
 
 **Acceptance criteria:**
-- [ ] Preserve legacy IDs, journal ownership, provenance and collection memberships.
-- [ ] Manually reconcile ambiguous links; destination/platform identity does not derive blindly from a legacy collection enum.
-- [ ] Deduplicate required work across sheets while keeping membership order and truthful coverage labels.
+- [x] Preserve legacy IDs, journal ownership, provenance and collection memberships.
+- [x] Manually reconcile ambiguous links; destination/platform identity does not derive blindly from a legacy collection enum.
+- [x] Deduplicate required work across sheets while keeping membership order and truthful coverage labels.
 
-**Verification:** Review the contract and record focused automated/manual evidence for the acceptance criteria during authorized implementation. This documentation revision does not run these future checks.
+**Verification:** Passed applicable unit, PostgreSQL, browser/build/accessibility and connected Linux checks; see the linked evidence for exact results and fixture/manual boundaries.
 
 **Dependencies:** Tasks 45b, 17 and 40
 **Estimated scope:** External-reference migration; split into bounded subcards before coding.
 
 ### Task 45e: Synchronize pseudocode and algorithm walkthroughs
 
+**Status:** Complete for local engineering, 2026-10-07. [Acceptance evidence](../docs/evidence/phases/phase10-platform-extension-evidence.md) and [journey coverage](../docs/evidence/phases/phase10-platform-extension-coverage.md); independent publication and later-phase gates remain separate.
+
 **Description:** Extend the existing pilot with the ADR-0021 replay contract and renderer adapters.
 
 **Acceptance criteria:**
-- [ ] Stable pseudocode line IDs, variables, narration and visual/text frames share one deterministic timeline.
-- [ ] Step, play/pause, speed, restart and scrub preserve equivalent state; schema-1 traces remain supported or explicitly converted.
-- [ ] No container-area assumptions leak into generic rendering; hidden checkpoints and references obey server reveal policy.
+- [x] Stable pseudocode line IDs, variables, narration and visual/text frames share one deterministic timeline.
+- [x] Step, play/pause, speed, restart and scrub preserve equivalent state; schema-1 traces remain supported or explicitly converted.
+- [x] No container-area assumptions leak into generic rendering; hidden checkpoints and references obey server reveal policy.
 
-**Verification:** Review the contract and record focused automated/manual evidence for the acceptance criteria during authorized implementation. This documentation revision does not run these future checks.
+**Verification:** Passed applicable unit, PostgreSQL, browser/build/accessibility and connected Linux checks; see the linked evidence for exact results and fixture/manual boundaries.
 
 **Dependencies:** Tasks 45c and 27
 **Estimated scope:** Existing pilot walkthrough; split into bounded subcards before coding.
 
 ### Task 45f: Specify and implement navigation, deep links and authenticated return
 
+**Status:** Complete for local engineering, 2026-10-07. [Acceptance evidence](../docs/evidence/phases/phase10-platform-extension-evidence.md) and [journey coverage](../docs/evidence/phases/phase10-platform-extension-coverage.md); independent publication and later-phase gates remain separate.
+
 **Description:** Deliver the proposed shell and route contracts for available features, preserving current routes and private state.
 
 **Acceptance criteria:**
-- [ ] Cover J01–J04 and E01–E04/E19 from the journey contract; every visible CTA has a working destination and valid return path.
-- [ ] Preserve current problem URLs and one plan authority across /plan and /roadmap; authorize direct entry without relying on prior navigation.
-- [ ] Validate same-origin return targets; sign-in cancellation, onboarding interruption and unavailable content have explicit exits.
-- [ ] Route changes, dialog Escape and back navigation never silently submit, abandon or erase work.
+- [x] Cover J01–J04 and E01–E04/E19 from the journey contract; every visible CTA has a working destination and valid return path.
+- [x] Preserve current problem URLs and one plan authority across /plan and /roadmap; authorize direct entry without relying on prior navigation.
+- [x] Validate same-origin return targets; sign-in cancellation, onboarding interruption and unavailable content have explicit exits.
+- [x] Route changes, dialog Escape and back navigation never silently submit, abandon or erase work.
 
-**Verification:** Review the route inventory and exercise signed-out/owned/unauthorized direct links, refresh, browser history, keyboard focus and mobile navigation. Record results only during authorized implementation.
+**Verification:** Passed applicable unit, PostgreSQL, browser/build/accessibility and connected Linux checks; see the linked evidence for exact results and fixture/manual boundaries.
 
 **Dependencies:** Task 45b; navigation design approval under DESIGN section 28
 
@@ -1193,32 +1211,40 @@ The acceptance checks above have local fixture/gateway evidence. They do not ass
 
 ### Task 45g: Extend release authoring and publication preflight
 
+**Status:** Complete for local engineering, 2026-10-07. [Acceptance evidence](../docs/evidence/phases/phase10-platform-extension-evidence.md) and [journey coverage](../docs/evidence/phases/phase10-platform-extension-coverage.md); independent publication and later-phase gates remain separate.
+
 **Description:** Make the shared content model operable through the existing author/reviewer workflow.
 
 **Acceptance criteria:**
-- [ ] Preview the exact release, lesson blocks, six-language manifests, approaches, pseudocode lines, scenarios, transcripts and allowed external actions.
-- [ ] Preflight rejects missing/incompatible assets, unsafe markup, invalid mappings or restricted data in public views; publication remains transactional and reviewed.
-- [ ] Optional video/explanation roles are distinct from solve links; essential media has a transcript and unavailable media cannot block authored learning.
-- [ ] Withdrawal affects catalogs, caches and new commands while retaining lawful historical metadata; author draft edits do not mutate published versions.
+- [x] Preview the exact release, lesson blocks, six-language manifests, approaches, pseudocode lines, scenarios, transcripts and allowed external actions.
+- [x] Preflight rejects missing/incompatible assets, unsafe markup, invalid mappings or restricted data in public views; publication remains transactional and reviewed.
+- [x] Optional video/explanation roles are distinct from solve links; essential media has a transcript and unavailable media cannot block authored learning.
+- [x] Withdrawal affects catalogs, caches and new commands while retaining lawful historical metadata; author draft edits do not mutate published versions.
 
-**Verification:** Review J18 and E03/E08/E11; exercise rejected publication, staff authorization, preview isolation and withdrawal propagation. Record results only during authorized implementation.
+**Verification:** Passed applicable unit, PostgreSQL, browser/build/accessibility and connected Linux checks; see the linked evidence for exact results and fixture/manual boundaries.
 
 **Dependencies:** Tasks 45c, 45d and 45e
 
 **Estimated scope:** Parent work package; define bounded subcards and exact fixtures/files before coding.
 
+**Verification scope (owner instruction, 2026-10-06):** Delegate local verification to the assistant; use the browser for frontend and feature checks. Keep Phase 10 local without commit, push or PR. Manual assistive-technology review is outside this scope; delegated reviews do not impersonate independent human publication signatures. See [the delegated review record](../docs/evidence/phases/phase10-review-record.md).
+
+**Technical status (updated 2026-10-07):** All four original bundles, private checksum-bound staff review/import, publication guards, published-only library/planning paths, six-language execution contracts, reference traces, recall/transfer and collection mappings are implemented and automatically verified. [Evidence and review runbook](../docs/evidence/phases/phase10-evidence.md). Tasks 46–50 and F10 are closed for the approved local engineering/verification scope after the owner requested F10 completion on 2026-10-07. Original independent publication requirements remain separate release gates. Manual assistive-technology review is outside the current browser-only scope; fixture approvals provide no human signatures.
+
 ### Task 46: Author the arrays/hashing pilot bundle
+
+**Task status:** COMPLETE for local implementation and delegated verification; original independent publication acceptance remains a separate release gate. See the completed subtasks in [the task ledger](todo.md#phase-10-build-the-shared-learning-platform-pilot-curriculum-and-journey-coverage).
 
 **Description:** Publish one original, deeply reviewed arrays/hashing problem with concept lesson, recognition cues, pseudocode rubric, hint ladder, trace, transfer item, six language manifests, and semantic fixtures.
 
 **Acceptance criteria:**
-- [ ] Required renderer states and accessible transcripts are implemented and tested for this bundle, not assumed from the initial array renderer.
+- [x] Required renderer states and accessible transcripts are implemented and tested for this bundle, not assumed from the initial array renderer.
 - [ ] Technical, pedagogical, accessibility, rights, trace, and conformance reviews pass.
-- [ ] Every language has reviewed starter, harness, canonical solution, and common-error notes.
-- [ ] Delayed transfer and review artifacts exist.
+- [x] Every language has assistant-reviewed starter, harness, canonical solution, and common-error notes; independent publication signatures remain separate.
+- [x] Delayed transfer and review artifacts exist.
 
 **Verification:**
-- [ ] Run content validation, conformance, visualizer, and tutor evaluation for the bundle.
+- [x] Run content validation, conformance, visualizer, and tutor evaluation for the bundle — authored/synthetic tutor fixtures; live provider qualification remains separate.
 - [ ] Human reviewers sign the publication record.
 
 **Dependencies:** Tasks 18, 24, 29, 45c, 45e and 45g
@@ -1227,15 +1253,18 @@ The acceptance checks above have local fixture/gateway evidence. They do not ass
 
 ### Task 47: Author the two-pointers pilot bundle
 
+**Task status:** COMPLETE for local implementation and delegated verification; original independent publication acceptance remains a separate release gate. See the completed subtasks in [the task ledger](todo.md#phase-10-build-the-shared-learning-platform-pilot-curriculum-and-journey-coverage).
+
 **Description:** Repeat the governed bundle template for one original two-pointers problem and its transfer item.
 
 **Acceptance criteria:**
-- [ ] Required renderer states and accessible transcripts are implemented and tested for this bundle, not assumed from the initial array renderer.
+- [x] Required renderer states and accessible transcripts are implemented and tested for this bundle, not assumed from the initial array renderer.
 - [ ] Same publication, six-language, accessibility, trace, hint, and transfer gates as Task 46 pass.
-- [ ] Pattern invariant and pointer movement are explicit in text and trace.
+- [x] Pattern invariant and pointer movement are explicit in text and trace.
 
 **Verification:**
-- [ ] Run bundle-specific conformance, visualization, retrieval, and human review.
+- [x] Run bundle-specific compiler conformance, visualization and synthetic retrieval evaluation.
+- [ ] Complete independent human review.
 
 **Dependencies:** Task 46  
 **Files likely touched:** `content/patterns/two-pointers/`, `tests/language-conformance/two-pointers/`, `tests/retrieval-eval/two-pointers/`  
@@ -1243,15 +1272,18 @@ The acceptance checks above have local fixture/gateway evidence. They do not ass
 
 ### Task 48: Author the sliding-window pilot bundle
 
+**Task status:** COMPLETE for local implementation and delegated verification; original independent publication acceptance remains a separate release gate. See the completed subtasks in [the task ledger](todo.md#phase-10-build-the-shared-learning-platform-pilot-curriculum-and-journey-coverage).
+
 **Description:** Repeat the governed bundle template for one original sliding-window problem and transfer item.
 
 **Acceptance criteria:**
-- [ ] Required renderer states and accessible transcripts are implemented and tested for this bundle, not assumed from the initial array renderer.
-- [ ] Window invariant, expand/shrink decisions, and complexity are represented in text and trace.
+- [x] Required renderer states and accessible transcripts are implemented and tested for this bundle, not assumed from the initial array renderer.
+- [x] Window invariant, expand/shrink decisions, and complexity are represented in text and trace.
 - [ ] Same publication and six-language gates as Task 46 pass.
 
 **Verification:**
-- [ ] Run bundle-specific conformance, visualization, retrieval, and human review.
+- [x] Run bundle-specific compiler conformance, visualization and synthetic retrieval evaluation.
+- [ ] Complete independent human review.
 
 **Dependencies:** Task 46  
 **Files likely touched:** `content/patterns/sliding-window/`, `tests/language-conformance/sliding-window/`, `tests/retrieval-eval/sliding-window/`  
@@ -1259,15 +1291,18 @@ The acceptance checks above have local fixture/gateway evidence. They do not ass
 
 ### Task 49: Author the stack pilot bundle
 
+**Task status:** COMPLETE for local implementation and delegated verification; original independent publication acceptance remains a separate release gate. See the completed subtasks in [the task ledger](todo.md#phase-10-build-the-shared-learning-platform-pilot-curriculum-and-journey-coverage).
+
 **Description:** Repeat the governed bundle template for one original stack problem and transfer item.
 
 **Acceptance criteria:**
-- [ ] Required renderer states and accessible transcripts are implemented and tested for this bundle, not assumed from the initial array renderer.
-- [ ] Push/pop/top state, invariant, and complexity are represented in text and trace.
+- [x] Required renderer states and accessible transcripts are implemented and tested for this bundle, not assumed from the initial array renderer.
+- [x] Push/pop/top state, invariant, and complexity are represented in text and trace.
 - [ ] Same publication and six-language gates as Task 46 pass.
 
 **Verification:**
-- [ ] Run bundle-specific conformance, visualization, retrieval, and human review.
+- [x] Run bundle-specific compiler conformance, visualization and synthetic retrieval evaluation.
+- [ ] Complete independent human review.
 
 **Dependencies:** Task 46  
 **Files likely touched:** `content/patterns/stack/`, `tests/language-conformance/stack/`, `tests/retrieval-eval/stack/`  
@@ -1275,45 +1310,51 @@ The acceptance checks above have local fixture/gateway evidence. They do not ass
 
 ### Task 50a: Build curated Learn and sheet discovery
 
+**Status:** Complete for local engineering, 2026-10-07. [Acceptance evidence](../docs/evidence/phases/phase10-platform-extension-evidence.md) and [journey coverage](../docs/evidence/phases/phase10-platform-extension-coverage.md); independent publication and later-phase gates remain separate.
+
 **Description:** Connect published topics, problem summaries, lessons and curated collections to the shared catalog.
 
 **Acceptance criteria:**
-- [ ] Search/filter/pagination and empty, loading, unavailable and withdrawn states work consistently.
-- [ ] Rows distinguish internal walkthrough, explanation link and reviewed external solve destination.
-- [ ] A solved item remains one problem across collections; no inflated progress or unsupported coverage claims.
-- [ ] Private sheets and public sharing are deferred from the pilot to proposed Tasks 59a–59b, with separate ownership, privacy and publication contracts.
+- [x] Search/filter/pagination and empty, loading, unavailable and withdrawn states work consistently.
+- [x] Rows distinguish internal walkthrough, explanation link and reviewed external solve destination.
+- [x] A solved item remains one problem across collections; no inflated progress or unsupported coverage claims.
+- [x] Private sheets and public sharing are deferred from the pilot to proposed Tasks 59a–59b, with separate ownership, privacy and publication contracts.
 
-**Verification:** Review the contract and record focused automated/manual evidence for the acceptance criteria during authorized implementation. This documentation revision does not run these future checks.
+**Verification:** Passed applicable unit, PostgreSQL, browser/build/accessibility and connected Linux checks; see the linked evidence for exact results and fixture/manual boundaries.
 
 **Dependencies:** Tasks 45d and 46–49
 **Estimated scope:** Curated discovery journeys; split into bounded subcards before coding.
 
 ### Task 50b: Drive roadmap planning from the published catalog
 
+**Status:** Complete for local engineering, 2026-10-07. [Acceptance evidence](../docs/evidence/phases/phase10-platform-extension-evidence.md) and [journey coverage](../docs/evidence/phases/phase10-platform-extension-coverage.md); independent publication and later-phase gates remain separate.
+
 **Description:** Replace the single-exercise planning catalog with eligible release-backed prerequisites, estimates and reviewed mappings.
 
 **Acceptance criteria:**
-- [ ] Only supported published content enters a plan, with exact versions and deduplicated external memberships.
-- [ ] Insufficient content or time returns a scoped alternative or reasoned rejection.
-- [ ] Existing deterministic planning and authored fallback work without AI; existing live-provider approvals remain separate.
+- [x] Only supported published content enters a plan, with exact versions and deduplicated external memberships.
+- [x] Insufficient content or time returns a scoped alternative or reasoned rejection.
+- [x] Existing deterministic planning and authored fallback work without AI; existing live-provider approvals remain separate.
 
-**Verification:** Review the contract and record focused automated/manual evidence for the acceptance criteria during authorized implementation. This documentation revision does not run these future checks.
+**Verification:** Passed applicable unit, PostgreSQL, browser/build/accessibility and connected Linux checks; see the linked evidence for exact results and fixture/manual boundaries.
 
 **Dependencies:** Tasks 50a, 36 and 37
 **Estimated scope:** Catalog-driven roadmap; split into bounded subcards before coding.
 
 ### Task 50c: Close learner journeys, exits and recovery paths
 
+**Status:** Complete for local engineering, 2026-10-07. [Acceptance evidence](../docs/evidence/phases/phase10-platform-extension-evidence.md) and [journey coverage](../docs/evidence/phases/phase10-platform-extension-coverage.md); independent publication and later-phase gates remain separate.
+
 **Description:** Exercise the connected pilot against the website journey and edge-case contract; implement missing transitions without expanding advertised curriculum.
 
 **Acceptance criteria:**
-- [ ] J01–J08 and J11–J14 have entry, normal completion, back/cancel/leave, empty/unavailable and retry behavior, with J18/J19 operational boundaries.
-- [ ] Applicable E01–E12 and E16–E19 have traceable evidence; no code/draft loss, false save, accidental completion or duplicate credit.
-- [ ] External solve return remains self-report; editorial/video actions cannot masquerade as a solve action.
-- [ ] Plan preview cancellation preserves the active plan; accepted replan preserves history; execution and projection pending states remain discoverable.
-- [ ] Produce a coverage report mapping each journey/edge-case ID to task, fixture/manual evidence, release identity and unresolved gap.
+- [x] J01–J08 and J11–J14 have entry, normal completion, back/cancel/leave, empty/unavailable and retry behavior, with J18/J19 operational boundaries.
+- [x] Applicable E01–E12 and E16–E19 have traceable evidence; no code/draft loss, false save, accidental completion or duplicate credit.
+- [x] External solve return remains self-report; editorial/video actions cannot masquerade as a solve action.
+- [x] Plan preview cancellation preserves the active plan; accepted replan preserves history; execution and projection pending states remain discoverable.
+- [x] Produce a coverage report mapping each journey/edge-case ID to task, fixture/manual evidence, release identity and unresolved gap.
 
-**Verification:** Cover keyboard/mobile, deep links, offline/lost-response, session expiry, concurrent tabs, stale callbacks, withdrawal and source edits after a passing run. Record results only during authorized implementation.
+**Verification:** Passed applicable unit, PostgreSQL, browser/build/accessibility and connected Linux checks; see the linked evidence for exact results and fixture/manual boundaries.
 
 **Dependencies:** Tasks 45f, 45g, 50a and 50b
 
@@ -1321,32 +1362,49 @@ The acceptance checks above have local fixture/gateway evidence. They do not ass
 
 ### Task 50: Validate pilot accessibility and collection mapping
 
+**Task status:** COMPLETE for the owner-authorized browser-only accessibility, delegated mapping and design verification; original broader release reviews remain separate. See [the task ledger](todo.md#phase-10-build-the-shared-learning-platform-pilot-curriculum-and-journey-coverage).
+
 **Description:** Map reviewed external source links and collection memberships to the four pilot concepts, then run keyboard, screen-reader, reduced-motion, contrast, low-power, content readability, and link-attribution reviews.
 
 **Acceptance criteria:**
-- [ ] Collection overlap never duplicates required plan work.
-- [ ] Every visual state has a useful text equivalent; all learner-facing pages follow DESIGN.md and preserve its approved exceptions.
-- [ ] External links are attributable, manually reviewed and outbound-only; sheet coverage labels distinguish supported internal, external-only and unavailable entries, with reviewed mapping type.
+- [x] Collection overlap never duplicates required plan work.
+- [x] Every pilot visual state has a useful text equivalent; automated checks cover the new learner pages and approved flat/isometric presentations.
+- [ ] Complete human DESIGN.md/accessibility review of all pilot learner-facing journeys and approved exceptions.
+- [x] External links are attributable, assistant-reviewed and outbound-only; sheet coverage labels distinguish supported internal, external-only and unavailable entries, with reviewed mapping type. Persistent human publication approval remains separate.
 
 **Verification:**
-- [ ] Run accessibility automation plus manual assistive-technology review.
-- [ ] Run link-health/deduplication and complete pilot E2E suite.
+- [x] Run accessibility automation, keyboard, reduced-motion, mobile and 200% zoom checks.
+- [ ] Manual assistive-technology review is excluded from the current owner-authorized browser-only scope; no completed screen-reader review is claimed.
+- [x] Run link-health/deduplication and complete pilot E2E suite — HTTP browser fixtures and real SQL journeys; all 24 published-pilot combinations also pass the separate actual Linux/gVisor learning loop.
 
 **Dependencies:** Tasks 17, 40, 46–49 and 50a–50c
 **Files likely touched:** `content/collections/`, `tests/accessibility/`, `tests/e2e/pilot-curriculum.spec.ts`  
 **Estimated scope:** Medium
 
-### Checkpoint F10: Pilot learning product milestone M4
+### Checkpoint F10: Pilot learning product milestone M4 — COMPLETE locally
 
-- [ ] Four pattern bundles pass all six-language and content gates.
-- [ ] Guided, roadmap, external handoff, review, and tutor paths work together.
-- [ ] Learn, sheets and roadmap share release availability, deduplication and truthful coverage.
-- [ ] Pseudocode, variables, visuals and accessible transcripts stay synchronized; historical attempts retain version pins.
-- [ ] Accessibility critical journeys pass manual and automated review.
-- [ ] Task 50c closes the pilot J/E coverage report; every advertised action has a valid outcome, return path and relevant failure/recovery evidence.
-- [ ] Human owner authorizes Phase 11.
+**Local closure (2026-10-07):** Owner-requested completion after delegated verification, browser-only frontend review and the keep-local instruction. This closes the local engineering milestone; original independent persistent-publication and broader accessibility requirements remain separate release gates in [the task ledger](todo.md#separate-publication-and-release-gates--retained-not-completed). No human signatures or persistent publication are inferred. Subsequent owner authorization for Phase 11 preparation is recorded below.
+
+- [x] Four pattern bundles pass the declared local content, delegated review and all six-language gates with matching current bundle checksums.
+- [x] Guided, roadmap, external handoff, review and AI-off tutor paths work together; all 24 pilot/language combinations pass the actual Linux/gVisor loop.
+- [x] Critical accessibility journeys pass automated checks and delegated browser review within the authorized browser-only scope.
+- [x] Owner-requested F10 local closure is recorded; work remains uncommitted and unpushed.
+
+The owner authorized Phase 11 preparation on 2026-10-07: “I approved, go to complete these task and ready for the next phase 11”. The persistent local database is now backed up and migrated through 0038, with restricted runtime access and active publication guards. [Release readiness](../docs/evidence/phases/phase10-release-readiness.md) records the remaining actual staff-review dependency. Runtime publication guards and original independent publication requirements remain in force.
+
+### Proposed learning-platform extension acceptance — complete for local engineering (2026-10-07)
+
+The owner subsequently authorized and requested completion of the extension. Tasks 45b–45g and 50a–50c now have separate local delivery and journey evidence. This extends the original pilot closure while preserving independent publication and later-phase gates.
+
+- [x] Learn, sheets and roadmap share release availability, deduplication and truthful coverage.
+- [x] Pseudocode, variables, visuals and accessible transcripts stay synchronized; historical attempts retain version pins.
+- [x] Task 50c closes the pilot J/E coverage report; every advertised action has a valid outcome, return path and relevant failure/recovery evidence.
+
+- [x] Human owner authorizes Phase 11 preparation (2026-10-07); publication completion still requires actual independent staff decisions.
 
 ## Phase 11: Privacy, observability, resilience, and operational readiness
+
+**Local implementation complete (2026-10-08):** The owner explicitly authorized full Phase 11 implementation and set aside the independent Phase 10 publication task. Tasks 52–54 pass local engineering verification; [evidence](../docs/evidence/phases/phase11-evidence.md) records 516 core tests, 152 database checks, 64 browser journeys, 32 accessibility checks and the passed restore/game-day receipt. [Local operational policy](../docs/architecture/phase11-operational-policy.md) defines implemented defaults; Task 4 hosted/legal decisions and Task 57 staging PITR remain separate. Persistent local migrations now reach 0040, with original learner accounts preserved. The owner now authorizes repository commit/push and GitHub CI verification. Hosted deployment is not authorized.
 
 
 ### Task 52: Implement privacy export, deletion, and retention workflows
@@ -1354,13 +1412,13 @@ The acceptance checks above have local fixture/gateway evidence. They do not ass
 **Description:** Add re-authenticated export, deletion-pending state, work cancellation, dependency-ordered purge/anonymization, derived-store cleanup, tombstones, backup-expiry tracking, and reconciliation.
 
 **Acceptance criteria:**
-- [ ] Export includes owned data and version/context explanations without other users' data.
-- [ ] Deletion propagates across primary and derived stores under the approved policy.
-- [ ] Jobs/retries cannot recreate deleted private data.
+- [x] Export includes owned data and version/context explanations without other users' data.
+- [x] Deletion propagates across primary and derived stores under the implemented local policy; hosted legal/retention approval remains Task 4/Phase 12.
+- [x] Jobs/retries cannot recreate deleted private data.
 
 **Verification:**
-- [ ] Run end-to-end export/deletion with interrupted/retried jobs.
-- [ ] Reconciliation reports zero active private references after completion.
+- [x] Run end-to-end export/deletion with interrupted/retried jobs.
+- [x] Reconciliation reports zero active private references after completion.
 
 **Dependencies:** Tasks 4, 11, 13, 25, 41-44  
 **Files likely touched:** `packages/application/src/privacy-workflows.ts`, `apps/worker/src/jobs/privacy.ts`, `apps/web/app/settings/privacy/page.tsx`, `tests/e2e/privacy.spec.ts`  
@@ -1371,13 +1429,13 @@ The acceptance checks above have local fixture/gateway evidence. They do not ass
 **Description:** Add trace/request/session correlation, structured redacted logs, technical and learning metrics separation, SLO calculations, symptom-based alerts, and no-raw-code/prompt telemetry tests.
 
 **Acceptance criteria:**
-- [ ] Critical flows correlate without storing private payloads.
-- [ ] SLOs report authored fallback separately from provider success.
-- [ ] Every production alert has owner, severity, runbook, and rollback/degradation action.
+- [x] Critical flows correlate without storing private payloads.
+- [x] SLOs report authored fallback separately from provider success.
+- [x] Every production alert has owner, severity, runbook, and rollback/degradation action.
 
 **Verification:**
-- [ ] Run telemetry serialization/redaction and missing-heartbeat tests.
-- [ ] Generate synthetic SLO burn and verify alerts/runbook links.
+- [x] Run telemetry serialization/redaction and missing-heartbeat tests.
+- [x] Generate synthetic SLO burn and verify alerts/runbook links.
 
 **Dependencies:** Tasks 8, 21, 41, 44, and 51  
 **Files likely touched:** `packages/observability/src/telemetry.ts`, `packages/observability/src/redaction.ts`, `ops/alerts/`, `tests/integration/telemetry.test.ts`  
@@ -1388,23 +1446,23 @@ The acceptance checks above have local fixture/gateway evidence. They do not ass
 **Description:** Rehearse with synthetic data on an isolated local/reference stack; this is not hosted PITR assurance. Restore PostgreSQL and immutable assets, reconcile data/outbox/indexes, run critical journeys, measure RPO/RTO, and rehearse sandbox, provider, database, privacy, content, and release incidents.
 
 **Acceptance criteria:**
-- [ ] Record local drill timing and limitations. Task 57 must repeat hosted restore/PITR on deployed staging before a pilot can pass.
-- [ ] Application/content/AI/runtime-image rollback paths are demonstrated.
-- [ ] Runbooks identify owner, containment, evidence handling, recovery, and communication.
+- [x] Record local drill timing and limitations. Task 57 must repeat hosted restore/PITR on deployed staging before a pilot can pass.
+- [x] Application/content/AI/runtime-image rollback paths are demonstrated.
+- [x] Runbooks identify owner, containment, evidence handling, recovery, and communication.
 
 **Verification:**
-- [ ] Execute and record a restore drill and at least one game-day scenario.
-- [ ] Securely destroy the restore environment and record evidence.
+- [x] Execute and record a restore drill and at least one game-day scenario.
+- [x] Securely destroy the restore environment and record evidence.
 
 **Dependencies:** Tasks 4, 41-53  
 **Files likely touched:** `ops/runbooks/`, `ops/restore/`, `docs/evidence/restore-drills/`, `tests/e2e/restored-environment.spec.ts`  
 **Estimated scope:** Medium
 
-### Checkpoint F11: Operational assurance
+### Checkpoint F11: Operational assurance — local engineering COMPLETE
 
-- [ ] Privacy, budget, telemetry, alert, restore, and incident gates pass.
-- [ ] Known failures degrade safely and leave auditable state.
-- [ ] Actual evidence is separated from proposed targets.
+- [x] Privacy, budget, telemetry, alert, restore, and incident gates pass.
+- [x] Known failures degrade safely and leave auditable state.
+- [x] Actual evidence is separated from proposed targets.
 - [ ] Human owner authorizes Phase 12.
 
 ## Phase 12: Hosted pilot release

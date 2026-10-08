@@ -1,8 +1,11 @@
 import { defineConfig, devices } from "@playwright/test";
+import { loadLocalWebEnv } from "../../apps/web/local-env.ts";
+
+loadLocalWebEnv();
 
 export default defineConfig({
   testDir: ".",
-  outputDir: "../../test-results/accessibility",
+  outputDir: "../../.tmp/test-results/accessibility",
   testMatch:
     /(?:content-operations|design-shell|execution-readiness|guided-problem|onboarding|phase6-learning|planning-preferences)\.spec\.ts$/,
   fullyParallel: true,

@@ -1,9 +1,13 @@
 import { defineConfig, devices } from "@playwright/test";
+import { loadLocalWebEnv } from "../../apps/web/local-env.ts";
+
+loadLocalWebEnv();
 
 export default defineConfig({
   testDir: ".",
+  outputDir: "../../.tmp/test-results/e2e",
   testMatch:
-    /(?:draft-sync|roadmap|roadmap-provider|companion-journey|worker-offline|comprehensive-ui|all-pages-browser-audit)\.spec\.ts$/,
+    /(?:privacy|learning-platform-extension|pilot-curriculum|draft-sync|roadmap|roadmap-provider|companion-journey|worker-offline|comprehensive-ui|all-pages-browser-audit)\.spec\.ts$/,
   fullyParallel: true,
   forbidOnly: Boolean(process.env.CI),
   reporter: "line",

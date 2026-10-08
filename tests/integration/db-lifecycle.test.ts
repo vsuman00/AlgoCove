@@ -125,6 +125,13 @@ describe("PostgreSQL and pgvector lifecycle", () => {
       "0031_tutor_delivery.sql",
       "0032_evaluation_promotion.sql",
       "0033_roadmap_generation_evidence.sql",
+      "0034_pilot_bundles.sql",
+      "0035_learning_catalog.sql",
+      "0036_learning_releases.sql",
+      "0037_destination_identity.sql",
+      "0038_typed_release_discovery.sql",
+      "0039_privacy_lifecycle.sql",
+      "0040_operational_telemetry.sql",
     ]);
 
     runtimePool = testPool(profile(runtimeUrl, "algocove-integration-runtime"));
@@ -202,10 +209,17 @@ describe("PostgreSQL and pgvector lifecycle", () => {
         "0031_tutor_delivery.sql",
         "0032_evaluation_promotion.sql",
         "0033_roadmap_generation_evidence.sql",
+        "0034_pilot_bundles.sql",
+        "0035_learning_catalog.sql",
+        "0036_learning_releases.sql",
+        "0037_destination_identity.sql",
+        "0038_typed_release_discovery.sql",
+        "0039_privacy_lifecycle.sql",
+        "0040_operational_telemetry.sql",
       ],
       appliedCount: 0,
     });
-    expect(state).toHaveLength(33);
+    expect(state).toHaveLength(40);
     expect(state[0]).toMatchObject({ id: "0001", name: "0001_platform.sql" });
     expect(state[0]?.checksum).toMatch(/^sha256:[0-9a-f]{64}$/);
   });
@@ -220,7 +234,7 @@ describe("PostgreSQL and pgvector lifecycle", () => {
 
     expect(readiness.ok).toBe(true);
     if (readiness.ok) {
-      expect(readiness.appliedMigrations).toBe(33);
+      expect(readiness.appliedMigrations).toBe(40);
       expect(readiness.serverTime).toMatch(/Z$/);
     }
   });

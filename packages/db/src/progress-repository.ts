@@ -1,3 +1,4 @@
+import { pilotIdentityFromVersion } from "@algocove/domain";
 import { readRoadmapView, effectivePlanOutcomes } from "./roadmap-repository.ts";
 import { loadPlanningCatalog } from "./planning-catalog.ts";
 import type { Pool } from "pg";
@@ -79,8 +80,9 @@ export class PostgresProgressRepository implements LearningProgressRepository {
           external_reference_id: string;
           title: string;
           canonical_url: string;
+          internal_problem: string | null;
         }>(
-          "SELECT external_reference_id,title,canonical_url FROM content.external_reference r WHERE EXISTS(SELECT 1 FROM practice.external_practice_event e WHERE e.reference_id=r.external_reference_id AND e.learner_id=$1 AND e.kind='handoff_requested' AND e.attempt_id IS NOT NULL) ORDER BY title",
+          "SELECT external_reference_id,title,canonical_url,(SELECT x.problem_version_id FROM content.external_readiness_rubric x JOIN content.problem_version p USING(problem_version_id) JOIN content.content_version v USING(content_version_id) WHERE x.external_reference_id=r.external_reference_id AND x.status='published' AND v.status='published' AND v.payload_status='available' AND (v.rights_expires_at IS NULL OR v.rights_expires_at>now()) ORDER BY x.rubric_id LIMIT 1) internal_problem FROM content.external_reference r WHERE EXISTS(SELECT 1 FROM practice.external_practice_event e WHERE e.reference_id=r.external_reference_id AND e.learner_id=$1 AND e.kind='handoff_requested' AND e.attempt_id IS NOT NULL) ORDER BY title",
           [input.learnerId],
         );
         const reviews = await tx.query<{ status: string; due_start: Date; due_end: Date }>(
@@ -160,6 +162,13 @@ export class PostgresProgressRepository implements LearningProgressRepository {
               referenceId: parsedId("externalReference", r.external_reference_id),
               title: r.title,
               url: r.canonical_url,
+              ...(r.internal_problem === "prb_dddddddddddddddd"
+                ? { internalHref: "/learn/arrays-two-pointer" }
+                : pilotIdentityFromVersion(r.internal_problem ?? "")
+                  ? {
+                      internalHref: `/learn/${pilotIdentityFromVersion(r.internal_problem!)!.slug}`,
+                    }
+                  : {}),
             })),
           },
           planAdherence: projectPlanAdherence(
@@ -199,7 +208,7 @@ export class PostgresProgressRepository implements LearningProgressRepository {
           [input.learnerId],
         );
         const due = await tx.query(
-          "SELECT 1 FROM mastery.review_item r WHERE r.learner_id=$1 AND r.status IN ('due','deferred') AND r.due_start<=$2 AND EXISTS(SELECT 1 FROM content.review_exercise e WHERE e.concept_id=r.concept_id AND e.status='published' AND (e.rights_expires_at IS NULL OR e.rights_expires_at>$2)) LIMIT 1",
+          "SELECT 1 FROM mastery.review_item r WHERE r.learner_id=$1 AND r.status IN ('due','deferred') AND r.due_start<=$2 AND EXISTS(SELECT 1 FROM content.available_release_exercise e WHERE e.concept_id=r.concept_id AND e.status='published' AND (e.rights_expires_at IS NULL OR e.rights_expires_at>$2)) LIMIT 1",
           [input.learnerId, input.now],
         );
         const roadmap = await readRoadmapView(tx, input.learnerId, input.now),
@@ -261,9 +270,11 @@ export class PostgresProgressRepository implements LearningProgressRepository {
             problemVersionId: parsedId("problemVersion", r.problem_version_id),
             conceptId: parsedId("concept", r.concept_id),
             title: r.title,
-            href: "/learn/arrays-two-pointer",
+            href: `/learn/${pilotIdentityFromVersion(r.problem_version_id)?.slug ?? "arrays-two-pointer"}`,
             languages: r.languages,
-            available: r.problem_version_id === "prb_dddddddddddddddd",
+            available:
+              r.problem_version_id === "prb_dddddddddddddddd" ||
+              pilotIdentityFromVersion(r.problem_version_id) !== null,
             prerequisites: r.prerequisites.map((id) => parsedId("concept", id)),
             band: r.pending ? "projection_pending" : (r.body?.band ?? "unassessed"),
             lastPracticed: r.body?.lastPracticed ?? null,

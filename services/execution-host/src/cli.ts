@@ -1,3 +1,4 @@
+import { loadPublishedPilotCatalog } from "./pilot-problem.ts";
 import { mkdirSync, readFileSync, writeFileSync, existsSync } from "node:fs";
 import { resolve, join } from "node:path";
 import { randomBytes } from "node:crypto";
@@ -77,7 +78,13 @@ for (const language of PROBLEM_LANGUAGES)
 const runtime = await dockerCommand(["info", "--format", "{{json .Runtimes}}"]);
 if (runtime.code !== 0 || !("runsc" in JSON.parse(runtime.stdout)))
   throw new Error("Approved runsc runtime unavailable.");
+const pilots = process.env.LOCAL_PUBLISHED_PILOTS_FILE
+  ? loadPublishedPilotCatalog(
+      JSON.parse(readFileSync(process.env.LOCAL_PUBLISHED_PILOTS_FILE, "utf8")),
+    )
+  : new Map();
 const host = await createLocalSourceHost({
+  pilots,
   journalPath: join(directory, "journal.sqlite"),
   key,
   verificationKeys,
@@ -114,7 +121,12 @@ const host = await createLocalSourceHost({
 const relay = createWebsiteExecutionRelay({
   host,
   verificationKeys,
-  prepareDescriptor: createContainerDescriptorPolicy(key, images, () => new Date().toISOString()),
+  prepareDescriptor: createContainerDescriptorPolicy(
+    key,
+    images,
+    () => new Date().toISOString(),
+    pilots,
+  ),
   now: () => new Date().toISOString(),
 });
 const transport = await startLoopbackWebsiteExecutionRelay(

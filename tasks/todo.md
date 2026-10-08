@@ -1,18 +1,24 @@
+**Current work (2026-10-08):** Phase 11 Tasks 52–54 are complete for local engineering, with persistent migration 0040 and original learner data preserved. The owner explicitly set aside Phase 10 publication; its independent gates remain pending. The owner now authorizes committing and pushing all accumulated project changes to GitHub and running CI; this supersedes the earlier keep-local/uncommitted instruction for repository publication. Phase 12 has not begun. [Evidence](../docs/evidence/phases/phase11-evidence.md). Earlier authorization notes below are historical.
+
 # AlgoCove implementation task ledger
+
+**Current release preparation (2026-10-07):** Owner approval for Phase 11 preparation is recorded. The persistent local database is backed up, migrated through 0038 and verified with restricted runtime access. Actual independent publication remains pending authenticated staff assignments and checksum-bound reviews; see [release readiness](../docs/evidence/phases/phase10-release-readiness.md).
+
+**Phase 10 extension authorization (2026-10-07):** The owner instructed completion of the newly added Phase 10 tasks before Phase 11 and authorized building against the updated architecture. Tasks 45b–45g and 50a–50c are now authorized local implementation scope. Follow the [bounded work cards](../docs/architecture/work-cards/phase10-platform-extension.md) and [shared learning contract](../docs/architecture/shared-learning-contract.md). Keep existing local work uncommitted/unpushed; live AI, independent publication signatures, Phase 11 and hosted deployment remain separate. Historical proposal-only notes below describe the earlier documentation update, not the current authorization. [Completion evidence](../docs/evidence/phases/phase10-platform-extension-evidence.md) closes C1–C10 and Tasks 45b–45g/50a–50c for local engineering; independent publication and later-phase work remain separate.
 
 **Journey coverage expansion (2026-10-07):** The [website journey contract](../docs/architecture/website-journeys-and-coverage.md) maps 19 feature journeys and 19 edge/exit cases to tasks. Additional proposed work covers shell/auth return, authoring preflight, recovery, private/shared sheets and broader interviews. This is documentation-only scope. Existing approvals and implementation evidence are unchanged.
 
-**Documentation revision (2026-10-07):** The owner requested architecture/build-document changes only. Tasks 45b–45e, 50a–50b and Phase 14 are proposed additions from the [learning platform design](../docs/architecture/learning-platform-evolution-2026-10-07.md). No new implementation or phase authorization is implied; Task 45a and the unchecked F9 owner gate remain unchanged.
+**Documentation revision (2026-10-07):** The owner requested architecture/build-document changes only. Tasks 45b–45e, 50a–50b and Phase 14 are proposed additions from the [learning platform design](../docs/architecture/learning-platform-evolution-2026-10-07.md). This published proposal does not itself authorize implementation. Local Phase 10 authorization and completion records below take precedence over the earlier unchecked F9 gate; Task 45a live activation remains pending.
 
-**Latest authorized repair (2026-10-03):** The owner reviewed the diagnosis and authorized Ponytail repairs. [Runtime repair evidence](../docs/architecture/runtime-repair-evidence-2026-10-03.md) records configuration, authenticated session recovery, workspace synchronization, published-content withdrawal, diagnostics and CI corrections. Repair commit `2803c23` passed all three CI jobs including both mandatory actual Linux learning-loop scenarios. Application repair commit `0f8b7a5` also passed all three jobs in CI run 37104114731, with both real Linux scenarios and fresh isolation evidence. U4/U6/U8 are complete for this repair scope; historical manual/design approvals remain separate. No deployment is authorized.
+**Latest authorized repair (2026-10-03):** The owner reviewed the diagnosis and authorized Ponytail repairs. [Runtime repair evidence](../docs/evidence/audits/runtime-repair-evidence-2026-10-03.md) records configuration, authenticated session recovery, workspace synchronization, published-content withdrawal, diagnostics and CI corrections. Repair commit `2803c23` passed all three CI jobs including both mandatory actual Linux learning-loop scenarios. Application repair commit `0f8b7a5` also passed all three jobs in CI run 37104114731, with both real Linux scenarios and fresh isolation evidence. U4/U6/U8 are complete for this repair scope; historical manual/design approvals remain separate. No deployment is authorized.
 
-**Current implementation evidence:** [Real product and 3D UI record](../docs/architecture/phase7-production-ui-evidence-2026-10-03.md) supplements the historical audit with persisted content administration, release identity persistence and the new mandatory Linux guided-loop gate. Final CI status is recorded there.
+**Current implementation evidence:** [Real product and 3D UI record](../docs/evidence/phases/phase7-production-ui-evidence-2026-10-03.md) supplements the historical audit with persisted content administration, release identity persistence and the new mandatory Linux guided-loop gate. Final CI status is recorded there.
 
-**Current work (owner clarification, 2026-10-03):** Complete real implementation through Phase 7 and the clean production 3D UI. [UI completion work](phase7-production-ui.md) tracks the scope. No deployment, age/country restrictions, privacy-policy implementation, or later phases are included. Existing security and ownership controls remain required.
+**Current work (owner approval, 2026-10-06):** Phase 9 is approved for entry into Phase 10. Implement Tasks 46–50 with AI-off; credentials may follow later. The owner delegates local verification to the assistant, requires browser-only frontend checks, and explicitly keeps Phase 10 local (no commit/push/PR). [Phase 10 implementation and review evidence](../docs/evidence/phases/phase10-evidence.md) separates automated technical results from pending human publication, outbound-mapping and manual assistive-technology reviews. Phase 11 and hosted deployment are not authorized.
 
-**Cumulative audit (2026-10-03):** [The through-Phase-7 audit](../docs/architecture/through-phase7-audit-2026-10-03.md) records fresh passing technical gates, every named test, Phase 0 approval gaps, unreconciled Phase 1–5 plan checkboxes, open UI fidelity/manual accessibility and the two current-head real-host skips. Technical phase closure must not be read as complete governance or full design validation.
+**Cumulative audit (2026-10-03):** [The through-Phase-7 audit](../docs/evidence/audits/through-phase7-audit-2026-10-03.md) records fresh passing technical gates, every named test, Phase 0 approval gaps, unreconciled Phase 1–5 plan checkboxes, open UI fidelity/manual accessibility and the two current-head real-host skips. Technical phase closure must not be read as complete governance or full design validation.
 
-**Status:** Phase 5 Tasks 25 through 29 and the technical F5 learning-kernel gates are COMPLETE on localhost for the first original problem in all six languages. The security owner approved gVisor `runsc` on 2026-09-26. Real signed execution, browser result/failure/resume, authored readiness checks, trace prediction/editing and persisted reference assistance pass. See [Phase 5 evidence](../docs/architecture/phase5-evidence.md). The owner authorized Phase 6 on 2026-10-02; Tasks 30–33 and the technical F6 checks are COMPLETE on localhost; Phase 7 was explicitly approved on 2026-10-02; Tasks 34–37 and 51 and technical F7 checks are COMPLETE on localhost as of 2026-10-03. The owner authorized Phase 8 implementation on 2026-10-06; Tasks 38–40 are complete locally with connected review-scheduling, bypass, telemetry and visual real-link evidence; Phase 9 was authorized on 2026-10-06; Tasks 41–45 are complete locally for worker infrastructure, governed index candidates, hybrid retrieval/evidence, validated tutor delivery with authored fallback and versioned evaluation/promotion gates; Task 45a now has locally implemented and synthetic-verified gateway composition, opt-in, promotion/budget gates and preserved baseline/acceptance; live activation remains pending the named provider/data-policy decision. No hosted deployment is authorized. Earlier dated partial-status entries below describe superseded slices.
+**Status:** Phase 5 Tasks 25 through 29 and the technical F5 learning-kernel gates are COMPLETE on localhost for the first original problem in all six languages. The security owner approved gVisor `runsc` on 2026-09-26. Real signed execution, browser result/failure/resume, authored readiness checks, trace prediction/editing and persisted reference assistance pass. See [Phase 5 evidence](../docs/evidence/phases/phase5-evidence.md). The owner authorized Phase 6 on 2026-10-02; Tasks 30–33 and the technical F6 checks are COMPLETE on localhost; Phase 7 was explicitly approved on 2026-10-02; Tasks 34–37 and 51 and technical F7 checks are COMPLETE on localhost as of 2026-10-03. The owner authorized Phase 8 implementation on 2026-10-06; Tasks 38–40 are complete locally with connected review-scheduling, bypass, telemetry and visual real-link evidence; Phase 9 was authorized on 2026-10-06; Tasks 41–45 are complete locally for worker infrastructure, governed index candidates, hybrid retrieval/evidence, validated tutor delivery with authored fallback and versioned evaluation/promotion gates; Task 45a now has locally implemented and synthetic-verified gateway composition, opt-in, promotion/budget gates and preserved baseline/acceptance; live activation remains pending the named provider/data-policy decision. No hosted deployment is authorized. Earlier dated partial-status entries below describe superseded slices.
 
 **Phase 6 entry (2026-10-02):** The owner directed Phase 6. Review of [the plan](plan.md), [architecture reading order](../docs/architecture/README.md), [system design](../docs/architecture/system-design.md), [data and AI contracts](../docs/architecture/data-and-ai-architecture.md), [runtime flows](../docs/architecture/interfaces-and-runtime-flows.md), [implementation contracts](../docs/architecture/implementation-contracts.md), [security and privacy rules](../docs/architecture/security-reliability-operations.md), [quality traceability](../docs/architecture/quality-and-traceability.md), [product closure matrix](../docs/architecture/product-plan-and-closure-matrix.md), and relevant ADRs found that the conceptual `PROBLEM_CONCEPT` relation was missing in the database. Migration `0018_problem_concept_mapping.sql` now binds concepts to exact problem versions and prevents changes once their content is published. The local practice seed adds the reviewed two-pointers mapping. This closes only the mapping-schema prerequisite; the content workflow still needs reviewed mapping authoring, and Task 30's evidence handler/projection were not yet complete in this initial slice; the subsequent submission slice is recorded below.
 
@@ -89,7 +95,7 @@
 
 **CI recovery update (2026-09-19):** The post-review GitHub Actions failure was traced to a pnpm 9-generated lockfile being consumed by CI's pnpm 12.4.2 and mutable sandbox-probe image tags drifting after the last successful gVisor matrix. The lockfile was regenerated with pnpm 12.4.2, and the candidate probe now uses the exact immutable image digests from passing run [35264360185](https://github.com/vsuman00/AlgoCove/actions/runs/35264360185). A local pnpm-12 frozen install and the six-language normal, hostile-boundary, and concurrent sandbox matrix pass. The next CI run remains the remote confirmation.
 
-**F4 security-owner decision (2026-09-26):** The owner explicitly approved gVisor `runsc` as the security owner for hostile learner code in the AlgoCove task conversation. This closes the candidate-runtime decision and authorizes Phase 5 execution integration within the dedicated, network-denied execution plane. Docker `runc` remains rejected for hostile learner code. No local isolated-host integration or real learner-run evidence is claimed; `EXECUTION_ENABLED` remains false until the relay, host, journal, callback, and F5 checks are ready. See [Phase 4 evidence](../docs/architecture/phase4-evidence.md#security-owner-decision-2026-09-26).
+**F4 security-owner decision (2026-09-26):** The owner explicitly approved gVisor `runsc` as the security owner for hostile learner code in the AlgoCove task conversation. This closes the candidate-runtime decision and authorizes Phase 5 execution integration within the dedicated, network-denied execution plane. Docker `runc` remains rejected for hostile learner code. No local isolated-host integration or real learner-run evidence is claimed; `EXECUTION_ENABLED` remains false until the relay, host, journal, callback, and F5 checks are ready. See [Phase 4 evidence](../docs/evidence/phases/phase4-evidence.md#security-owner-decision-2026-09-26).
 
 **Local-only scope (2026-09-26):** The owner requested full localhost testing and no live deployment. F5 may be advanced only with an approved isolated local host/relay and real local evidence; fixture-backed browser checks remain qualified as fixtures.
 
@@ -179,7 +185,7 @@
 ## Phase 5: Deliver the guided internal learning loop
 
 - [x] Task 25: Implement learning-session and attempt state machines — COMPLETE; domain transitions, owner-scoped repository, optimistic concurrency, atomic language reset, focused state-machine fixtures, and live PostgreSQL ownership/race integration evidence pass.
-- [x] Task 25a: Connect real attempts to durable execution and trusted results — COMPLETE locally; a dedicated gVisor host, signed descriptor-only outbox, ephemeral source handoff, durable SQLite lifecycle journal and verified callback now connect the website to real execution. All six languages pass correct/wrong/compile-or-type/runtime/timeout/unavailable-image checks. Exact source/manifest/replay/lease correlation, duplicate delivery, callback loss, cancellation, lost source, host restart, no replacement, teardown quarantine and no infrastructure credit have unit/live/browser evidence. See [Phase 5 evidence](../docs/architecture/phase5-evidence.md).
+- [x] Task 25a: Connect real attempts to durable execution and trusted results — COMPLETE locally; a dedicated gVisor host, signed descriptor-only outbox, ephemeral source handoff, durable SQLite lifecycle journal and verified callback now connect the website to real execution. All six languages pass correct/wrong/compile-or-type/runtime/timeout/unavailable-image checks. Exact source/manifest/replay/lease correlation, duplicate delivery, callback loss, cancellation, lost source, host restart, no replacement, teardown quarantine and no infrastructure credit have unit/live/browser evidence. See [Phase 5 evidence](../docs/evidence/phases/phase5-evidence.md).
 - [x] Task 25b: Implement recoverable source and pseudocode drafts — COMPLETE; domain/application contracts and PostgreSQL persistence for replaceable current snapshots, explicit revisions, optimistic conflicts, TTL, private ownership, recovery clearing, and Chromium reload/offline/reconnect/conflict/expiry/logout evidence pass.
 - [x] Task 26: Implement structured pseudocode and readiness evidence — COMPLETE locally, including workspace composition; eight advisory prose fields and bounded authored-answer selections are saved in immutable revisions. Server readiness requires two exact reviewed answer checks and an owner/attempt/manifest-matched verified passing submission. Wrong selections, nonempty prose alone, mismatched evidence, ownership and tutor rewrite cases fail safely.
 - [x] Task 27: Implement trace protocol and accessible renderer — COMPLETE locally, including bounded learner trace editing and prediction in the workspace; deterministic replay, a transcript with prediction selections, invalid-edit retention, provenance disclosure, keyboard/reduced-motion controls and accessible reflow pass. Reviewed reference events are delivered only after scaffold-tier assistance is persisted; arbitrary source traces remain unsupported and cannot fabricate states.
@@ -197,9 +203,9 @@
 
 ## Phase 6: Mastery, review, recommendation, and progress
 
-**Task 30 submission validation (2026-10-02):** `pnpm verify` passes 193 unit/web/architecture tests and now includes worker type checking. PostgreSQL passes 27 tests across 20 migrations (2 opt-in execution-host tests skipped); both consumer/rebuild CLIs execute, and the production build, 16 accessibility checks, 1 offline/reconnect draft test and dependency audit pass. The temporary loopback PostgreSQL server, generated clusters and temporary packages were removed. No VM or deployment was used. See [Phase 6 evidence](../docs/architecture/phase6-evidence.md) for source limits and host cleanup details.
+**Task 30 submission validation (2026-10-02):** `pnpm verify` passes 193 unit/web/architecture tests and now includes worker type checking. PostgreSQL passes 27 tests across 20 migrations (2 opt-in execution-host tests skipped); both consumer/rebuild CLIs execute, and the production build, 16 accessibility checks, 1 offline/reconnect draft test and dependency audit pass. The temporary loopback PostgreSQL server, generated clusters and temporary packages were removed. No VM or deployment was used. See [Phase 6 evidence](../docs/evidence/phases/phase6-evidence.md) for source limits and host cleanup details.
 
-**Phase 6 completion (2026-10-02):** Tasks 30–33 are implemented and tested. `pnpm verify` passes 203 tests and all quality gates; PostgreSQL passes 35 tests across 21 migrations (2 unchanged optional execution-host checks skipped); production build, 23 Chromium checks, offline recovery and dependency audit pass. Canonical reviewed explanation/confidence/review/transfer sources replace the prior slice's source gaps. All temporary database resources are removed. No VM or hosted deployment was used. See [Phase 6 evidence](../docs/architecture/phase6-evidence.md).
+**Phase 6 completion (2026-10-02):** Tasks 30–33 are implemented and tested. `pnpm verify` passes 203 tests and all quality gates; PostgreSQL passes 35 tests across 21 migrations (2 unchanged optional execution-host checks skipped); production build, 23 Chromium checks, offline recovery and dependency audit pass. Canonical reviewed explanation/confidence/review/transfer sources replace the prior slice's source gaps. All temporary database resources are removed. No VM or hosted deployment was used. See [Phase 6 evidence](../docs/evidence/phases/phase6-evidence.md).
 
 - [x] Task 30: Implement append-only mastery evidence and projection v1 — COMPLETE; all source dimensions, provenance, replay/comparison, draft mapping authoring, durable delivery and owned pending/receipt APIs.
 - [x] Task 31: Implement spaced review and transfer scheduling — COMPLETE; UTC windows, timezone presentation, overdue recovery, deferral, immutable history and concurrent retry deduplication.
@@ -215,7 +221,7 @@
 
 ## Phase 7: Configurable roadmap planning
 
-**Phase 7 closure (2026-10-03):** Versioned schedules/lifecycle, deterministic scheduling, validation/replanning, atomic quotas/budgets/breakers, fixture-only proposals and create/review/accept/miss/pause/resume/replan UI are implemented and tested. Home and Progress use accepted schedules without awarding mastery from check-ins. Sparse curriculum is explicit; full-DSA requests are rejected with alternatives. See [Phase 7 evidence](../docs/architecture/phase7-evidence.md).
+**Phase 7 closure (2026-10-03):** Versioned schedules/lifecycle, deterministic scheduling, validation/replanning, atomic quotas/budgets/breakers, fixture-only proposals and create/review/accept/miss/pause/resume/replan UI are implemented and tested. Home and Progress use accepted schedules without awarding mastery from check-ins. Sparse curriculum is explicit; full-DSA requests are rejected with alternatives. See [Phase 7 evidence](../docs/evidence/phases/phase7-evidence.md).
 
 - [x] Task 34: Implement roadmap intent and immutable plan versions
 - [x] Task 35: Implement deterministic baseline scheduler
@@ -232,7 +238,7 @@
 
 ## Phase 8: Outbound LeetCode practice handoff
 
-**Phase 8 implementation closure (2026-10-06):** Tasks 38–40 are complete locally. Governed readiness policies, server grading, safe outbound admission, and reversible learner-confirmed journals are connected through PostgreSQL and the learner/staff UI. All automated checks pass; see [Phase 8 evidence](../docs/architecture/phase8-evidence.md). No production rubric has been published or user database migrated. Task 40 now records connected review-scheduling evidence, browser bypass rejection, runtime telemetry inspection and a visual real-link check in native Safari; The owner authorized Phase 9 on 2026-10-06.
+**Phase 8 implementation closure (2026-10-06):** Tasks 38–40 are complete locally. Governed readiness policies, server grading, safe outbound admission, and reversible learner-confirmed journals are connected through PostgreSQL and the learner/staff UI. All automated checks pass; see [Phase 8 evidence](../docs/evidence/phases/phase8-evidence.md). No production rubric has been published or user database migrated. Task 40 now records connected review-scheduling evidence, browser bypass rejection, runtime telemetry inspection and a visual real-link check in native Safari; The owner authorized Phase 9 on 2026-10-06.
 
 - [x] Task 38: Implement readiness gate and explicit practice bypass
 - [x] Task 39: Implement outbound opening and learner-confirmed journal
@@ -247,7 +253,7 @@
 
 ## Phase 9: Grounded retrieval and tutor
 
-**Phase 9 entry (2026-10-06):** The owner approved proceeding after Task 40 closure. Task 41 worker infrastructure is complete locally: bounded leased delivery, immutable effect receipts, fenced retries and audited replay, canonical job adapters, reconciliation, opt-in existing draft expiry, scoped credentials and worker-stopped learning evidence. Task 42 now adds canonical pedagogical chunks, lexical documents, immutable versioned embeddings, atomic publication admission and quarantine under scoped worker credentials. Task 43 now adds permission-first PostgreSQL/exact-vector retrieval, immutable evidence receipts and a declared local pilot benchmark. Task 44 now adds provider-neutral validated tutor delivery, private-code consent, durable pending/cancel/retry, conservative assistance and authored fallback. Task 45 now adds immutable synthetic evaluation, independent human-review gates and reversible fixture configuration promotion. Live adapters remain absent and production remains authored/off; Task 45a now adds locally verified gateway/runtime/UI composition and synthetic primary/fallback/outage evidence. Actual provider activation still requires the named live-provider/data-policy decision. See [Phase 9 evidence](../docs/architecture/phase9-evidence.md) and [worker operations](../docs/architecture/worker-operations.md).
+**Phase 9 entry (2026-10-06):** The owner approved proceeding after Task 40 closure. Task 41 worker infrastructure is complete locally: bounded leased delivery, immutable effect receipts, fenced retries and audited replay, canonical job adapters, reconciliation, opt-in existing draft expiry, scoped credentials and worker-stopped learning evidence. Task 42 now adds canonical pedagogical chunks, lexical documents, immutable versioned embeddings, atomic publication admission and quarantine under scoped worker credentials. Task 43 now adds permission-first PostgreSQL/exact-vector retrieval, immutable evidence receipts and a declared local pilot benchmark. Task 44 now adds provider-neutral validated tutor delivery, private-code consent, durable pending/cancel/retry, conservative assistance and authored fallback. Task 45 now adds immutable synthetic evaluation, independent human-review gates and reversible fixture configuration promotion. Live adapters remain absent and production remains authored/off; Task 45a now adds locally verified gateway/runtime/UI composition and synthetic primary/fallback/outage evidence. Actual provider activation still requires the named live-provider/data-policy decision. See [Phase 9 evidence](../docs/evidence/phases/phase9-evidence.md) and [worker operations](../docs/architecture/worker-operations.md).
 
 - [x] Task 41: Extend the existing relay for content and AI jobs
 - [x] Task 42: Implement pedagogical derivation and versioned indexes
@@ -261,46 +267,116 @@
 - [x] Authored lessons/hints still work with worker and provider disabled; new code runs show queued/unavailable status without false success.
 - [x] Retrieval permission and citation tests pass.
 - [x] Critical hint-leak and prompt-injection cases have zero bypasses in the declared synthetic suites; production semantic quality remains unapproved.
-- [ ] Human owner authorizes Phase 10.
+- [x] Human owner authorizes Phase 10 — explicitly approved on 2026-10-06; AI credentials may be supplied later.
 
 ## Phase 10: Build the shared learning platform, pilot curriculum and journey coverage
 
-- [ ] Task 45b: Specify shared learning catalog and release contracts
-- [ ] Task 45c: Generalize the published catalog and learning workspace
-- [ ] Task 45d: Separate external destination and collection identities
-- [ ] Task 45e: Synchronize pseudocode and algorithm walkthroughs
-- [ ] Task 45f: Specify and implement navigation, deep links and authenticated return
-- [ ] Task 45g: Extend release authoring and publication preflight
-- [ ] Task 46: Author the arrays/hashing pilot bundle
-- [ ] Task 47: Author the two-pointers pilot bundle
-- [ ] Task 48: Author the sliding-window pilot bundle
-- [ ] Task 49: Author the stack pilot bundle
-- [ ] Task 50a: Build curated Learn and sheet discovery
-- [ ] Task 50b: Drive roadmap planning from the published catalog
-- [ ] Task 50c: Close learner journeys, exits and recovery paths
-- [ ] Task 50: Validate pilot accessibility and collection mapping
+**Status (updated 2026-10-07): Tasks 46–50 and Checkpoint F10 COMPLETE for the approved local engineering scope; persistent publication remains a separate release gate.** The checked task boxes below describe local implementation and verification, including the completed Linux/gVisor learning loop and delegated browser review. They do not certify persistent content publication or independent human signatures. Remaining original publication criteria are retained in the release gates below. [Evidence and publication runbook](../docs/evidence/phases/phase10-evidence.md). Synthetic fixture approvals do not count as human signatures. The [checksum-bound delegated review record](../docs/evidence/phases/phase10-review-record.md) records assistant findings and fixes; it supplies no independent human signatures.
 
-### Checkpoint F10: Pilot learning product milestone M4
+### Completed local implementation and verification
 
-- [ ] Four pattern bundles pass all six-language and content gates.
-- [ ] Guided, roadmap, external handoff, review, and tutor paths work together.
-- [ ] Learn, sheets and roadmap share release availability, deduplication and truthful coverage.
-- [ ] Pseudocode, variables, visuals and accessible transcripts stay synchronized; historical attempts retain version pins.
-- [ ] Accessibility critical journeys pass manual and automated review.
-- [ ] Task 50c closes the pilot J/E coverage report; every advertised action has a valid outcome, return path and relevant failure/recovery evidence.
-- [ ] Human owner authorizes Phase 11.
+- [x] Task 46: Author the arrays/hashing pilot bundle — COMPLETE locally; publication approval tracked under the separate release gates.
+  - [x] Author original `matching-readings` lesson, recognition cues, invariant, pseudocode rubric and six-tier hint ladder.
+  - [x] Implement frequency-state renderer, six-state reference trace and complete text transcript.
+  - [x] Provide starters, harnesses, canonical solutions and error notes for all six languages; pass seven fixtures per language.
+  - [x] Add recall and delayed-transfer artifacts; pass content, trace and synthetic retrieval/tutor evaluation.
+  - [x] Complete checksum-bound delegated technical, pedagogical, rights, trace, conformance and browser review; retain independent publication controls.
+- [x] Task 47: Author the two-pointers pilot bundle — COMPLETE locally; publication approval tracked under the separate release gates.
+  - [x] Author original `target-gap-pairs` lesson, invariant, pseudocode rubric, hints and review/transfer artifacts.
+  - [x] Implement nine-state pointer trace covering left/right/match decisions and complete text transcript.
+  - [x] Provide all six language contracts and error notes; pass seven fixtures per language and bundle-specific trace/retrieval checks.
+  - [x] Complete delegated source/browser review and the actual six-language learning loop; publication approval tracked under the separate release gates.
+- [x] Task 48: Author the sliding-window pilot bundle — COMPLETE locally; publication approval tracked under the separate release gates.
+  - [x] Author original `stable-signal-run` lesson, window invariant, pseudocode rubric, hints and review/transfer artifacts.
+  - [x] Implement seventeen-state expand/shrink trace, frequency table and complete text transcript.
+  - [x] Provide all six language contracts and error notes; pass eight fixtures per language and bundle-specific trace/retrieval checks.
+  - [x] Complete delegated source/browser review and the actual six-language learning loop; publication approval tracked under the separate release gates.
+- [x] Task 49: Author the stack pilot bundle — COMPLETE locally; publication approval tracked under the separate release gates.
+  - [x] Author original `signal-cancellation` lesson, stack invariant, pseudocode rubric, hints and review/transfer artifacts.
+  - [x] Implement seven-state push/pop/top trace and complete bottom-to-top text transcript.
+  - [x] Provide all six language contracts and error notes; pass eight fixtures per language and bundle-specific trace/retrieval checks.
+  - [x] Complete delegated source/browser review and the actual six-language learning loop; publication approval tracked under the separate release gates.
+- [x] Task 50: Validate pilot accessibility and collection mapping — COMPLETE for the owner-authorized browser-only scope.
+  - [x] Implement four attributable outbound mappings and published-only supported-internal/external-only/unavailable coverage.
+  - [x] Verify overlapping collections never duplicate required internal plan work.
+  - [x] Implement useful text equivalents for every pilot state, optional static isometric rendering and flat fallback.
+  - [x] Verify keyboard navigation, reduced motion, 320px layout, 200% zoom, all six language editors and automated accessibility at every trace state.
+  - [x] Check destination reachability and run frontend, database and execution-UI regression suites.
+  - [x] Complete delegated assistant mapping/rationale and DESIGN.md/readability review; actual human publication approval remains separate.
+  - Manual assistive-technology review is EXCLUDED from the owner-authorized browser-only scope; no screen-reader pass is claimed.
+
+### Recorded verification (2026-10-06/07)
+
+These boxes reference fresh executed local runs after the delegated review fixes; see the checksum-bound evidence record.
+
+- [x] Repository verification: 490 tests across 77 files, formatting, lint, types, architecture, tokens, documentation links and secret scan.
+- [x] PostgreSQL integration: 140 tests pass; all three Linux-only scenarios pass separately on the owned actual Linux/gVisor host, including every one of the 24 pilot/language combinations.
+- [x] Production build and production dependency audit pass; documented development-only `braces` advisory remains separate.
+- [x] Frontend E2E: 57 pass; accessibility regression: 32 pass; execution-browser regression: six pass.
+- [x] Pilot compiler conformance: all 24 bundle/language combinations pass, with 180 correct canonical results, 114 wrong starter results rejected and 24 compiled mutation candidates rejected.
+- [x] Actual Linux/gVisor: three connected scenarios pass; 24 pilot/language journeys have matching bundle checksums, rejected wrong answers, passing submissions, authored tutor fallback, reasoning/reference assistance and external handoff journal records. [Linux report](../docs/evidence/artifacts/phase10-local-linux-learning-loop-2026-10-06.json).
+- [x] Fix workspace bootstrap losing public pilot metadata, hard-coded pattern labels, inverted isometric pressed state and interception of modified navigation keys; rerun verification after the fixes.
+- [x] Complete Safari review of all four lessons and trace transcripts; close the owned review tab and stop the temporary browser fixture servers, PostgreSQL cluster and Linux VM.
+- [x] Keep Phase 10 local as instructed: no commit, push, PR or deployment.
+
+### Checkpoint F10: Pilot learning product milestone M4 — COMPLETE locally
+
+**Closure recorded 2026-10-07:** The owner requested completion of F10 after local verification, having delegated review, limited frontend testing to browsers, and instructed that Phase 10 stay local. This closes the local engineering milestone. The original persistent-publication requirements are carried forward as explicit release gates; they are not represented as completed human reviews or production publication. Phase 11 entry is a separate decision.
+
+- [x] Four pattern bundles pass the declared local content, delegated review and six-language gates; exact current bundle checksums match both compiler and Linux reports.
+- [x] Guided, roadmap, external handoff, review and AI-off tutor paths work together in the declared local scope.
+  - [x] Verify published-only connections and SQL/browser/synthetic tutor boundaries.
+  - [x] Pass all three actual Linux/gVisor scenarios and all 24 pilot/language journeys, including wrong-answer rejection, passing submissions, signed callbacks, reasoning, reference assistance, authored tutor fallback and handoff journaling.
+- [x] Critical frontend journeys pass automated accessibility checks and delegated browser review within the owner's browser-only scope.
+- [x] Record owner-requested F10 local closure and checksum-bound evidence; keep all work local.
+
+### Separate publication and release gates — retained, not completed
+
+- [ ] Record actual independent checksum-bound publication approvals and audited persistent publication for arrays/hashing.
+- [ ] Record the same independent publication approvals for two-pointers.
+- [ ] Record the same independent publication approvals for sliding-window.
+- [ ] Record the same independent publication approvals for stack.
+- Manual assistive-technology approval is excluded from the current browser-only work and remains unclaimed. The original broader accessibility release requirement is retained here.
+- Remote CI qualification is DEFERRED by the owner's explicit keep-local instruction. No publication permission request remains pending.
+- [x] Human owner authorizes Phase 11 preparation on 2026-10-07: “I approved, go to complete these task and ready for the next phase 11”. Actual independent publication remains pending staff assignments and decisions.
+- [x] Back up and migrate the persistent local database through 0038; verify migration replay, restricted runtime role and active publication guards. [Release readiness](../docs/evidence/phases/phase10-release-readiness.md).
+
+### Proposed learning-platform extension tasks — complete for local engineering (2026-10-07)
+
+- [x] Task 45b: Specify shared learning catalog and release contracts — C1; owner-authorized direction, six query/asset/interaction contracts and compatibility/rollback documented.
+- [x] Task 45c: Generalize the published catalog and learning workspace — typed release workspace, published catalog/alias lookup, exact owned attempt pins and connected recovery verified.
+- [x] Task 45d: Separate external destination and collection identities
+- [x] Task 45e: Synchronize pseudocode and algorithm walkthroughs
+- [x] Task 45f: Specify and implement navigation, deep links and authenticated return
+- [x] Task 45g: Extend release authoring and publication preflight
+- [x] Task 50a: Build curated Learn and sheet discovery
+- [x] Task 50b: Drive roadmap planning from the published catalog
+- [x] Task 50c: Close learner journeys, exits and recovery paths
+
+### Proposed learning-platform extension acceptance — complete for local engineering (2026-10-07)
+
+The owner subsequently authorized and requested completion of the extension. Tasks 45b–45g and 50a–50c now have separate local delivery and journey evidence. This extends the original pilot closure while preserving independent publication and later-phase gates.
+
+- [x] Learn, sheets and roadmap share release availability, deduplication and truthful coverage.
+- [x] Pseudocode, variables, visuals and accessible transcripts stay synchronized; historical attempts retain version pins.
+- [x] Task 50c closes the pilot J/E coverage report; every advertised action has a valid outcome, return path and relevant failure/recovery evidence.
+
+
+Local engineering closure: [delivery evidence](../docs/evidence/phases/phase10-platform-extension-evidence.md), [J/E coverage](../docs/evidence/phases/phase10-platform-extension-coverage.md). Independent publication, live AI, persistent rollout, private/shared sheets and Phase 11 remain separate.
 
 ## Phase 11: Privacy, observability, resilience, and operational readiness
 
-- [ ] Task 52: Implement privacy export, deletion, and retention workflows
-- [ ] Task 53: Implement production-safe telemetry, SLOs, and alerts
-- [ ] Task 54: Rehearse local restore, rollback, and incident procedures
+**Completion status: COMPLETE for local Phase 11 engineering.** Owner authorized full implementation on 2026-10-07 while setting aside independent Phase 10 publication, and authorized repository commit/push plus GitHub CI on 2026-10-08. [Implementation and verification evidence](../docs/evidence/phases/phase11-evidence.md) and [local operational policy](../docs/architecture/phase11-operational-policy.md) define the completed local scope. Hosted legal/retention decisions, staging PITR and production qualification remain Phase 12/Task 57 requirements.
 
-### Checkpoint F11: Operational assurance
+- [x] Task 52: Implement privacy export, deletion, and retention workflows
+- [x] Task 53: Implement production-safe telemetry, SLOs, and alerts
+- [x] Task 54: Rehearse local restore, rollback, and incident procedures
 
-- [ ] Privacy, budget, telemetry, alert, restore, and incident gates pass.
-- [ ] Known failures degrade safely and leave auditable state.
-- [ ] Actual evidence is separated from proposed targets.
+### Checkpoint F11: Operational assurance — local engineering COMPLETE
+
+- [x] Privacy, budget, telemetry, alert, restore, and incident gates pass.
+- [x] Known failures degrade safely and leave auditable state.
+- [x] Actual evidence is separated from proposed targets.
 - [ ] Human owner authorizes Phase 12.
 
 ## Phase 12: Hosted pilot release

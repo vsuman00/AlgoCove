@@ -15,8 +15,12 @@ import {
   PostgresReadinessContentRepository,
   PostgresHintRepository,
   PostgresPseudocodeRepository,
+  PostgresPilotRepository,
+  PILOT_REVIEW_KINDS,
+  withTransaction,
 } from "@algocove/db";
-import { formatId, PROBLEM_LANGUAGES, type ProblemLanguage } from "@algocove/domain";
+import { formatId, PROBLEM_LANGUAGES, pilotIdentity, type ProblemLanguage } from "@algocove/domain";
+import { validatePilotBundle } from "@algocove/content/pilot";
 import type * as RequestContextModule from "../../apps/web/src/auth/request-context";
 import type { PracticeRuntime } from "../../apps/web/src/practice/runtime";
 import { createHttpExecutionRelay } from "../../apps/web/src/adapters/execution-client";
@@ -48,6 +52,8 @@ vi.mock("../../apps/web/src/auth/request-context", async (original) => {
 });
 
 const routes = {
+  tutor: await import("../../apps/web/app/api/tutor/route"),
+  companion: await import("../../apps/web/app/api/practice/external-companion/route"),
   explanation: await import("../../apps/web/app/api/mastery/explanation/route"),
   publishedProblem: await import("../../apps/web/app/api/practice/problems/[problemId]/route"),
   workspace: await import("../../apps/web/app/api/practice/workspace/route"),
@@ -75,6 +81,8 @@ const nativeHost = process.env.LOCAL_PHASE5_NATIVE_HOST === "1";
 const nativeDirectory = process.env.LOCAL_EXECUTION_STATE_DIR;
 const nativeImages = process.env.LOCAL_EXECUTION_IMAGES_FILE;
 let hostProcess: ChildProcess | undefined;
+let nativePilotsFile: string | undefined;
+const pilotJourneys: unknown[] = [];
 async function killHost(): Promise<void> {
   if (nativeHost) {
     if (hostProcess?.pid && hostProcess.exitCode === null && hostProcess.signalCode === null) {
@@ -112,6 +120,7 @@ async function restartHost(images?: "missing" | "reviewed") {
         ALGO_COVE_LOCAL_EXECUTION: "1",
         LOCAL_EXECUTION_STATE_DIR: nativeDirectory,
         LOCAL_EXECUTION_IMAGES_FILE: nativeImages,
+        ...(nativePilotsFile ? { LOCAL_PUBLISHED_PILOTS_FILE: nativePilotsFile } : {}),
         LOCAL_RESULT_CALLBACK_URL: "http://127.0.0.1:3301/api/internal/practice/results",
         LOCAL_RESULT_CALLBACK_TOKEN: callbackToken,
       },
@@ -173,6 +182,10 @@ async function freshLearner(): Promise<void> {
   await fixture.runtime!.pool.query("INSERT INTO platform.learner(learner_id) VALUES($1)", [
     learner.value,
   ]);
+  await fixture.runtime!.pool.query(
+    "INSERT INTO platform.role_grant(learner_id,role) VALUES($1,'learner')",
+    [learner.value],
+  );
   fixture.actor = createActor({
     userId: learner.value,
     sessionId: session.value,
@@ -315,6 +328,11 @@ describe.skipIf(process.env.LOCAL_PHASE5_E2E !== "1")(
           let response: Response;
           if (path === "/api/auth/session")
             response = Response.json({ authenticated: true, user: { id: fixture.actor!.userId } });
+          else if (path === "/api/tutor")
+            response =
+              method === "GET" ? await routes.tutor.GET(request) : await routes.tutor.POST(request);
+          else if (path === "/api/practice/external-companion")
+            response = await routes.companion.POST(request);
           else if (path === "/api/mastery/explanation")
             response = await routes.explanation.POST(request);
           else if (path.startsWith("/api/practice/problems/") && request.method === "GET")
@@ -390,6 +408,11 @@ describe.skipIf(process.env.LOCAL_PHASE5_E2E !== "1")(
             authentication:
               "fixture actor only; real application routes, PostgreSQL, gVisor and signed callback",
             outcomes,
+            pilotJourneys,
+            publication:
+              "Independent actor fixture approvals only; not actual human review or learner curriculum activation",
+            commit: process.env.GITHUB_SHA ?? null,
+            workflowRun: process.env.GITHUB_RUN_ID ?? null,
           },
           null,
           2,
@@ -623,6 +646,253 @@ describe.skipIf(process.env.LOCAL_PHASE5_E2E !== "1")(
         await page.close();
       }
     }, 240000);
+
+    it.runIf(nativeHost)(
+      "completes all four published pilot bundles in all six languages on the actual isolated host",
+      async () => {
+        const { createWebRequestContext } = await import("../../apps/web/src/auth/request-context");
+        const { readContent, commandContent } =
+          await import("../../apps/web/src/content/operations");
+        const staff = [
+          "author",
+          "technical_reviewer",
+          "pedagogical_reviewer",
+          "evaluator",
+          "publisher",
+        ].map((role) => {
+          const user = formatId("learner", randomBytes(20).toString("hex"));
+          const session = formatId("session", randomBytes(20).toString("hex"));
+          if (!user.ok || !session.ok) throw Error("Invalid synthetic staff identity");
+          return createWebRequestContext(
+            createActor({ userId: user.value, sessionId: session.value, roles: [role] }),
+          );
+        });
+        const pool = fixture.runtime!.pool;
+        for (const ctx of staff) {
+          await pool.query("INSERT INTO platform.learner(learner_id) VALUES($1)", [
+            ctx.actor.userId,
+          ]);
+          await pool.query("INSERT INTO platform.role_grant(learner_id,role) VALUES($1,$2)", [
+            ctx.actor.userId,
+            ctx.actor.roles[0],
+          ]);
+        }
+        const bundles = ["arrays-hashing", "two-pointers", "sliding-window", "stack"].map(
+          (pattern) =>
+            validatePilotBundle(
+              JSON.parse(readFileSync(`content/patterns/${pattern}/bundle.json`, "utf8")),
+            ),
+        );
+        const standard = async (
+          actor: number,
+          versionId: string,
+          commandName: string,
+          extra: Record<string, unknown> = {},
+        ) => {
+          const record = (await readContent(staff[actor]!, versionId)).records[0]!;
+          await commandContent(staff[actor]!, {
+            command: commandName,
+            versionId,
+            expectedRevision: record.revision,
+            idempotencyKey: randomBytes(20).toString("hex"),
+            ...extra,
+          });
+        };
+        for (const b of bundles) {
+          const record = await withTransaction(pool, (tx) =>
+            new PostgresPilotRepository(tx).import(staff[0]!, b),
+          );
+          for (const kind of PILOT_REVIEW_KINDS) {
+            const actor = ["pedagogical", "accessibility"].includes(kind) ? 2 : 1;
+            await withTransaction(pool, (tx) =>
+              new PostgresPilotRepository(tx).review(staff[actor]!, {
+                versionId: record.versionId,
+                checksum: record.checksum,
+                kind,
+                decision: "approved",
+                notes: "Synthetic Linux test fixture only; not human publication evidence",
+              }),
+            );
+          }
+          await standard(1, record.versionId, "review", {
+            kind: "technical",
+            decision: "approved",
+            notes: "Synthetic Linux fixture only",
+          });
+          await standard(2, record.versionId, "review", {
+            kind: "pedagogical",
+            decision: "approved",
+            notes: "Synthetic Linux fixture only",
+          });
+          await standard(3, record.versionId, "validate");
+          await standard(4, record.versionId, "publish");
+        }
+        await withTransaction(pool, (tx) =>
+          new PostgresPilotRepository(tx).importCollection(
+            staff[0]!,
+            JSON.parse(readFileSync("content/collections/pilot-transfer.json", "utf8")),
+          ),
+        );
+        for (const b of bundles) {
+          const ids = pilotIdentity(b.slug)!;
+          await fixture.runtime!.readinessContent.command(staff[1]!, {
+            action: "review_reference",
+            referenceId: `ref_${ids.key.repeat(16)}`,
+            status: "reviewed",
+          });
+          for (const [actor, action] of [
+            [1, "technical_review"],
+            [2, "pedagogical_review"],
+            [4, "publish"],
+          ] as const)
+            await fixture.runtime!.readinessContent.command(staff[actor]!, {
+              action,
+              rubricId: `pilot.${b.pattern}.external.v1`,
+              version: 1,
+            });
+        }
+        const exported = await withTransaction(pool, (tx) =>
+          new PostgresPilotRepository(tx).exportPublished(staff[4]!),
+        );
+        expect(exported).toHaveLength(4);
+        nativePilotsFile = `${nativeDirectory}/published-pilot-fixture.local.json`;
+        writeFileSync(nativePilotsFile, JSON.stringify(exported), { mode: 0o600 });
+        await restartHost();
+        for (const b of bundles)
+          for (const language of PROBLEM_LANGUAGES) {
+            await freshLearner();
+            const page = await browser!.newPage();
+            try {
+              await page.route("**/api/**", async (route) => {
+                const response = await route.fetch({
+                  url: route.request().url().replace("127.0.0.1:3300", "127.0.0.1:3301"),
+                });
+                await route.fulfill({ response });
+              });
+              const bootstrap = page.waitForResponse(
+                (r) =>
+                  r.url().endsWith("/api/practice/workspace") && r.request().method() === "POST",
+              );
+              await page.goto(`http://127.0.0.1:3300/learn/${b.slug}?language=${language}`);
+              const loaded = await bootstrap;
+              expect(loaded.status()).toBe(200);
+              const workspace = await loaded.json();
+              expect(workspace.problem.pilot.checkpoint.prompt).toBe(b.review.prompt);
+              await browserExpect(page.locator(".ac-workspace__editor")).toHaveValue(
+                b.languages[language].starter,
+              );
+              for (const [field, text] of Object.entries(b.pseudocode))
+                await page
+                  .getByRole("textbox", {
+                    name: field[0]!.toUpperCase() + field.slice(1),
+                    exact: true,
+                  })
+                  .fill(text);
+              await page
+                .getByRole("combobox", { name: b.review.prompt, exact: true })
+                .selectOption(b.review.correctOption);
+              await page
+                .getByRole("button", { name: "Save and check reasoning revision", exact: true })
+                .click();
+              await browserExpect(page.getByText(/Revision \d+ saved\./)).toBeVisible();
+              // With AI-off the real tutor route must provide only the published authored fallback.
+              await page
+                .getByRole("textbox", { name: "Question", exact: true })
+                .fill("Clarify the bounded input");
+              const tutorStarted = page.waitForResponse(
+                (r) =>
+                  r.url().endsWith("/api/tutor") &&
+                  r.request().method() === "POST" &&
+                  r.request().postDataJSON()?.action === "start",
+              );
+              await page.getByRole("button", { name: "Ask tutor", exact: true }).click();
+              const tutorResponse = await tutorStarted;
+              expect(tutorResponse.ok(), JSON.stringify(await tutorResponse.json())).toBe(true);
+              await browserExpect(page.locator(".ac-tutor-panel")).toContainText(b.hints[0]!.text, {
+                timeout: 15000,
+              });
+              await page
+                .getByRole("button", { name: "Reveal reviewed reference", exact: true })
+                .click();
+              await browserExpect(page.locator(".ac-pilot-trace")).toBeVisible();
+              expect(
+                await fixture.runtime!.hints.getExposureByIdempotency({
+                  learnerId: fixture.actor!.userId,
+                  idempotencyKey: `reference-trace-${workspace.attempt.attemptId}`,
+                }),
+              ).toMatchObject({ tier: 4 });
+              const wrong = await execute(
+                page,
+                language,
+                b.languages[language].starter,
+                "run",
+                "Wrong answer",
+              );
+              expect(wrong.terminalCategory).toBe("wrong_answer");
+              const passed = await execute(
+                page,
+                language,
+                b.languages[language].solution,
+                "submit",
+                "Passed",
+              );
+              expect(passed.problemVersionId).toBe(pilotIdentity(b.slug)!.problemVersionId);
+              expect(passed.terminalCategory).toBe("pass");
+              const readiness = page.waitForResponse(
+                (r) =>
+                  r.url().includes("/api/practice/pseudocode/") && r.request().method() === "GET",
+              );
+              await page
+                .getByRole("button", { name: "Check reasoning readiness", exact: true })
+                .click();
+              expect((await (await readiness).json()).readiness.status).toBe("ready");
+              await page
+                .getByRole("button", { name: "Check external practice readiness", exact: true })
+                .click();
+              for (const question of b.readinessQuestions)
+                await page
+                  .getByRole("combobox", { name: question.prompt, exact: true })
+                  .selectOption(question.answer);
+              await page
+                .getByRole("button", { name: "Check preparation answers", exact: true })
+                .click();
+              await browserExpect(
+                page.getByText("Internal preparation is ready.", { exact: true }),
+              ).toBeVisible();
+              await page
+                .getByRole("button", { name: "Prepare external link", exact: true })
+                .click();
+              await browserExpect(
+                page.getByRole("link", { name: "Open on provider", exact: true }),
+              ).toHaveAttribute("href", /^https:\/\/leetcode\.com\/problems\//);
+              const journal = await pool.query(
+                "SELECT kind FROM practice.external_practice_event WHERE learner_id=$1 AND attempt_id=$2",
+                [fixture.actor!.userId, passed.attemptId],
+              );
+              expect(journal.rows.some((r) => r.kind === "handoff_requested")).toBe(true);
+              pilotJourneys.push({
+                pattern: b.pattern,
+                language,
+                bundleChecksum: exported.find((r) => validatePilotBundle(r.bundle).slug === b.slug)!
+                  .checksum,
+                wrongRunId: wrong.runId,
+                passedRunId: passed.runId,
+                actualSandbox: true,
+                reasoningReady: true,
+                assistanceTier: 4,
+                authoredTutorFallback: true,
+                externalReadiness: "ready",
+                journal: "handoff_requested",
+                publication: "synthetic fixture",
+              });
+            } finally {
+              await page.close();
+            }
+          }
+        expect(pilotJourneys).toHaveLength(24);
+      },
+      600000,
+    );
 
     it("cancels real execution, recovers a killed host without credit, and rejects missing images in every language", async () => {
       if (nativeHost) await freshLearner();

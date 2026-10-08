@@ -352,6 +352,35 @@
 .ac-schedule-list > li a {
   margin: 4px 8px 4px 0;
 }
+.ac-roadmap button:not(.ac-button):not(.ac-small-button) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 6px 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 500;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.1s ease;
+}
+.ac-roadmap button:not(.ac-button):not(.ac-small-button):hover:not(:disabled) {
+  background: var(--bg-subtle);
+  border-color: var(--color-slate-400);
+}
+.ac-roadmap button:not(.ac-button):not(.ac-small-button):active:not(:disabled) {
+  transform: translateY(1px);
+}
+.ac-roadmap button:not(.ac-button):not(.ac-small-button):disabled {
+  opacity: 0.48;
+  cursor: not-allowed;
+}
 .ac-roadmap {
   border-top: 1px solid var(--border-default);
   padding-top: 24px;
@@ -645,7 +674,7 @@
   color: var(--text-primary);
   font-weight: 600;
 }
-.ac-profile-strip .ac-learning-option {
+.ac-learning-option {
   display: inline-flex;
   min-height: 40px;
   align-items: center;
@@ -653,15 +682,60 @@
   margin: 0;
   border: 1px solid var(--border-default);
   border-radius: 999px;
-  padding: 6px 12px;
+  padding: 6px 14px;
   background: var(--bg-page);
   font-weight: 500;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
 }
-.ac-profile-strip .ac-learning-option input {
+.ac-learning-option:hover {
+  background: var(--bg-subtle);
+  border-color: var(--color-slate-400);
+}
+.ac-learning-option input {
   width: 16px;
   height: 16px;
   min-height: 0;
   accent-color: var(--action-primary);
+  cursor: pointer;
+}
+.ac-capability-card form {
+  display: grid;
+  gap: 16px;
+  width: 100%;
+  margin-top: 16px;
+  border-top: 1px solid var(--border-default);
+  padding-top: 16px;
+}
+.ac-capability-card fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border: 1px solid var(--border-default);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+.ac-capability-card legend {
+  font-weight: 600;
+  color: var(--text-primary);
+  padding-inline: 4px;
+}
+.ac-capability-card form label:not(.ac-learning-option) {
+  display: grid;
+  gap: 6px;
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--text-primary);
+}
+.ac-capability-card form select {
+  min-height: 40px;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  padding: 6px 12px;
+  background: var(--bg-surface);
+  font: inherit;
 }
 .ac-roadmap {
   margin-top: 28px;
@@ -701,6 +775,20 @@
   display: grid;
   gap: 8px;
   font-weight: 600;
+}
+.ac-roadmap > fieldset > label:has(input[type="checkbox"]) {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.ac-roadmap > fieldset > label:has(input[type="checkbox"]) input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--action-primary);
+  margin: 0;
+  cursor: pointer;
 }
 .ac-roadmap > fieldset select {
   min-height: 44px;
@@ -1104,4 +1192,105 @@
 .ac-tutor-panel :is(textarea, input):focus-visible {
   outline: var(--focus-ring);
   outline-offset: var(--focus-ring-offset);
+}
+
+.ac-pilot-trace {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+.ac-pilot-values {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0;
+  list-style: none;
+}
+.ac-pilot-values li {
+  padding: 8px;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+}
+.ac-pilot-values li[data-active="true"] {
+  border: 2px solid var(--text-primary);
+  font-weight: 600;
+}
+.ac-pilot-trace table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.ac-pilot-trace :is(th, td) {
+  padding: 8px;
+  border-bottom: 1px solid var(--border-default);
+  text-align: left;
+}
+.ac-pilot-trace:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.ac-pilot-trace[data-view="isometric"] .ac-pilot-values,
+.ac-pilot-trace[data-view="isometric"] .ac-pilot-stack {
+  transform: perspective(800px) rotateX(18deg) rotateY(-4deg);
+  transform-origin: center;
+  padding-block: 20px;
+}
+.ac-pilot-trace[data-view="isometric"] .ac-pilot-values li {
+  background: linear-gradient(145deg, var(--bg-surface), var(--bg-subtle));
+  box-shadow: 0 6px 0 var(--border-default);
+}
+.ac-pilot-values li[data-left="true"] {
+  border-inline-start: 4px solid var(--color-jade-600);
+}
+.ac-pilot-values li[data-right="true"] {
+  border-inline-end: 4px solid var(--color-coral-600);
+}
+.ac-pilot-stack {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 8px;
+  list-style: none;
+  padding: 12px;
+  width: fit-content;
+  max-width: 100%;
+}
+.ac-pilot-stack li {
+  border: 1px solid var(--border-default);
+  padding: 8px 16px;
+  border-radius: 8px;
+}
+.ac-pilot-stack li[data-top="true"] {
+  border-width: 2px;
+  font-weight: 700;
+}
+@media (prefers-reduced-motion: reduce), (max-width: 600px) {
+  .ac-pilot-trace[data-view="isometric"] .ac-pilot-values,
+  .ac-pilot-trace[data-view="isometric"] .ac-pilot-stack {
+    transform: none;
+  }
+}
+
+.ac-walkthrough-code li {
+  padding: var(--space-2, 8px);
+  overflow-wrap: anywhere;
+}
+.ac-walkthrough-code li[data-active="true"] {
+  background: var(--bg-info);
+  border-left: 3px solid var(--color-tide-700);
+}
+.ac-pilot-trace dl {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.ac-pilot-trace dl div {
+  min-width: 100px;
+}
+.ac-pilot-trace .ac-tutor-actions {
+  flex-wrap: wrap;
+}
+.ac-pilot-trace select,
+.ac-pilot-trace input {
+  max-width: 100%;
+  min-height: 44px;
 }

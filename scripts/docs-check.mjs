@@ -3,7 +3,16 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const markdownRoots = ["ARCHITECTURE.md", "DESIGN.md", "docs", "tasks"];
+const markdownRoots = [
+  "README.md",
+  "ARCHITECTURE.md",
+  "DESIGN.md",
+  "docs",
+  "ops",
+  "services",
+  "spikes",
+  "tasks",
+];
 
 async function filesUnder(relativePath) {
   const absolutePath = path.join(root, relativePath);

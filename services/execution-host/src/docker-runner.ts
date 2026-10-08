@@ -1,3 +1,4 @@
+import type { ReviewedPilot } from "./pilot-problem.ts";
 import { spawn } from "node:child_process";
 import {
   sha256Digest,
@@ -80,6 +81,7 @@ export const dockerCommand: DockerCommand = (args, options = {}) =>
 export function createGvisorRunner(
   images: Readonly<Record<RunDescriptor["language"], string>>,
   command: DockerCommand = dockerCommand,
+  pilots: ReadonlyMap<string, ReviewedPilot> = new Map(),
 ) {
   let quarantined = false;
   return async (
@@ -92,18 +94,21 @@ export function createGvisorRunner(
       phase: "run",
       teardownConfirmed: true,
     };
+    const pilot = pilots.get(descriptor.problemVersionId);
     if (
       quarantined ||
-      descriptor.problemVersionId !== CONTAINER_PROBLEM ||
-      descriptor.manifestDigest !== containerManifestDigest(descriptor.language) ||
-      descriptor.fixtureDigest !== CONTAINER_FIXTURE_DIGEST ||
+      (!pilot && descriptor.problemVersionId !== CONTAINER_PROBLEM) ||
+      descriptor.manifestDigest !==
+        (pilot?.manifestDigest(descriptor.language) ??
+          containerManifestDigest(descriptor.language)) ||
+      descriptor.fixtureDigest !== (pilot?.fixtureDigest ?? CONTAINER_FIXTURE_DIGEST) ||
       sha256Digest(source) !== descriptor.sourceDigest ||
       Buffer.byteLength(source) > descriptor.limits.sourceLimitBytes ||
       !images[descriptor.language].endsWith(descriptor.runtimeImageDigest)
     )
       return infrastructure;
     const name = `algocove-local-${descriptor.runId}`;
-    const harness = containerHarness(descriptor.language, source);
+    const harness = (pilot?.harness ?? containerHarness)(descriptor.language, source);
     let verdict: HostVerdict = infrastructure;
     let created = false;
     const execute = async (): Promise<HostVerdict> => {
@@ -196,9 +201,10 @@ export function createGvisorRunner(
         }
       }
       const runDeadline = Date.now() + descriptor.limits.runTimeoutMs;
-      for (const fixture of CONTAINER_FIXTURES) {
+      for (const fixture of pilot?.fixtures ??
+        CONTAINER_FIXTURES.map((f) => ({ ...f, values: f.heights }))) {
         const outcome = await command(["exec", "-i", name, ...harness.run], {
-          input: `${fixture.heights.length}\n${fixture.heights.join(" ")}\n`,
+          input: `${fixture.values.length}\n${fixture.values.join(" ")}\n`,
           timeoutMs: Math.max(1, runDeadline - Date.now()),
           outputLimitBytes: descriptor.limits.outputLimitBytes,
           signal,

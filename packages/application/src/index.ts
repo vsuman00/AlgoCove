@@ -199,3 +199,6 @@ export type {
   TutorWork,
   TutorRepository,
 } from "./tutor-contracts.ts";
+
+export * from "./learning-catalog.ts";
+export * from "./privacy-workflows.ts";

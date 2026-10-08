@@ -17,7 +17,11 @@
       "@algocove/visualizer": ["packages/visualizer/src/index.ts"],
       "@algocove/content": ["packages/content/src/index.ts"],
       "@algocove/retrieval": ["packages/retrieval/src/index.ts"],
-      "@algocove/tutor": ["packages/tutor/src/index.ts"]
+      "@algocove/tutor": ["packages/tutor/src/index.ts"],
+      "@algocove/content/pilot": ["packages/content/src/pilot-bundle.ts"],
+      "@algocove/content/pilot-harness": ["packages/content/src/pilot-harness.ts"],
+      "@algocove/content/pilot-collection": ["packages/content/src/pilot-collection.ts"],
+      "@algocove/content/learning-release": ["packages/content/src/learning-release.ts"]
     },
     "moduleDetection": "force",
     "resolveJsonModule": true,
