@@ -1,0 +1,73 @@
+name: Gated web Preview release
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: web-preview-release
+  cancel-in-progress: false
+
+jobs:
+  preview:
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_repository.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      RELEASE_SHA: ${{ github.event.workflow_run.head_sha }}
+      VERCEL_ORG_ID: team_LGvZpIlcg4QXoGDvgCh1JX0v
+      VERCEL_PROJECT_ID: prj_y4QC0yhk2h2frXDs8l3H0yn9IjJK
+    steps:
+      - uses: actions/checkout@v5.1.0
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v7.0.0
+        with:
+          node-version-file: .nvmrc
+      - name: Admit exact CI revision
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node ops/release/preflight.ts --sha "$RELEASE_SHA" > release-ci.json
+      - name: Require scoped provider credentials
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          if [ -z "$VERCEL_TOKEN" ]; then
+            echo "Missing repository secret VERCEL_TOKEN; no deployment attempted." >&2
+            exit 1
+          fi
+      - name: Deploy immutable Preview without assigning domains
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          mkdir -p .vercel
+          node --input-type=module -e 'import {writeFileSync} from "node:fs"; writeFileSync(".vercel/project.json", JSON.stringify({orgId:process.env.VERCEL_ORG_ID,projectId:process.env.VERCEL_PROJECT_ID}));'
+          npx --yes vercel@63.1.2 deploy --yes --skip-domain --scope "$VERCEL_ORG_ID" --token "$VERCEL_TOKEN" > release-url.txt
+      - name: Check protected Preview health and database readiness
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          url="$(cat release-url.txt)"
+          if [[ ! "$url" =~ ^https://algocove-[a-z0-9]+-vsuman00s-projects\.vercel\.app$ ]]; then
+            echo "Unexpected deployment URL; smoke checks stopped." >&2
+            exit 1
+          fi
+          npx --yes vercel@63.1.2 curl "$url/api/health" --scope "$VERCEL_ORG_ID" --token "$VERCEL_TOKEN" -- --fail --silent --show-error > release-health.json
+          npx --yes vercel@63.1.2 curl "$url/api/readiness" --scope "$VERCEL_ORG_ID" --token "$VERCEL_TOKEN" -- --fail --silent --show-error > release-readiness.json
+          node --input-type=module -e 'import {readFileSync,writeFileSync} from "node:fs"; const health=JSON.parse(readFileSync("release-health.json","utf8")); const ready=JSON.parse(readFileSync("release-readiness.json","utf8")); if(health.status!=="live" || ready.status!=="ready" || ready.checks?.database!=="ok") throw Error("Preview admission failed"); writeFileSync("release-receipt.json",JSON.stringify({commitSha:process.env.RELEASE_SHA,target:"preview",url:readFileSync("release-url.txt","utf8").trim(),ci:JSON.parse(readFileSync("release-ci.json","utf8")),health:health.status,readiness:ready.status},null,2));'
+      - name: Retain payload-free release identity
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: web-preview-${{ github.event.workflow_run.head_sha }}
+          path: release-receipt.json
+          if-no-files-found: error
