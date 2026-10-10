@@ -17,7 +17,9 @@ try {
     JSON.stringify({
       status: "hobby_account_failed",
       reason:
-        error instanceof Error && safeReasons.has(error.message)
+        error instanceof Error &&
+        (safeReasons.has(error.message) ||
+          /^(team|project)_read_http_[1-5][0-9]{2}$/.test(error.message))
           ? error.message
           : "account_or_access_not_qualified",
     }) + "\n",

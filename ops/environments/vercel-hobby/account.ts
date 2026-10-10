@@ -49,7 +49,7 @@ export async function inspectHobbyAccount(
   request: typeof fetch = fetch,
 ): Promise<ReturnType<typeof qualifyHobbyAccount>> {
   if (!token.trim()) throw Error("provider_token_required");
-  async function read(path: string): Promise<unknown> {
+  async function read(path: string, scope: "team" | "project"): Promise<unknown> {
     const response = await request(`https://api.vercel.com${path}`, {
       method: "GET",
       headers: { Authorization: `Bearer ${token}` },
@@ -57,10 +57,13 @@ export async function inspectHobbyAccount(
       signal: AbortSignal.timeout(15_000),
     });
     // Provider error bodies may contain private account/credential material.
-    if (!response.ok) throw Error("provider_read_rejected");
+    if (!response.ok) throw Error(`${scope}_read_http_${response.status}`);
     return response.json();
   }
-  const team = await read(`/v2/teams/${hobbyTarget.teamId}`);
-  const project = await read(`/v9/projects/${hobbyTarget.projectId}?teamId=${hobbyTarget.teamId}`);
+  const project = await read(
+    `/v9/projects/${hobbyTarget.projectId}?teamId=${hobbyTarget.teamId}`,
+    "project",
+  );
+  const team = await read(`/v2/teams/${hobbyTarget.teamId}`, "team");
   return qualifyHobbyAccount(team, project);
 }

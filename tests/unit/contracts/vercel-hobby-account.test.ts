@@ -43,13 +43,13 @@ describe("Hobby account admission", () => {
       expect(options?.redirect).toBe("error");
       expect(options?.signal).toBeInstanceOf(AbortSignal);
       return Response.json(
-        calls.length === 1 ? { ...team, privateField: "PRIVATE_CANARY" } : project,
+        calls.length === 1 ? project : { ...team, privateField: "PRIVATE_CANARY" },
       );
     };
     const receipt = await inspectHobbyAccount("synthetic-token", request);
     expect(calls).toEqual([
-      `https://api.vercel.com/v2/teams/${hobbyTarget.teamId}`,
       `https://api.vercel.com/v9/projects/${hobbyTarget.projectId}?teamId=${hobbyTarget.teamId}`,
+      `https://api.vercel.com/v2/teams/${hobbyTarget.teamId}`,
     ]);
     expect(JSON.stringify(receipt)).not.toContain("PRIVATE_CANARY");
   });
@@ -68,6 +68,6 @@ describe("Hobby account admission", () => {
         "synthetic-token",
         async () => new Response("PRIVATE_CANARY", { status: 403 }),
       ),
-    ).rejects.toThrow("provider_read_rejected");
+    ).rejects.toThrow("project_read_http_403");
   });
 });
