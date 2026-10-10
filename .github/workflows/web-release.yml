@@ -47,25 +47,10 @@ jobs:
             echo "Missing repository secret VERCEL_TOKEN; no deployment attempted." >&2
             exit 1
           fi
-      - name: Deploy immutable Preview without assigning domains
+      - name: Deploy exact revision through the scoped project API
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-        run: |
-          mkdir -p .vercel
-          node --input-type=module -e 'import {writeFileSync} from "node:fs"; writeFileSync(".vercel/project.json", JSON.stringify({orgId:process.env.VERCEL_ORG_ID,projectId:process.env.VERCEL_PROJECT_ID}));'
-          npx --yes vercel@63.1.2 deploy --yes --skip-domain --scope "$VERCEL_ORG_ID" --token "$VERCEL_TOKEN" > release-url.txt
-      - name: Check protected Preview health and database readiness
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-        run: |
-          url="$(cat release-url.txt)"
-          if [[ ! "$url" =~ ^https://algocove-[a-z0-9]+-vsuman00s-projects\.vercel\.app$ ]]; then
-            echo "Unexpected deployment URL; smoke checks stopped." >&2
-            exit 1
-          fi
-          npx --yes vercel@63.1.2 curl "$url/api/health" --scope "$VERCEL_ORG_ID" --token "$VERCEL_TOKEN" -- --fail --silent --show-error > release-health.json
-          npx --yes vercel@63.1.2 curl "$url/api/readiness" --scope "$VERCEL_ORG_ID" --token "$VERCEL_TOKEN" -- --fail --silent --show-error > release-readiness.json
-          node --input-type=module -e 'import {readFileSync,writeFileSync} from "node:fs"; const health=JSON.parse(readFileSync("release-health.json","utf8")); const ready=JSON.parse(readFileSync("release-readiness.json","utf8")); if(health.status!=="live" || ready.status!=="ready" || ready.checks?.database!=="ok") throw Error("Preview admission failed"); writeFileSync("release-receipt.json",JSON.stringify({commitSha:process.env.RELEASE_SHA,target:"preview",url:readFileSync("release-url.txt","utf8").trim(),ci:JSON.parse(readFileSync("release-ci.json","utf8")),health:health.status,readiness:ready.status},null,2));'
+        run: node ops/release/deploy-preview.ts --sha "$RELEASE_SHA"
       - name: Retain payload-free release identity
         uses: actions/upload-artifact@v7.0.1
         with:
