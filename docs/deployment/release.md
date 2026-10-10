@@ -22,4 +22,6 @@ Execution images have a separate dispatch/tag workflow: exact-CI admission, buil
 
 ## Qualification still required
 
-The CI admission rejection cases are tested locally; a live failing-CI deployment attempt, the complete credential-bound deployment workflow, hosted alias rollback, independently published image lineage, real hosted authentication lifecycle, hosted recovery/deletion replay and pilot assurance still need current receipts. [Phase 12 evidence](../evidence/phases/phase12-evidence.md) records demonstrated results separately from these requirements.
+The CI admission rejection cases are tested locally; a live failing-CI deployment attempt, complete independent image/configuration lineage, full hosted authentication qualification, hosted recovery/deletion replay and pilot assurance still need current receipts. [Phase 12 evidence](../evidence/phases/phase12-evidence.md) records demonstrated results separately from these requirements.
+
+Merged-main CI admission, the credential-bound protected Preview workflow and dedicated alias rollback have now passed. The first independent image release correctly blocked Java signing on its vulnerability scan; only two profiles completed. [Current receipts and limits](../evidence/phases/phase12-evidence.md#merged-main-release-and-free-hosted-assurance).
