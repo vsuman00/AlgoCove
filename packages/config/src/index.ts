@@ -252,6 +252,14 @@ export function loadConfigFromProcess(environment: EnvironmentSource = process.e
 /** Hosted web admission; local builds remain dependency-free. No values enter errors. */
 export function assertHostedWebEnvironment(source: EnvironmentSource): Config | null {
   const deployment = source.DEPLOYMENT_ENVIRONMENT ?? "local";
+  if (source.VERCEL === "1" && deployment === "local") {
+    throw new ConfigError([
+      {
+        key: "DEPLOYMENT_ENVIRONMENT",
+        message: "must explicitly identify the hosted environment on Vercel",
+      },
+    ]);
+  }
   if (deployment === "local") return null;
   if (deployment !== "staging" && deployment !== "production") {
     throw new ConfigError([

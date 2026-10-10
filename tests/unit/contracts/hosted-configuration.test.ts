@@ -14,6 +14,15 @@ const staging = {
 };
 
 describe("hosted web configuration admission", () => {
+  it("rejects missing or local admission markers on Vercel", () => {
+    expect(() => assertHostedWebEnvironment({ NODE_ENV: "production", VERCEL: "1" })).toThrow(
+      /DEPLOYMENT_ENVIRONMENT/,
+    );
+    expect(() =>
+      assertHostedWebEnvironment({ ...staging, VERCEL: "1", DEPLOYMENT_ENVIRONMENT: "local" }),
+    ).toThrow(/DEPLOYMENT_ENVIRONMENT/);
+    expect(() => assertHostedWebEnvironment({ ...staging, VERCEL: "1" })).not.toThrow();
+  });
   it("keeps local builds and liveness independent of hosted credentials", () => {
     expect(assertHostedWebEnvironment({ NODE_ENV: "production" })).toBeNull();
     expect(assertHostedWebEnvironment({ DEPLOYMENT_ENVIRONMENT: "local" })).toBeNull();
