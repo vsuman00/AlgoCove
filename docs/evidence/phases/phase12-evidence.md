@@ -13,7 +13,7 @@ These are local engineering results. No hosted identity, migration, restore/PITR
 
 ## Provider actions
 
-Vercel project `algocove`, ID `prj_y4QC0yhk2h2frXDs8l3H0yn9IjJK`, was created in team `vsuman00s-projects`. The project API confirms Next.js and Node 22.x. Monorepo root, external workspace inclusion and pinned install/build commands were submitted successfully; the subsequent successful hosted build verifies that this workspace builds on Vercel. No Git auto-production link was enabled.
+Vercel project `algocove`, ID `prj_y4QC0yhk2h2frXDs8l3H0yn9IjJK`, was created in team `vsuman00s-projects`. The project API confirms Next.js and Node 22.x. Monorepo root, external workspace inclusion and pinned install/build commands were submitted successfully; the subsequent successful hosted build verifies that this workspace builds on Vercel. Later inspection of the main merge found an automatic production deployment; the release follow-up below records that behavior and the corrective configuration.
 
 Appwrite managed PostgreSQL was initially proposed. The owner subsequently selected Neon Free in Singapore within a strict $0 budget. Supporting execution/worker infrastructure, recovery assurance and hosted policy decisions remain open.
 
@@ -51,3 +51,31 @@ The hosted inspection found a misleading “local environment” label in the sh
 ## Remaining Phase 12 requirements
 
 Task 55 remains in progress because isolated execution hosts, separately supervised worker processing, durable deletion recovery, telemetry operations and environment security review are not all provisioned/qualified. Execution and live tutor/roadmap generation remain disabled. Tasks 55a, 56 and 57 remain unchecked: actual sign-in/sign-out/revocation/reverification/MFA, complete gated promotion/rollback drills, hosted restore, load, privacy/accessibility assurance and the named pilot-readiness decision still need evidence. The six-hour Neon Free history window is a capacity limit, not recovery assurance. No real learner cohort or production release is admitted by the successful web smoke test.
+
+## Release and identity hardening follow-up
+
+The owner merged PR #1 into `main` at `1e8644c0a922c85d74f8d6bfabcd9449eb563731`. [CI run 38029436366](https://github.com/vsuman00/AlgoCove/actions/runs/38029436366) passed all three jobs. Vercel automatically created production-target deployment `dpl_GKNSzo4BdGbLXiTcDq3BKQYVmdRn` before CI completed. Its health/readiness passed and execution remained disabled; this provider target does not constitute pilot approval.
+
+Follow-up source commits implement strict five-minute privileged MFA using Clerk-verified first/second-factor ages, hosted-marker admission on Vercel, and exact-revision CI admission. Local `pnpm verify` passes 584 tests plus formatting, lint, types, tokens, documentation and secret checks. The release gate was also exercised successfully against both prior source `9cf66c8e2d17cb38cfdff368400e350a7d521163` and merged main `1e8644c0a922c85d74f8d6bfabcd9449eb563731`.
+
+The [release procedure](../../deployment/release.md) defines the new gated Preview workflow and independent image admission. Automatic `main` deployments are disabled in the proposed Vercel configuration; this has not yet been merged/read back as active provider policy. [PR #2](https://github.com/vsuman00/AlgoCove/pull/2) carries these changes. Its automatic Preview at source `48d27582ac42e862e7fcb68bd4861b80e11f1380` is `dpl_HeVwQ6VTyCG1dDdZnEMqiGtoUZrD`, READY, target Preview. Provider automatic Preview creation is separate from the gated release workflow.
+
+## Isolated hosted database snapshot recovery
+
+At 06:17:53 UTC, snapshot `snap-twilight-lab-b349z7qm` was created from staging branch `br-winter-truth-b3qk2wzu`, with expiry 2026-10-11 06:30 UTC. At 06:18:03 UTC, restoration with `finalize: false` created separate branch `br-aged-mouse-b3tkd3bo`; it became READY at 06:18:04 UTC. No existing branch was replaced or finalized, and original endpoint `ep-ancient-star-b338mxn4` remained attached to staging.
+
+The restored branch reports 40 migrations, watermark `0040`, pgvector present, and a runtime role without superuser, createdb or createrole. A direct restricted-runtime check passes verified TLS transport, runtime-role qualification, pgvector and Phase 11 schema checks. The restore API returned in approximately 3.46 seconds; successful SQL qualification was available within approximately 30 seconds of invocation, including operator orchestration. These timings describe database readiness only, not application RTO. No deliberate pre/post-loss marker was written, so no workload RPO is claimed.
+
+Restored endpoint `ep-dry-cake-b3viqenn` uses 0.25 CU minimum/maximum. Suspension was requested after inspection. The snapshot occupies the Free plan's manual snapshot allowance until expiry; the separate branch remains available for review and is not attached to the web application. Existing application environment credentials were unchanged. Hosted asset recovery, historical PITR, deletion-ledger replay and application recovery remain unqualified.
+
+The [pilot readiness matrix](../pilot-readiness.md) lists the remaining non-waivable gates and maintains a NOT READY decision.
+
+## Real staging authentication lifecycle
+
+`pnpm test:hosted-auth` passes the development-instance email-code journey against immutable Preview `dpl_HeVwQ6VTyCG1dDdZnEMqiGtoUZrD`. The test creates a unique reserved Clerk test email and temporary account, uses Clerk's client-side email-code verification helper, observes application `/api/auth/session` returning HTTP 200 with the learner role, signs out, then observes HTTP 401 with `authenticated: false`. It deletes only its own provider account and exact provider-subject database mapping/learner fixture afterward. No real email recipient, persisted browser session, trace, screenshot or video is used.
+
+The password helper initially produced no active session under the instance's verification requirements; it is not counted as a successful password/MFA flow. Email-code testing exercises the configured development verification path, not production identity assurance or privileged MFA. A temporary Vercel share cookie grants deployment access separately from Clerk authentication; revocation was requested after testing. Real backend session revocation, privileged MFA/reverification, callback and cross-account qualification remain pending. The harness requires development keys and an immutable project Preview, and must never run against live Clerk keys.
+
+The owner supplied `VERCEL_TOKEN` through GitHub, initially as an environment secret and then as a repository secret. The first credential check [run 38031087186](https://github.com/vsuman00/AlgoCove/actions/runs/38031087186) was rejected by Vercel with “User not found (404)” before any deployment. The owner replaced the secret. CLI account lookup still returned 404, but the scoped project API check passed in [run 38031339069](https://github.com/vsuman00/AlgoCove/actions/runs/38031339069), confirming access to the expected project/team. The release workflow now uses that API path. This read-only credential result does not prove deployment-write permissions or a completed deployment workflow.
+
+Final local follow-up verification passes 587 tests, including three Preview safety cases (production-target cancellation, commit mismatch and redacted provider rejection), formatting, lint, types, tokens, documentation and secret checks. The development dependency audit passes its existing policy with the previously documented unpatched dev-only braces advisory. The complete hosted release workflow remains unexecuted until merged; current read-only provider access is verified.

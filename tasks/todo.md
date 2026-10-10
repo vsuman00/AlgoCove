@@ -382,9 +382,9 @@ Local engineering closure: [delivery evidence](../docs/evidence/phases/phase10-p
 ## Phase 12: Hosted pilot release
 
 - [ ] Task 55: Provision the approved single-region staging environment — IN PROGRESS: Vercel Singapore Preview is READY and web/database/Clerk-entry/anonymous-authorization smoke checks pass; Neon Free has 40 migrations and restricted runtime/TLS qualification; execution/worker infrastructure, environment security review and complete hosted qualification remain pending.
-- [ ] Task 55a: Integrate hosted authentication and privileged session controls
-- [ ] Task 56: Implement CI/CD, migration, image, and configuration promotion
-- [ ] Task 57: Execute the hosted-pilot readiness gate
+- [ ] Task 55a: Integrate hosted authentication and privileged session controls — PARTIAL: real development email-code sign-in/application session/sign-out pass; strict provider-verified privileged MFA, Vercel marker admission and request-context role-removal tests pass; backend revocation, real privileged MFA and ownership/callback qualification remain pending.
+- [ ] Task 56: Implement CI/CD, migration, image, and configuration promotion — PARTIAL: exact-revision CI admission and gated web/image workflows implemented; credential-bound deployment and hosted rollback/configuration lineage still require receipts.
+- [ ] Task 57: Execute the hosted-pilot readiness gate — NOT READY: isolated Neon snapshot recovery verified; [readiness matrix](../docs/evidence/pilot-readiness.md) records remaining non-waivable hosted execution/privacy/content/recovery gates and named human approval.
 
 ### Checkpoint F12: Hosted pilot milestone M5
 

@@ -12,6 +12,7 @@ import { getClerkIdentityAdapter } from "./clerk-adapter";
 import { isClerkConfigured } from "./clerk-config";
 import { auth } from "./clerk-server";
 import { rememberTelemetryContext } from "../operations/telemetry";
+import { requireHostedPrivilegedSession } from "./privileged-session";
 
 const randomIds: IdGenerator = {
   generate<TKind extends Parameters<typeof formatId>[0]>(kind: TKind) {
@@ -60,6 +61,10 @@ export async function authenticatedWebRequestContext(
     sessionId: clerkAuth.sessionId,
     allowDeletionPending: options.allowDeletionPending === true,
   });
+  requireHostedPrivilegedSession(
+    actor.roles,
+    "factorVerificationAge" in clerkAuth ? clerkAuth.factorVerificationAge : null,
+  );
   const context = createWebRequestContext(actor, webTraceId(request));
   rememberTelemetryContext(request, context);
   return context;

@@ -42,3 +42,6 @@ pnpm-debug.log*
 
 # Local recovery/draft artifacts must never be committed
 *.local.json
+
+# Local Vercel project linkage and downloaded environment
+.vercel/

@@ -55,10 +55,12 @@
     "ops:restore-drill": "node ops/restore/run-drill.ts",
     "ops:alerts": "node ops/alerts/check.ts",
     "staging:preflight": "node ops/environments/staging/preflight.ts",
-    "test:hosted-startup": "node --test --test-timeout=20000 tests/deployment/hosted-startup.test.mjs"
+    "test:hosted-startup": "node --test --test-timeout=20000 tests/deployment/hosted-startup.test.mjs",
+    "test:hosted-auth": "playwright test --config tests/hosted-auth/playwright.config.ts"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.13.0",
+    "@clerk/testing": "2.2.45",
     "@eslint/js": "9.39.5",
     "@playwright/test": "1.63.0",
     "@tailwindcss/postcss": "4.3.3",

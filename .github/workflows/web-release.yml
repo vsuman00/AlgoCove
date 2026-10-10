@@ -1,0 +1,59 @@
+name: Gated web Preview release
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: web-preview-release
+  cancel-in-progress: false
+
+jobs:
+  preview:
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_repository.full_name == github.repository
+    runs-on: ubuntu-latest
+    environment: Preview
+    timeout-minutes: 20
+    env:
+      RELEASE_SHA: ${{ github.event.workflow_run.head_sha }}
+      VERCEL_ORG_ID: team_LGvZpIlcg4QXoGDvgCh1JX0v
+      VERCEL_PROJECT_ID: prj_y4QC0yhk2h2frXDs8l3H0yn9IjJK
+    steps:
+      - uses: actions/checkout@v5.1.0
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v7.0.0
+        with:
+          node-version-file: .nvmrc
+      - name: Admit exact CI revision
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node ops/release/preflight.ts --sha "$RELEASE_SHA" > release-ci.json
+      - name: Require scoped provider credentials
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          if [ -z "$VERCEL_TOKEN" ]; then
+            echo "Missing repository secret VERCEL_TOKEN; no deployment attempted." >&2
+            exit 1
+          fi
+      - name: Deploy exact revision through the scoped project API
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: node ops/release/deploy-preview.ts --sha "$RELEASE_SHA"
+      - name: Retain payload-free release identity
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: web-preview-${{ github.event.workflow_run.head_sha }}
+          path: release-receipt.json
+          if-no-files-found: error
