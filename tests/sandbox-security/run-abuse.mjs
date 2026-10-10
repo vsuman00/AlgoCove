@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import { spawn, spawnSync } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { abuseOutcomePassed } from "./outcome.ts";
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 const manifest = JSON.parse(await readFile(path.join(root, "abuse-manifest.json"), "utf8"));
@@ -59,6 +60,7 @@ raise SystemExit(1)
   "fork-thread-bomb": `
 import os
 children = []
+limit_hit = False
 try:
     for _ in range(64):
         child = os.fork()
@@ -66,13 +68,14 @@ try:
             os._exit(0)
         children.append(child)
 except OSError:
-    pass
+    limit_hit = True
 for child in children:
     try:
         os.waitpid(child, 0)
     except ChildProcessError:
         pass
-print("PID_LIMIT=ENFORCED")
+print("PID_LIMIT=" + ("ENFORCED" if limit_hit else "MISSING"))
+raise SystemExit(0 if limit_hit else 2)
 `,
   "memory-flood": `
 try:
@@ -154,71 +157,102 @@ function hasContainerResidue(name) {
   const result = spawnSync("docker", ["ps", "--all", "--quiet", "--filter", `name=^${name}$`], {
     encoding: "utf8",
   });
+  if (result.status !== 0) throw new Error("Container teardown inspection failed.");
   return (result.stdout ?? "").trim().length > 0;
 }
 
 function runFixture(fixture) {
   const name = `algocove-abuse-${fixture.id}-${process.pid}`;
-  const command = `cat > /work/fixture.py && python /work/fixture.py`;
-  const child = spawn(
+  const startup = spawnSync(
     "docker",
-    ["run", "--rm", "-i", `--name=${name}`, ...limits, image, "sh", "-c", command],
-    { stdio: ["pipe", "pipe", "pipe"] },
+    ["run", "--rm", "-d", `--name=${name}`, ...limits, image, "sh", "-c", "exec sleep 120"],
+    {
+      encoding: "utf8",
+      timeout: manifest.maxStartupDurationMs,
+    },
   );
+  if (startup.status !== 0) {
+    cleanup(name);
+    if (hasContainerResidue(name)) throw new Error(`${fixture.id} left startup residue.`);
+    throw new Error(`${fixture.id} infrastructure startup failed.`);
+  }
+  const marker = "ALGO_COVE_FIXTURE_READY";
+  const command =
+    "cat > /work/fixture.py && echo ALGO_COVE_FIXTURE_READY && exec python /work/fixture.py";
+  const child = spawn("docker", ["exec", "-i", name, "sh", "-c", command], {
+    stdio: ["pipe", "pipe", "pipe"],
+  });
   let output = "";
   let overflow = false;
   let timedOut = false;
   let settled = false;
+  let ready = false;
+  let stdout = "";
   let timeout;
 
-  const finish = (exitCode, signal) => {
-    if (settled) return;
-    settled = true;
-    clearTimeout(timeout);
-    cleanup(name);
-    const residue = hasContainerResidue(name);
-    process.stdout.write(
-      `${fixture.id} exit=${exitCode ?? "none"} signal=${signal ?? "none"} timeout=${timedOut} overflow=${overflow} residue=${residue}\n`,
-    );
-    if (residue) throw new Error(`${fixture.id} left a Docker container behind.`);
-    const expectation = fixture.terminalExpectation;
-    const safeProbe = expectation === "safe_probe" && exitCode === 0 && !timedOut && !overflow;
-    const boundedLimit =
-      expectation === "bounded_limit" && exitCode !== 0 && !timedOut && !overflow;
-    const controlPlane = expectation === "control_plane" && (timedOut || overflow);
-    if (!(safeProbe || boundedLimit || controlPlane)) {
-      throw new Error(`${fixture.id} did not satisfy ${expectation}.`);
-    }
-  };
+  return new Promise((resolve, reject) => {
+    const finish = (exitCode, signal) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timeout);
+      try {
+        cleanup(name);
+        const residue = hasContainerResidue(name);
+        process.stdout.write(
+          `${fixture.id} ready=${ready} exit=${exitCode ?? "none"} signal=${signal ?? "none"} timeout=${timedOut} overflow=${overflow} residue=${residue}\n`,
+        );
+        if (residue) throw new Error(`${fixture.id} left a Docker container behind.`);
+        const expectation = fixture.terminalExpectation;
+        if (
+          !abuseOutcomePassed(expectation, { ready, exitCode, timedOut, overflow, residue, output })
+        ) {
+          throw new Error(`${fixture.id} did not satisfy ${expectation}.`);
+        }
+        resolve();
+      } catch (error) {
+        reject(error);
+      }
+    };
 
-  child.stdout.on("data", (chunk) => {
-    output += chunk.toString();
-    if (Buffer.byteLength(output) > maxOutputBytes && !settled) {
-      overflow = true;
+    child.stdout.on("data", (chunk) => {
+      stdout += chunk.toString();
+      output += chunk.toString();
+      if (!ready && stdout.startsWith(marker + String.fromCharCode(10))) {
+        ready = true;
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+          if (settled) return;
+          timedOut = true;
+          child.kill("SIGKILL");
+          cleanup(name);
+        }, fixture.maxDurationMs);
+      }
+      if (Buffer.byteLength(output) > maxOutputBytes && !settled) {
+        overflow = true;
+        child.kill("SIGKILL");
+        cleanup(name);
+      }
+    });
+    child.stderr.on("data", (chunk) => {
+      output += chunk.toString();
+      if (Buffer.byteLength(output) > maxOutputBytes && !settled) {
+        overflow = true;
+        child.kill("SIGKILL");
+        cleanup(name);
+      }
+    });
+    timeout = setTimeout(() => {
+      if (settled) return;
       child.kill("SIGKILL");
       cleanup(name);
-    }
+    }, manifest.maxStartupDurationMs);
+    child.on("error", () => {
+      finish(null, "startup_error");
+    });
+    child.on("close", (exitCode, signal) => finish(exitCode, signal));
+    child.stdin.on("error", () => finish(null, "stdin_error"));
+    child.stdin.end(sources[fixture.id]);
   });
-  child.stderr.on("data", (chunk) => {
-    output += chunk.toString();
-    if (Buffer.byteLength(output) > maxOutputBytes && !settled) {
-      overflow = true;
-      child.kill("SIGKILL");
-      cleanup(name);
-    }
-  });
-  timeout = setTimeout(() => {
-    if (settled) return;
-    timedOut = true;
-    child.kill("SIGKILL");
-    cleanup(name);
-  }, fixture.maxDurationMs);
-  child.on("error", (error) => {
-    if (!settled) throw error;
-  });
-  child.on("close", (exitCode, signal) => finish(exitCode, signal));
-  child.stdin.end(sources[fixture.id]);
-  return new Promise((resolve) => child.once("close", () => resolve()));
 }
 
 const imageCheck = spawnSync("docker", ["image", "inspect", image], { encoding: "utf8" });
