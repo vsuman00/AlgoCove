@@ -1,6 +1,14 @@
 # Phase 12 staging deployment
 
-Status: Phase 12 entry authorized 2026-10-10. Task 55 is in progress. The owner selected **Vercel for the web application** and explicitly instructed creation of a new project. Project `algocove` (`prj_y4QC0yhk2h2frXDs8l3H0yn9IjJK`) was created in `vsuman00s-projects` (`team_LGvZpIlcg4QXoGDvgCh1JX0v`). Next.js and Node 22.x are confirmed by the API response. Requested monorepo settings are root `apps/web`, external workspace source inclusion, and repository-pinned pnpm 12.4.2 install/build commands. The connector's project DTO does not expose those build/root fields for read-back verification. No Git auto-production link or deployment was enabled; Neon staging database credentials are provisioned; complete web secret binding and supporting execution/worker infrastructure remain pending.
+Status: Phase 12 entry authorized 2026-10-10. Task 55 is in progress. The owner selected **Vercel for the web application** and explicitly instructed creation of a new project. Project `algocove` (`prj_y4QC0yhk2h2frXDs8l3H0yn9IjJK`) is in `vsuman00s-projects` (`team_LGvZpIlcg4QXoGDvgCh1JX0v`). The first protected Preview deployment is `READY` at [algocove-staging-vsuman00.vercel.app](https://algocove-staging-vsuman00.vercel.app); application health/readiness and the Clerk sign-in form pass hosted smoke checks. Next.js 16.3.8, Node 22.x and region `sin1` are confirmed by build/deployment evidence. No production promotion or Git auto-production link was enabled. Supporting execution/worker infrastructure and complete hosted assurance remain pending. See the [exact revision and verification record](../evidence/phases/phase12-evidence.md#first-verified-hosted-web-deployment).
+
+## Reproduce the web preview
+
+Use project `algocove` in the team above, GitHub repository `vsuman00/AlgoCove`, branch `feature/phase12-staging-foundation`, and an exact commit whose three GitHub CI jobs passed. Use `apps/web` as the root, include source files outside that root, and use Node 22.x. Set install command `npx --yes pnpm@12.4.2 install --frozen-lockfile` and build command `npx --yes pnpm@12.4.2 run build`; `apps/web/vercel.json` declares `sin1`.
+
+Bind web settings to the **Preview** environment: `DEPLOYMENT_ENVIRONMENT=staging`, canonical `APP_ORIGIN=https://algocove-staging-vsuman00.vercel.app`, restricted pooled `DATABASE_URL` with `sslmode=verify-full`, both Clerk keys, and the private telemetry correlation key. Keep `TUTOR_ENABLED`, `ROADMAP_PROPOSAL_ENABLED` and `EXECUTION_ENABLED` false. Do not upload local/test, migration/operator or worker-only credentials. Never put credential values in a command body, deployment metadata or evidence document.
+
+With Vercel's create-deployment API, omit `target` for Preview; its literal `preview` string did not select the intended environment in the first attempt. Verify the response's target is `null`, state reaches `READY`, source commit is exact and `regions` is `sin1`. Bind the stable staging alias to that preview. Retain Deployment Protection and test through authenticated access; an unauthenticated Vercel login page is not application liveness. Require health/readiness HTTP 200, application signed-out session/review HTTP 401, and a rendered Clerk form before recording the preview as smoke-verified. This manual procedure is not the complete Task 56 promotion/rollback pipeline.
 
 ## Required deployment decisions
 
@@ -14,11 +22,11 @@ The owner requires a strict **$0/month** budget and approved Neon Free in Singap
 
 Neon project `algocove-staging` (`bold-sky-06853855`) belongs to the connected Free organization `org-little-recipe-73838154`, region `aws-ap-southeast-1`, PostgreSQL 17. The dedicated `staging` branch/database is synthetic-only, with 40 migrations applied. Migration credentials use the direct endpoint; the restricted web runtime uses the pooled endpoint. Credentials are generated and stored with mode 0600 in the operator's private `~/.config/algocove/staging.json`, outside this repository. Never commit or paste that file. The web runtime must receive only `DATABASE_URL`, never operator/migration credentials.
 
-Live read-only inspection passed certificate/hostname-verified TLS, restricted runtime capabilities, pgvector and the Phase 11 migration watermark for both direct and pooled connections. No existing local learner database was copied to staging. Vercel's legacy region update accepted `sin1`; `apps/web/vercel.json` declares Singapore for the deployment. Its connector DTO does not expose the region for read-back. Singapore is chosen for proximity to India, not an assertion of India-only data residency.
+Live read-only inspection passed certificate/hostname-verified TLS, restricted runtime capabilities, pgvector and the Phase 11 migration watermark for both direct and pooled connections. No existing local learner database was copied to staging. `apps/web/vercel.json` declares Singapore and the successful deployment's metadata confirms `regions: ["sin1"]`. Singapore is chosen for proximity to India, not an assertion of India-only data residency.
 
 Neon's current Free plan includes 1 GB of database storage per project, 100 CU-hours/month, 5 GB/month public transfer and a six-hour restore history window. It suspends at compute/transfer limits and requires scale-to-zero. Do not rely on paid SLA, private networking or longer recovery retention. Actual hosted restore/RPO/RTO qualification remains Task 57; preserving $0 is not proof that the whole pilot architecture is provisioned.
 
-Vercel preview secret creation returned HTTP 403 from the connected API. Complete secret binding and a verified hosted origin/Clerk configuration remain necessary before web deployment; production has not been deployed. Retain execution/AI-off until their separate requirements pass.
+Vercel preview secret creation returned HTTP 403 from the connected API. The owner uploaded the prepared web environment manually; hosted configuration/database readiness now passes. The connector still cannot inventory the variables for independent read-back. The rendered Clerk instance is in development mode; actual authenticated lifecycle and production identity configuration remain unqualified. Production has not been promoted. Retain execution/AI-off until their separate requirements pass.
 
 Sources: [Neon regions](https://neon.com/docs/introduction/regions), [Free plan limits](https://neon.com/docs/introduction/plans).
 
@@ -63,7 +71,7 @@ This inspection is a bounded configuration/database gate. It does not prove ever
 
 ## Subsequent Phase 12 slices
 
-1. Task 55: bind the identified Vercel project and co-located managed database, qualify secrets and network separation, and provision the isolated execution and worker infrastructure.
+1. Task 55: finish secret inventory/security review and network separation, and provision/qualify isolated execution and worker infrastructure. The Vercel web preview and co-located Neon database already have bounded smoke evidence.
 2. Task 55a: run real hosted Clerk lifecycle/reverification tests, add and qualify privileged MFA/session controls, and verify immediate role removal and callback/cross-account rejection.
 3. Task 56: bind quality checks to the exact deployment revision; independently promote signed execution images and reviewed content/AI configurations; rehearse schema-compatible rollback and migration retry.
 4. Task 57: qualify hosted PITR/deletion replay, load and six-language limits, privacy/security, manual accessibility, SLOs, incidents and rollback. Admit the pilot cohort only after the named human readiness decision.

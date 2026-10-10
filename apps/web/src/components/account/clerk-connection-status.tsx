@@ -20,7 +20,7 @@ export default function ClerkConnectionStatus({
         </strong>
         <span className="text-cove-secondary">
           {configured
-            ? "This local environment is connected to Clerk for sign-up, sign-in, and session handling."
+            ? "AlgoCove is connected to Clerk for sign-up, sign-in, and session handling."
             : "Add the Clerk publishable and secret keys to the local environment, then reload AlgoCove."}
         </span>
       </span>
