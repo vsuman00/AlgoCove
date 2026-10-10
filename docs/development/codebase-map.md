@@ -14,7 +14,8 @@ AlgoCove is a pnpm workspace with a Next.js web app, a background worker, shared
 | Trace, retrieval, tutor, or logging | [`packages/visualizer`](../../packages/visualizer), [`packages/retrieval`](../../packages/retrieval), [`packages/tutor`](../../packages/tutor), [`packages/observability`](../../packages/observability) | Shared capabilities behind application contracts. |
 | Background work | [`apps/worker/src`](../../apps/worker/src) | Durable consumers, including privacy jobs. |
 | Learner-code execution | [`services/execution-control`](../../services/execution-control), [`services/execution-host`](../../services/execution-host), [`services/execution-images`](../../services/execution-images), [`packages/execution-contracts`](../../packages/execution-contracts) | Dispatch and leases, isolated runner, pinned language images, and message contracts. |
-| Operational workflows | [`ops`](../../ops), [`scripts`](../../scripts) | Alerts, restore drills, security/documentation checks, and local verification. |
+| Operational workflows | [`ops`](../../ops), [`scripts`](../../scripts) | Alerts, restore drills, staging preflight, security/documentation checks, and local verification. |
+| Hosted configuration and deployment | [`packages/config`](../../packages/config), [`ops/environments/staging`](../../ops/environments/staging), [staging guide](../deployment/staging.md) | Hosted web admission, read-only environment checks, deployment decisions and qualification status. |
 | Tests | [`tests`](../../tests) | Unit/web, architecture, integration, browser, accessibility, conformance, and sandbox checks. |
 | CI or old experiments | [`.github/workflows`](../../.github/workflows), [`spikes`](../../spikes) | Automation definitions and recorded execution-boundary investigations; spikes are not runtime code. |
 

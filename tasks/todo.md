@@ -1,4 +1,4 @@
-**Current work (2026-10-08):** Phase 11 Tasks 52–54 are complete for local engineering, with persistent migration 0040 and original learner data preserved. The owner explicitly set aside Phase 10 publication; its independent gates remain pending. The owner now authorizes committing and pushing all accumulated project changes to GitHub and running CI; this supersedes the earlier keep-local/uncommitted instruction for repository publication. Phase 12 has not begun. [Evidence](../docs/evidence/phases/phase11-evidence.md). Earlier authorization notes below are historical.
+**Current work (2026-10-10):** Phase 12 entry is owner-approved. Task 55 is in progress: hosted web startup admission and staging database preflight. Vercel project `algocove` is created. Appwrite managed PostgreSQL is the proposed database provider; compatibility and supporting infrastructure/policy choices remain pending. [Staging guide](../docs/deployment/staging.md). Phase 11 Tasks 52–54 remain complete for local engineering. Independent curriculum publication remains pending. Commit/push authorization from 2026-10-08 continues; earlier authorization notes below are historical.
 
 # AlgoCove implementation task ledger
 
@@ -377,11 +377,11 @@ Local engineering closure: [delivery evidence](../docs/evidence/phases/phase10-p
 - [x] Privacy, budget, telemetry, alert, restore, and incident gates pass.
 - [x] Known failures degrade safely and leave auditable state.
 - [x] Actual evidence is separated from proposed targets.
-- [ ] Human owner authorizes Phase 12.
+- [x] Human owner authorizes Phase 12 (2026-10-10).
 
 ## Phase 12: Hosted pilot release
 
-- [ ] Task 55: Provision the approved single-region staging environment
+- [ ] Task 55: Provision the approved single-region staging environment — IN PROGRESS: hosted web admission and database preflight implemented; Vercel project created; database/execution provisioning and hosted qualification pending.
 - [ ] Task 55a: Integrate hosted authentication and privileged session controls
 - [ ] Task 56: Implement CI/CD, migration, image, and configuration promotion
 - [ ] Task 57: Execute the hosted-pilot readiness gate
