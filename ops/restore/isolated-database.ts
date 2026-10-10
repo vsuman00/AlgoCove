@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import { setTimeout as pause } from "node:timers/promises";
 import { bootstrapDatabase, createPool, migrate } from "../../packages/db/src/index.ts";
 import type { Pool } from "pg";
 export type IsolatedDatabase = {
@@ -47,7 +48,19 @@ export async function createIsolatedDatabase(
   const cleanup = async () => {
     await Promise.all([runtime.end(), inspection.end(), owner.end()]);
     try {
-      await operator.query(`DROP DATABASE IF EXISTS "${databaseName}" WITH (FORCE)`);
+      // Pool.end() can resolve before PostgreSQL observes every socket closing.
+      // Wait for that acknowledgement; FORCE can emit a late FATAL on an ending
+      // client, which becomes an unhandled error and can expose driver internals.
+      for (let retry = 0; retry < 50; retry++) {
+        const connections = await operator.query<{ count: string }>(
+          "SELECT count(*)::text AS count FROM pg_stat_activity WHERE datname=$1",
+          [databaseName],
+        );
+        if (connections.rows[0]?.count === "0") break;
+        if (retry === 49) throw new Error("Isolated database still has active connections");
+        await pause(100);
+      }
+      await operator.query(`DROP DATABASE IF EXISTS "${databaseName}"`);
       await operator.query(`DROP ROLE IF EXISTS "${runtimeRole}"`);
       await operator.query(`DROP ROLE IF EXISTS "${migrationRole}"`);
     } finally {

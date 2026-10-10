@@ -55,6 +55,9 @@ jobs:
       - name: Build production application
         run: pnpm build
 
+      - name: Verify hosted startup admission against the production build
+        run: pnpm test:hosted-startup
+
       - name: Run browser accessibility tests
         run: pnpm test:a11y
 

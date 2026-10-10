@@ -248,6 +248,113 @@ export function loadConfig(source: EnvironmentSource): Config {
 export function loadConfigFromProcess(environment: EnvironmentSource = process.env): Config {
   return loadConfig(environment);
 }
+
+/** Hosted web admission; local builds remain dependency-free. No values enter errors. */
+export function assertHostedWebEnvironment(source: EnvironmentSource): Config | null {
+  const deployment = source.DEPLOYMENT_ENVIRONMENT ?? "local";
+  if (deployment === "local") return null;
+  if (deployment !== "staging" && deployment !== "production") {
+    throw new ConfigError([
+      { key: "DEPLOYMENT_ENVIRONMENT", message: "must be local, staging or production" },
+    ]);
+  }
+  const issues: ConfigIssue[] = [];
+  const reject = (key: string, message: string): void => {
+    issues.push({ key, message });
+  };
+  if (source.NODE_ENV !== "production")
+    reject("NODE_ENV", "must be production for hosted web runtimes");
+  if (source.NODE_TLS_REJECT_UNAUTHORIZED === "0")
+    reject("NODE_TLS_REJECT_UNAUTHORIZED", "must not disable hosted TLS verification");
+  for (const [key, value] of Object.entries(source)) {
+    if (value === undefined || value === "") continue;
+    if (/^(?:LOCAL_|ALGOCOVE_TEST_)/.test(key))
+      reject(key, "local test settings are forbidden in hosted web runtimes");
+    if (
+      [
+        "DATABASE_ADMIN_URL",
+        "DATABASE_OPERATOR_URL",
+        "WORKER_DATABASE_URL",
+        "WORKER_OPERATIONS_DATABASE_URL",
+        "PRIVACY_WORKER_DATABASE_URL",
+      ].includes(key)
+    ) {
+      reject(key, "privileged credentials must not enter the hosted web runtime");
+    }
+  }
+  for (const key of ["TUTOR_ENABLED", "ROADMAP_PROPOSAL_ENABLED"]) {
+    const value = source[key];
+    if (
+      value !== undefined &&
+      value !== "" &&
+      value !== false &&
+      String(value).toLowerCase() !== "false"
+    ) {
+      reject(key, "live AI requires a separately approved hosted provider promotion");
+    }
+  }
+  if (
+    typeof source.TELEMETRY_CORRELATION_KEY !== "string" ||
+    source.TELEMETRY_CORRELATION_KEY.length < 32
+  ) {
+    reject("TELEMETRY_CORRELATION_KEY", "requires at least 32 characters in hosted web runtimes");
+  }
+  if (issues.length > 0) throw new ConfigError(issues);
+  const config = loadConfig(source);
+  const loopback = (hostname: string): boolean =>
+    hostname === "localhost" ||
+    hostname.endsWith(".localhost") ||
+    hostname.startsWith("127.") ||
+    hostname === "[::1]" ||
+    hostname === "0.0.0.0";
+  const origin = new URL(config.appOrigin);
+  if (
+    origin.href !== `${origin.origin}/` ||
+    origin.username !== "" ||
+    origin.password !== "" ||
+    loopback(origin.hostname)
+  ) {
+    reject("APP_ORIGIN", "must be a canonical non-loopback HTTPS origin");
+  }
+  try {
+    const database = new URL(config.database.runtimeUrl!.reveal());
+    if (
+      database.searchParams.getAll("sslmode").length !== 1 ||
+      database.searchParams.get("sslmode") !== "verify-full" ||
+      ["host", "port", "user", "password", "database"].some((key) =>
+        database.searchParams.has(key),
+      ) ||
+      loopback(database.hostname) ||
+      database.username === "" ||
+      database.pathname.length < 2
+    ) {
+      reject(
+        "DATABASE_URL",
+        "requires a remote named database and verified TLS (sslmode=verify-full)",
+      );
+    }
+  } catch {
+    reject("DATABASE_URL", "must be a valid PostgreSQL connection URL");
+  }
+  if (config.execution.relayUrl !== null) {
+    const relay = new URL(config.execution.relayUrl);
+    if (
+      relay.origin === origin.origin ||
+      loopback(relay.hostname) ||
+      relay.username !== "" ||
+      relay.password !== "" ||
+      relay.search !== "" ||
+      relay.hash !== ""
+    ) {
+      reject(
+        "EXECUTION_RELAY_URL",
+        "requires a separate non-loopback execution control origin without URL credentials, query or fragment",
+      );
+    }
+  }
+  if (issues.length > 0) throw new ConfigError(issues);
+  return config;
+}
 export type ConfigEntry = {
   readonly key: string;
   readonly value: string;

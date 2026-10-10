@@ -1,4 +1,4 @@
-**Current phase (2026-10-08):** Phase 11 Tasks 52–54 are implemented and locally verified. Independent Phase 10 publication was set aside at the owner's request; Phase 12 is not authorized. See [Phase 11 evidence](../docs/evidence/phases/phase11-evidence.md). Earlier preparation notes below are historical.
+**Current phase (2026-10-10):** The owner authorized Phase 12: “now go to phase 12, I approved”. Task 55 is in progress. Vercel project `algocove` now has a protected Singapore Preview deployment with passing web health, database readiness, Clerk form and signed-out authorization smoke checks. The owner uploaded the prepared web environment manually. Neon Free Singapore is provisioned with 40 migrations and restricted runtime/TLS qualification within the approved $0 budget. Execution/worker infrastructure, environment security review, authenticated lifecycle and hosted policy/assurance decisions remain pending. [Staging implementation](../docs/deployment/staging.md) and [exact deployment evidence](../docs/evidence/phases/phase12-evidence.md) separate web smoke verification from full pilot qualification. Phase 11 remains complete for local engineering; earlier preparation notes below are historical.
 
 **Version-control publication (2026-10-08):** The owner authorized committing and pushing all accumulated project changes to GitHub and running the CI pipeline. This supersedes earlier keep-local/uncommitted instructions for repository publication. Independent curriculum publication, live AI, and hosted deployment remain separate gates. GitHub Actions records remote verification for the pushed revision.
 
@@ -1463,9 +1463,11 @@ The owner subsequently authorized and requested completion of the extension. Tas
 - [x] Privacy, budget, telemetry, alert, restore, and incident gates pass.
 - [x] Known failures degrade safely and leave auditable state.
 - [x] Actual evidence is separated from proposed targets.
-- [ ] Human owner authorizes Phase 12.
+- [x] Human owner authorizes Phase 12 (2026-10-10).
 
 ## Phase 12: Hosted pilot release
+
+**Entry authorized 2026-10-10.** Vercel is the selected web platform, following the owner's clarification. Task 55 starts with hosted configuration admission and a read-only PostgreSQL preflight; it remains incomplete until the selected staging resources, roles, secrets and network isolation are provisioned and verified. [Staging guide](../docs/deployment/staging.md). Provider-specific resource choices and real-learner policy approval are not inferred from phase entry.
 
 ### Task 55: Provision the approved single-region staging environment
 

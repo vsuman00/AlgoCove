@@ -1,6 +1,10 @@
 import { randomUUID } from "node:crypto";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import {
+  inspectHostedDatabase,
+  inspectHostedConnection,
+} from "../../ops/environments/staging/database.ts";
+import {
   bootstrapDatabase,
   createPool,
   migrate,
@@ -236,6 +240,25 @@ describe("PostgreSQL and pgvector lifecycle", () => {
     if (readiness.ok) {
       expect(readiness.appliedMigrations).toBe(40);
       expect(readiness.serverTime).toMatch(/Z$/);
+    }
+  });
+
+  it("audits real roles and refuses to call the local plaintext database hosted-ready", async () => {
+    expect((await inspectHostedConnection(runtimePool!)).verifiedClientTransport).toBe(false);
+    const runtime = await inspectHostedDatabase(runtimePool!);
+    expect(runtime).toEqual({
+      encryptedTransport: false,
+      runtimeRole: true,
+      pgvector: true,
+      phase11Schema: true,
+    });
+    const owner = await inspectHostedDatabase(inspectionPool!);
+    expect(owner.runtimeRole).toBe(false);
+    await operatorPool!.query(`GRANT "${migrationRole}" TO "${runtimeRole}"`);
+    try {
+      expect((await inspectHostedDatabase(runtimePool!)).runtimeRole).toBe(false);
+    } finally {
+      await operatorPool!.query(`REVOKE "${migrationRole}" FROM "${runtimeRole}"`);
     }
   });
 
