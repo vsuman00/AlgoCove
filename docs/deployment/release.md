@@ -10,7 +10,7 @@ Run `node ops/release/preflight.ts --sha <40-character-commit>` before deploying
 
 The gated web workflow reacts only to successful same-repository `main` push CI, checks out that exact SHA, and creates a Preview with CLI 63.1.2. It does not assign a domain or promote production. Deployment protection stays enabled; authenticated CLI requests check liveness and database readiness. A payload-free receipt retains SHA, CI identity, immutable URL and smoke results.
 
-The deployment job binds the owner-created GitHub environment `VERCEL_TOKEN`, which contains the Actions secret `VERCEL_TOKEN` for project `algocove` in `vsuman00s-projects`. Environment secrets are available only to jobs bound to that environment. Never put the value in source, chat or artifacts. Missing credentials stop the workflow before deployment. Provider environment values stay in Vercel. [Vercel Git configuration](https://vercel.com/docs/project-configuration/git-configuration) and [protected CLI requests](https://vercel.com/docs/cli/curl) define these controls.
+The deployment job binds the existing GitHub environment `Preview` and reads the repository Actions secret `VERCEL_TOKEN` for project `algocove` in `vsuman00s-projects`. The owner moved the token from an initially created environment secret to Repository secrets. The separate credential-qualification workflow checks access to the expected project without deploying. Never put the value in source, chat or artifacts. Missing credentials stop the workflow before deployment. Provider environment values stay in Vercel. [Vercel Git configuration](https://vercel.com/docs/project-configuration/git-configuration) and [protected CLI requests](https://vercel.com/docs/cli/curl) define these controls.
 
 ## Schema and rollback
 

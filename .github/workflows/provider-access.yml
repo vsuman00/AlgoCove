@@ -14,7 +14,7 @@ permissions:
 jobs:
   project-access:
     if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
-    environment: VERCEL_TOKEN
+    environment: Preview
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -29,5 +29,7 @@ jobs:
             echo "VERCEL_TOKEN is unavailable in the bound GitHub environment." >&2
             exit 1
           fi
-          npx --yes vercel@63.1.2 api /v9/projects/prj_y4QC0yhk2h2frXDs8l3H0yn9IjJK --scope team_LGvZpIlcg4QXoGDvgCh1JX0v --token "$VERCEL_TOKEN" > provider-project.json
+          curl --fail --silent --show-error \
+            --header "Authorization: Bearer $VERCEL_TOKEN" \
+            'https://api.vercel.com/v9/projects/prj_y4QC0yhk2h2frXDs8l3H0yn9IjJK?teamId=team_LGvZpIlcg4QXoGDvgCh1JX0v' > provider-project.json
           node --input-type=module -e 'import {readFileSync} from "node:fs"; const p=JSON.parse(readFileSync("provider-project.json","utf8")); if(p.id!=="prj_y4QC0yhk2h2frXDs8l3H0yn9IjJK" || p.name!=="algocove" || p.accountId!=="team_LGvZpIlcg4QXoGDvgCh1JX0v") throw Error("Unexpected Vercel project scope"); console.log(JSON.stringify({status:"provider_access_passed",project:p.name,projectId:p.id,teamId:p.accountId}));'
