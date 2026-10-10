@@ -1,6 +1,9 @@
 import { randomUUID } from "node:crypto";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { inspectHostedDatabase } from "../../ops/environments/staging/database.ts";
+import {
+  inspectHostedDatabase,
+  inspectHostedConnection,
+} from "../../ops/environments/staging/database.ts";
 import {
   bootstrapDatabase,
   createPool,
@@ -241,6 +244,7 @@ describe("PostgreSQL and pgvector lifecycle", () => {
   });
 
   it("audits real roles and refuses to call the local plaintext database hosted-ready", async () => {
+    expect((await inspectHostedConnection(runtimePool!)).verifiedClientTransport).toBe(false);
     const runtime = await inspectHostedDatabase(runtimePool!);
     expect(runtime).toEqual({
       encryptedTransport: false,

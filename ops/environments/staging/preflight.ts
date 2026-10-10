@@ -1,6 +1,6 @@
 import { assertHostedWebEnvironment, ConfigError } from "../../../packages/config/src/index.ts";
 import { createPool } from "../../../packages/db/src/connection.ts";
-import { inspectHostedDatabase } from "./database.ts";
+import { inspectHostedConnection } from "./database.ts";
 
 const configurationOnly = process.argv.slice(2).join(" ") === "--configuration-only";
 let pool: ReturnType<typeof createPool> | undefined;
@@ -24,7 +24,7 @@ try {
       statementTimeoutMs: 5000,
     });
     pool.on("error", () => undefined);
-    const checks = await inspectHostedDatabase(pool);
+    const checks = await inspectHostedConnection(pool);
     const passed = Object.values(checks).every((value) => value);
     process.stdout.write(
       JSON.stringify({ status: passed ? "preflight_passed" : "preflight_failed", checks }) + "\n",

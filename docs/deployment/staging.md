@@ -1,6 +1,6 @@
 # Phase 12 staging deployment
 
-Status: Phase 12 entry authorized 2026-10-10. Task 55 is in progress. The owner selected **Vercel for the web application** and explicitly instructed creation of a new project. Project `algocove` (`prj_y4QC0yhk2h2frXDs8l3H0yn9IjJK`) was created in `vsuman00s-projects` (`team_LGvZpIlcg4QXoGDvgCh1JX0v`). Next.js and Node 22.x are confirmed by the API response. Requested monorepo settings are root `apps/web`, external workspace source inclusion, and repository-pinned pnpm 12.4.2 install/build commands. The connector's project DTO does not expose those build/root fields for read-back verification. No Git auto-production link or deployment was enabled; staging credentials and supporting infrastructure are not yet provisioned.
+Status: Phase 12 entry authorized 2026-10-10. Task 55 is in progress. The owner selected **Vercel for the web application** and explicitly instructed creation of a new project. Project `algocove` (`prj_y4QC0yhk2h2frXDs8l3H0yn9IjJK`) was created in `vsuman00s-projects` (`team_LGvZpIlcg4QXoGDvgCh1JX0v`). Next.js and Node 22.x are confirmed by the API response. Requested monorepo settings are root `apps/web`, external workspace source inclusion, and repository-pinned pnpm 12.4.2 install/build commands. The connector's project DTO does not expose those build/root fields for read-back verification. No Git auto-production link or deployment was enabled; Neon staging database credentials are provisioned; complete web secret binding and supporting execution/worker infrastructure remain pending.
 
 ## Required deployment decisions
 
@@ -8,9 +8,23 @@ Record the exact Vercel team/project and staging origin, single function/data re
 
 The [deployment-neutral ADR](../adr/0010-deployment-neutral-single-region-first.md) remains the capability boundary: managed data recovery and isolated hostile-code execution are mandatory. Vercel web functions must not receive Docker sockets, execution-host signing keys, worker database credentials or migration/operator credentials. Continuous worker processing and hostile-code sandboxes use separately operated processes.
 
-## Proposed database provider: Appwrite
+## Selected database: Neon Free in Singapore
 
-The owner proposes Appwrite on 2026-10-10. Its **managed PostgreSQL** product provides direct PostgreSQL connections, custom roles, extensions including pgvector, backups and optional PITR. TablesDB, DocumentsDB and VectorsDB are different products and are not substitutes for this repository's SQL migrations. Keep Vercel web hosting, Clerk identity and the existing PostgreSQL schema/authorization boundaries.
+The owner requires a strict **$0/month** budget and approved Neon Free in Singapore on 2026-10-10. Appwrite native PostgreSQL requires a paid plan, so it cannot meet that budget. No paid upgrade or paid add-on is authorized.
+
+Neon project `algocove-staging` (`bold-sky-06853855`) belongs to the connected Free organization `org-little-recipe-73838154`, region `aws-ap-southeast-1`, PostgreSQL 17. The dedicated `staging` branch/database is synthetic-only, with 40 migrations applied. Migration credentials use the direct endpoint; the restricted web runtime uses the pooled endpoint. Credentials are generated and stored with mode 0600 in the operator's private `~/.config/algocove/staging.json`, outside this repository. Never commit or paste that file. The web runtime must receive only `DATABASE_URL`, never operator/migration credentials.
+
+Live read-only inspection passed certificate/hostname-verified TLS, restricted runtime capabilities, pgvector and the Phase 11 migration watermark for both direct and pooled connections. No existing local learner database was copied to staging. Vercel's legacy region update accepted `sin1`; `apps/web/vercel.json` declares Singapore for the deployment. Its connector DTO does not expose the region for read-back. Singapore is chosen for proximity to India, not an assertion of India-only data residency.
+
+Neon's current Free plan includes 1 GB of database storage per project, 100 CU-hours/month, 5 GB/month public transfer and a six-hour restore history window. It suspends at compute/transfer limits and requires scale-to-zero. Do not rely on paid SLA, private networking or longer recovery retention. Actual hosted restore/RPO/RTO qualification remains Task 57; preserving $0 is not proof that the whole pilot architecture is provisioned.
+
+Vercel preview secret creation returned HTTP 403 from the connected API. Complete secret binding and a verified hosted origin/Clerk configuration remain necessary before web deployment; production has not been deployed. Retain execution/AI-off until their separate requirements pass.
+
+Sources: [Neon regions](https://neon.com/docs/introduction/regions), [Free plan limits](https://neon.com/docs/introduction/plans).
+
+## Historical provider assessment: Appwrite
+
+The owner initially proposed Appwrite on 2026-10-10, then selected Neon Free after clarifying the $0 budget. Its **managed PostgreSQL** product provides direct PostgreSQL connections, custom roles, extensions including pgvector, backups and optional PITR. TablesDB, DocumentsDB and VectorsDB are different products and are not substitutes for this repository's SQL migrations. Keep Vercel web hosting, Clerk identity and the existing PostgreSQL schema/authorization boundaries.
 
 Qualify a PostgreSQL 17 staging database to match the current reference engine before considering a version upgrade. Use separate restricted runtime and administrative credentials. Appwrite documents a transaction pooler on port 6432 and direct connections on 5432; migrations and session-dependent operations require the direct endpoint. Review read/write splitting before enabling replicas because stale reads can invalidate authorization and read-after-write expectations.
 
@@ -43,9 +57,9 @@ pnpm staging:preflight --configuration-only
 pnpm staging:preflight
 ```
 
-The first command does not connect to a database and reports `databaseChecked: false`. The second inspects the actual runtime connection: negotiated TLS, pgvector, the Phase 11 migration minimum through the existing health function, and role capabilities. It rejects superuser, role/database creation, replication, RLS bypass, privileged predefined role membership, database/schema/relation ownership or schema CREATE permission, and privileged privacy processing function access. Inherited owner privileges are checked as well as direct role attributes. A missing row, query failure or failed check fails closed. The command never runs migrations or writes learner records, and emits fixed check names/reason codes rather than driver exceptions or credentials.
+The first command does not connect to a database and reports `databaseChecked: false`. The second pins one actual runtime client and inspects its negotiated TLS, CA authorization and hostname identity, plus pgvector, the Phase 11 migration minimum through the existing health function, and role capabilities. It rejects superuser, role/database creation, replication, RLS bypass, privileged predefined role membership, database/schema/relation ownership or schema CREATE permission, and privileged privacy processing function access. Inherited owner privileges are checked as well as direct role attributes. A missing row, query failure or failed check fails closed. The command never runs migrations or writes learner records, and emits fixed check names/reason codes rather than driver exceptions or credentials.
 
-This inspection is a bounded configuration/database gate. It does not prove every function/view privilege is safe and must accompany the existing authorization/least-privilege integration suite and an environment security review. TLS hostname/certificate verification is required by the configuration; `encryptedTransport` records the server-side observation that the actual connection used TLS.
+This inspection is a bounded configuration/database gate. It does not prove every function/view privilege is safe and must accompany the existing authorization/least-privilege integration suite and an environment security review. TLS hostname/certificate verification is required by configuration and observed on the actual Node TLS socket as `verifiedClientTransport`. The lower-level SQL inspector retains `encryptedTransport` as a backend diagnostic; it is not used as a substitute for client transport verification behind a managed proxy. The internal provider network hop still requires the environment security review.
 
 ## Subsequent Phase 12 slices
 

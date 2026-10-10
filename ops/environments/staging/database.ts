@@ -1,3 +1,5 @@
+import { TLSSocket, checkServerIdentity } from "node:tls";
+import type { Pool } from "pg";
 import type { Queryable } from "../../../packages/db/src/connection.ts";
 import { DATA_SCHEMAS } from "../../../packages/db/src/bootstrap.ts";
 
@@ -52,4 +54,33 @@ export async function inspectHostedDatabase(database: Queryable): Promise<Hosted
     pgvector: row?.pgvector === true,
     phase11Schema: row?.phase11_schema === true,
   };
+}
+
+/** Inspect the client leg as well as database capabilities on that same connection.
+ * Managed proxies can terminate TLS before PostgreSQL, so pg_stat_ssl is not
+ * evidence of whether the application's connection was certificate-verified.
+ */
+export async function inspectHostedConnection(
+  pool: Pool,
+): Promise<
+  Omit<HostedDatabaseChecks, "encryptedTransport"> & { readonly verifiedClientTransport: boolean }
+> {
+  const client = await pool.connect();
+  try {
+    const stream = (client.connection as unknown as { stream?: unknown }).stream;
+    const verifiedClientTransport =
+      stream instanceof TLSSocket &&
+      stream.authorized &&
+      ["TLSv1.2", "TLSv1.3"].includes(stream.getProtocol() ?? "") &&
+      checkServerIdentity(client.host, stream.getPeerCertificate()) === undefined;
+    const checks = await inspectHostedDatabase(client);
+    return {
+      verifiedClientTransport,
+      runtimeRole: checks.runtimeRole,
+      pgvector: checks.pgvector,
+      phase11Schema: checks.phase11Schema,
+    };
+  } finally {
+    client.release();
+  }
 }

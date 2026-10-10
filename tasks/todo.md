@@ -1,4 +1,4 @@
-**Current work (2026-10-10):** Phase 12 entry is owner-approved. Task 55 is in progress: hosted web startup admission and staging database preflight. Vercel project `algocove` is created. Appwrite managed PostgreSQL is the proposed database provider; compatibility and supporting infrastructure/policy choices remain pending. [Staging guide](../docs/deployment/staging.md). Phase 11 Tasks 52–54 remain complete for local engineering. Independent curriculum publication remains pending. Commit/push authorization from 2026-10-08 continues; earlier authorization notes below are historical.
+**Current work (2026-10-10):** Phase 12 entry is owner-approved. Task 55 is in progress: hosted web startup admission and staging database preflight. Vercel project `algocove` is created. Neon Free in Singapore is owner-approved within a strict $0 budget, provisioned and migrated. Web secret binding and supporting infrastructure/policy qualification remain pending. [Staging guide](../docs/deployment/staging.md). Phase 11 Tasks 52–54 remain complete for local engineering. Independent curriculum publication remains pending. Commit/push authorization from 2026-10-08 continues; earlier authorization notes below are historical.
 
 # AlgoCove implementation task ledger
 
@@ -381,7 +381,7 @@ Local engineering closure: [delivery evidence](../docs/evidence/phases/phase10-p
 
 ## Phase 12: Hosted pilot release
 
-- [ ] Task 55: Provision the approved single-region staging environment — IN PROGRESS: hosted web admission and database preflight implemented; Vercel project created; database/execution provisioning and hosted qualification pending.
+- [ ] Task 55: Provision the approved single-region staging environment — IN PROGRESS: hosted web admission and database preflight implemented; Vercel project and Neon Free Singapore database created; 40 migrations and restricted runtime/TLS checks pass; web secret binding, execution infrastructure and hosted qualification pending.
 - [ ] Task 55a: Integrate hosted authentication and privileged session controls
 - [ ] Task 56: Implement CI/CD, migration, image, and configuration promotion
 - [ ] Task 57: Execute the hosted-pilot readiness gate
