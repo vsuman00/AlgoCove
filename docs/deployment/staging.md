@@ -26,7 +26,7 @@ Live read-only inspection passed certificate/hostname-verified TLS, restricted r
 
 Neon's current Free plan includes 1 GB of database storage per project, 100 CU-hours/month, 5 GB/month public transfer and a six-hour restore history window. It suspends at compute/transfer limits and requires scale-to-zero. Do not rely on paid SLA, private networking or longer recovery retention. Actual hosted restore/RPO/RTO qualification remains Task 57; preserving $0 is not proof that the whole pilot architecture is provisioned.
 
-Vercel preview secret creation returned HTTP 403 from the connected API. The owner uploaded the prepared web environment manually; hosted configuration/database readiness now passes. The connector still cannot inventory the variables for independent read-back. The rendered Clerk instance is in development mode; actual authenticated lifecycle and production identity configuration remain unqualified. Production has not been promoted. Retain execution/AI-off until their separate requirements pass.
+Vercel preview secret creation returned HTTP 403 from the connected API. The owner uploaded the prepared web environment manually; hosted configuration/database readiness now passes. The connector still cannot inventory the variables for independent read-back. The rendered Clerk instance is in development mode. Actual synthetic sign-in/out, revocation and bounded authorization checks now pass; positive MFA and production identity configuration remain unqualified. Production has not been promoted. Retain execution/AI-off until their separate requirements pass.
 
 Sources: [Neon regions](https://neon.com/docs/introduction/regions), [Free plan limits](https://neon.com/docs/introduction/plans).
 
@@ -44,7 +44,7 @@ Sources checked 2026-10-10: [managed PostgreSQL](https://appwrite.io/docs/produc
 
 ## Implemented web admission
 
-`apps/web/instrumentation.ts` uses Next.js's server initialization hook to call the shared configuration admission check before route initialization. Invalid hosted settings prevent route execution and return HTTP 500; Next.js can keep the listening process alive after this initialization error. CI's `pnpm test:hosted-startup` verifies both the built local liveness route and this unsafe-hosted rejection, including secret redaction. Set `DEPLOYMENT_ENVIRONMENT=staging` for staging and `production` for the eventual hosted production environment. Missing markers default to the existing local behavior, so provisioning must explicitly set and verify this marker; this is not automatic detection of an arbitrary hosting environment.
+`apps/web/instrumentation.ts` uses Next.js's server initialization hook to call the shared configuration admission check before route initialization. Invalid hosted settings prevent route execution and return HTTP 500; Next.js can keep the listening process alive after this initialization error. CI's `pnpm test:hosted-startup` verifies both the built local liveness route and this unsafe-hosted rejection, including secret redaction. Set `DEPLOYMENT_ENVIRONMENT=staging` for staging and `production` for the eventual hosted production environment. On Vercel, `VERCEL=1` requires an explicit hosted marker and rejects a local/missing marker. Other hosts must explicitly set and verify their environment marker.
 
 Hosted web admission requires:
 
@@ -79,3 +79,9 @@ This inspection is a bounded configuration/database gate. It does not prove ever
 Independent curriculum publication remains pending. The Phase 12 task and milestone checkboxes remain unchecked until their actual acceptance criteria have evidence.
 
 References: [Next.js instrumentation](https://nextjs.org/docs/app/guides/instrumentation), [PostgreSQL role and privilege inspection](https://www.postgresql.org/docs/current/functions-info.html), [PostgreSQL TLS connection statistics](https://www.postgresql.org/docs/current/monitoring-stats.html#MONITORING-PG-STAT-SSL-VIEW), [Vercel deployment checks](https://vercel.com/docs/deployment-checks).
+
+## Approved zero-dollar operating scope
+
+The owner reaffirmed the $0 ceiling on 2026-10-10. Continue with the existing free Singapore web/database resources, Clerk development identity and synthetic assurance. Do not upgrade plans, add paid services, enable live model calls, or provision an execution host on credit. Keep hosted execution and worker-dependent pilot features disabled until a separately operated free host and durable recovery meet the plan's requirements. No free always-on host is currently supplied. Clerk documents that MFA is free in development but requires a paid plan in production; retain synthetic development identity under this budget, and require a separate reviewed provider decision before claiming a $0 production pilot with privileged MFA. [Clerk authentication options](https://clerk.com/docs/guides/configure/auth-strategies/sign-up-sign-in-options#multi-factor-authentication).
+
+The latest gated immutable candidate, completed release/rollback checks and remaining provider MFA issue are recorded in [Phase 12 evidence](../evidence/phases/phase12-evidence.md#merged-main-release-and-free-hosted-assurance). This reduced synthetic staging scope is useful and deployable, but does not close the plan's non-waivable pilot gates or authorize Phase 13. Maintain scale-to-zero and free-tier limits; do not substitute a trial or payment-backed resource for the $0 constraint.

@@ -20,6 +20,26 @@ Retain the previous immutable Preview and its schema watermark. Before moving a 
 
 Execution images have a separate dispatch/tag workflow: exact-CI admission, build provenance and SBOM, high/critical vulnerability gate, digest signature and identity/issuer verification. A failed scan must never produce an approved signature. Signed image publication does not provision a host or enable execution. Content and AI configuration continue to use their existing governed publication gates.
 
+## Independent runtime manifest promotion
+
+After all four profiles pass, the execution release workflow collects per-profile digest receipts, rejects incomplete/duplicate/mixed-source sets, rechecks exact-source CI and each image signature, and signs a canonical `runtime-release.json`. The `signed-runtime-release` artifact contains this manifest and its Sigstore bundle. Signature verification pins the exact workflow identity, GitHub issuer and source commit. The manifest maps four profiles to all six languages without changing application, content or AI configuration. Artifacts are retained for 30 days; an operator must retain the downloaded manifest/bundle and audit directory for the rollback window.
+
+On the approved operator machine, install Cosign, authenticate `gh` with read access to repository Actions and GHCR, download the artifact from its recorded execution-release run, and use a private operator-owned state directory:
+
+```sh
+node ops/release/promote-runtime.ts promote \
+  runtime-release.json runtime-release.sigstore.json \
+  /path/to/private/runtime-state none
+```
+
+`none` is valid only for the first promotion. Subsequent commands require the exact current `manifestDigest` from `current.json`. The command rechecks current exact-SHA CI, completed release jobs, the manifest signature and all four image signatures before writing an immutable set, six-language `images.json` and decision receipt. The pointer is replaced atomically under a lock; rejected verification or stale commands do not change it. The decision records the previous manifest digest, source commit/run, operator OS UID and timestamp, without credentials or learner payloads. An uncommitted decision left by a process crash is not active unless `current.json` references it. This is a local filesystem control boundary, not an API available to web users or a distributed/cloud durable ledger.
+
+To roll back, use the retained previous manifest and bundle, `rollback` as the first argument and the current digest as the last argument. Only the previous recorded digest is eligible, and all admission/signature checks run again. Never roll back schema, content, AI configuration or privacy state with this command. A corrupt retained map rejects rollback. If an older set no longer passes current CI/security admission, stop execution admission and use a forward fix.
+
+The existing isolated local host accepts the retained set's `images.json` through `LOCAL_EXECUTION_IMAGES_FILE`; selecting a manifest does not start a host, restart a running host or enable website execution. A hosted host still needs separate provisioning, network-isolation and capacity qualification. Changing runtime images also requires checking content language manifests and descriptor policy compatibility before activating any host. Content remains behind current rights/review/publication gates; AI remains behind immutable evaluation/review/channel decisions and defaults to authored/off. Runtime promotion cannot satisfy or bypass those independent gates.
+
 ## Qualification still required
 
-The CI admission rejection cases are tested locally; a live failing-CI deployment attempt, the complete credential-bound deployment workflow, hosted alias rollback, independently published image lineage, real hosted authentication lifecycle, hosted recovery/deletion replay and pilot assurance still need current receipts. [Phase 12 evidence](../evidence/phases/phase12-evidence.md) records demonstrated results separately from these requirements.
+The CI admission rejection cases are tested locally and a cancelled-revision preflight fails live before any deployment request. Exact-source signed complete runtime sets and actual operator promotion/rollback now have receipts, as does hosted synthetic AI channel promotion/rollback on the isolated recovery branch. Running hosted-runtime compatibility/telemetry, approved real-cohort content/AI decisions, hosted recovery/deletion replay and the full pilot matrix remain separate. [Phase 12 evidence](../evidence/phases/phase12-evidence.md) records demonstrated results and practical limits.
+
+Merged-main CI admission, the credential-bound protected Preview workflow and dedicated alias rollback have now passed. The first independent image release correctly blocked Java signing on its vulnerability scan. After Java hardening, all four profiles pass scanning, signing and signature verification at admitted code revision `1ca3381c4838913bc1183ff598358ce2b1e2fc84`. [Current receipts and limits](../evidence/phases/phase12-evidence.md#merged-main-release-and-free-hosted-assurance).

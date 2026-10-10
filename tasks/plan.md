@@ -1488,6 +1488,8 @@ The owner subsequently authorized and requested completion of the extension. Tas
 
 ### Task 55a: Integrate hosted authentication and privileged session controls
 
+**2026-10-10 provider planning update:** The owner requested a free production-MFA migration plan under the $0 ceiling. [ADR-0025](../docs/adr/0025-free-production-mfa-provider-migration.md) proposes qualifying Supabase Auth in Singapore, retaining Neon application data and verified identity/session/role boundaries. Planning authorization is not provider cutover or evidence that MFA and recovery are qualified. The acceptance criteria below remain unchanged.
+
 **Description:** Replace the local identity adapter with the selected hosted provider; enforce server-side ownership and session protections.
 
 **Acceptance criteria:**
@@ -1817,3 +1819,186 @@ Do not begin a later phase merely because earlier code compiles. Phase gates req
 - whether external completion asks for optional reflection;
 - streak/grace-day definition;
 - recruiter-facing profile card scope.
+
+
+## Phase 12 execution supplement: Vercel Hobby workers and isolated execution
+
+**Implementation status (2026-10-10): STARTED; VH-01 and preliminary VH-02 are PARTIAL.** Account guard/ADR, pinned SDK diagnostic lifecycle and bounded synthetic Singapore discovery are implemented. See [discovery evidence](../docs/evidence/security/vercel-hobby.md); default-image privilege/PID/runtime findings and unestablished child resource controls block learner execution. The owner requested a Vercel-hosted implementation plan for personal, non-commercial use with a strict $0 budget and no server. This extends Tasks 55–57; their original acceptance criteria and Task 55a are unchanged. The earlier instruction to keep hosted execution disabled remains effective until managed execution is qualified and activation is authorized. No paid plan, trial, always-on VM or paid AI provider is part of this plan.
+
+### Target architecture and boundaries
+
+```text
+Browser -> existing authenticated web API -> Neon application transactions/outbox
+                                      |
+                       durable event ID notification
+                                      v
+                      Vercel Queue -> bounded worker Function
+                                      |
+                        PostgreSQL leases/effect receipts
+
+Web run admission -> durable signed descriptor -> execution-control Function
+                                                     |
+                                  fresh Vercel Sandbox, deny-all network
+                                                     |
+                             bounded candidate output -> external comparator
+                                                     |
+                          signed normalized result -> trusted application ingestion
+```
+
+Vercel hosts web, queue consumers and execution orchestration; existing Neon Free remains the database. Keep application, maintenance, content, privacy and execution-control credentials scoped to separate invocations/projects as appropriate. Learner sandboxes receive no database URLs, signing keys, identity credentials, provider tokens, expected answers or control-plane sockets. The trusted comparator and signing authority remain outside the sandbox. Queue notification is transport; PostgreSQL remains the durable job/effect truth. Do not replace application transactions with queue messages or treat transport acknowledgement as a committed learning result.
+
+Use Singapore (`sin1`) where each service supports it to stay close to the existing Neon database. Verify actual regional availability for Queues and Sandbox before provisioning; document provider metadata/control-plane residency separately rather than claiming every provider component is single-region. Prefer Queues for delivery; Workflows is optional orchestration, not an initial dependency. Neither short-lived Functions nor a SQLite file in `/tmp` is a persistent execution-control host.
+
+### Provider limits checked on 2026-10-10
+
+| Resource | Published Hobby allowance/limit | Implementation consequence |
+| --- | --- | --- |
+| Functions with Fluid Compute | 300 seconds maximum; 4 CPU-hours and 360 GB-hours included | Short handlers with explicit deadlines; shared team usage must be accounted for |
+| Queues | 1,000,000 API operations included; retention up to 7 days | Operations are not jobs; retries, message size and delivery options increase usage |
+| Sandbox | 5 CPU-hours, 420 GB-hours memory, 5,000 creations and 20 GB transfer monthly | Reserve multiple resource dimensions before admission; stop at a conservative allowance |
+| Sandbox concurrency | 10 concurrent on Hobby | Start at 2 concurrent learner runs; include qualification probes in the quota |
+| Sandbox sessions | Maximum 45 minutes | Proposed initial full session cap 60 seconds, including startup/compilation; language deadlines remain stricter |
+| Cron | Each Hobby schedule runs at most daily; invocation may vary within the hour | Daily reconciliation is a safety net, not a prompt delivery or privacy SLA |
+| Optional Workflows | 50,000 events/month and 1 GB data written; completed-run retention 1 day | Workflow history cannot replace long-lived audit or privacy recovery records |
+
+Sources: [Functions limits](https://vercel.com/docs/functions/limitations), [Hobby usage](https://vercel.com/docs/plans/hobby), [Queues pricing](https://vercel.com/docs/queues/pricing), [Sandbox pricing](https://vercel.com/docs/sandbox/pricing), [Cron restrictions](https://vercel.com/docs/cron-jobs/manage-cron-jobs), [Workflow pricing](https://vercel.com/docs/workflows/pricing). Recheck at implementation and record actual team plan, availability and remaining usage. Hobby pauses usage at quota exhaustion; application limits must stop work earlier. No automatic upgrade or billing-enabled fallback.
+
+### Ordered implementation slices
+
+Each slice is a separate reviewable change. File paths below are likely targets, not files already implemented. Run focused tests for changed contracts plus the repository's standard CI gates. Do not widen the slice to unrelated UI or identity changes.
+
+#### VH-01: Validate the free account and record the deployment decision
+
+**Depends on:** Existing Phase 12 staging. **Scope:** Small.
+
+Confirm the connected team is Hobby, personal/non-commercial use, and Sandbox/Queues availability in Singapore without a paid trial. Check remaining shared team allowances and VCR/custom-image availability and storage pricing. Record a new ADR extending ADR-0010/0011 with managed microVM execution and queue-triggered workers, preserving isolation/result integrity. Designate separate execution-control/worker secret boundaries. Do not activate learner execution.
+
+**Acceptance/verification:** Read-only provider receipt lists plan, region, included quotas and no-charge resource path; ADR identifies unresolved limits and disables unsupported capability. If custom-image delivery is not free/available, stop that path and evaluate checksum-verified secret-free runtime artifacts without silently changing toolchain versions.
+
+**Likely files:** `docs/adr/0026-vercel-hobby-managed-execution.md`, `docs/deployment/staging.md`.
+
+#### VH-02: Prove one disposable Python sandbox before broad integration
+
+**Depends on:** VH-01. **Scope:** Medium.
+
+Create an opt-in synthetic spike with a pinned SDK and runtime identity, deny-all egress, no exposed ports, fresh filesystem, unprivileged learner process and bounded startup/run/teardown. Run one normal Python fixture and network, metadata, secret, fork, output, memory and residue attacks. Check whether provider APIs or an inner constrained process/container can enforce the existing CPU/memory/PID/file/disk contracts. MicroVM isolation alone does not establish those limits.
+
+**Acceptance/verification:** Safe fixture passes; hostile fixtures are bounded; sandbox cannot reach web, Neon or control services; all resources stop after failure/cancellation. Unsupported controls are recorded as blockers, never waived. Persist redacted provider receipts without learner source.
+
+**Likely files:** `spikes/execution-sandbox/vercel-hobby.ts`, spike fixtures, `docs/evidence/security/vercel-hobby.md`.
+
+**Checkpoint A:** Continue only if Hobby availability, no-charge runtime delivery and equivalent execution controls are demonstrated. Owner reviews the architecture decision; no execution activation is implied.
+
+#### VH-03: Deliver one durable maintenance job through Queues
+
+**Depends on:** VH-01. **Scope:** Medium.
+
+Extract the existing bounded consumer from CLI composition and add a verified queue consumer with a dedicated maintenance role. Commit the outbox row before publishing a descriptor-only event-ID notification. Load canonical work from PostgreSQL; reject malformed/untrusted notifications. Keep lease fencing, immutable effect receipts, bounded retries and dead-letter behavior. Begin with reconciliation, not learner deletion or embeddings.
+
+**Acceptance/verification:** Duplicate/concurrent deliveries commit one logical effect; crash before/after commit does not lose the durable job; spoofed notifications are rejected. Provider callback authentication is proven with the pinned SDK, not a caller-controlled header.
+
+**Likely files:** `apps/worker/src/job-relay.ts`, worker Vercel entrypoint, queue route/config, focused worker integration tests.
+
+#### VH-04: Reconcile lost notifications and bounded worker shutdown
+
+**Depends on:** VH-03. **Scope:** Medium.
+
+Add bounded server-owned post-commit wake-up, daily authenticated Cron and an authenticated manual reconciliation operation. A failed queue publish leaves the outbox pending. Send retry notifications after transient failure; daily/manual reconciliation repairs interrupted publishing and expired claims. Split long jobs into checkpointed work units; do not launch detached infinite loops or rely on post-response work for durable completion.
+
+**Acceptance/verification:** Simulate database commit followed by notification failure, provider outage and function termination; pending work is rediscovered, fenced and completed. Cron secret checks pass and backlog age remains visible. Document daily recovery delay; if required privacy/SLO deadlines need faster guaranteed recovery, this design is not qualified until a free supported scheduler solves it.
+
+**Likely files:** worker notification/reconciliation adapter, Cron route, `apps/web/vercel.json` or actual project configuration, worker integration tests.
+
+**Checkpoint B:** A real synthetic hosted maintenance job and loss/retry drill pass within measured function/resource limits.
+
+#### VH-05: Add durable serverless execution lifecycle storage
+
+**Depends on:** VH-02, VH-04. **Scope:** Medium; split migration and adapter if needed.
+
+Implement a separate durable execution journal compatible with short-lived Functions; existing SQLite/local disk cannot serve this role. Preserve admission idempotency, fenced leases, cancellation, terminal states and orphan reconciliation. Use a dedicated schema/role with no application-table grants. Persist descriptor and sandbox identity only; learner source stays ephemeral. Do not persist reusable application/signing credentials in the journal.
+
+**Acceptance/verification:** Concurrent cold starts, duplicate dispatch and orchestrator termination preserve lifecycle consistency. A stale lease cannot finalize a result; the journal role cannot read application data. Migration retry and schema-compatible rollback pass on an isolated database branch.
+
+**Likely files:** next available `packages/db/migrations/` migration, execution-control journal adapter, lifecycle integration tests, scoped role bootstrap.
+
+#### VH-06: Connect one real Python run end to end
+
+**Depends on:** VH-05. **Scope:** Medium.
+
+Add the provider adapter behind existing execution contracts: authenticated web admission, ephemeral source transport, fresh deny-all sandbox, bounded output collection, external comparison, signed normalized result and existing trusted ingestion. Keep provider-specific SDK logic in the execution adapter. Recheck cancellation before starting; stop a running sandbox on cancellation and fence late results.
+
+**Acceptance/verification:** Synthetic owned attempt returns a genuine trusted result; fabricated stdout verdicts do not pass; wrong signatures and replayed/stale results are rejected. Kill the orchestrator after sandbox creation and prove reconciler discovery/cleanup, including the create-before-journal-record ambiguity.
+
+**Likely files:** execution-control Vercel adapter, `apps/worker/src/execution-result-forwarder.ts`, existing execution client composition, hosted execution tests.
+
+#### VH-07: Qualify the remaining runtime profiles separately
+
+**Depends on:** VH-06. **Scope:** One small subcard per profile: JS/TS, Java, C/C++.
+
+Build or deliver the existing pinned toolchains with no learner-time package installation/network access. Promote the four-profile runtime set through the existing signed-manifest pipeline. Verify the provider actually runs the approved immutable digest/artifact identity, including any registry mirror; mutable tags alone are insufficient. TypeScript retains its pinned compile/type-check step. Do not assume the provider default image matches current manifests.
+
+**Acceptance/verification:** All six languages pass shared semantic fixtures and hostile resource tests. Each run records actual runtime/harness/manifest lineage. Cold-start/compiler overhead fits declared limits, or the profile remains unavailable.
+
+**Likely files per subcard:** corresponding `services/execution-images/` profile, provider runtime mapping, conformance fixtures/adapter, runtime release receipt.
+
+**Checkpoint C:** All six languages have genuine hosted conformance, abuse, cancellation, teardown and signed-result evidence. Local CI evidence alone is insufficient.
+
+#### VH-08: Enforce application quotas and pilot-stop controls
+
+**Depends on:** VH-06; final measurements from VH-07. **Scope:** Medium.
+
+Extend existing atomic budget admission with conservative reservations for creations, CPU, allocated-memory wall time, output transfer and queue operations. Start with 2 global concurrent runs, 1 per learner, 10 daily runs per learner and at most 100 daily sandbox creations across normal runs/tests. Use an initial sandbox creation ceiling of 4,000 per rolling 30 days, but reduce it when CPU/memory/transfer or shared-team allowances bind earlier. Suggested stop at 80% of each published free allowance, after subtracting existing usage; these are proposed app caps, not provider entitlements. Count retries, startup, qualification probes and provider memory rounding; reconcile actual usage. Unknown remaining budget must fail closed.
+
+**Acceptance/verification:** Parallel admission cannot overspend reservations; quota/provider failures produce queued/unavailable states without false assessment success. Owner can disable new admissions immediately; orphan cleanup still runs. No Pro/trial/payment fallback. A quota dashboard shows resource headroom without source/payload exposure.
+
+**Likely files:** existing budget application/DB modules, provider usage adapter, execution admission tests, safe operational status view.
+
+#### VH-09: Port other worker topics one at a time
+
+**Depends on:** VH-04, VH-08. **Scope:** One medium subcard per topic/credential boundary.
+
+Qualify mastery projection first, then authored content derivation, privacy export/deletion and existing retention/reconciliation according to their policies. Maintain separate scoped roles/invocations for content and privacy. Embeddings/evaluation remain disabled when a free approved provider is absent; authored/off behavior remains usable. Queue only opaque IDs, never source, export archives or secrets.
+
+**Acceptance/verification:** Each enabled topic has real hosted retry/idempotency evidence, measured bounded work, denied unrelated data access and backlog handling. Deletion requires a ledger surviving application backup rewind; a queue message or a ledger restored with the same database is insufficient. Resolve a free independently durable ledger/asset store with access and restore tests before enabling destructive privacy operations or claiming recovery complete.
+
+**Likely files per subcard:** topic handler, scoped role bootstrap, consumer composition, corresponding hosted integration tests/evidence.
+
+#### VH-10: Extend exact-source release and rollback qualification
+
+**Depends on:** VH-07–09. **Scope:** Medium; split worker and execution release changes.
+
+Deploy a protected synthetic candidate with execution and consumers disabled by default. Gate worker/control-plane deployments on exact-source CI and approved compatible schema. Verify runtime image-set signatures and provider identity before admission; retain independent content/AI promotion gates. Run worker rollback and runtime A→B→A against actual provider sandboxes, with no lost jobs or stale-result acceptance.
+
+**Acceptance/verification:** Failed CI, invalid signatures and incompatible configurations cannot activate. Telemetry/audit correlate web/control revision, runtime digest, descriptor and result. Explicit rollback/forward-fix and secret rotation procedures work without copying privileged secrets to sandboxes.
+
+**Likely files:** `.github/workflows/`, `ops/release/`, `docs/deployment/release.md`, hosted release tests.
+
+#### VH-11: Measure hosted capacity, cost headroom and failure recovery
+
+**Depends on:** VH-10. **Scope:** Separate medium evidence subcards.
+
+Run a small capped synthetic load in every language, measuring queue wait, startup/compile/run latency, CPU, memory-wall usage, transfer and database connections. Test two simultaneous runs, quota exhaustion, notification/provider outage, worker interruption and orphan cleanup. Separately rehearse historical PITR with known markers, immutable asset restore and deletion-ledger replay, measuring application RPO/RTO. Run deployed critical journeys, privacy isolation, accessibility and alerts. Do not use CI containers as learner execution hosting.
+
+**Acceptance/verification:** Published limits and existing SLO/privacy deadlines are met with free headroom; unmet SLOs remain explicit blockers. Full recovery is not represented by a schema-only snapshot restore. No destructive drill runs against the sole live application or protected checkpoint.
+
+**Likely files per subcard:** `tests/hosted-execution/`, hosted worker tests, `docs/evidence/load/`, recovery and accessibility evidence.
+
+#### VH-12: Evaluate Phase 12 readiness and controlled activation
+
+**Depends on:** VH-11 plus the unchanged original Tasks 55, 55a, 56 and 57 gates. **Scope:** Small documentation/operations change.
+
+Update the readiness matrix with exact deployed candidates and receipts. Independently reviewed current-rights curriculum must be published; auth/MFA, privacy and named ownership decisions remain independent. Only then obtain the original named pilot-readiness/activation decision. Enable a capped personal pilot through an explicit configuration change, with a working stop switch and quota monitoring. If any non-waivable gate fails, retain synthetic staging and execution-disabled status; do not check off Phase 12 merely because Vercel deployment succeeds.
+
+**Acceptance/verification:** Named decision references current complete evidence; stop/rollback is rehearsed; Task 55a is neither silently changed nor treated as verified by this infrastructure plan.
+
+**Likely files:** `docs/evidence/pilot-readiness.md`, Phase 12 evidence, `tasks/todo.md`, reviewed activation configuration.
+
+### Risks and fallback behavior
+
+- Sandbox/VCR/Queues features or regional availability may change: validate real Hobby access early, pin SDKs and record measured limits. No paid fallback.
+- New runtime packaging may alter approved digests/toolchains: require signed provenance and profile requalification, never accept `latest` as runtime lineage.
+- Daily Cron cannot guarantee rapid recovery: queue retries plus reconciliation reduce gaps but do not prove a deadline; expose pending work and qualify actual deadlines.
+- A free quota is shared and finite: application ceilings reserve headroom, and quota exhaustion disables admission while retaining durable pending work.
+- Independent privacy ledger, immutable assets, full recovery, content rights and identity may remain unsolved: keep their gates open. This plan removes the assumed VM requirement, not the trust/recovery requirements.
+
+**Execution order:** VH-01 → VH-02 → VH-03 → VH-04 → VH-05 → VH-06 → profile subcards VH-07 → VH-08 → topic subcards VH-09 → VH-10 → evidence subcards VH-11 → VH-12. Validate the highest-risk managed sandbox capabilities before investing in a broad migration.

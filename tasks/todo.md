@@ -381,10 +381,39 @@ Local engineering closure: [delivery evidence](../docs/evidence/phases/phase10-p
 
 ## Phase 12: Hosted pilot release
 
-- [ ] Task 55: Provision the approved single-region staging environment — IN PROGRESS: Vercel Singapore Preview is READY and web/database/Clerk-entry/anonymous-authorization smoke checks pass; Neon Free has 40 migrations and restricted runtime/TLS qualification; execution/worker infrastructure, environment security review and complete hosted qualification remain pending.
-- [ ] Task 55a: Integrate hosted authentication and privileged session controls — PARTIAL: real development email-code sign-in/application session/sign-out pass; strict provider-verified privileged MFA, Vercel marker admission and request-context role-removal tests pass; backend revocation, real privileged MFA and ownership/callback qualification remain pending.
-- [ ] Task 56: Implement CI/CD, migration, image, and configuration promotion — PARTIAL: exact-revision CI admission and gated web/image workflows implemented; credential-bound deployment and hosted rollback/configuration lineage still require receipts.
+- [ ] Task 55: Provision the approved single-region staging environment — PARTIAL: current Singapore Preview, restricted Neon runtime/TLS/pgvector/schema, protected anonymous responses and 11 client JavaScript assets pass bounded security checks; local credential files are ignored/untracked with mode 0600 and Neon Free is verified. Isolated execution/worker infrastructure, complete provider secret/network review and durable recovery remain absent; hosted execution stays disabled under the owner's $0 scope.
+- [x] Task 55a planning follow-up: owner-requested $0 production-MFA migration plan recorded in [ADR-0025](../docs/adr/0025-free-production-mfa-provider-migration.md); Supabase Auth qualification is proposed, implementation/cutover not started.
+- [ ] Task 55a: Integrate hosted authentication and privileged session controls — PARTIAL: real development email-code sign-in/application session/sign-out pass; strict provider-verified privileged MFA, Vercel marker admission and request-context role-removal tests pass; hosted backend revocation, privacy origin/export and active-session role removal now pass; positive TOTP is provider-blocked, and ownership/callback qualification remains pending.
+- [ ] Task 56: Implement CI/CD, migration, image, and configuration promotion — release-control engineering implemented and verified: exact-CI web/image gates, signed complete runtime manifests, real A→B→A promotion/rollback, tampered-signature/stale-command rejection and isolated hosted synthetic AI configuration rejection/promotion/rollback pass with immutable lineage. Overall hosted qualification remains PARTIAL: real-cohort content/configuration approval and running hosted-runtime telemetry/compatibility depend on Tasks 55/57; fixture reviews do not approve live AI or curriculum.
 - [ ] Task 57: Execute the hosted-pilot readiness gate — NOT READY: isolated Neon snapshot recovery verified; [readiness matrix](../docs/evidence/pilot-readiness.md) records remaining non-waivable hosted execution/privacy/content/recovery gates and named human approval.
+
+### Vercel Hobby implementation subcards for Tasks 55–57
+
+Implementation started; no managed worker/execution activation or Phase 12 completion is implied. Personal/non-commercial use and a strict $0 ceiling are owner-confirmed. See the [ordered execution supplement](plan.md#phase-12-execution-supplement-vercel-hobby-workers-and-isolated-execution) for dependencies, acceptance criteria, file scope and verification.
+
+- [ ] VH-01: PARTIAL — account guard, GitHub qualification and [ADR-0026](../docs/adr/0026-vercel-hobby-managed-execution.md) implemented; dashboard confirms active Hobby, but token team-read HTTP 403 blocks automated verification. Remaining usage/free pinned runtime delivery still require qualification.
+- [ ] VH-02: PARTIAL — pinned SDK diagnostic runner with account guard, cancellation/disposal tests and private receipts implemented. Stopped Singapore probes confirm namespaces/privilege dropping, but child memory/PID/CPU controls are not established. [Discovery evidence](../docs/evidence/security/vercel-hobby.md) retains default sudo/runtime blockers; full hostile/resource qualification remains open.
+- [ ] Checkpoint A: Review provider feasibility and architecture; retain execution disabled.
+- [ ] VH-03: Deliver one durable maintenance job through authenticated Queues.
+- [ ] VH-04: Prove lost-notification reconciliation and bounded worker shutdown.
+- [ ] Checkpoint B: Hosted maintenance retry/loss drill passes.
+- [ ] VH-05: Implement durable, scoped serverless execution lifecycle storage.
+- [ ] VH-06: Connect one genuine signed Python run and cancellation/recovery.
+- [ ] VH-07a: Qualify pinned JavaScript/TypeScript profile on Sandbox.
+- [ ] VH-07b: Qualify pinned Java profile on Sandbox.
+- [ ] VH-07c: Qualify pinned C/C++ profile on Sandbox.
+- [ ] Checkpoint C: All six hosted languages pass conformance, abuse and teardown gates.
+- [ ] VH-08: Enforce multidimensional atomic quotas, headroom and pilot-stop controls.
+- [ ] VH-09a: Qualify hosted mastery projection consumers.
+- [ ] VH-09b: Qualify hosted authored content derivation with separate credentials.
+- [ ] VH-09c: Resolve independent free privacy ledger/asset recovery and qualify privacy consumers.
+- [ ] VH-09d: Qualify policy-approved retention/reconciliation; keep unsupported provider jobs disabled.
+- [ ] VH-10a: Qualify exact-source worker releases and schema-compatible rollback.
+- [ ] VH-10b: Qualify actual Sandbox runtime promotion/rollback and trusted lineage.
+- [ ] VH-11a: Measure capped six-language capacity, quota headroom and interruption recovery.
+- [ ] VH-11b: Rehearse historical PITR, immutable assets, deletion replay and RPO/RTO.
+- [ ] VH-11c: Complete deployed critical journeys, privacy, accessibility and alert evidence.
+- [ ] VH-12: Evaluate unchanged Phase 12 gates and obtain named readiness/activation decision.
 
 ### Checkpoint F12: Hosted pilot milestone M5
 

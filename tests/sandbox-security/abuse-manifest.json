@@ -2,6 +2,7 @@
   "schemaVersion": 1,
   "target": "algocove/execution-python:2026-09-17",
   "maxOutputBytes": 8192,
+  "maxStartupDurationMs": 15000,
   "maxDurationMs": 2500,
   "fixtures": [
     {
