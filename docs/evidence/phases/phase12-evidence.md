@@ -132,3 +132,35 @@ Task 56 now adds canonical complete four-profile runtime manifests and six-langu
 Twenty-six focused tests pass: complete/mixed/missing/duplicate source sets, immutable digests, unknown/enabling fields, signature/CI rejection, foreign workflow/repository, skipped jobs, stale pointer, rejected rollback, retained-map corruption, canonical signature bytes and positive audited promotion/rollback. These injected tests prove local control behavior, not live signatures. Live artifact qualification and exact-revision CI are recorded separately when available. [Operator procedure](../../deployment/release.md#independent-runtime-manifest-promotion).
 
 Tasks 55 and 57 retain the original non-waivable requirements: a separately isolated host/worker, durable privacy recovery, content rights, measured hosted capacity and the named readiness decision. The existing $0 constraint and disabled hosted execution do not satisfy those requirements. No pilot is admitted by this slice.
+
+### Current CI and environment qualification
+
+Code revision `16791c4fa9edafd3f5d6da1feb8e7e20d158c2c4` passes local `pnpm verify` with 613 core tests and [CI 38065210903](https://github.com/vsuman00/AlgoCove/actions/runs/38065210903), including all three required quality, execution-contract and stronger-sandbox jobs. This revision changes release controls, not the application identity adapter or curriculum.
+
+Its protected Vercel Preview `dpl_3KPybQhr325LTrEZ39Z4Hah7ptUj` (`algocove-dp0wnpu3i-vsuman00s-projects.vercel.app`) is READY in `sin1`, with no production target. At 16:01:09 UTC, liveness/readiness return 200, signed-out session returns 401, and the entry HTML plus 11 fetched client JavaScript assets contain none of the known runtime/operator/schema-owner database connection values, telemetry correlation key or Clerk secret. This checks exact known credential values, not every possible secret or every authenticated response. The task-created 600-second access link was revoked and its private access file removed.
+
+A fresh read-only restricted staging preflight passes verified client TLS/hostname transport, runtime role restrictions, pgvector and schema 0040. Root `.env` and `.env.local` are ignored, untracked and mode 0600. Neon organization `org-little-recipe-73838154` is verified Free; project `bold-sky-06853855` remains PostgreSQL 17 in `aws-ap-southeast-1` with 21,600-second history and 0.25 CU endpoints. The API's suspend timeout `0` means plan default, not disabled scale-to-zero; `-1` would disable it. [Provider API specification](https://neon.com/api_spec/release/v2.json). This bounded inventory does not replace complete provider environment/secret access review or prove a missing host's network isolation.
+
+### Signed runtime promotion and rollback receipts
+
+[Image release A, 38066041829](https://github.com/vsuman00/AlgoCove/actions/runs/38066041829) and [image release B, 38066131241](https://github.com/vsuman00/AlgoCove/actions/runs/38066131241) both admit the exact CI-qualified source above and pass all four profile build/provenance/SBOM/scan/signature jobs plus complete-manifest assembly/signing/verification. Their `signed-runtime-release` artifacts contain canonical manifests and Sigstore bundles. The operator command independently verifies source CI, completed release jobs, exact workflow/issuer/source signatures and all four digest signatures.
+
+| Runtime set | Canonical manifest identity | Actual operator result |
+| --- | --- | --- |
+| A | `sha256:df9cff9c45bcceec5e1d734779a74eab816ba5636acea8548411b191a4cbc280` | Promoted at 16:06:22 UTC; retained as rollback target |
+| B | `sha256:cb8aac0eeba786bd5b2398296fbd53d9ff8d0863d22227811a25ea9b83f8d3e8` | Promoted after A with exact expected-current identity |
+| Restored A | `sha256:df9cff9c45bcceec5e1d734779a74eab816ba5636acea8548411b191a4cbc280` | Actual rollback verified by 16:11:01 UTC; three immutable decision receipts retained |
+
+Changing B's Python digest while retaining B's signature fails actual Cosign verification with `invalid signature`; the operator command returns exit 1 without changing the current pointer. A stale expected-current command also returns exit 1 and preserves the pointer. The older signed-image release without a signed complete manifest is rejected before pointer creation. All four image digests differ between A and B, but both builds use the same source/toolchain policy: this proves cryptographic admission and configuration-pointer rollback, not behavior-changing toolchain compatibility or running hosted execution. No application/content/AI pointer was changed by the runtime commands; the tested operator state is an isolated local rehearsal directory, not a provisioned hosted control plane.
+
+### Independent hosted synthetic AI configuration drill
+
+On restored branch `br-aged-mouse-b3tkd3bo`, the actual restricted runtime repository exercises immutable suite/config/run/decision records with unique unlinked synthetic actors. Missing review rejects promotion, a critical privacy regression rejects promotion, and a fixture configuration rejects the production channel. An independently represented synthetic reviewer allows fixture-channel promotion; actual rollback returns it to `authored.off.v1`. Production remains `authored.off.v1`. Five immutable decisions retain source run/version lineage, including accepted promotion `evt_b470abb5bcd7184c64fd18e9001c4ec6` and rollback `evt_86e4a25ddd4c8111a198b9aa17636eb6`, observed at 16:09:11 UTC.
+
+Scores and reviewer actors are synthetic test fixtures, not human sign-off, live-provider evaluation or production AI approval. Only this isolated recovery branch was modified; the staging application's AI channels remain unchanged. Synthetic role grants were revoked after the drill. The recovery endpoint was suspended and read back idle; the original recovery snapshot remains intact. These fixture records do not qualify historical PITR/data-loss or durable deletion-ledger replay.
+
+### Readiness outcome and missing prerequisites
+
+A read-only staging operator inventory confirms `total_versions=0`, `published_versions=0` and `current_rights_versions=0`. Both staging AI channels remain `authored.off.v1`. Task 56's release-control implementation and the runtime/AI configuration mechanics now have current local, CI and real signature/database receipts. Full hosted qualification still needs approved curriculum/configuration and a running isolated runtime's telemetry/compatibility evidence.
+
+Tasks 55/57 and F12 remain incomplete. Missing prerequisites are an approved free isolated execution/worker host, complete provider-secret/network review, independently durable privacy/deletion recovery with historical PITR/assets and measured RPO/RTO, current independently reviewed content publication, measured hosted capacity/SLO/alert/accessibility assurance, and named support/privacy/incident ownership plus a signed readiness decision. The owner has kept hosted execution disabled and supplied no free host. Do not turn synthetic tests, empty curriculum, CI success or this documentation into real-cohort admission or a completed Phase 12 claim.
