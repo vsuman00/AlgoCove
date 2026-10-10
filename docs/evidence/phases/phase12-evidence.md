@@ -179,3 +179,17 @@ All 14 local Docker fixtures pass after the change, with readiness confirmed and
 The owner approved the Vercel Hobby plan for personal, non-commercial use and requested implementation. [ADR-0026](../../adr/0026-vercel-hobby-managed-execution.md) records bounded queue consumers and managed execution while preserving existing trust/recovery gates. Account preflight and 14 tests were committed/pushed; automated provider qualification run [38069982446](https://github.com/vsuman00/AlgoCove/actions/runs/38069982446) confirms project access but fails closed on team metadata HTTP 403. The signed-in dashboard independently confirms Active Hobby with no added payment method.
 
 A bounded synthetic default-image Sandbox was created in Singapore, ran a normal Python calculation and limited network/privilege discovery, then was explicitly stopped and read back as stopped. [Detailed evidence](../security/vercel-hobby.md) records exact identity, usage and limits. Passwordless sudo, unlimited PID cgroup and Python version drift mean this default image is not qualified for learner programs. New discovery-gate tests reject those findings and never turn preliminary checks into production approval. VH-01 and VH-02 remain partial; there is no worker deployment, learner execution activation, paid registry push or Phase 12 closure.
+
+The follow-up implements an opt-in pinned SDK diagnostic runner with strict account
+qualification, immutable provider-image selection, private session receipts,
+cancellation and independently bounded stop retries. Fourteen lifecycle tests cover
+faults and prevent success without stopped acknowledgement. Three additional bounded
+Singapore connector probes were explicitly stopped; namespace creation and privilege
+dropping work, but child memory/PID/CPU controls remain unestablished. These are
+capability findings rather than successful hostile-code assurance or a hosted SDK
+qualification. Local verification passes 656 tests and static/docs/secret checks;
+dependency audit passes its production policy with the previously documented dev-only
+advisory. Latest prior-source core CI [38070404884](https://github.com/vsuman00/AlgoCove/actions/runs/38070404884)
+passes at `9355b9e`; matching provider qualification [38070404920](https://github.com/vsuman00/AlgoCove/actions/runs/38070404920)
+still fails `team_read_http_403`. Original Tasks 55–57 and F12 remain open; Task 55a
+and concurrent owner UI/skill changes are preserved.

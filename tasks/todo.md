@@ -389,10 +389,10 @@ Local engineering closure: [delivery evidence](../docs/evidence/phases/phase10-p
 
 ### Vercel Hobby implementation subcards for Tasks 55–57
 
-Planning only; no managed worker/execution activation or Phase 12 completion is implied. Personal/non-commercial use and a strict $0 ceiling are owner-confirmed. See the [ordered execution supplement](plan.md#phase-12-execution-supplement-vercel-hobby-workers-and-isolated-execution) for dependencies, acceptance criteria, file scope and verification.
+Implementation started; no managed worker/execution activation or Phase 12 completion is implied. Personal/non-commercial use and a strict $0 ceiling are owner-confirmed. See the [ordered execution supplement](plan.md#phase-12-execution-supplement-vercel-hobby-workers-and-isolated-execution) for dependencies, acceptance criteria, file scope and verification.
 
 - [ ] VH-01: PARTIAL — account guard, GitHub qualification and [ADR-0026](../docs/adr/0026-vercel-hobby-managed-execution.md) implemented; dashboard confirms active Hobby, but token team-read HTTP 403 blocks automated verification. Remaining usage/free pinned runtime delivery still require qualification.
-- [ ] VH-02: PARTIAL — one stopped synthetic Singapore Sandbox runs Python and blocks tested external/metadata sockets; [discovery evidence](../docs/evidence/security/vercel-hobby.md) shows passwordless sudo, unlimited PID cgroup and runtime mismatch. Discovery evaluator rejects these conditions; full hostile/resource qualification remains open.
+- [ ] VH-02: PARTIAL — pinned SDK diagnostic runner with account guard, cancellation/disposal tests and private receipts implemented. Stopped Singapore probes confirm namespaces/privilege dropping, but child memory/PID/CPU controls are not established. [Discovery evidence](../docs/evidence/security/vercel-hobby.md) retains default sudo/runtime blockers; full hostile/resource qualification remains open.
 - [ ] Checkpoint A: Review provider feasibility and architecture; retain execution disabled.
 - [ ] VH-03: Deliver one durable maintenance job through authenticated Queues.
 - [ ] VH-04: Prove lost-notification reconciliation and bounded worker shutdown.

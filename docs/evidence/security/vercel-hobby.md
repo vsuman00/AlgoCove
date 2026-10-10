@@ -31,7 +31,7 @@ The read-only account preflight rejects non-Hobby plans, missing billing metadat
 
 Only fixed synthetic code was sent. Creation via connector first rejected the SDK string network-policy format before any resource creation; the REST object format succeeded. No source from a learner, expected answers, application/database URL, signing key or identity credential was sent to this environment.
 
-The code in `spikes/execution-sandbox/vercel-capability-probe.py` preserves the diagnostic operations for the next reproducible SDK spike. Run it through the authenticated Sandbox control API as `python3`, with `sudo: false`, the command timeout above, no environment overrides and no network changes. Always stop the disposable session in a cleanup path and read back its stopped state. Never run discovery on a learner session. Account verification and resource reservation must precede any automated creation; a CLI SDK runner is not implemented by this discovery slice.
+The code in `spikes/execution-sandbox/vercel-capability-probe.py` preserves the diagnostic operations. Never run discovery on a learner session. The subsequent operator-only SDK runner below retains account qualification before automated creation; remaining shared allowances must be checked before opting into a diagnostic.
 
 ## Findings and interpretation
 
@@ -53,3 +53,52 @@ The code in `spikes/execution-sandbox/vercel-capability-probe.py` preserves the 
 ## Next bounded slice
 
 Resolve automated team-read access and qualify free pinned runtime-artifact delivery. Build a trusted launcher that gives learner processes no sudo/capability path and enforceable descriptor-specific CPU/memory/PID/file/disk/output limits. If this requires an inner container or privileged setup, prove that learner code cannot regain the setup authority or alter its constraints. Then run the full VH-02 hostile/cancellation/teardown fixture set before Checkpoint A or any learner activation. The default universal image is a diagnostic baseline, not the accepted runtime release.
+
+## Reproducible SDK runner and containment follow-up
+
+`ops/environments/vercel-hobby/run-discovery.ts` now provides an explicit
+`--synthetic-discovery` operator command using exact `@vercel/sandbox` 3.6.1.
+The SDK's published types establish digest image selection and server-enforced
+command `timeoutMs`; this implementation does not guess an SDK request shape.
+It requests the immutable provider image above, Singapore without failover,
+deny-all egress, one CPU, no ports/environment/source/drives/snapshots and a
+60-second nonpersistent lifetime. Provider image pinning is not qualification
+of AlgoCove's Python 3.14.7 release.
+
+Account qualification occurs before creation. The runner uploads only the two
+fixed local diagnostic scripts; only the containment diagnostic runs as trusted
+root setup. Cancellation, failed identity/upload/command/parsing, malformed output
+and lost stop acknowledgements are covered by 14 lifecycle tests. A success
+requires stopped acknowledgement; cleanup uses independent request deadlines and
+one retry. Safe IDs are fsynced into private exclusive local JSONL receipts before
+commands. Unacknowledged creation and abrupt operator death rely on the provider
+TTL; this is not a durable production orphan reconciler. A missing-token CLI run
+exits `provider_token_required` before provisioning. Hosted execution of this SDK
+runner remains unverified because operator credentials are unavailable locally
+and GitHub's team read still returns 403.
+
+Separate manual connector diagnostics established the following actual results;
+they do not stand in for a successful hosted SDK run:
+
+| Session / command | Test and result | Final lifetime / active CPU |
+| --- | --- | --- |
+| `sbx_DUZjKQGoVrto0yZJ0cLsglfTskcj` / `cmd_58f04c5acfdf4af196935ce910a9` | Default image: Docker and runc absent; setpriv/unshare/prlimit/chroot available; cgroup controllers listed | Stopped; 14,471 / 1,730 ms |
+| `sbx_vkD1ygSo1PFMTvJJiGsMXGeb24wv` / `cmd_e414431cadce44e39f77d56d0b22` | Digest-selected provider image accepted. Mount/network namespaces and UID/GID 65532, no-new-privileges, zero effective capabilities succeed. An empty child cgroup was removed; memory/PID/CPU control files were not established | Stopped; 11,870 / 1,763 ms |
+| `sbx_LaCxDUlU9r2b69Zm1lJvRwhQRpcM` / `cmd_9760983eb76b417996bdce983bc8` | Same pin and namespace/privilege-drop results. Enabling missing child controllers did not establish writable memory/PID/CPU limits; parent controller state was restored | Stopped; 15,005 / 1,820 ms |
+
+Each used Singapore, no failover, deny-all egress, no environment/ports and a
+60-second provider timeout. The primitive commands exited zero in 132/130 ms;
+their JSON explicitly reports unsuccessful controls. The last session's stopped
+state and zero routes were independently read back. Every created session was
+explicitly stopped. No VCR push, stored custom image, snapshot, drive or paid
+resource was requested. The three follow-ups total 41,346 ms of VM lifetime and
+5,313 ms of active CPU; provider memory accounting has minimum rounding and is
+not inferred from that lifetime.
+
+These results establish promising primitives, not a safe inner execution engine.
+They neither prove that cgroup delegation is impossible nor authorize replacing
+aggregate limits with per-process limits. The next technical work is to qualify a
+trusted runtime artifact/launcher and aggregate enforcement without exposing
+setup authority to learner code. Full hostile memory/fork/CPU/output/file/disk,
+cancel/residue tests and signed result validation remain open. Core repository
+verification passes 656 tests plus formatting/lint/typechecks/docs/secret checks.

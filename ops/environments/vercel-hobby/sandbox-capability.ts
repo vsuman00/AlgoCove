@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 const limit = z.string().regex(/^(?:[1-9][0-9]*|max|unavailable)$/);
-const probe = z
+export const sandboxObservationSchema = z
   .object({
     normal: z.boolean(),
     pythonVersion: z.string().regex(/^[0-9]+\.[0-9]+\.[0-9]+$/),
@@ -20,7 +20,7 @@ export function evaluateSandboxCapability(
   observation: unknown,
   expected: { pythonVersion: string; maxMemoryBytes: number; maxPids: number },
 ): { productionQualified: false; blockers: readonly string[]; remainingChecks: readonly string[] } {
-  const parsed = probe.safeParse(observation);
+  const parsed = sandboxObservationSchema.safeParse(observation);
   const blockers: string[] = [];
   if (
     !parsed.success ||
