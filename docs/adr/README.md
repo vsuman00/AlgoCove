@@ -26,6 +26,8 @@ Active records are `Proposed` unless individually accepted; ADR-0004 is supersed
 | [ADR-0023](0023-learner-owned-sheets-and-sharing.md) | Learner-owned sheets and explicit sharing | Proposed |
 | [ADR-0024](0024-typed-interview-modes.md) | Typed interview modes with separate assessment rules | Proposed |
 
+| [ADR-0025](0025-free-production-mfa-provider-migration.md) | Free production MFA provider migration; Supabase Auth qualification proposed | Proposed; owner requested planning, no cutover |
+
 ## Lifecycle
 
 `Proposed -> Accepted -> Superseded or Deprecated`

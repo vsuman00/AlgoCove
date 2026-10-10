@@ -1488,6 +1488,8 @@ The owner subsequently authorized and requested completion of the extension. Tas
 
 ### Task 55a: Integrate hosted authentication and privileged session controls
 
+**2026-10-10 provider planning update:** The owner requested a free production-MFA migration plan under the $0 ceiling. [ADR-0025](../docs/adr/0025-free-production-mfa-provider-migration.md) proposes qualifying Supabase Auth in Singapore, retaining Neon application data and verified identity/session/role boundaries. Planning authorization is not provider cutover or evidence that MFA and recovery are qualified. The acceptance criteria below remain unchanged.
+
 **Description:** Replace the local identity adapter with the selected hosted provider; enforce server-side ownership and session protections.
 
 **Acceptance criteria:**
