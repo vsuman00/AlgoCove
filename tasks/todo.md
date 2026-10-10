@@ -387,6 +387,34 @@ Local engineering closure: [delivery evidence](../docs/evidence/phases/phase10-p
 - [ ] Task 56: Implement CI/CD, migration, image, and configuration promotion — release-control engineering implemented and verified: exact-CI web/image gates, signed complete runtime manifests, real A→B→A promotion/rollback, tampered-signature/stale-command rejection and isolated hosted synthetic AI configuration rejection/promotion/rollback pass with immutable lineage. Overall hosted qualification remains PARTIAL: real-cohort content/configuration approval and running hosted-runtime telemetry/compatibility depend on Tasks 55/57; fixture reviews do not approve live AI or curriculum.
 - [ ] Task 57: Execute the hosted-pilot readiness gate — NOT READY: isolated Neon snapshot recovery verified; [readiness matrix](../docs/evidence/pilot-readiness.md) records remaining non-waivable hosted execution/privacy/content/recovery gates and named human approval.
 
+### Vercel Hobby implementation subcards for Tasks 55–57
+
+Planning only; no managed worker/execution activation or Phase 12 completion is implied. Personal/non-commercial use and a strict $0 ceiling are owner-confirmed. See the [ordered execution supplement](plan.md#phase-12-execution-supplement-vercel-hobby-workers-and-isolated-execution) for dependencies, acceptance criteria, file scope and verification.
+
+- [ ] VH-01: Verify Hobby access/region/free quotas and record the managed-execution ADR.
+- [ ] VH-02: Qualify disposable Python sandbox isolation and enforceable resource controls.
+- [ ] Checkpoint A: Review provider feasibility and architecture; retain execution disabled.
+- [ ] VH-03: Deliver one durable maintenance job through authenticated Queues.
+- [ ] VH-04: Prove lost-notification reconciliation and bounded worker shutdown.
+- [ ] Checkpoint B: Hosted maintenance retry/loss drill passes.
+- [ ] VH-05: Implement durable, scoped serverless execution lifecycle storage.
+- [ ] VH-06: Connect one genuine signed Python run and cancellation/recovery.
+- [ ] VH-07a: Qualify pinned JavaScript/TypeScript profile on Sandbox.
+- [ ] VH-07b: Qualify pinned Java profile on Sandbox.
+- [ ] VH-07c: Qualify pinned C/C++ profile on Sandbox.
+- [ ] Checkpoint C: All six hosted languages pass conformance, abuse and teardown gates.
+- [ ] VH-08: Enforce multidimensional atomic quotas, headroom and pilot-stop controls.
+- [ ] VH-09a: Qualify hosted mastery projection consumers.
+- [ ] VH-09b: Qualify hosted authored content derivation with separate credentials.
+- [ ] VH-09c: Resolve independent free privacy ledger/asset recovery and qualify privacy consumers.
+- [ ] VH-09d: Qualify policy-approved retention/reconciliation; keep unsupported provider jobs disabled.
+- [ ] VH-10a: Qualify exact-source worker releases and schema-compatible rollback.
+- [ ] VH-10b: Qualify actual Sandbox runtime promotion/rollback and trusted lineage.
+- [ ] VH-11a: Measure capped six-language capacity, quota headroom and interruption recovery.
+- [ ] VH-11b: Rehearse historical PITR, immutable assets, deletion replay and RPO/RTO.
+- [ ] VH-11c: Complete deployed critical journeys, privacy, accessibility and alert evidence.
+- [ ] VH-12: Evaluate unchanged Phase 12 gates and obtain named readiness/activation decision.
+
 ### Checkpoint F12: Hosted pilot milestone M5
 
 - [ ] Pilot readiness is approved by the named human owners.
