@@ -148,3 +148,79 @@ jobs:
             echo "- Image: ${IMAGE}:${TAG}"
             echo "- Digest: ${IMAGE}@${DIGEST}"
           } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Write immutable profile receipt
+        env:
+          PROFILE_ID: ${{ matrix.id }}
+          IMAGE_DIGEST: ${{ steps.build.outputs.digest }}
+        run: |
+          mkdir -p runtime-receipt
+          node --input-type=module - <<'NODE'
+          import { writeFileSync } from 'node:fs';
+          writeFileSync(`runtime-receipt/${process.env.PROFILE_ID}.json`, JSON.stringify({
+            schemaVersion: 1, profileId: process.env.PROFILE_ID,
+            sourceSha: process.env.GITHUB_SHA, sourceRunId: Number(process.env.GITHUB_RUN_ID),
+            sourceWorkflowRef: process.env.GITHUB_WORKFLOW_REF,
+            imageDigest: process.env.IMAGE_DIGEST,
+          }) + '\n');
+          NODE
+
+      - uses: actions/upload-artifact@v7.0.1
+        with:
+          name: runtime-receipt-${{ matrix.id }}
+          path: runtime-receipt/*.json
+          if-no-files-found: error
+          retention-days: 30
+
+  runtime-candidate:
+    name: Assemble and sign runtime image set
+    needs: [admission, publish-and-sign]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      actions: read
+      packages: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v5.1.0
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@v6.1.0
+        with:
+          run_install: false
+      - uses: actions/setup-node@v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - uses: sigstore/cosign-installer@v4.1.2
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/download-artifact@v8.0.2
+        with:
+          pattern: runtime-receipt-*
+          path: runtime-receipts
+          merge-multiple: true
+      - name: Reverify exact-source images and assemble candidate
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node ops/release/assemble-runtime.ts runtime-receipts runtime-release.json
+      - name: Sign and verify the complete manifest
+        run: |
+          cosign sign-blob --yes --bundle runtime-release.sigstore.json runtime-release.json
+          cosign verify-blob runtime-release.json --bundle runtime-release.sigstore.json \
+            --certificate-identity "https://github.com/${GITHUB_WORKFLOW_REF}" \
+            --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
+            --certificate-github-workflow-sha "$GITHUB_SHA"
+      - uses: actions/upload-artifact@v7.0.1
+        with:
+          name: signed-runtime-release
+          path: |
+            runtime-release.json
+            runtime-release.sigstore.json
+          if-no-files-found: error
+          retention-days: 30

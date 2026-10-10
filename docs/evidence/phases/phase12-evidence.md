@@ -122,3 +122,13 @@ All four image jobs build with provenance/SBOM, pass the configured fixable HIGH
 | c-cpp | `ghcr.io/vsuman00/algocove/execution-c-cpp@sha256:04b4a9d95fb36a915659d00b2f2f44b930f5c0d0ed8a8115a9a7a4e186c3196d` |
 
 Publication approves this scanned/signed artifact set; it does not provision an execution host, promote a runtime manifest or enable learner execution. The later ADR-0025 commit changes planning documentation only and proposes free production-MFA qualification. Separate content/AI/runtime configuration lineage and the full pilot gates remain open.
+
+## Tasks 55–57 follow-up: independent runtime release controls
+
+The owner clarified that this follow-up targets Tasks 55, 56 and 57 and leaves Task 55a unchanged. Task 55a's recorded engineering/hosted evidence remains as written; this clarification is not a new provider-MFA test result.
+
+Task 56 now adds canonical complete four-profile runtime manifests and six-language image mappings. The image workflow assembles the set only after successful profile jobs, reverifies exact-source CI and image signatures, then signs and verifies the manifest. The operator promotion/rollback command verifies current CI, release-job membership, exact-source manifest and image signatures before changing an atomic pointer under a lock. Immutable local decision receipts retain previous/target digests, source commit/run, timestamp and operator OS UID. Execution remains disabled and no host is started by promotion.
+
+Twenty-six focused tests pass: complete/mixed/missing/duplicate source sets, immutable digests, unknown/enabling fields, signature/CI rejection, foreign workflow/repository, skipped jobs, stale pointer, rejected rollback, retained-map corruption, canonical signature bytes and positive audited promotion/rollback. These injected tests prove local control behavior, not live signatures. Live artifact qualification and exact-revision CI are recorded separately when available. [Operator procedure](../../deployment/release.md#independent-runtime-manifest-promotion).
+
+Tasks 55 and 57 retain the original non-waivable requirements: a separately isolated host/worker, durable privacy recovery, content rights, measured hosted capacity and the named readiness decision. The existing $0 constraint and disabled hosted execution do not satisfy those requirements. No pilot is admitted by this slice.
