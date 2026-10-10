@@ -54,7 +54,7 @@ Rollback restores the approved provider configuration and compatible application
 
 ## Consequences
 
-The proposal can remove the production MFA subscription requirement without rewriting the learning database. It adds another managed data boundary, identity SDK/UI work, verified account linking and explicit session/recovery controls. Free-tier identity backups, email delivery and inactivity behavior require qualification; free MFA alone does not make the full pilot ready. Hosted execution/workers, durable deletion recovery, curriculum rights, SLOs and the named readiness decision remain independent Phase 12 requirements.
+The proposal can remove the production MFA subscription requirement without rewriting the learning database. It adds another managed data boundary, identity SDK/UI work, verified account linking and explicit session/recovery controls. The additional identity store needs its own recovery and deletion-replay evidence. Free-tier identity backups, email delivery and inactivity behavior require qualification; free MFA alone does not make the full pilot ready. Hosted execution/workers, durable deletion recovery, curriculum rights, SLOs and the named readiness decision remain independent Phase 12 requirements.
 
 ## Verification
 

@@ -107,3 +107,18 @@ These independently built artifacts contain identical application source trees. 
 [Execution image release 38049656304](https://github.com/vsuman00/AlgoCove/actions/runs/38049656304) admitted merged main and successfully built, scanned, signed and verified Python and JavaScript/TypeScript images. The Java scan found fixable high-severity OpenSSL vulnerabilities and an unused `/usr/bin/pebble` Go binary; Java signing was blocked and the C/C++ matrix job was cancelled by fail-fast. This is genuine failed-scan gate evidence, not a complete four-profile release. The follow-up Java Dockerfile upgrades distribution packages before removing package managers and removes the unused binary. A new admitted revision and successful scans/signature verification are required before the complete image set is approved. Publication alone never enables hosted execution.
 
 Follow-up local `pnpm verify` passes 587 core tests and its formatting, lint, type, token, documentation and secret checks. The patched amd64 Java image builds with OpenSSL package `3.5.5-1ubuntu3.7`, no `/usr/bin/pebble`, UID 65532 and the unchanged OpenJDK 25.0.4 toolchain. Network-disabled, read-only normal Java compilation/execution passes and the malformed-source fixture is rejected. Remote vulnerability/signature admission remains separate from these local smoke results.
+
+## Complete patched image publication
+
+[Execution image release 38051107552](https://github.com/vsuman00/AlgoCove/actions/runs/38051107552) succeeds at code revision `1ca3381c4838913bc1183ff598358ce2b1e2fc84`, admitted by [CI 38050385353](https://github.com/vsuman00/AlgoCove/actions/runs/38050385353). All three required CI jobs pass, including the stronger gVisor/real-learning-loop gate. Linux quality evidence reports 587 core tests, 153 integration tests passed/three skipped, and 102 browser checks passed.
+
+All four image jobs build with provenance/SBOM, pass the configured fixable HIGH/CRITICAL vulnerability gate, sign the immutable digest and verify GitHub workflow identity plus OIDC issuer. This supersedes the incomplete first publication attempt; the failed first Java scan remains useful evidence that signing was blocked. Passing the configured scan does not claim the absence of every vulnerability.
+
+| Profile | Published immutable reference |
+| --- | --- |
+| python | `ghcr.io/vsuman00/algocove/execution-python@sha256:5084af38fd491b1c8dcd748ffc0d88d95aade02f6f38d27c011cdf5387af3e0e` |
+| javascript-typescript | `ghcr.io/vsuman00/algocove/execution-javascript-typescript@sha256:b3261286fba1dc45c23c5f3a78df8c038d7b7f4a11eb12f87f664428a48a1024` |
+| java | `ghcr.io/vsuman00/algocove/execution-java@sha256:109905625bbb7f0c2f2d6e3d289d806297f473400da21e37eecf2d8de5eec228` |
+| c-cpp | `ghcr.io/vsuman00/algocove/execution-c-cpp@sha256:04b4a9d95fb36a915659d00b2f2f44b930f5c0d0ed8a8115a9a7a4e186c3196d` |
+
+Publication approves this scanned/signed artifact set; it does not provision an execution host, promote a runtime manifest or enable learner execution. The later ADR-0025 commit changes planning documentation only and proposes free production-MFA qualification. Separate content/AI/runtime configuration lineage and the full pilot gates remain open.
