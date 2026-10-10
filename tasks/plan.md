@@ -1823,7 +1823,7 @@ Do not begin a later phase merely because earlier code compiles. Phase gates req
 
 ## Phase 12 execution supplement: Vercel Hobby workers and isolated execution
 
-**Planning status (2026-10-10): PROPOSED IMPLEMENTATION, not deployed or qualified.** The owner requested a Vercel-hosted implementation plan for personal, non-commercial use with a strict $0 budget and no server. This extends Tasks 55–57; their original acceptance criteria and Task 55a are unchanged. The earlier instruction to keep hosted execution disabled remains effective until managed execution is qualified and activation is authorized. No paid plan, trial, always-on VM or paid AI provider is part of this plan.
+**Implementation status (2026-10-10): STARTED; VH-01 and preliminary VH-02 are PARTIAL.** Account guard/ADR and bounded synthetic Singapore discovery are implemented. See [discovery evidence](../docs/evidence/security/vercel-hobby.md); default-image privilege/PID/runtime findings block learner execution. The owner requested a Vercel-hosted implementation plan for personal, non-commercial use with a strict $0 budget and no server. This extends Tasks 55–57; their original acceptance criteria and Task 55a are unchanged. The earlier instruction to keep hosted execution disabled remains effective until managed execution is qualified and activation is authorized. No paid plan, trial, always-on VM or paid AI provider is part of this plan.
 
 ### Target architecture and boundaries
 
